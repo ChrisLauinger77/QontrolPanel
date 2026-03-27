@@ -6,14 +6,16 @@ on:
       - main
   workflow_dispatch:
 env:
-  QT_VERSION: '6.10.1'
-  VCPKG_ROOT: 'C:/vcpkg'
+  QT_VERSION: "6.10.1"
+  VCPKG_ROOT: "C:/vcpkg"
 jobs:
   build:
     runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Get version from CMake
         id: cmake_version
         uses: DarwinInnovation/cmake-project-version-action@v1.0
@@ -35,7 +37,7 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
-          arch: 'win64_msvc2022_64'
+          arch: "win64_msvc2022_64"
           add-tools-to-path: true
           cache: true
       - name: Generate and Build with CMake
