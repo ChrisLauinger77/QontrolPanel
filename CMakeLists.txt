@@ -29,6 +29,19 @@ find_package(hidapi CONFIG REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.9)
 
+set(HEADSETCONTROL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/headsetcontrol")
+if(NOT EXISTS "${HEADSETCONTROL_SOURCE_DIR}/CMakeLists.txt")
+    message(FATAL_ERROR "HeadsetControl submodule is missing. Run 'git submodule update --init --recursive'.")
+endif()
+
+add_subdirectory("${HEADSETCONTROL_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}/headsetcontrol" EXCLUDE_FROM_ALL)
+
+if(MSVC AND TARGET headsetcontrol_lib)
+    set_target_properties(headsetcontrol_lib PROPERTIES
+        MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>"
+    )
+endif()
+
 include(cmake/languages.cmake)
 
 set(SOURCES
@@ -196,7 +209,6 @@ qt_add_qml_module(QontrolPanel
 target_include_directories(QontrolPanel PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/headsetcontrol/include
 )
 
 target_link_libraries(QontrolPanel PRIVATE
@@ -206,7 +218,7 @@ target_link_libraries(QontrolPanel PRIVATE
     Qt::Quick
     Qt::Widgets
     Qt::Network
-    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/headsetcontrol/lib/headsetcontrol.lib
+    headsetcontrol_lib
     hidapi::hidapi
     Gdi32
     Winmm

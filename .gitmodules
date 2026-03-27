@@ -1,0 +1,3 @@
+[submodule "dependencies/headsetcontrol"]
+	path = dependencies/headsetcontrol
+	url = https://github.com/Sapd/HeadsetControl.git
