@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       workflow_run_id:
-        description: 'Build workflow run ID (optional - will use latest successful run if not provided)'
+        description: "Build workflow run ID (optional - will use latest successful run if not provided)"
         required: false
 
 jobs:
@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get version from CMake
         id: cmake_version
         uses: DarwinInnovation/cmake-project-version-action@v1.0
 
       - name: Download Windows artifact
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v20
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
@@ -28,7 +28,7 @@ jobs:
           if_no_artifact_found: fail
 
       - name: Download Windows Installer
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v20
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
@@ -41,7 +41,7 @@ jobs:
         run: |
           VERSION="${{ steps.cmake_version.outputs.version }}"
           echo "Creating release for version: $VERSION"
-          
+
           git tag $VERSION
           git push origin $VERSION
           echo "new_tag=$VERSION" >> $GITHUB_ENV
@@ -71,8 +71,8 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: QontrolPanel_Installer.exe 
-          asset_name: QontrolPanel_Installer.exe  
+          asset_path: QontrolPanel_Installer.exe
+          asset_name: QontrolPanel_Installer.exe
           asset_content_type: application/vnd.microsoft.portable-executable
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
