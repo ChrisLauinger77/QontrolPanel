@@ -5,7 +5,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project(QontrolPanel VERSION 1.11.2 LANGUAGES C CXX)
+project(QontrolPanel VERSION 1.12.0 LANGUAGES C CXX)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
 set(CMAKE_CXX_STANDARD 20)
@@ -201,7 +201,7 @@ set_source_files_properties(${QML_SINGLETONS}
 )
 
 qt_add_qml_module(QontrolPanel
-    URI Odizinne.QontrolPanel
+    URI ChrisLauinger77.QontrolPanel
     VERSION 1.0
     QML_FILES ${QML_FILES} ${QML_SINGLETONS}
 )

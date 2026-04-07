@@ -56,7 +56,7 @@ void PanelEngine::initializeQMLEngine()
     }
 
     engine = new QQmlApplicationEngine(this);
-    engine->loadFromModule("Odizinne.QontrolPanel", "Main");
+    engine->loadFromModule("ChrisLauinger77.QontrolPanel", "Main");
 
     if (!engine->rootObjects().isEmpty()) {
         panelWindow = qobject_cast<QWindow*>(engine->rootObjects().constFirst());

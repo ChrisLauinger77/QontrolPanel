@@ -299,11 +299,11 @@ def main():
             translation_progress[language_code] = {
                 'percentage': 100,
                 'last_updated': current_date,
-                'contributor': 'Odizinne'
+                'contributor': 'ChrisLauinger77'
             }
             print(f"  {language_code}: 100% (English - source language)", flush=True)
             print(f"    Last updated: {current_date}", flush=True)
-            print(f"    Contributor: Odizinne", flush=True)
+            print(f"    Contributor: ChrisLauinger77", flush=True)
             continue
 
         stats = analyze_ts_file(ts_file)

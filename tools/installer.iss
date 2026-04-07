@@ -7,8 +7,8 @@
 #define                BuildVersion
 #define TempVersion    GetVersionComponents(AppSourceDir + "bin\" + AppExeName, MajorVersion, MinorVersion, RevisionVersion, BuildVersion)
 #define AppVersion     str(MajorVersion) + "." + str(MinorVersion) + "." + str(RevisionVersion)
-#define AppPublisher  "Odizinne"
-#define AppURL        "https://github.com/Odizinne/QontrolPanel"
+#define AppPublisher  "ChrisLauinger77"
+#define AppURL        "https://github.com/ChrisLauinger77/QontrolPanel"
 #define AppIcon       "..\Resources\icons\icon.ico"
 #define CurrentYear   GetDateTimeString('yyyy','','')
 
