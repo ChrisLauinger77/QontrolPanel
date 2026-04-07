@@ -5,15 +5,11 @@
 [![license](https://img.shields.io/github/license/odizinne/qontrolpanel)]()
 
 QontrolPanel is an enhanced audio panel for Windows.  
-It provide output and input volume / device / mute control as well as application volume mixer.  
+It provide output and input volume / device / mute control as well as application volume mixer.
 
 ![image](.assets/screenshot.png)
 
-If you like my work, please consider supporting me:
-
-<a href="https://ko-fi.com/odizinne" target="_blank">
-  <img src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01cf2da94a032117b9_support_me_on_kofi_red-p-500.png" alt="Support me on Ko-fi" width="25%">
-</a>  
+If you like my work, please consider supporting me !
 
 ## Usage
 
@@ -40,6 +36,7 @@ Use the provided installer or download the archive, extract it, and run `bin/Qon
 See [here](.github/BUILDING.md).
 
 ## Credits
+
 - Used OCEAN sound effects from KDE
 - Used icons from FlatIcon and VeryIcon
 - Application icon from [Yogi Aprelliyanto](https://www.flaticon.com/authors/yogi-aprelliyanto)
