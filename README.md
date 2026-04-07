@@ -1,8 +1,8 @@
 # QontrolPanel
 
-[![Version](https://img.shields.io/github/v/release/odizinne/qontrolpanel)]()
-[![Github All Releases](https://img.shields.io/github/downloads/odizinne/qontrolpanel/total.svg)]()
-[![license](https://img.shields.io/github/license/odizinne/qontrolpanel)]()
+[![Version](https://img.shields.io/github/v/release/ChrisLauinger77/qontrolpanel)]()
+[![Github All Releases](https://img.shields.io/github/downloads/ChrisLauinger77/qontrolpanel/total.svg)]()
+[![license](https://img.shields.io/github/license/ChrisLauinger77/qontrolpanel)]()
 
 QontrolPanel is an enhanced audio panel for Windows.  
 It provide output and input volume / device / mute control as well as application volume mixer.
@@ -24,11 +24,11 @@ Translators should have a look [here](.github/TRANSLATIONS.md).
 
 ### Winget
 
-`winget install Odizinne.QontrolPanel`
+`winget install ChrisLauinger77.QontrolPanel`
 
 ### Manual
 
-Download latest version [here](https://github.com/Odizinne/QontrolPanel/releases/latest).  
+Download latest version [here](https://github.com/ChrisLauinger77/QontrolPanel/releases/latest).  
 Use the provided installer or download the archive, extract it, and run `bin/QontrolPanel.exe`.
 
 ## Build the project

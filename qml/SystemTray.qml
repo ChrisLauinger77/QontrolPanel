@@ -1,6 +1,6 @@
 import QtQuick
 import Qt.labs.platform as Platform
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 Platform.SystemTrayIcon {
     id: systemTray

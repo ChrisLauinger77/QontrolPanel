@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls.FluentWinUI3
 import QtQuick.Controls.impl
 import QtQuick.Layouts
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 Rectangle {
     id: footer

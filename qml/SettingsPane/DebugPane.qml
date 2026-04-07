@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.FluentWinUI3
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 ColumnLayout {
     spacing: 3

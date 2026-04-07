@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 ScrollView {
     id: control

@@ -201,7 +201,7 @@ set_source_files_properties(${QML_SINGLETONS}
 )
 
 qt_add_qml_module(QontrolPanel
-    URI Odizinne.QontrolPanel
+    URI ChrisLauinger77.QontrolPanel
     VERSION 1.0
     QML_FILES ${QML_FILES} ${QML_SINGLETONS}
 )

@@ -26,13 +26,13 @@ UserSettings* UserSettings::instance()
 
 void UserSettings::saveValue(const QString &key, const QVariant &value)
 {
-    QSettings settings("Odizinne", "QontrolPanel");
+    QSettings settings("ChrisLauinger77", "QontrolPanel");
     settings.setValue(key, value);
 }
 
 void UserSettings::initProperties()
 {
-    QSettings settings("Odizinne", "QontrolPanel");
+    QSettings settings("ChrisLauinger77", "QontrolPanel");
 
     m_enableDeviceManager = settings.value("enableDeviceManager", true).toBool();
     m_enableApplicationMixer = settings.value("enableApplicationMixer", true).toBool();
