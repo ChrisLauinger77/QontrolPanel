@@ -18,7 +18,16 @@ jobs:
 
       - name: Get version from CMake
         id: cmake_version
-        uses: DarwinInnovation/cmake-project-version-action@v1.0
+        shell: pwsh
+        run: |
+          $content = Get-Content CMakeLists.txt -Raw
+          $match = [regex]::Match($content, 'project\s*\(\s*(?<project>[^\s\)]+)\s+VERSION\s+(?<version>[^\s\)]+)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+          if (-not $match.Success) {
+              throw "Unable to extract project version from CMakeLists.txt"
+          }
+
+          "project=$($match.Groups['project'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "version=$($match.Groups['version'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Download Windows artifact
         uses: dawidd6/action-download-artifact@v20
