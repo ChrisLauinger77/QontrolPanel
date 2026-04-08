@@ -6,6 +6,9 @@ on:
         description: "Build workflow run ID (optional - will use latest successful run if not provided)"
         required: false
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -44,35 +47,17 @@ jobs:
 
           git tag $VERSION
           git push origin $VERSION
-          echo "new_tag=$VERSION" >> $GITHUB_ENV
 
       - name: Create GitHub release
-        id: create_release
-        uses: actions/create-release@v1.1.4
+        uses: softprops/action-gh-release@v2.6.1
         with:
-          tag_name: ${{ env.new_tag }}
-          release_name: ${{ env.new_tag }}
+          tag_name: ${{ steps.cmake_version.outputs.version }}
+          name: ${{ steps.cmake_version.outputs.version }}
           body: ""
           draft: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Windows release asset
-        uses: actions/upload-release-asset@v1.0.2
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: QontrolPanel_win64_msvc2022.zip
-          asset_name: QontrolPanel_win64_msvc2022.zip
-          asset_content_type: application/zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Windows Installer asset
-        uses: actions/upload-release-asset@v1.0.2
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: QontrolPanel_Installer.exe
-          asset_name: QontrolPanel_Installer.exe
-          asset_content_type: application/vnd.microsoft.portable-executable
+          fail_on_unmatched_files: true
+          files: |
+            QontrolPanel_win64_msvc2022.zip
+            QontrolPanel_Installer.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
