@@ -37,7 +37,7 @@ See [here](.github/BUILDING.md).
 
 ## Credits
 
-- [Odizinne](https://github.com/Odizinne) for this great tool I forked and try to keep alive
+- [Odizinne](https://github.com/Odizinne) for [this great tool I forked](https://github.com/Odizinne/QontrolPanel) and try to keep alive
 - Used OCEAN sound effects from KDE
 - Used icons from FlatIcon and VeryIcon
 - Application icon from [Yogi Aprelliyanto](https://www.flaticon.com/authors/yogi-aprelliyanto)
