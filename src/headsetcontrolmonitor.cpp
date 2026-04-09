@@ -14,6 +14,8 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_batteryLevel(-1)
     , m_anyDeviceFound(false)
     , m_isFetching(false)
+    , m_testModeEnabled(false)
+    , m_testProfile(1)
 {
     LOG_INFO("HeadsetControlManager",
                                     QString("HeadsetControlMonitor initialized - Library version: %1")
@@ -44,6 +46,7 @@ void HeadsetControlMonitor::startMonitoring()
                                     QString("Starting headset monitoring (fetch interval: %1ms)").arg(m_fetchIntervalMs));
 
     m_isMonitoring = true;
+    applyTestDeviceConfiguration();
     m_fetchTimer->start();
     fetchHeadsetInfo();
 
@@ -161,6 +164,8 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
     m_isFetching = true;
 
     try {
+        applyTestDeviceConfiguration();
+
         // Discover headsets
         m_headsets = headsetcontrol::discover();
 
@@ -185,6 +190,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
                 emit anyDeviceFoundChanged();
             }
             emit headsetDataUpdated(m_cachedDevices);
+            m_isFetching = false;
             return;
         }
 
@@ -362,4 +368,43 @@ void HeadsetControlMonitor::setFetchInterval(int intervalMs)
 
     LOG_INFO("HeadsetControlManager",
                                     QString("Fetch interval updated to %1ms").arg(m_fetchIntervalMs));
+}
+
+void HeadsetControlMonitor::setTestModeEnabled(bool enabled)
+{
+    if (m_testModeEnabled == enabled) {
+        return;
+    }
+
+    m_testModeEnabled = enabled;
+    applyTestDeviceConfiguration();
+    emit testModeEnabledChanged();
+
+    if (m_isMonitoring) {
+        fetchHeadsetInfo();
+    }
+}
+
+void HeadsetControlMonitor::setTestProfile(int profile)
+{
+    int sanitizedProfile = qBound(1, profile, 7);
+    if (m_testProfile == sanitizedProfile) {
+        return;
+    }
+
+    m_testProfile = sanitizedProfile;
+    applyTestDeviceConfiguration();
+    emit testProfileChanged();
+
+    if (m_testModeEnabled && m_isMonitoring) {
+        fetchHeadsetInfo();
+    }
+}
+
+void HeadsetControlMonitor::applyTestDeviceConfiguration()
+{
+    headsetcontrol::enableTestDevice(m_testModeEnabled);
+    if (m_testModeEnabled) {
+        headsetcontrol::setTestProfile(m_testProfile);
+    }
 }

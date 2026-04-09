@@ -38,6 +38,8 @@ public:
     QString batteryStatus() const { return m_batteryStatus; }
     int batteryLevel() const { return m_batteryLevel; }
     bool anyDeviceFound() const { return m_anyDeviceFound; }
+    bool testModeEnabled() const { return m_testModeEnabled; }
+    int testProfile() const { return m_testProfile; }
 
 public slots:
     void startMonitoring();
@@ -45,6 +47,8 @@ public slots:
     void setLights(bool enabled);
     void setSidetone(int value);
     void setFetchInterval(int intervalMs);
+    void setTestModeEnabled(bool enabled);
+    void setTestProfile(int profile);
 
 signals:
     void headsetDataUpdated(const QList<HeadsetControlDevice>& devices);
@@ -54,11 +58,14 @@ signals:
     void batteryStatusChanged();
     void batteryLevelChanged();
     void anyDeviceFoundChanged();
+    void testModeEnabledChanged();
+    void testProfileChanged();
 
 private slots:
     void fetchHeadsetInfo();
 
 private:
+    void applyTestDeviceConfiguration();
     void updateDeviceCache();
     void updateCapabilities();
     QString batteryStatusToString(battery_status status) const;
@@ -78,4 +85,6 @@ private:
     int m_batteryLevel;
     bool m_anyDeviceFound;
     bool m_isFetching;
+    bool m_testModeEnabled;
+    int m_testProfile;
 };

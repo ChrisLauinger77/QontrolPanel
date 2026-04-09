@@ -7,6 +7,15 @@ import ChrisLauinger77.QontrolPanel
 
 ColumnLayout {
     spacing: 3
+    readonly property var testProfiles: [
+        qsTr("1 - Error conditions"),
+        qsTr("2 - Charging battery"),
+        qsTr("3 - Basic battery"),
+        qsTr("4 - Battery unavailable"),
+        qsTr("5 - Timeout"),
+        qsTr("6 - Full battery"),
+        qsTr("7 - Low battery")
+    ]
 
     Label {
         text: HeadsetControlBridge.deviceName
@@ -34,6 +43,41 @@ ColumnLayout {
             ColumnLayout {
                 width: parent.width
                 spacing: 3
+
+                Card {
+                    Layout.fillWidth: true
+                    visible: !HeadsetControlBridge.anyDeviceFound && UserSettings.headsetcontrolMonitoring && !HeadsetControlBridge.testModeEnabled
+                    title: qsTr("No compatible device found.")
+                    description: qsTr("Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.")
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    visible: UserSettings.headsetcontrolMonitoring && (!HeadsetControlBridge.anyDeviceFound || HeadsetControlBridge.testModeEnabled)
+                    title: qsTr("HeadsetControl test mode")
+                    description: qsTr("Simulate a supported headset for testing. This stays enabled until the app closes.")
+
+                    additionalControl: LabeledSwitch {
+                        checked: HeadsetControlBridge.testModeEnabled
+                        onClicked: HeadsetControlBridge.setTestModeEnabled(checked)
+                    }
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    visible: UserSettings.headsetcontrolMonitoring && (!HeadsetControlBridge.anyDeviceFound || HeadsetControlBridge.testModeEnabled)
+                    title: qsTr("Test headset profile")
+                    description: qsTr("Choose which synthetic headset scenario HeadsetControl should simulate.")
+                    enabled: HeadsetControlBridge.testModeEnabled
+
+                    additionalControl: CustomComboBox {
+                        Layout.preferredHeight: 35
+                        model: testProfiles
+                        currentIndex: Math.max(0, HeadsetControlBridge.testProfile - 1)
+                        enabled: HeadsetControlBridge.testModeEnabled
+                        onActivated: HeadsetControlBridge.setTestProfile(currentIndex + 1)
+                    }
+                }
 
                 Card {
                     Layout.fillWidth: true
@@ -129,8 +173,8 @@ ColumnLayout {
         Label {
             anchors.centerIn: parent
             opacity: 0.5
-            text: UserSettings.headsetcontrolMonitoring ? qsTr("No compatible device found.") : qsTr("HeadsetControl monitoring is disabled\nYou can enable it in the General tab.")
-            visible: !HeadsetControlBridge.anyDeviceFound || !UserSettings.headsetcontrolMonitoring
+            text: qsTr("HeadsetControl monitoring is disabled\nYou can enable it in the General tab.")
+            visible: !UserSettings.headsetcontrolMonitoring
             horizontalAlignment: Text.AlignHCenter
         }
     }

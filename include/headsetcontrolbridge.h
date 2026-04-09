@@ -17,6 +17,8 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(QString batteryStatus READ batteryStatus NOTIFY batteryStatusChanged)
     Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
     Q_PROPERTY(bool anyDeviceFound READ anyDeviceFound NOTIFY anyDeviceFoundChanged)
+    Q_PROPERTY(bool testModeEnabled READ testModeEnabled NOTIFY testModeEnabledChanged)
+    Q_PROPERTY(int testProfile READ testProfile NOTIFY testProfileChanged)
 
 public:
     explicit HeadsetControlBridge(QObject *parent = nullptr);
@@ -29,6 +31,8 @@ public:
     Q_INVOKABLE void setLights(bool enabled);
     Q_INVOKABLE void setSidetone(int value);
     Q_INVOKABLE void setFetchRate(int seconds);
+    Q_INVOKABLE void setTestModeEnabled(bool enabled);
+    Q_INVOKABLE void setTestProfile(int profile);
 
     bool hasSidetoneCapability() const;
     bool hasLightsCapability() const;
@@ -36,6 +40,8 @@ public:
     QString batteryStatus() const;
     int batteryLevel() const;
     bool anyDeviceFound() const;
+    bool testModeEnabled() const;
+    int testProfile() const;
 
 signals:
     void capabilitiesChanged();
@@ -43,6 +49,8 @@ signals:
     void batteryStatusChanged();
     void batteryLevelChanged();
     void anyDeviceFoundChanged();
+    void testModeEnabledChanged();
+    void testProfileChanged();
     void lowHeadsetBattery();
 
 private slots:
@@ -51,6 +59,8 @@ private slots:
     void onMonitorBatteryStatusChanged();
     void onMonitorBatteryLevelChanged();
     void onMonitorAnyDeviceFoundChanged();
+    void onMonitorTestModeEnabledChanged();
+    void onMonitorTestProfileChanged();
 
 private:
     static HeadsetControlBridge* m_instance;

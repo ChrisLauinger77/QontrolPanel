@@ -674,6 +674,54 @@ You can enable it in the General tab.</source>
         <source>Charging</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HeadsetControl test mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test headset profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1 - Error conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 - Charging battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3 - Basic battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4 - Battery unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 - Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>6 - Full battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>7 - Low battery</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
