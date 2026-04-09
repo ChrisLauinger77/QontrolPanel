@@ -29,6 +29,14 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Update HeadsetControl submodule to latest master
+        shell: pwsh
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive --remote --checkout
+          $headsetControlCommit = git -C dependencies/headsetcontrol rev-parse HEAD
+          Write-Host "HeadsetControl submodule updated to $headsetControlCommit"
+
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
         with:
@@ -46,6 +54,7 @@ jobs:
           C:/vcpkg/vcpkg install hidapi:x64-windows getopt-win32:x64-windows
 
       - name: Install Qt
+        id: qt
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
@@ -53,18 +62,12 @@ jobs:
           add-tools-to-path: true
           cache: true
 
-      - name: Configure CMake
+      - name: Generate with CMake
         shell: pwsh
         run: |
-          if (Test-Path build) {
-              Remove-Item -Recurse -Force build
-          }
-
-          cmake -S . -B build `
-            -G "Visual Studio 17 2022" `
-            -A x64 `
-            -DCMAKE_POLICY_DEFAULT_CMP0091=NEW `
-            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Update translation source files
         shell: pwsh
