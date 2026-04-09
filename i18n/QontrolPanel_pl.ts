@@ -600,6 +600,10 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation>Pokaż potwierdzenie akcji zasilania</translation>
     </message>
     <message>
+        <source>Slider wheel sensivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>DDC/CI brightness update rate</source>
         <translation>Częstotliwość aktualizacji jasności DDC/CI</translation>
     </message>
@@ -665,6 +669,54 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
     <message>
         <source>No compatible device found.</source>
         <translation>Nie znaleziono kompatybilnego urządzenia.</translation>
+    </message>
+    <message>
+        <source>1 - Error conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 - Charging battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3 - Basic battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4 - Battery unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 - Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>6 - Full battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>7 - Low battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HeadsetControl test mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test headset profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
