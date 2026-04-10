@@ -645,6 +645,10 @@ You can enable it in the General tab.</translation>
         <translation>Headset Lighting</translation>
     </message>
     <message>
+        <source>0 - Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Show battery status in panel footer</translation>
     </message>

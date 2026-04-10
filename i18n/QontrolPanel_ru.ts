@@ -643,6 +643,10 @@ You can enable it in the General tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>0 - Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>

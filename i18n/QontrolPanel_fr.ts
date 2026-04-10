@@ -649,6 +649,10 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Voir l&apos;état de la batterie dans le pied de page du panneau</translation>
     </message>
     <message>
+        <source>0 - Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>

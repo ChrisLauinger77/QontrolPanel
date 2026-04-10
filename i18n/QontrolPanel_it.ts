@@ -645,6 +645,10 @@ Puoi abilitarlo nella scheda Generale.</translation>
         <translation>Illuminazione auricolare</translation>
     </message>
     <message>
+        <source>0 - Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>

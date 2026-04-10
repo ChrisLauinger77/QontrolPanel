@@ -671,6 +671,10 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation>Nie znaleziono kompatybilnego urządzenia.</translation>
     </message>
     <message>
+        <source>0 - Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>

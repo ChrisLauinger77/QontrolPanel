@@ -645,6 +645,10 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
         <translation>Headset-Beleuchtung</translation>
     </message>
     <message>
+        <source>0 - Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>1 - Error conditions</source>
         <translation>1 – Fehlerzustände</translation>
     </message>
