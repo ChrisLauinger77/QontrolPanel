@@ -204,6 +204,10 @@ void HeadsetControlBridge::onMonitorBatteryLevelChanged()
 
 void HeadsetControlBridge::onMonitorAnyDeviceFoundChanged()
 {
+    if (!anyDeviceFound()) {
+        m_lowBatteryNotificationSent = false;
+    }
+
     emit anyDeviceFoundChanged();
 }
 

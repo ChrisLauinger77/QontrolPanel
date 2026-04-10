@@ -18,7 +18,7 @@ struct HeadsetControlDevice {
     int batteryLevel;       // -1 - 100
     QStringList capabilities;
 
-    HeadsetControlDevice() : batteryLevel(0) {}
+    HeadsetControlDevice() : batteryLevel(-1) {}
 };
 Q_DECLARE_METATYPE(HeadsetControlDevice)
 
