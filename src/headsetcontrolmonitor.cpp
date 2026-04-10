@@ -15,7 +15,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_anyDeviceFound(false)
     , m_isFetching(false)
     , m_testModeEnabled(false)
-    , m_testProfile(1)
+    , m_testProfile(3)
 {
     LOG_INFO("HeadsetControlManager",
                                     QString("HeadsetControlMonitor initialized - Library version: %1")
