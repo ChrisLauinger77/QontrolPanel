@@ -8,6 +8,7 @@ import ChrisLauinger77.QontrolPanel
 ColumnLayout {
     spacing: 3
     readonly property var testProfiles: [
+        qsTr("0 - Default"),
         qsTr("1 - Error conditions"),
         qsTr("2 - Charging battery"),
         qsTr("3 - Basic battery"),
