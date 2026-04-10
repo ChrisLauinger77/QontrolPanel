@@ -70,8 +70,8 @@ void HeadsetControlMonitor::stopMonitoring()
     m_hasSidetoneCapability = false;
     m_hasLightsCapability = false;
     m_deviceName = "";
-    m_batteryStatus = "";
-    m_batteryLevel = 0;
+    m_batteryStatus = "BATTERY_UNAVAILABLE";
+    m_batteryLevel = -1;
     bool wasDeviceFound = m_anyDeviceFound;
     m_anyDeviceFound = false;
 
@@ -177,8 +177,8 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             m_hasSidetoneCapability = false;
             m_hasLightsCapability = false;
             m_deviceName = "";
-            m_batteryStatus = "";
-            m_batteryLevel = 0;
+            m_batteryStatus = "BATTERY_UNAVAILABLE";
+            m_batteryLevel = -1;
             bool wasDeviceFound = m_anyDeviceFound;
             m_anyDeviceFound = false;
 
