@@ -26,6 +26,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || github.ref }}
           submodules: recursive
       - name: Update HeadsetControl submodule to latest master
         shell: pwsh
@@ -117,7 +118,7 @@ jobs:
           add-paths: |
             i18n
       - name: Commit translation source updates to current branch
-        if: steps.translation_updates.outputs.has_changes == 'true' && github.ref_name != 'main' && github.event_name != 'pull_request'
+        if: steps.translation_updates.outputs.has_changes == 'true' && github.event_name == 'push' && github.ref_name != 'main'
         shell: pwsh
         run: |
           git config user.name "GitHub Action"
@@ -131,6 +132,21 @@ jobs:
 
           git commit -m "Update translation source files [skip ci]"
           git push origin HEAD:${{ github.ref_name }}
+      - name: Commit translation source updates to PR branch
+        if: steps.translation_updates.outputs.has_changes == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.ref != 'main' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: pwsh
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add i18n
+
+          if (git diff --cached --quiet) {
+              Write-Host "No translation source changes staged"
+              exit 0
+          }
+
+          git commit -m "Update translation source files [skip ci]"
+              git push origin HEAD:${{ github.event.pull_request.head.ref }}
       - name: Rename release folder
         shell: pwsh
         run: |
