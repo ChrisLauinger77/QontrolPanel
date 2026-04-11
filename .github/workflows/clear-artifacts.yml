@@ -14,7 +14,28 @@ jobs:
       actions: write
 
     steps:
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: "1 day"
+      - name: Delete artifacts older than 1 day
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TIMESTAMP=$(date -u -d "24 hours ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u -v-1d +"%Y-%m-%dT%H:%M:%SZ")
+
+          echo "Deleting artifacts created before $TIMESTAMP"
+
+          mapfile -t ARTIFACT_IDS < <(
+            gh api repos/${{ github.repository }}/actions/artifacts \
+              --paginate \
+              --jq '.artifacts[] | select(.created_at < "'"$TIMESTAMP"'" ) | .id'
+          )
+
+          DELETED_COUNT=0
+
+          for artifact_id in "${ARTIFACT_IDS[@]}"; do
+            gh api -X DELETE repos/${{ github.repository }}/actions/artifacts/"$artifact_id"
+            DELETED_COUNT=$((DELETED_COUNT + 1))
+          done
+
+          echo "Deleted $DELETED_COUNT artifact(s)."
+          echo "deleted_count=$DELETED_COUNT" >> "$GITHUB_OUTPUT"
+          echo "Deleted artifact(s): $DELETED_COUNT" >> "$GITHUB_STEP_SUMMARY"
