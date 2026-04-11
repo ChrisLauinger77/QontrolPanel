@@ -13,6 +13,9 @@ on:
       - "i18n/**"
       - "i18n_compiled/**"
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
 env:
   QT_VERSION: "6.10.1"
   VCPKG_ROOT: "C:/vcpkg"
@@ -73,11 +76,13 @@ jobs:
           cmake --build . --config Release
           cmake --install . --config Release
       - name: Remove obsolete entries from changed TS files
+        id: translation_updates
         shell: pwsh
         run: |
           $changedFiles = git diff --name-only -- i18n/*.ts
           if (-not $changedFiles) {
               Write-Host "No translation source changes detected"
+              "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
               exit 0
           }
 
@@ -89,7 +94,10 @@ jobs:
               }
           }
 
+          "has_changes=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
       - name: Create pull request for translation source updates
+        if: steps.translation_updates.outputs.has_changes == 'true' && github.ref_name == 'main'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -108,6 +116,21 @@ jobs:
             - removal of obsolete translation entries in changed files
           add-paths: |
             i18n
+      - name: Commit translation source updates to current branch
+        if: steps.translation_updates.outputs.has_changes == 'true' && github.ref_name != 'main' && github.event_name != 'pull_request'
+        shell: pwsh
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add i18n
+
+          if (git diff --cached --quiet) {
+              Write-Host "No translation source changes staged"
+              exit 0
+          }
+
+          git commit -m "Update translation source files [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
       - name: Rename release folder
         shell: pwsh
         run: |
