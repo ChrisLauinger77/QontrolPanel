@@ -83,8 +83,10 @@ ColumnLayout {
                     Layout.fillWidth: true
                     title: qsTr("Device battery")
                     visible: HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE" && HeadsetControlBridge.anyDeviceFound
+                    description: qsTr("Current battery level of the connected headset") +
+                                 (HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING" ? "\n" + "⚡︎" + qsTr("(Charging)") : "")
                     additionalControl: Label {
-                        text: HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING" ? qsTr("Charging") : HeadsetControlBridge.batteryLevel + "%"
+                        text: "🔋" + HeadsetControlBridge.batteryLevel + "%"
                     }
                 }
 
