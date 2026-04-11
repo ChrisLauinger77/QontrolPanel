@@ -9,9 +9,11 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_fetchIntervalMs(30000)
     , m_hasSidetoneCapability(false)
     , m_hasLightsCapability(false)
+    , m_hasChatMixCapability(false)
     , m_deviceName("")
     , m_batteryStatus("BATTERY_UNAVAILABLE")
     , m_batteryLevel(-1)
+    , m_chatMix(-1)
     , m_anyDeviceFound(false)
     , m_isFetching(false)
     , m_testModeEnabled(false)
@@ -69,9 +71,11 @@ void HeadsetControlMonitor::stopMonitoring()
     m_headsets.clear();
     m_hasSidetoneCapability = false;
     m_hasLightsCapability = false;
+    m_hasChatMixCapability = false;
     m_deviceName = "";
     m_batteryStatus = "BATTERY_UNAVAILABLE";
     m_batteryLevel = -1;
+    m_chatMix = -1;
     bool wasDeviceFound = m_anyDeviceFound;
     m_anyDeviceFound = false;
 
@@ -79,6 +83,7 @@ void HeadsetControlMonitor::stopMonitoring()
     emit deviceNameChanged();
     emit batteryStatusChanged();
     emit batteryLevelChanged();
+    emit chatMixChanged();
     if (wasDeviceFound) {
         emit anyDeviceFoundChanged();
     }
@@ -176,9 +181,11 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             m_cachedDevices.clear();
             m_hasSidetoneCapability = false;
             m_hasLightsCapability = false;
+            m_hasChatMixCapability = false;
             m_deviceName = "";
             m_batteryStatus = "BATTERY_UNAVAILABLE";
             m_batteryLevel = -1;
+            m_chatMix = -1;
             bool wasDeviceFound = m_anyDeviceFound;
             m_anyDeviceFound = false;
 
@@ -186,6 +193,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             emit deviceNameChanged();
             emit batteryStatusChanged();
             emit batteryLevelChanged();
+            emit chatMixChanged();
             if (wasDeviceFound) {
                 emit anyDeviceFoundChanged();
             }
@@ -246,6 +254,24 @@ void HeadsetControlMonitor::updateDeviceCache()
             device.batteryLevel = -1;
         }
 
+        if (headset.supports(CAP_CHATMIX_STATUS)) {
+            headsetcontrol::Result<headsetcontrol::ChatmixResult> chatMixResult = headset.getChatmix();
+            if (chatMixResult) {
+                device.chatMix = chatMixResult->level;
+
+                LOG_INFO("HeadsetControlManager",
+                                                QString("Device %1: ChatMix %2")
+                                                    .arg(device.deviceName).arg(device.chatMix));
+            } else {
+                device.chatMix = -1;
+                LOG_WARN("HeadsetControlManager",
+                                                 QString("Failed to read ChatMix: %1")
+                                                     .arg(QString::fromStdString(chatMixResult.error().fullMessage())));
+            }
+        } else {
+            device.chatMix = -1;
+        }
+
         LOG_INFO("HeadsetControlManager",
                                         QString("Found headset device: %1 with %2 capabilities")
                                             .arg(device.deviceName).arg(device.capabilities.size()));
@@ -267,6 +293,10 @@ void HeadsetControlMonitor::updateDeviceCache()
             m_batteryLevel = primaryDevice.batteryLevel;
             emit batteryLevelChanged();
         }
+        if (primaryDevice.chatMix != m_chatMix) {
+            m_chatMix = primaryDevice.chatMix;
+            emit chatMixChanged();
+        }
     }
 
     emit headsetDataUpdated(m_cachedDevices);
@@ -276,6 +306,7 @@ void HeadsetControlMonitor::updateCapabilities()
 {
     bool newSidetoneCapability = false;
     bool newLightsCapability = false;
+    bool newChatMixCapability = false;
     QString newDeviceName = "";
     bool newAnyDeviceFound = !m_cachedDevices.isEmpty();
     bool wasDeviceFound = m_anyDeviceFound;
@@ -286,6 +317,7 @@ void HeadsetControlMonitor::updateCapabilities()
 
         newSidetoneCapability = headset.supports(CAP_SIDETONE);
         newLightsCapability = headset.supports(CAP_LIGHTS);
+        newChatMixCapability = headset.supports(CAP_CHATMIX_STATUS);
 
         LOG_INFO("HeadsetControlManager",
                                         QString("Device capabilities: %1")
@@ -293,9 +325,11 @@ void HeadsetControlMonitor::updateCapabilities()
     }
 
     if (newSidetoneCapability != m_hasSidetoneCapability ||
-        newLightsCapability != m_hasLightsCapability) {
+        newLightsCapability != m_hasLightsCapability ||
+        newChatMixCapability != m_hasChatMixCapability) {
         m_hasSidetoneCapability = newSidetoneCapability;
         m_hasLightsCapability = newLightsCapability;
+        m_hasChatMixCapability = newChatMixCapability;
         emit capabilitiesChanged();
     }
 

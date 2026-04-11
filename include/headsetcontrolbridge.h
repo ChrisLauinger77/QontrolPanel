@@ -13,9 +13,11 @@ class HeadsetControlBridge : public QObject
 
     Q_PROPERTY(bool hasSidetoneCapability READ hasSidetoneCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasLightsCapability READ hasLightsCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasChatMixCapability READ hasChatMixCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString deviceName READ deviceName NOTIFY deviceNameChanged)
     Q_PROPERTY(QString batteryStatus READ batteryStatus NOTIFY batteryStatusChanged)
     Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
+    Q_PROPERTY(int chatMix READ chatMix NOTIFY chatMixChanged)
     Q_PROPERTY(bool anyDeviceFound READ anyDeviceFound NOTIFY anyDeviceFoundChanged)
     Q_PROPERTY(bool testModeEnabled READ testModeEnabled NOTIFY testModeEnabledChanged)
     Q_PROPERTY(int testProfile READ testProfile NOTIFY testProfileChanged)
@@ -36,9 +38,11 @@ public:
 
     bool hasSidetoneCapability() const;
     bool hasLightsCapability() const;
+    bool hasChatMixCapability() const;
     QString deviceName() const;
     QString batteryStatus() const;
     int batteryLevel() const;
+    int chatMix() const;
     bool anyDeviceFound() const;
     bool testModeEnabled() const;
     int testProfile() const;
@@ -48,6 +52,7 @@ signals:
     void deviceNameChanged();
     void batteryStatusChanged();
     void batteryLevelChanged();
+    void chatMixChanged();
     void anyDeviceFoundChanged();
     void testModeEnabledChanged();
     void testProfileChanged();
@@ -58,6 +63,7 @@ private slots:
     void onMonitorDeviceNameChanged();
     void onMonitorBatteryStatusChanged();
     void onMonitorBatteryLevelChanged();
+    void onMonitorChatMixChanged();
     void onMonitorAnyDeviceFoundChanged();
     void onMonitorTestModeEnabledChanged();
     void onMonitorTestProfileChanged();
