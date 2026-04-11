@@ -91,7 +91,7 @@ jobs:
 
       - name: Install Qt
         if: github.event_name != 'workflow_run' || steps.pr_context.outputs.has_translation_changes == 'true'
-        uses: jurplel/install-qt-action@v4.3.0
+        uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
           add-tools-to-path: true
@@ -198,7 +198,7 @@ jobs:
 
       - name: Create pull request for compiled translations
         if: github.event_name != 'workflow_run' && github.ref_name == 'main'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Update compiled translations [skip ci]"
