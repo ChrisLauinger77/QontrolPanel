@@ -92,8 +92,9 @@ ColumnLayout {
                     Layout.fillWidth: true
                     title: qsTr("ChatMix")
                     visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasChatMixCapability
+                    description: qsTr("ChatMix value of the connected headset")
                     additionalControl: Label {
-                        text:  qsTr("ChatMix value of the connected headset is ") + HeadsetControlBridge.chatMix
+                        text:  HeadsetControlBridge.chatMix
                     }
                 }
 
