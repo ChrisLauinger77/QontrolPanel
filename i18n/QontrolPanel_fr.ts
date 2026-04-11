@@ -697,6 +697,14 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Headset Lighting</source>
         <translation>Éclairage du casque</translation>
     </message>

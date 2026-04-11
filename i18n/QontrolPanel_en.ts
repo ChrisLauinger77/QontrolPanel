@@ -645,6 +645,14 @@ You can enable it in the General tab.</translation>
         <translation>Headset Lighting</translation>
     </message>
     <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Show battery status in panel footer</translation>
     </message>

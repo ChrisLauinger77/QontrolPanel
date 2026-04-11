@@ -719,6 +719,14 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the General tab.</source>
         <translation>Monitorowanie HeadsetControl jest wyłączone
