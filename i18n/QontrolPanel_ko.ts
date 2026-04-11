@@ -693,6 +693,14 @@ You can enable it in the General tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">채팅 믹스</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>패널 하단에 배터리 상태 표시</translation>
     </message>

@@ -89,6 +89,16 @@ ColumnLayout {
                 }
 
                 Card {
+                    Layout.fillWidth: true
+                    title: qsTr("ChatMix")
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasChatMixCapability
+                    description: qsTr("ChatMix value of the connected headset")
+                    additionalControl: Label {
+                        text:  HeadsetControlBridge.chatMix
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Show battery status in panel footer")

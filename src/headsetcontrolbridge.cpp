@@ -55,6 +55,8 @@ void HeadsetControlBridge::connectToMonitor()
                 this, &HeadsetControlBridge::onMonitorBatteryStatusChanged);
         connect(monitor, &HeadsetControlMonitor::batteryLevelChanged,
                 this, &HeadsetControlBridge::onMonitorBatteryLevelChanged);
+        connect(monitor, &HeadsetControlMonitor::chatMixChanged,
+            this, &HeadsetControlBridge::onMonitorChatMixChanged);
         connect(monitor, &HeadsetControlMonitor::anyDeviceFoundChanged,
                 this, &HeadsetControlBridge::onMonitorAnyDeviceFoundChanged);
         connect(monitor, &HeadsetControlMonitor::testModeEnabledChanged,
@@ -75,6 +77,7 @@ void HeadsetControlBridge::connectToMonitor()
         emit deviceNameChanged();
         emit batteryStatusChanged();
         emit batteryLevelChanged();
+        emit chatMixChanged();
         emit anyDeviceFoundChanged();
         emit testModeEnabledChanged();
         emit testProfileChanged();
@@ -135,6 +138,12 @@ bool HeadsetControlBridge::hasLightsCapability() const
     return monitor ? monitor->hasLightsCapability() : false;
 }
 
+bool HeadsetControlBridge::hasChatMixCapability() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->hasChatMixCapability() : false;
+}
+
 QString HeadsetControlBridge::deviceName() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -151,6 +160,12 @@ int HeadsetControlBridge::batteryLevel() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
     return monitor ? monitor->batteryLevel() : -1;
+}
+
+int HeadsetControlBridge::chatMix() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->chatMix() : -1;
 }
 
 bool HeadsetControlBridge::anyDeviceFound() const
@@ -200,6 +215,11 @@ void HeadsetControlBridge::onMonitorBatteryLevelChanged()
     }
 
     emit batteryLevelChanged();
+}
+
+void HeadsetControlBridge::onMonitorChatMixChanged()
+{
+    emit chatMixChanged();
 }
 
 void HeadsetControlBridge::onMonitorAnyDeviceFoundChanged()

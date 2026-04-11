@@ -693,6 +693,14 @@ Puoi abilitarlo nella scheda Generale.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Visualizza stato batteria nel piè di pagina pannello</translation>
     </message>

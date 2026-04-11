@@ -693,6 +693,14 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
         <translation>Wählen Sie aus, welches Szenario für synthetische Headsets HeadsetControl simulieren soll.</translation>
     </message>
     <message>
+        <source>ChatMix</source>
+        <translation>ChatMix</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation>ChatMix-Wert des angeschlossenen Headsets</translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Batteriestatus in der Fußzeile des Fensters anzeigen</translation>
     </message>
