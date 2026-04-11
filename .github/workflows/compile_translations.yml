@@ -181,8 +181,23 @@ jobs:
           git commit -m "Update compiled translations [skip ci]"
           git push origin HEAD:${{ github.event.workflow_run.head_branch }}
 
+      - name: Commit compiled translations to current branch
+        if: github.event_name != 'workflow_run' && github.ref_name != 'main'
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add i18n i18n_compiled
+
+          if git diff --cached --quiet; then
+            echo "No compiled translation changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Update compiled translations [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
+
       - name: Create pull request for compiled translations
-        if: github.event_name != 'workflow_run'
+        if: github.event_name != 'workflow_run' && github.ref_name == 'main'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
