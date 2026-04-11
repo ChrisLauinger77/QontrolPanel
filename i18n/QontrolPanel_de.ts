@@ -694,11 +694,11 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix-Wert des angeschlossenen Headsets</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
