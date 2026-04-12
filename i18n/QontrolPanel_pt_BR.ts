@@ -5,55 +5,55 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Atalhos de Volume por Aplicativo</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Atalhos de volume por aplicativo</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribuir atalhos globais para controlar o volume de aplicativos específicos</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Adicionar</translation>
+        <translation>Adicionar</translation>
     </message>
     <message>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Passo</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Remover</translation>
+        <translation>Remover</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Atalho de Volume</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicativo</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Atalho para Aumentar Volume</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>Clique para definir...</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Atalho para Diminuir Volume</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Incremento de Volume</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
 </context>
 <context>
@@ -1076,7 +1076,7 @@ You can enable it in the General tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Atalhos de App</translation>
     </message>
     <message>
         <source>Language</source>
