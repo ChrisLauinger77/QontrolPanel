@@ -5,7 +5,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project(QontrolPanel VERSION 1.12.0 LANGUAGES C CXX)
+project(QontrolPanel VERSION 1.12.1 LANGUAGES C CXX)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
 set(CMAKE_CXX_STANDARD 20)
