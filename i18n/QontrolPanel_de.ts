@@ -694,11 +694,11 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktueller Akkustand des angeschlossenen Headsets</translation>
     </message>
     <message>
         <source>(Charging)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Laden)</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -718,11 +718,11 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     </message>
     <message>
         <source>Headset Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Headset: Durch Drehen stummschalten</translation>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren Sie die Funktion „Durch Drehen stummschalten“ an Ihrem Headset</translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -1131,7 +1131,7 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
