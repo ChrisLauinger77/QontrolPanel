@@ -1,5 +1,5 @@
 import QtQuick.Controls.FluentWinUI3
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 Menu {
     id: powerMenu

@@ -652,7 +652,7 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>Slider wheel sensivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Empfindlichkeit des Schiebereglers</translation>
     </message>
     <message>
         <source>Normal</source>
@@ -700,12 +700,84 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
         <translation>Headset-Beleuchtung</translation>
     </message>
     <message>
+        <source>1 - Error conditions</source>
+        <translation>1 – Fehlerzustände</translation>
+    </message>
+    <message>
+        <source>2 - Charging battery</source>
+        <translation>2 – Akku aufladen</translation>
+    </message>
+    <message>
+        <source>3 - Basic battery</source>
+        <translation>3 – Standardbatterie</translation>
+    </message>
+    <message>
+        <source>4 - Battery unavailable</source>
+        <translation>4 – Akku nicht verfügbar</translation>
+    </message>
+    <message>
+        <source>5 - Timeout</source>
+        <translation>5 – Zeitüberschreitung</translation>
+    </message>
+    <message>
+        <source>6 - Full battery</source>
+        <translation>6 – Akku voll</translation>
+    </message>
+    <message>
+        <source>7 - Low battery</source>
+        <translation>7 – Batterie schwach</translation>
+    </message>
+    <message>
+        <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
+        <translation>Aktivieren Sie unten den Testmodus, um ein unterstütztes Headset zu simulieren und die Benutzeroberfläche von HeadsetControl zu überprüfen.</translation>
+    </message>
+    <message>
+        <source>HeadsetControl test mode</source>
+        <translation>Testmodus von HeadsetControl</translation>
+    </message>
+    <message>
+        <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
+        <translation>Simuliere ein unterstütztes Headset für Testzwecke. Diese Funktion bleibt aktiviert, bis die App geschlossen wird.</translation>
+    </message>
+    <message>
+        <source>Test headset profile</source>
+        <translation>Test-Headset-Profil</translation>
+    </message>
+    <message>
+        <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
+        <translation>Wählen Sie aus, welches Szenario für synthetische Headsets HeadsetControl simulieren soll.</translation>
+    </message>
+    <message>
+        <source>Current battery level of the connected headset</source>
+        <translation>Aktueller Akkustand des angeschlossenen Headsets</translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation>(Laden)</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation>ChatMix</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation>ChatMix-Wert des angeschlossenen Headsets</translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Batteriestatus in der Fußzeile des Fensters anzeigen</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>RGB-Beleuchtung an Ihrem Headset ein- und ausschalten</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation>Headset: Durch Drehen stummschalten</translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation>Aktivieren Sie die Funktion „Durch Drehen stummschalten“ an Ihrem Headset</translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -726,10 +798,6 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     <message>
         <source>Device battery</source>
         <translation>Gerätebatterie</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>Laden</translation>
     </message>
 </context>
 <context>
@@ -1119,6 +1187,10 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     <message>
         <source>Exit</source>
         <translation>Beenden</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

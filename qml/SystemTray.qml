@@ -1,6 +1,6 @@
 import QtQuick
 import Qt.labs.platform as Platform
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 Platform.SystemTrayIcon {
     id: systemTray
@@ -69,13 +69,16 @@ Platform.SystemTrayIcon {
             return baseTooltip;
         }
 
-        var batteryText = "\n\n";
+        var batteryText = "\n" + "🎧" + HeadsetControlBridge.deviceName + "\n";
 
         if (HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING") {
             batteryText += "⚡︎"
-        } else {
-            batteryText += "🔋";
+        }
+
+        batteryText += "🔋";
             batteryText += HeadsetControlBridge.batteryLevel + "%";
+        if (HeadsetControlBridge.hasChatMixCapability) {
+            batteryText += " " + "🎤" + qsTr("ChatMix") + ": " + HeadsetControlBridge.chatMix;
         }
 
         return baseTooltip + batteryText;

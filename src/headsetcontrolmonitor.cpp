@@ -9,11 +9,16 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_fetchIntervalMs(30000)
     , m_hasSidetoneCapability(false)
     , m_hasLightsCapability(false)
+    , m_hasRotateToMuteCapability(false)
+    , m_hasChatMixCapability(false)
     , m_deviceName("")
     , m_batteryStatus("BATTERY_UNAVAILABLE")
     , m_batteryLevel(-1)
+    , m_chatMix(-1)
     , m_anyDeviceFound(false)
     , m_isFetching(false)
+    , m_testModeEnabled(false)
+    , m_testProfile(3)
 {
     LOG_INFO("HeadsetControlManager",
                                     QString("HeadsetControlMonitor initialized - Library version: %1")
@@ -44,6 +49,7 @@ void HeadsetControlMonitor::startMonitoring()
                                     QString("Starting headset monitoring (fetch interval: %1ms)").arg(m_fetchIntervalMs));
 
     m_isMonitoring = true;
+    applyTestDeviceConfiguration();
     m_fetchTimer->start();
     fetchHeadsetInfo();
 
@@ -66,9 +72,12 @@ void HeadsetControlMonitor::stopMonitoring()
     m_headsets.clear();
     m_hasSidetoneCapability = false;
     m_hasLightsCapability = false;
+    m_hasRotateToMuteCapability = false;
+    m_hasChatMixCapability = false;
     m_deviceName = "";
-    m_batteryStatus = "";
-    m_batteryLevel = 0;
+    m_batteryStatus = "BATTERY_UNAVAILABLE";
+    m_batteryLevel = -1;
+    m_chatMix = -1;
     bool wasDeviceFound = m_anyDeviceFound;
     m_anyDeviceFound = false;
 
@@ -76,6 +85,7 @@ void HeadsetControlMonitor::stopMonitoring()
     emit deviceNameChanged();
     emit batteryStatusChanged();
     emit batteryLevelChanged();
+    emit chatMixChanged();
     if (wasDeviceFound) {
         emit anyDeviceFoundChanged();
     }
@@ -121,6 +131,35 @@ void HeadsetControlMonitor::setLights(bool enabled)
     }
 }
 
+void HeadsetControlMonitor::setRotateToMute(bool enabled)
+{
+    if (!m_hasRotateToMuteCapability) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set rotate-to-mute - device does not support rotate-to-mute capability");
+        return;
+    }
+
+    if (m_headsets.empty()) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set rotate-to-mute - no device connected");
+        return;
+    }
+
+    LOG_INFO("HeadsetControlManager",
+                                    QString("Setting rotate-to-mute: %1").arg(enabled ? "ON" : "OFF"));
+
+    headsetcontrol::Headset& headset = m_headsets[0];
+    headsetcontrol::Result<headsetcontrol::RotateToMuteResult> result = headset.setRotateToMute(enabled);
+
+    if (!result) {
+        LOG_CRITICAL("HeadsetControlManager",
+                                             QString("Failed to set rotate-to-mute: %1").arg(QString::fromStdString(result.error().fullMessage())));
+    } else {
+        LOG_INFO("HeadsetControlManager",
+                                        "Rotate-to-mute set successfully");
+    }
+}
+
 void HeadsetControlMonitor::setSidetone(int value)
 {
     if (!m_hasSidetoneCapability) {
@@ -161,6 +200,8 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
     m_isFetching = true;
 
     try {
+        applyTestDeviceConfiguration();
+
         // Discover headsets
         m_headsets = headsetcontrol::discover();
 
@@ -171,9 +212,12 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             m_cachedDevices.clear();
             m_hasSidetoneCapability = false;
             m_hasLightsCapability = false;
+            m_hasRotateToMuteCapability = false;
+            m_hasChatMixCapability = false;
             m_deviceName = "";
-            m_batteryStatus = "";
-            m_batteryLevel = 0;
+            m_batteryStatus = "BATTERY_UNAVAILABLE";
+            m_batteryLevel = -1;
+            m_chatMix = -1;
             bool wasDeviceFound = m_anyDeviceFound;
             m_anyDeviceFound = false;
 
@@ -181,10 +225,12 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             emit deviceNameChanged();
             emit batteryStatusChanged();
             emit batteryLevelChanged();
+            emit chatMixChanged();
             if (wasDeviceFound) {
                 emit anyDeviceFoundChanged();
             }
             emit headsetDataUpdated(m_cachedDevices);
+            m_isFetching = false;
             return;
         }
 
@@ -240,6 +286,24 @@ void HeadsetControlMonitor::updateDeviceCache()
             device.batteryLevel = -1;
         }
 
+        if (headset.supports(CAP_CHATMIX_STATUS)) {
+            headsetcontrol::Result<headsetcontrol::ChatmixResult> chatMixResult = headset.getChatmix();
+            if (chatMixResult) {
+                device.chatMix = chatMixResult->level;
+
+                LOG_INFO("HeadsetControlManager",
+                                                QString("Device %1: ChatMix %2")
+                                                    .arg(device.deviceName).arg(device.chatMix));
+            } else {
+                device.chatMix = -1;
+                LOG_WARN("HeadsetControlManager",
+                                                 QString("Failed to read ChatMix: %1")
+                                                     .arg(QString::fromStdString(chatMixResult.error().fullMessage())));
+            }
+        } else {
+            device.chatMix = -1;
+        }
+
         LOG_INFO("HeadsetControlManager",
                                         QString("Found headset device: %1 with %2 capabilities")
                                             .arg(device.deviceName).arg(device.capabilities.size()));
@@ -261,6 +325,10 @@ void HeadsetControlMonitor::updateDeviceCache()
             m_batteryLevel = primaryDevice.batteryLevel;
             emit batteryLevelChanged();
         }
+        if (primaryDevice.chatMix != m_chatMix) {
+            m_chatMix = primaryDevice.chatMix;
+            emit chatMixChanged();
+        }
     }
 
     emit headsetDataUpdated(m_cachedDevices);
@@ -270,6 +338,8 @@ void HeadsetControlMonitor::updateCapabilities()
 {
     bool newSidetoneCapability = false;
     bool newLightsCapability = false;
+    bool newRotateToMuteCapability = false;
+    bool newChatMixCapability = false;
     QString newDeviceName = "";
     bool newAnyDeviceFound = !m_cachedDevices.isEmpty();
     bool wasDeviceFound = m_anyDeviceFound;
@@ -280,16 +350,22 @@ void HeadsetControlMonitor::updateCapabilities()
 
         newSidetoneCapability = headset.supports(CAP_SIDETONE);
         newLightsCapability = headset.supports(CAP_LIGHTS);
+        newRotateToMuteCapability = headset.supports(CAP_ROTATE_TO_MUTE);
+        newChatMixCapability = headset.supports(CAP_CHATMIX_STATUS);
 
         LOG_INFO("HeadsetControlManager",
-                                        QString("Device capabilities - Sidetone: %1, Lights: %2")
-                                            .arg(newSidetoneCapability ? "YES" : "NO", newLightsCapability ? "YES" : "NO"));
+                                        QString("Device capabilities: %1")
+                                            .arg(getCapabilityList(headset).join(", ")));
     }
 
     if (newSidetoneCapability != m_hasSidetoneCapability ||
-        newLightsCapability != m_hasLightsCapability) {
+        newLightsCapability != m_hasLightsCapability ||
+        newRotateToMuteCapability != m_hasRotateToMuteCapability ||
+        newChatMixCapability != m_hasChatMixCapability) {
         m_hasSidetoneCapability = newSidetoneCapability;
         m_hasLightsCapability = newLightsCapability;
+        m_hasRotateToMuteCapability = newRotateToMuteCapability;
+        m_hasChatMixCapability = newChatMixCapability;
         emit capabilitiesChanged();
     }
 
@@ -311,6 +387,12 @@ void HeadsetControlMonitor::updateCapabilities()
                 LOG_INFO("HeadsetControlManager",
                                                 QString("Applying saved lights setting: %1").arg(lightsEnabled ? "ON" : "OFF"));
                 setLights(lightsEnabled);
+            }
+            if (newRotateToMuteCapability) {
+                bool rotateToMuteEnabled = UserSettings::instance()->headsetcontrolRotateToMute();
+                LOG_INFO("HeadsetControlManager",
+                                                QString("Applying saved rotate-to-mute setting: %1").arg(rotateToMuteEnabled ? "ON" : "OFF"));
+                setRotateToMute(rotateToMuteEnabled);
             }
             if (newSidetoneCapability) {
                 int sidetoneValue = UserSettings::instance()->headsetcontrolSidetone();
@@ -362,4 +444,43 @@ void HeadsetControlMonitor::setFetchInterval(int intervalMs)
 
     LOG_INFO("HeadsetControlManager",
                                     QString("Fetch interval updated to %1ms").arg(m_fetchIntervalMs));
+}
+
+void HeadsetControlMonitor::setTestModeEnabled(bool enabled)
+{
+    if (m_testModeEnabled == enabled) {
+        return;
+    }
+
+    m_testModeEnabled = enabled;
+    applyTestDeviceConfiguration();
+    emit testModeEnabledChanged();
+
+    if (m_isMonitoring) {
+        fetchHeadsetInfo();
+    }
+}
+
+void HeadsetControlMonitor::setTestProfile(int profile)
+{
+    int sanitizedProfile = qBound(1, profile, 7);
+    if (m_testProfile == sanitizedProfile) {
+        return;
+    }
+
+    m_testProfile = sanitizedProfile;
+    applyTestDeviceConfiguration();
+    emit testProfileChanged();
+
+    if (m_testModeEnabled && m_isMonitoring) {
+        fetchHeadsetInfo();
+    }
+}
+
+void HeadsetControlMonitor::applyTestDeviceConfiguration()
+{
+    headsetcontrol::enableTestDevice(m_testModeEnabled);
+    if (m_testModeEnabled) {
+        headsetcontrol::setTestProfile(m_testProfile);
+    }
 }

@@ -5,7 +5,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project(QontrolPanel VERSION 1.11.2 LANGUAGES C CXX)
+project(QontrolPanel VERSION 1.12.1 LANGUAGES C CXX)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
 set(CMAKE_CXX_STANDARD 20)
@@ -28,6 +28,19 @@ find_package(Qt6 REQUIRED COMPONENTS
 find_package(hidapi CONFIG REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.9)
+
+set(HEADSETCONTROL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/headsetcontrol")
+if(NOT EXISTS "${HEADSETCONTROL_SOURCE_DIR}/CMakeLists.txt")
+    message(FATAL_ERROR "HeadsetControl submodule is missing. Run 'git submodule update --init --recursive'.")
+endif()
+
+add_subdirectory("${HEADSETCONTROL_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}/headsetcontrol" EXCLUDE_FROM_ALL)
+
+if(MSVC AND TARGET headsetcontrol_lib)
+    set_target_properties(headsetcontrol_lib PROPERTIES
+        MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>"
+    )
+endif()
 
 include(cmake/languages.cmake)
 
@@ -189,7 +202,7 @@ set_source_files_properties(${QML_SINGLETONS}
 )
 
 qt_add_qml_module(QontrolPanel
-    URI Odizinne.QontrolPanel
+    URI ChrisLauinger77.QontrolPanel
     VERSION 1.0
     QML_FILES ${QML_FILES} ${QML_SINGLETONS}
 )
@@ -197,7 +210,6 @@ qt_add_qml_module(QontrolPanel
 target_include_directories(QontrolPanel PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/headsetcontrol/include
 )
 
 target_link_libraries(QontrolPanel PRIVATE
@@ -207,7 +219,7 @@ target_link_libraries(QontrolPanel PRIVATE
     Qt::Quick
     Qt::Widgets
     Qt::Network
-    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/headsetcontrol/lib/headsetcontrol.lib
+    headsetcontrol_lib
     hidapi::hidapi
     Gdi32
     Winmm

@@ -1,6 +1,6 @@
 pragma Singleton
 import QtQuick
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 Item {
     id: logBridge

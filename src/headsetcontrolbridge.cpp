@@ -10,6 +10,10 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
     : QObject(parent)
 {
     m_instance = this;
+    connect(UserSettings::instance(), &UserSettings::headsetcontrolMonitoringChanged,
+            this, [this]() {
+                setMonitoringEnabled(UserSettings::instance()->headsetcontrolMonitoring());
+            });
     QTimer::singleShot(100, this, &HeadsetControlBridge::connectToMonitor);
 }
 
@@ -51,8 +55,14 @@ void HeadsetControlBridge::connectToMonitor()
                 this, &HeadsetControlBridge::onMonitorBatteryStatusChanged);
         connect(monitor, &HeadsetControlMonitor::batteryLevelChanged,
                 this, &HeadsetControlBridge::onMonitorBatteryLevelChanged);
+        connect(monitor, &HeadsetControlMonitor::chatMixChanged,
+            this, &HeadsetControlBridge::onMonitorChatMixChanged);
         connect(monitor, &HeadsetControlMonitor::anyDeviceFoundChanged,
                 this, &HeadsetControlBridge::onMonitorAnyDeviceFoundChanged);
+        connect(monitor, &HeadsetControlMonitor::testModeEnabledChanged,
+            this, &HeadsetControlBridge::onMonitorTestModeEnabledChanged);
+        connect(monitor, &HeadsetControlMonitor::testProfileChanged,
+            this, &HeadsetControlBridge::onMonitorTestProfileChanged);
 
         int fetchRateSeconds = UserSettings::instance()->headsetcontrolFetchRate();
         int fetchRateMs = fetchRateSeconds * 1000;
@@ -67,7 +77,10 @@ void HeadsetControlBridge::connectToMonitor()
         emit deviceNameChanged();
         emit batteryStatusChanged();
         emit batteryLevelChanged();
+        emit chatMixChanged();
         emit anyDeviceFoundChanged();
+        emit testModeEnabledChanged();
+        emit testProfileChanged();
     } else {
         QTimer::singleShot(200, this, &HeadsetControlBridge::connectToMonitor);
     }
@@ -104,6 +117,15 @@ void HeadsetControlBridge::setLights(bool enabled)
     }
 }
 
+void HeadsetControlBridge::setRotateToMute(bool enabled)
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    if (monitor) {
+        QMetaObject::invokeMethod(monitor, "setRotateToMute", Qt::QueuedConnection,
+                                  Q_ARG(bool, enabled));
+    }
+}
+
 void HeadsetControlBridge::setSidetone(int value)
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -125,6 +147,18 @@ bool HeadsetControlBridge::hasLightsCapability() const
     return monitor ? monitor->hasLightsCapability() : false;
 }
 
+bool HeadsetControlBridge::hasRotateToMuteCapability() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->hasRotateToMuteCapability() : false;
+}
+
+bool HeadsetControlBridge::hasChatMixCapability() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->hasChatMixCapability() : false;
+}
+
 QString HeadsetControlBridge::deviceName() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -143,10 +177,28 @@ int HeadsetControlBridge::batteryLevel() const
     return monitor ? monitor->batteryLevel() : -1;
 }
 
+int HeadsetControlBridge::chatMix() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->chatMix() : -1;
+}
+
 bool HeadsetControlBridge::anyDeviceFound() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
     return monitor ? monitor->anyDeviceFound() : false;
+}
+
+bool HeadsetControlBridge::testModeEnabled() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->testModeEnabled() : false;
+}
+
+int HeadsetControlBridge::testProfile() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->testProfile() : 1;
 }
 
 void HeadsetControlBridge::onMonitorCapabilitiesChanged()
@@ -180,9 +232,28 @@ void HeadsetControlBridge::onMonitorBatteryLevelChanged()
     emit batteryLevelChanged();
 }
 
+void HeadsetControlBridge::onMonitorChatMixChanged()
+{
+    emit chatMixChanged();
+}
+
 void HeadsetControlBridge::onMonitorAnyDeviceFoundChanged()
 {
+    if (!anyDeviceFound()) {
+        m_lowBatteryNotificationSent = false;
+    }
+
     emit anyDeviceFoundChanged();
+}
+
+void HeadsetControlBridge::onMonitorTestModeEnabledChanged()
+{
+    emit testModeEnabledChanged();
+}
+
+void HeadsetControlBridge::onMonitorTestProfileChanged()
+{
+    emit testProfileChanged();
 }
 
 void HeadsetControlBridge::setFetchRate(int seconds)
@@ -192,5 +263,23 @@ void HeadsetControlBridge::setFetchRate(int seconds)
         int intervalMs = seconds * 1000;
         QMetaObject::invokeMethod(monitor, "setFetchInterval", Qt::QueuedConnection,
                                   Q_ARG(int, intervalMs));
+    }
+}
+
+void HeadsetControlBridge::setTestModeEnabled(bool enabled)
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    if (monitor) {
+        QMetaObject::invokeMethod(monitor, "setTestModeEnabled", Qt::QueuedConnection,
+                                  Q_ARG(bool, enabled));
+    }
+}
+
+void HeadsetControlBridge::setTestProfile(int profile)
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    if (monitor) {
+        QMetaObject::invokeMethod(monitor, "setTestProfile", Qt::QueuedConnection,
+                                  Q_ARG(int, profile));
     }
 }

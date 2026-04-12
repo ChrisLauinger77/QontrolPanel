@@ -81,7 +81,7 @@ void Updater::checkForUpdates()
     // Clear previous release notes
     setReleaseNotes("");
 
-    QString urlString = "https://api.github.com/repos/Odizinne/QontrolPanel/releases/latest";
+    QString urlString = "https://api.github.com/repos/ChrisLauinger77/QontrolPanel/releases/latest";
     QUrl url{urlString};
     QNetworkRequest request{url};
     request.setHeader(QNetworkRequest::UserAgentHeader, "QontrolPanel-Updater");
@@ -310,7 +310,7 @@ void Updater::downloadLatestTranslations()
     m_failedTranslationDownloads = 0;
 
     QStringList languageCodes = getLanguageCodes();
-    QString baseUrl = "https://github.com/Odizinne/QontrolPanelTranslations/raw/refs/heads/main/QontrolPanel_%1.qm";
+    QString baseUrl = "https://raw.githubusercontent.com/ChrisLauinger77/QontrolPanel/main/i18n_compiled/QontrolPanel_%1.qm";
 
     m_totalTranslationDownloads = languageCodes.size();
     emit translationDownloadStarted();
@@ -381,22 +381,27 @@ void Updater::onTranslationFileDownloaded()
         QString downloadPath = getTranslationDownloadPath();
         QString fileName = QString("QontrolPanel_%1.qm").arg(languageCode);
         QString filePath = downloadPath + "/" + fileName;
+        QByteArray data = reply->readAll();
+        const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
 
         QDir().mkpath(downloadPath);
 
-        QFile file(filePath);
-        if (file.open(QIODevice::WriteOnly)) {
-            QByteArray data = reply->readAll();
-            if (!data.isEmpty()) {
+        if (data.isEmpty()) {
+            qWarning() << "Downloaded empty file for:" << languageCode;
+            m_failedTranslationDownloads++;
+        } else if (contentType.startsWith("text/html", Qt::CaseInsensitive)) {
+            qWarning() << "Received HTML instead of translation file for:" << languageCode
+                       << "Content-Type:" << contentType;
+            m_failedTranslationDownloads++;
+        } else {
+            QFile file(filePath);
+            if (file.open(QIODevice::WriteOnly)) {
                 file.write(data);
                 file.close();
             } else {
-                qWarning() << "Downloaded empty file for:" << languageCode;
+                qWarning() << "Failed to save translation file:" << filePath;
                 m_failedTranslationDownloads++;
             }
-        } else {
-            qWarning() << "Failed to save translation file:" << filePath;
-            m_failedTranslationDownloads++;
         }
     } else {
         qWarning() << "Failed to download translation for" << languageCode
@@ -475,7 +480,7 @@ void Updater::loadTranslationProgressData()
 
 void Updater::downloadTranslationProgressFile()
 {
-    QString githubUrl = "https://raw.githubusercontent.com/Odizinne/QontrolPanelTranslations/main/translation_progress.json";
+    QString githubUrl = "https://raw.githubusercontent.com/ChrisLauinger77/QontrolPanel/main/i18n_compiled/translation_progress.json";
     LOG_INFO("Updater",
              QString("Downloading translation progress file from: %1").arg(githubUrl));
 

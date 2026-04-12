@@ -1,7 +1,7 @@
 pragma Singleton
 import QtQuick
 import QtQuick.Controls.FluentWinUI3
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 Item {
     id: constants

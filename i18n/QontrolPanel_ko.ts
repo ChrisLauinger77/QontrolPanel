@@ -700,12 +700,84 @@ You can enable it in the General tab.</source>
         <translation>헤드셋 조명</translation>
     </message>
     <message>
+        <source>1 - Error conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 - Charging battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3 - Basic battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4 - Battery unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 - Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>6 - Full battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>7 - Low battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HeadsetControl test mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test headset profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">채팅 믹스</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>패널 하단에 배터리 상태 표시</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>헤드셋의 RGB 조명 전환</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -726,10 +798,6 @@ You can enable it in the General tab.</source>
     <message>
         <source>Device battery</source>
         <translation>장치 배터리</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>충전 중</translation>
     </message>
 </context>
 <context>
@@ -1119,6 +1187,10 @@ You can enable it in the General tab.</source>
     <message>
         <source>Exit</source>
         <translation>종료</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">채팅 믹스</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

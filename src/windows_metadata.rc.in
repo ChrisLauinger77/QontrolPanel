@@ -17,7 +17,7 @@ BEGIN
             VALUE "FileVersion", "@PROJECT_VERSION@"
             VALUE "ProductName", "@PROJECT_NAME@"
             VALUE "ProductVersion", "@PROJECT_VERSION@"
-            VALUE "LegalCopyright", "© 2025 Odizinne"
+            VALUE "LegalCopyright", "© 2025 ChrisLauinger77"
         END
     END
     BLOCK "VarFileInfo"

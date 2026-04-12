@@ -3,10 +3,19 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.FluentWinUI3
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 ColumnLayout {
     spacing: 3
+    readonly property var testProfiles: [
+        qsTr("1 - Error conditions"),
+        qsTr("2 - Charging battery"),
+        qsTr("3 - Basic battery"),
+        qsTr("4 - Battery unavailable"),
+        qsTr("5 - Timeout"),
+        qsTr("6 - Full battery"),
+        qsTr("7 - Low battery")
+    ]
 
     Label {
         text: HeadsetControlBridge.deviceName
@@ -37,10 +46,57 @@ ColumnLayout {
 
                 Card {
                     Layout.fillWidth: true
+                    visible: !HeadsetControlBridge.anyDeviceFound && UserSettings.headsetcontrolMonitoring && !HeadsetControlBridge.testModeEnabled
+                    title: qsTr("No compatible device found.")
+                    description: qsTr("Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.")
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    visible: UserSettings.headsetcontrolMonitoring && (!HeadsetControlBridge.anyDeviceFound || HeadsetControlBridge.testModeEnabled)
+                    title: qsTr("HeadsetControl test mode")
+                    description: qsTr("Simulate a supported headset for testing. This stays enabled until the app closes.")
+
+                    additionalControl: LabeledSwitch {
+                        checked: HeadsetControlBridge.testModeEnabled
+                        onClicked: HeadsetControlBridge.setTestModeEnabled(checked)
+                    }
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    visible: UserSettings.headsetcontrolMonitoring && (!HeadsetControlBridge.anyDeviceFound || HeadsetControlBridge.testModeEnabled)
+                    title: qsTr("Test headset profile")
+                    description: qsTr("Choose which synthetic headset scenario HeadsetControl should simulate.")
+                    enabled: HeadsetControlBridge.testModeEnabled
+
+                    additionalControl: CustomComboBox {
+                        Layout.preferredHeight: 35
+                        model: testProfiles
+                        currentIndex: Math.max(0, HeadsetControlBridge.testProfile - 1)
+                        enabled: HeadsetControlBridge.testModeEnabled
+                        onActivated: HeadsetControlBridge.setTestProfile(currentIndex + 1)
+                    }
+                }
+
+                Card {
+                    Layout.fillWidth: true
                     title: qsTr("Device battery")
                     visible: HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE" && HeadsetControlBridge.anyDeviceFound
+                    description: qsTr("Current battery level of the connected headset") +
+                                 (HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING" ? "\n" + "⚡︎" + qsTr("(Charging)") : "")
                     additionalControl: Label {
-                        text: HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING" ? qsTr("Charging") : HeadsetControlBridge.batteryLevel + "%"
+                        text: "🔋" + HeadsetControlBridge.batteryLevel + "%"
+                    }
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    title: qsTr("ChatMix")
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasChatMixCapability
+                    description: qsTr("ChatMix value of the connected headset")
+                    additionalControl: Label {
+                        text:  HeadsetControlBridge.chatMix
                     }
                 }
 
@@ -74,6 +130,22 @@ ColumnLayout {
 
                 Card {
                     visible: HeadsetControlBridge.anyDeviceFound
+                    enabled: HeadsetControlBridge.hasRotateToMuteCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Headset Rotate-to-Mute")
+                    description: qsTr("Toggle rotate-to-mute feature on your headset")
+
+                    additionalControl: LabeledSwitch {
+                        checked: UserSettings.headsetcontrolRotateToMute
+                        onClicked:{
+                            UserSettings.headsetcontrolRotateToMute = checked
+                            HeadsetControlBridge.setRotateToMute(checked)
+                        }
+                    }
+                }
+
+                Card {
+                    visible: HeadsetControlBridge.anyDeviceFound
                     enabled: HeadsetControlBridge.hasSidetoneCapability
                     Layout.fillWidth: true
                     title: qsTr("Microphone Sidetone")
@@ -94,6 +166,7 @@ ColumnLayout {
                         }
                     }
                 }
+
                 Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
@@ -112,8 +185,8 @@ ColumnLayout {
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")
                     additionalControl: SpinBox {
-                        from: 5
-                        to: 60
+                        from: 10
+                        to: 600
                         value: UserSettings.headsetcontrolFetchRate
                         editable: true
                         stepSize: 5
@@ -129,8 +202,8 @@ ColumnLayout {
         Label {
             anchors.centerIn: parent
             opacity: 0.5
-            text: UserSettings.headsetcontrolMonitoring ? qsTr("No compatible device found.") : qsTr("HeadsetControl monitoring is disabled\nYou can enable it in the General tab.")
-            visible: !HeadsetControlBridge.anyDeviceFound || !UserSettings.headsetcontrolMonitoring
+            text: qsTr("HeadsetControl monitoring is disabled\nYou can enable it in the General tab.")
+            visible: !UserSettings.headsetcontrolMonitoring
             horizontalAlignment: Text.AlignHCenter
         }
     }

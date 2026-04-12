@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     a.setQuitOnLastWindowClosed(false);
-    a.setOrganizationName("Odizinne");
+    a.setOrganizationName("ChrisLauinger77");
     a.setApplicationName("QontrolPanel");
     qRegisterMetaType<LogManager::LogType>("LogType");
     LOG_INFO("Core", "Starting application");

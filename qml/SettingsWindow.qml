@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick.Controls.FluentWinUI3
 import QtQuick.Layouts
 import QtQuick
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 ApplicationWindow {
     id: root

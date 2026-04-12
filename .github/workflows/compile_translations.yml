@@ -2,25 +2,95 @@ name: Update Compiled Translations
 on:
   push:
     paths:
-      - 'i18n/*.ts'
+      - "i18n/*.ts"
     branches:
       - main
+  workflow_run:
+    workflows:
+      - Build
+    types:
+      - completed
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 env:
-  QT_VERSION: '6.10.1'
+  QT_VERSION: "6.10.1"
+  COMPILED_TRANSLATIONS_DIR: "i18n_compiled"
 
 jobs:
   update-translations:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request')
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve PR workflow context
+        if: github.event_name == 'workflow_run'
+        id: pr_context
+        env:
+          PULL_REQUESTS_JSON: ${{ toJson(github.event.workflow_run.pull_requests) }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          CURRENT_REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          PR_CONTEXT=$(python3 <<'PY'
+          import json
+          import os
+
+          prs = json.loads(os.environ.get("PULL_REQUESTS_JSON") or "[]")
+          base_sha = ""
+          run_workflow = "false"
+
+          if prs:
+              base_sha = (((prs[0].get("base") or {}).get("sha")) or "")
+
+          if prs and os.environ.get("HEAD_REPO") == os.environ.get("CURRENT_REPO"):
+              run_workflow = "true"
+
+          print(f"{base_sha}\t{run_workflow}")
+          PY
+          )
+
+          BASE_SHA=$(printf '%s' "$PR_CONTEXT" | cut -f1)
+          RUN_WORKFLOW=$(printf '%s' "$PR_CONTEXT" | cut -f2)
+
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "run_workflow=$RUN_WORKFLOW" >> "$GITHUB_OUTPUT"
+
+          if [ "$RUN_WORKFLOW" != "true" ]; then
+            if [ -z "$BASE_SHA" ]; then
+              echo "No pull request metadata found for this workflow_run; skipping."
+            else
+              echo "Pull request comes from $HEAD_REPO; branch updates are only supported for PRs from $CURRENT_REPO."
+            fi
+            echo "has_translation_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ -z "$BASE_SHA" ] || [ -z "$HEAD_SHA" ]; then
+            echo "has_translation_changes=false" >> "$GITHUB_OUTPUT"
+            echo "Missing base or head SHA; skipping."
+            exit 0
+          fi
+
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -q '^i18n/.*\.ts$'; then
+            echo "has_translation_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_translation_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No translation source changes detected in the PR; skipping."
+          fi
+
       - name: Checkout code
-        uses: actions/checkout@v4
+        if: github.event_name != 'workflow_run' || steps.pr_context.outputs.run_workflow == 'true'
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || github.ref_name }}
 
       - name: Install Qt
+        if: github.event_name != 'workflow_run' || steps.pr_context.outputs.has_translation_changes == 'true'
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
@@ -28,15 +98,24 @@ jobs:
           cache: true
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        if: github.event_name != 'workflow_run' || steps.pr_context.outputs.has_translation_changes == 'true'
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Clean up obsolete translations
+        if: github.event_name != 'workflow_run' || steps.pr_context.outputs.has_translation_changes == 'true'
         run: |
           echo "Cleaning up obsolete translations from changed .ts files..."
-          # Get list of changed .ts files in this push
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep 'i18n/.*\.ts$' || true)
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            DIFF_BASE="${{ steps.pr_context.outputs.base_sha }}"
+            DIFF_HEAD="${{ github.event.workflow_run.head_sha }}"
+          else
+            DIFF_BASE="HEAD~1"
+            DIFF_HEAD="HEAD"
+          fi
+
+          CHANGED_FILES=$(git diff --name-only "$DIFF_BASE" "$DIFF_HEAD" | grep 'i18n/.*\.ts$' || true)
           if [ -z "$CHANGED_FILES" ]; then
             echo "No .ts files changed in this push"
           else
@@ -52,6 +131,7 @@ jobs:
           echo "$CHANGED_FILES" > /tmp/changed_ts_files.txt
 
       - name: Compile all translation files
+        if: github.event_name != 'workflow_run' || steps.pr_context.outputs.has_translation_changes == 'true'
         run: |
           echo "Compiling all .ts files to .qm files..."
           mkdir -p /tmp/qm_files
@@ -65,6 +145,7 @@ jobs:
           done
 
       - name: Generate translation progress JSON
+        if: github.event_name != 'workflow_run' || steps.pr_context.outputs.has_translation_changes == 'true'
         run: |
           echo "Generating translation progress data..."
           mkdir -p /tmp/qm_files
@@ -72,35 +153,68 @@ jobs:
           # Move the generated JSON to the temp directory
           mv i18n/compiled/translation_progress.json /tmp/qm_files/ 2>/dev/null || true
 
-      - name: Push compiled files to translations repository
-        env:
-          TRANSLATIONS_TOKEN: ${{ secrets.TRANSLATIONS_TOKEN }}
+      - name: Prepare compiled files
+        if: github.event_name != 'workflow_run' || steps.pr_context.outputs.has_translation_changes == 'true'
         run: |
-          # Clone the translations repository
-          git clone https://x-access-token:${TRANSLATIONS_TOKEN}@github.com/Odizinne/QontrolPanelTranslations.git /tmp/translations
+          OUTPUT_DIR="$GITHUB_WORKSPACE/${{ env.COMPILED_TRANSLATIONS_DIR }}"
+          mkdir -p "$OUTPUT_DIR"
 
-          # Copy all compiled QM files and progress JSON
-          cp /tmp/qm_files/*.qm /tmp/translations/
-          cp /tmp/qm_files/translation_progress.json /tmp/translations/
-
-          # Commit and push to translations repo
-          cd /tmp/translations
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add *.qm translation_progress.json
-          if ! git diff --staged --quiet; then
-            git commit -m "Auto-update compiled translations and progress data"
-            git push
-          else
-            echo "No changes to commit"
+          # Replace previously generated artifacts so removed translations do not leave stale files behind.
+          find "$OUTPUT_DIR" -maxdepth 1 -type f \( -name '*.qm' -o -name 'translation_progress.json' \) -delete
+          cp /tmp/qm_files/*.qm "$OUTPUT_DIR/"
+          if [ -f /tmp/qm_files/translation_progress.json ]; then
+            cp /tmp/qm_files/translation_progress.json "$OUTPUT_DIR/"
           fi
 
-          # Commit cleaned source .ts files back to main repo
-          cd $GITHUB_WORKSPACE
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add i18n/*.ts
-          if ! git diff --staged --quiet; then
-            git commit -m "Clean obsolete translations [skip ci]"
-            git push
+      - name: Commit compiled translations to PR branch
+        if: github.event_name == 'workflow_run' && steps.pr_context.outputs.has_translation_changes == 'true'
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add i18n i18n_compiled
+
+          if git diff --cached --quiet; then
+            echo "No compiled translation changes to commit"
+            exit 0
           fi
+
+          git commit -m "Update compiled translations [skip ci]"
+          git push origin HEAD:${{ github.event.workflow_run.head_branch }}
+
+      - name: Commit compiled translations to current branch
+        if: github.event_name != 'workflow_run' && github.ref_name != 'main'
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add i18n i18n_compiled
+
+          if git diff --cached --quiet; then
+            echo "No compiled translation changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Update compiled translations [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Create pull request for compiled translations
+        if: github.event_name != 'workflow_run' && github.ref_name == 'main'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update compiled translations [skip ci]"
+          committer: GitHub Action <action@github.com>
+          author: GitHub Action <action@github.com>
+          branch: automation/update-compiled-translations
+          base: main
+          delete-branch: true
+          title: "Update compiled translations"
+          body: |
+            Automated update for compiled translation artifacts.
+
+            This PR was created by the translation compilation workflow and includes:
+            - refreshed compiled `.qm` files in `${{ env.COMPILED_TRANSLATIONS_DIR }}`
+            - refreshed `translation_progress.json`
+            - cleaned obsolete entries from changed translation source files
+          add-paths: |
+            i18n
+            i18n_compiled

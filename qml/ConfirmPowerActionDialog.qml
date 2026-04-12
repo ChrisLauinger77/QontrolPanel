@@ -1,11 +1,14 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.FluentWinUI3
-import Odizinne.QontrolPanel
+import ChrisLauinger77.QontrolPanel
 
 Dialog {
     id: dialog
     closePolicy: Popup.NoAutoClose
+    property int minimumDialogWidth: 320
+    property int maximumDialogWidth: Math.min(520, parent ? parent.width - 32 : 520)
+    property int contentHorizontalPadding: 48
     title: {
         switch (action) {
         case 0:
@@ -22,8 +25,12 @@ Dialog {
             return qsTr("Action")
         }
     }
-    width: 300
+    width: Math.max(minimumDialogWidth,
+                    Math.min(maximumDialogWidth,
+                             Math.max(messageLabel.implicitWidth + contentHorizontalPadding,
+                                      actionButtons.implicitWidth + contentHorizontalPadding)))
     signal requestClose()
+    property int countdownSeconds: 30
     property string text: {
         switch (action) {
         case 0:
@@ -57,7 +64,7 @@ Dialog {
     }
     Timer {
         id: countdownTimer
-        property int remaining: 30000
+        property int remaining: dialog.countdownSeconds
         interval: 1000
         repeat: true
         running: dialog.visible
@@ -71,7 +78,7 @@ Dialog {
         }
         onRunningChanged: {
             if (running) {
-                remaining = 30000
+                remaining = dialog.countdownSeconds
             }
         }
     }
@@ -80,12 +87,16 @@ Dialog {
         anchors.fill: parent
         spacing: 10
         Label {
+            id: messageLabel
             text: dialog.text
+            wrapMode: Text.WordWrap
+            Layout.fillWidth: true
+            Layout.preferredWidth: dialog.width - dialog.contentHorizontalPadding
         }
 
         ProgressBar {
             from: 0
-            to: 30000
+            to: dialog.countdownSeconds
             value: countdownTimer.remaining
             Layout.fillWidth: true
 
@@ -120,6 +131,7 @@ Dialog {
         }
     }
     footer: DialogButtonBox {
+        id: actionButtons
         spacing: 10
         Button {
             text: qsTr("Cancel")

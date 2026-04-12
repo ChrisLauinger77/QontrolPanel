@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag to publish (e.g., 1.10.4)'
+        description: "Release tag to publish (e.g., 1.10.4)"
         required: true
 jobs:
   publish:
@@ -14,7 +14,7 @@ jobs:
       - name: Publish to WinGet
         uses: vedantmgoyal9/winget-releaser@v2
         with:
-          identifier: Odizinne.QontrolPanel
+          identifier: ChrisLauinger77.QontrolPanel
           release-tag: ${{ inputs.release_tag || github.event.release.tag_name }}
           installers-regex: 'QontrolPanel_Installer\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}

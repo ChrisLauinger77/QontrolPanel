@@ -68,19 +68,19 @@
     </message>
     <message>
         <source>Top</source>
-        <translation>Alto</translation>
+        <translation>In alto</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Basso</translation>
+        <translation>In basso</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation>Sinistra</translation>
+        <translation>A sinistra</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation>Destra</translation>
+        <translation>A destra</translation>
     </message>
     <message>
         <source>Taskbar offset</source>
@@ -488,7 +488,7 @@
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation>Controllo aggiornamenti</translation>
+        <translation>Controlla aggiornamenti</translation>
     </message>
     <message>
         <source>Download and Install</source>
@@ -700,12 +700,84 @@ Puoi abilitarlo nella scheda Generale.</translation>
         <translation>Illuminazione auricolare</translation>
     </message>
     <message>
+        <source>1 - Error conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 - Charging battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3 - Basic battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4 - Battery unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 - Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>6 - Full battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>7 - Low battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HeadsetControl test mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test headset profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
+        <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Visualizza stato batteria nel piè di pagina pannello</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>Attiva luci RGB dell&apos;auricolare</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -726,10 +798,6 @@ Puoi abilitarlo nella scheda Generale.</translation>
     <message>
         <source>Device battery</source>
         <translation>Batteria dispositivo</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>In carica</translation>
     </message>
 </context>
 <context>
@@ -770,7 +838,7 @@ Puoi abilitarlo nella scheda Generale.</translation>
     </message>
     <message>
         <source>System</source>
-        <translation>Sistema operativo</translation>
+        <translation>Lingua sistema</translation>
     </message>
     <message>
         <source>Translation author</source>
@@ -786,7 +854,7 @@ Puoi abilitarlo nella scheda Generale.</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
-        <translation>Download file traduzione aggiornati da GitHub</translation>
+        <translation>Download da GitHub file aggiornati traduzioni</translation>
     </message>
     <message>
         <source>Download</source>
@@ -826,11 +894,11 @@ Puoi abilitarlo nella scheda Generale.</translation>
     </message>
     <message>
         <source>Unknown author</source>
-        <translation>RB</translation>
+        <translation>R.B.</translation>
     </message>
     <message>
         <source>Unknown date</source>
-        <translation>21.01.2026</translation>
+        <translation>14.02.2026</translation>
     </message>
 </context>
 <context>
@@ -1121,6 +1189,10 @@ Puoi abilitarlo nella scheda Generale.</translation>
         <translation>Esci da QuickSoundSwitcher</translation>
     </message>
     <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
         <source>Windows sound settings (Legacy)</source>
         <translation>Impostazioni audio Windows (legacy)</translation>
     </message>
@@ -1141,7 +1213,7 @@ Puoi abilitarlo nella scheda Generale.</translation>
     </message>
     <message>
         <source>You are using the latest version</source>
-        <translation>Questa versione è aggiornata</translation>
+        <translation>La versione del programma è aggiornata.&lt;br&gt;Non sono disdponibili aggiornamentiodel programma.</translation>
     </message>
     <message>
         <source>Update started.</source>
