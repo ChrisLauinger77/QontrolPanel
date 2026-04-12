@@ -9,6 +9,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_fetchIntervalMs(30000)
     , m_hasSidetoneCapability(false)
     , m_hasLightsCapability(false)
+    , m_hasRotateToMuteCapability(false)
     , m_hasChatMixCapability(false)
     , m_deviceName("")
     , m_batteryStatus("BATTERY_UNAVAILABLE")
@@ -71,6 +72,7 @@ void HeadsetControlMonitor::stopMonitoring()
     m_headsets.clear();
     m_hasSidetoneCapability = false;
     m_hasLightsCapability = false;
+    m_hasRotateToMuteCapability = false;
     m_hasChatMixCapability = false;
     m_deviceName = "";
     m_batteryStatus = "BATTERY_UNAVAILABLE";
@@ -129,6 +131,35 @@ void HeadsetControlMonitor::setLights(bool enabled)
     }
 }
 
+void HeadsetControlMonitor::setRotateToMute(bool enabled)
+{
+    if (!m_hasRotateToMuteCapability) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set rotate-to-mute - device does not support rotate-to-mute capability");
+        return;
+    }
+
+    if (m_headsets.empty()) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set rotate-to-mute - no device connected");
+        return;
+    }
+
+    LOG_INFO("HeadsetControlManager",
+                                    QString("Setting rotate-to-mute: %1").arg(enabled ? "ON" : "OFF"));
+
+    headsetcontrol::Headset& headset = m_headsets[0];
+    headsetcontrol::Result<headsetcontrol::RotateToMuteResult> result = headset.setRotateToMute(enabled);
+
+    if (!result) {
+        LOG_CRITICAL("HeadsetControlManager",
+                                             QString("Failed to set rotate-to-mute: %1").arg(QString::fromStdString(result.error().fullMessage())));
+    } else {
+        LOG_INFO("HeadsetControlManager",
+                                        "Rotate-to-mute set successfully");
+    }
+}
+
 void HeadsetControlMonitor::setSidetone(int value)
 {
     if (!m_hasSidetoneCapability) {
@@ -181,6 +212,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             m_cachedDevices.clear();
             m_hasSidetoneCapability = false;
             m_hasLightsCapability = false;
+            m_hasRotateToMuteCapability = false;
             m_hasChatMixCapability = false;
             m_deviceName = "";
             m_batteryStatus = "BATTERY_UNAVAILABLE";
@@ -306,6 +338,7 @@ void HeadsetControlMonitor::updateCapabilities()
 {
     bool newSidetoneCapability = false;
     bool newLightsCapability = false;
+    bool newRotateToMuteCapability = false;
     bool newChatMixCapability = false;
     QString newDeviceName = "";
     bool newAnyDeviceFound = !m_cachedDevices.isEmpty();
@@ -317,6 +350,7 @@ void HeadsetControlMonitor::updateCapabilities()
 
         newSidetoneCapability = headset.supports(CAP_SIDETONE);
         newLightsCapability = headset.supports(CAP_LIGHTS);
+        newRotateToMuteCapability = headset.supports(CAP_ROTATE_TO_MUTE);
         newChatMixCapability = headset.supports(CAP_CHATMIX_STATUS);
 
         LOG_INFO("HeadsetControlManager",
@@ -326,9 +360,11 @@ void HeadsetControlMonitor::updateCapabilities()
 
     if (newSidetoneCapability != m_hasSidetoneCapability ||
         newLightsCapability != m_hasLightsCapability ||
+        newRotateToMuteCapability != m_hasRotateToMuteCapability ||
         newChatMixCapability != m_hasChatMixCapability) {
         m_hasSidetoneCapability = newSidetoneCapability;
         m_hasLightsCapability = newLightsCapability;
+        m_hasRotateToMuteCapability = newRotateToMuteCapability;
         m_hasChatMixCapability = newChatMixCapability;
         emit capabilitiesChanged();
     }
@@ -351,6 +387,12 @@ void HeadsetControlMonitor::updateCapabilities()
                 LOG_INFO("HeadsetControlManager",
                                                 QString("Applying saved lights setting: %1").arg(lightsEnabled ? "ON" : "OFF"));
                 setLights(lightsEnabled);
+            }
+            if (newRotateToMuteCapability) {
+                bool rotateToMuteEnabled = UserSettings::instance()->headsetcontrolRotateToMute();
+                LOG_INFO("HeadsetControlManager",
+                                                QString("Applying saved rotate-to-mute setting: %1").arg(rotateToMuteEnabled ? "ON" : "OFF"));
+                setRotateToMute(rotateToMuteEnabled);
             }
             if (newSidetoneCapability) {
                 int sidetoneValue = UserSettings::instance()->headsetcontrolSidetone();

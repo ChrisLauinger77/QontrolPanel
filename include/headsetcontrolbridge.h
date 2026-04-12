@@ -13,6 +13,7 @@ class HeadsetControlBridge : public QObject
 
     Q_PROPERTY(bool hasSidetoneCapability READ hasSidetoneCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasLightsCapability READ hasLightsCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasRotateToMuteCapability READ hasRotateToMuteCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasChatMixCapability READ hasChatMixCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString deviceName READ deviceName NOTIFY deviceNameChanged)
     Q_PROPERTY(QString batteryStatus READ batteryStatus NOTIFY batteryStatusChanged)
@@ -31,6 +32,7 @@ public:
 
     Q_INVOKABLE void setMonitoringEnabled(bool enabled);
     Q_INVOKABLE void setLights(bool enabled);
+    Q_INVOKABLE void setRotateToMute(bool enabled);
     Q_INVOKABLE void setSidetone(int value);
     Q_INVOKABLE void setFetchRate(int seconds);
     Q_INVOKABLE void setTestModeEnabled(bool enabled);
@@ -38,6 +40,7 @@ public:
 
     bool hasSidetoneCapability() const;
     bool hasLightsCapability() const;
+    bool hasRotateToMuteCapability() const;
     bool hasChatMixCapability() const;
     QString deviceName() const;
     QString batteryStatus() const;

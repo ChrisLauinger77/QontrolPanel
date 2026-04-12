@@ -117,6 +117,15 @@ void HeadsetControlBridge::setLights(bool enabled)
     }
 }
 
+void HeadsetControlBridge::setRotateToMute(bool enabled)
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    if (monitor) {
+        QMetaObject::invokeMethod(monitor, "setRotateToMute", Qt::QueuedConnection,
+                                  Q_ARG(bool, enabled));
+    }
+}
+
 void HeadsetControlBridge::setSidetone(int value)
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -136,6 +145,12 @@ bool HeadsetControlBridge::hasLightsCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
     return monitor ? monitor->hasLightsCapability() : false;
+}
+
+bool HeadsetControlBridge::hasRotateToMuteCapability() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->hasRotateToMuteCapability() : false;
 }
 
 bool HeadsetControlBridge::hasChatMixCapability() const
