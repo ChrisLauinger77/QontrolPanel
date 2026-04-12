@@ -635,10 +635,6 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation>Bateria urządzenia</translation>
     </message>
     <message>
-        <source>Charging</source>
-        <translation>Ładowanie</translation>
-    </message>
-    <message>
         <source>Show battery status in panel footer</source>
         <translation>Pokaż stan baterii w stopce panelu</translation>
     </message>
@@ -719,11 +715,27 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation type="unfinished">ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1128,6 +1140,10 @@ Można ją włączyć w zakładce Ogólne.</translation>
     <message>
         <source>Exit</source>
         <translation>Wyjście</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
     </message>
 </context>
 <context>

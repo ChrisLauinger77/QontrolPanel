@@ -693,6 +693,14 @@ You can enable it in the General tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation type="unfinished">채팅 믹스</translation>
     </message>
@@ -707,6 +715,14 @@ You can enable it in the General tab.</source>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>헤드셋의 RGB 조명 전환</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -727,10 +743,6 @@ You can enable it in the General tab.</source>
     <message>
         <source>Device battery</source>
         <translation>장치 배터리</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>충전 중</translation>
     </message>
 </context>
 <context>
@@ -1116,6 +1128,10 @@ You can enable it in the General tab.</source>
     <message>
         <source>Exit</source>
         <translation>종료</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">채팅 믹스</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

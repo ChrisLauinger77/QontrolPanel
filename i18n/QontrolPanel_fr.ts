@@ -697,6 +697,14 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation type="unfinished">ChatMix</translation>
     </message>
@@ -707,6 +715,14 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     <message>
         <source>Headset Lighting</source>
         <translation>Éclairage du casque</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -730,10 +746,6 @@ Vous pouvez l&apos;activer dans l&apos;onglet Général.</translation>
     <message>
         <source>Device battery</source>
         <translation>Batterie du périphérique</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>Chargement</translation>
     </message>
 </context>
 <context>
@@ -1132,6 +1144,10 @@ Vous pouvez l&apos;activer dans l&apos;onglet Général.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>Paramètres de QontrolPanel</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
     </message>
 </context>
 <context>

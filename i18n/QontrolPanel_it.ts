@@ -693,6 +693,14 @@ Puoi abilitarlo nella scheda Generale.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation type="unfinished">ChatMix</translation>
     </message>
@@ -707,6 +715,14 @@ Puoi abilitarlo nella scheda Generale.</translation>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>Attiva luci RGB dell&apos;auricolare</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -727,10 +743,6 @@ Puoi abilitarlo nella scheda Generale.</translation>
     <message>
         <source>Device battery</source>
         <translation>Batteria dispositivo</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>In carica</translation>
     </message>
 </context>
 <context>
@@ -1116,6 +1128,10 @@ Puoi abilitarlo nella scheda Generale.</translation>
     <message>
         <source>Exit</source>
         <translation>Esci da QuickSoundSwitcher</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

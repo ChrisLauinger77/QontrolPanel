@@ -693,6 +693,14 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
         <translation>Wählen Sie aus, welches Szenario für synthetische Headsets HeadsetControl simulieren soll.</translation>
     </message>
     <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
     </message>
@@ -707,6 +715,14 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>RGB-Beleuchtung an Ihrem Headset ein- und ausschalten</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -727,10 +743,6 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     <message>
         <source>Device battery</source>
         <translation>Gerätebatterie</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>Laden</translation>
     </message>
 </context>
 <context>
@@ -1116,6 +1128,10 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     <message>
         <source>Exit</source>
         <translation>Beenden</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

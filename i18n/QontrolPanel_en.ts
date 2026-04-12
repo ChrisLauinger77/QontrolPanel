@@ -645,6 +645,14 @@ You can enable it in the General tab.</translation>
         <translation>Headset Lighting</translation>
     </message>
     <message>
+        <source>Current battery level of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Charging)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation type="unfinished">ChatMix</translation>
     </message>
@@ -659,6 +667,14 @@ You can enable it in the General tab.</translation>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>Toggle RGB lights on your headset</translation>
+    </message>
+    <message>
+        <source>Headset Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle rotate-to-mute feature on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Microphone Sidetone</source>
@@ -679,10 +695,6 @@ You can enable it in the General tab.</translation>
     <message>
         <source>Device battery</source>
         <translation>Device battery</translation>
-    </message>
-    <message>
-        <source>Charging</source>
-        <translation>Charging</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
@@ -1116,6 +1128,10 @@ You can enable it in the General tab.</translation>
     <message>
         <source>Exit</source>
         <translation>Exit</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
