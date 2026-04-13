@@ -2,6 +2,61 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>AppHotkeysPane</name>
+    <message>
+        <source>App Volume Hotkeys</source>
+        <translation>Tastenkombinationen für die Lautstärke von Apps</translation>
+    </message>
+    <message>
+        <source>Per-application volume shortcuts</source>
+        <translation>Volumen-Shortcuts pro Anwendung</translation>
+    </message>
+    <message>
+        <source>Assign global hotkeys to control volume of specific applications</source>
+        <translation>Weisen Sie globale Tastenkombinationen zu, um die Lautstärke bestimmter Anwendungen zu regeln</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Hinzufügen</translation>
+    </message>
+    <message>
+        <source>Step</source>
+        <translation>Schritt</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Entfernen</translation>
+    </message>
+    <message>
+        <source>Add App Volume Hotkey</source>
+        <translation>Tastenkombination für App-Lautstärke hinzufügen</translation>
+    </message>
+    <message>
+        <source>Application</source>
+        <translation>Anwendung</translation>
+    </message>
+    <message>
+        <source>Volume Up Shortcut</source>
+        <translation>Tastenkombination zum Erhöhen der Lautstärke</translation>
+    </message>
+    <message>
+        <source>Click to set...</source>
+        <translation>Zum Einstellen hier klicken...</translation>
+    </message>
+    <message>
+        <source>Volume Down Shortcut</source>
+        <translation>Tastenkombination zum Verringern der Lautstärke</translation>
+    </message>
+    <message>
+        <source>Volume Step Size</source>
+        <translation>Schrittweite der Lautstärke</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+</context>
+<context>
     <name>AppearancePane</name>
     <message>
         <source>Appearance &amp; Position</source>
@@ -1018,6 +1073,10 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     <message>
         <source>Shortcuts</source>
         <translation>Tastenkombinationen</translation>
+    </message>
+    <message>
+        <source>App Hotkeys</source>
+        <translation>App-Tastenkombinationen</translation>
     </message>
     <message>
         <source>Language</source>
