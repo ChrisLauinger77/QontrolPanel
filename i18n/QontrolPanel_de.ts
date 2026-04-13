@@ -651,6 +651,18 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>QSS wird beim Start Ihres Computers gestartet</translation>
     </message>
     <message>
+        <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
+        <translation>Zeige einen Bestätigungsdialog an, wenn eine Energieaktion aus dem Taskleistenmenü ausgewählt wird</translation>
+    </message>
+    <message>
+        <source>Power action confirmation timeout (seconds)</source>
+        <translation>Zeitlimit für die Bestätigung der Stromversorgung (Sekunden)</translation>
+    </message>
+    <message>
+        <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
+        <translation>Zeit, bevor der Bestätigungsdialog für die Energieaktion die ausgewählte Aktion automatisch auslöst</translation>
+    </message>
+    <message>
         <source>Slider wheel sensivity</source>
         <translation>Empfindlichkeit des Schiebereglers</translation>
     </message>

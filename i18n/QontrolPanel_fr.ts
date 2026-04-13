@@ -669,6 +669,18 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Lancer au démarrage</translation>
     </message>
     <message>
+        <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power action confirmation timeout (seconds)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Slider wheel sensivity</source>
         <translation type="unfinished"></translation>
     </message>

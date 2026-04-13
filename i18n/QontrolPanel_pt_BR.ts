@@ -652,6 +652,18 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
         <translation>QSS será iniciado quando o computador for ligado</translation>
     </message>
     <message>
+        <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power action confirmation timeout (seconds)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Slider wheel sensivity</source>
         <translation>Sensibilidade da roda do mouse no controle deslizante</translation>
     </message>

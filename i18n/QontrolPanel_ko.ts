@@ -651,6 +651,18 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>컴퓨터가 시작되면 QSS가 부팅됩니다</translation>
     </message>
     <message>
+        <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power action confirmation timeout (seconds)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Slider wheel sensivity</source>
         <translation>슬라이더 휠 감도</translation>
     </message>

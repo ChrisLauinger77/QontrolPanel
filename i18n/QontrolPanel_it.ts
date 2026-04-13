@@ -651,6 +651,18 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
         <translation>QSS verrà eseguito ad avvio del sistema</translation>
     </message>
     <message>
+        <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power action confirmation timeout (seconds)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Slider wheel sensivity</source>
         <translation>Sensibilità rotella scorrimento</translation>
     </message>

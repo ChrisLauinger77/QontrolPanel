@@ -650,6 +650,18 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>QSS запустится при включении компьютера</translation>
     </message>
     <message>
+        <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power action confirmation timeout (seconds)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Slider wheel sensivity</source>
         <translation type="unfinished"></translation>
     </message>

@@ -655,6 +655,18 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation>Pokaż potwierdzenie akcji zasilania</translation>
     </message>
     <message>
+        <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power action confirmation timeout (seconds)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Slider wheel sensivity</source>
         <translation type="unfinished"></translation>
     </message>
