@@ -213,7 +213,7 @@ ColumnLayout {
         Label {
             anchors.centerIn: parent
             opacity: 0.5
-            text: qsTr("HeadsetControl monitoring is disabled\nYou can enable it in the General tab.")
+            text: qsTr("HeadsetControl monitoring is disabled\nYou can enable it in the Components tab.")
             visible: !UserSettings.headsetcontrolMonitoring
             horizontalAlignment: Text.AlignHCenter
         }
