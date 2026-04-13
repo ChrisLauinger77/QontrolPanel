@@ -2,6 +2,61 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="pt_BR">
 <context>
+    <name>AppHotkeysPane</name>
+    <message>
+        <source>App Volume Hotkeys</source>
+        <translation>Atalhos de Volume por Aplicativo</translation>
+    </message>
+    <message>
+        <source>Per-application volume shortcuts</source>
+        <translation>Atalhos de volume por aplicativo</translation>
+    </message>
+    <message>
+        <source>Assign global hotkeys to control volume of specific applications</source>
+        <translation>Atribuir atalhos globais para controlar o volume de aplicativos específicos</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Adicionar</translation>
+    </message>
+    <message>
+        <source>Step</source>
+        <translation>Passo</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Remover</translation>
+    </message>
+    <message>
+        <source>Add App Volume Hotkey</source>
+        <translation>Adicionar Atalho de Volume</translation>
+    </message>
+    <message>
+        <source>Application</source>
+        <translation>Aplicativo</translation>
+    </message>
+    <message>
+        <source>Volume Up Shortcut</source>
+        <translation>Atalho para Aumentar Volume</translation>
+    </message>
+    <message>
+        <source>Click to set...</source>
+        <translation>Clique para definir...</translation>
+    </message>
+    <message>
+        <source>Volume Down Shortcut</source>
+        <translation>Atalho para Diminuir Volume</translation>
+    </message>
+    <message>
+        <source>Volume Step Size</source>
+        <translation>Incremento de Volume</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+</context>
+<context>
     <name>AppearancePane</name>
     <message>
         <source>Appearance &amp; Position</source>
@@ -1018,6 +1073,10 @@ You can enable it in the General tab.</source>
     <message>
         <source>Shortcuts</source>
         <translation>Atalhos</translation>
+    </message>
+    <message>
+        <source>App Hotkeys</source>
+        <translation>Atalhos de App</translation>
     </message>
     <message>
         <source>Language</source>
