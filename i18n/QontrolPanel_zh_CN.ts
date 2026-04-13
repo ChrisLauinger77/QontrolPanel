@@ -701,15 +701,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>没有发现兼容的设备</translation>
     </message>
     <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translation>耳机控制监听已禁用.你可以在通用设置中启用</translation>
-    </message>
-    <message>
-        <source>Headset Lighting</source>
-        <translation>耳机灯光</translation>
-    </message>
-    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -774,7 +765,24 @@ You can enable it in the General tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inactive time (minutes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -782,16 +790,8 @@ You can enable it in the General tab.</source>
         <translation>开关耳机上的 RGB 灯光</translation>
     </message>
     <message>
-        <source>Headset Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Microphone Sidetone</source>
-        <translation>麦克风返听</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -799,6 +799,22 @@ You can enable it in the General tab.</source>
     </message>
     <message>
         <source>Notification on low battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

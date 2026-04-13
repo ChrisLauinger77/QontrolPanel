@@ -708,10 +708,6 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Aucun périphérique compatible trouvé.</translation>
     </message>
     <message>
-        <source>Microphone Sidetone</source>
-        <translation>Effet local du microphone</translation>
-    </message>
-    <message>
         <source>Show battery status in panel footer</source>
         <translation>Voir l&apos;état de la batterie dans le pied de page du panneau</translation>
     </message>
@@ -780,11 +776,8 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Headset Lighting</source>
-        <translation>Éclairage du casque</translation>
-    </message>
-    <message>
-        <source>Headset Rotate-to-Mute</source>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -800,15 +793,36 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Notification quand batterie faible</translation>
     </message>
     <message>
-        <source>Fetch rate (seconds)</source>
-        <translation>Taux de récupération (secondes)</translation>
+        <source>Inactive time (minutes)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translatorcomment>ne pas traduire &quot;HeadsetControl&quot;</translatorcomment>
-        <translation>La surveillance HeadsetControl est désactivée
-Vous pouvez l&apos;activer dans l&apos;onglet Général.</translation>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch rate (seconds)</source>
+        <translation>Taux de récupération (secondes)</translation>
     </message>
     <message>
         <source>Device battery</source>

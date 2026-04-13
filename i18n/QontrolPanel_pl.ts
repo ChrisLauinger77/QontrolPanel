@@ -706,16 +706,8 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation>Pokaż stan baterii w stopce panelu</translation>
     </message>
     <message>
-        <source>Headset Lighting</source>
-        <translation>Oświetlenie zestawu słuchawkowego</translation>
-    </message>
-    <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>Włącznik światła RGB na zestawie słuchawkowym</translation>
-    </message>
-    <message>
-        <source>Microphone Sidetone</source>
-        <translation>Ton strony mikrofonu</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -724,6 +716,34 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
     <message>
         <source>Notification on low battery</source>
         <translation>Powiadomienie o niskim poziomie baterii</translation>
+    </message>
+    <message>
+        <source>Inactive time (minutes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -798,18 +818,13 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Headset Rotate-to-Mute</source>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translation>Monitorowanie HeadsetControl jest wyłączone
-Można ją włączyć w zakładce Ogólne.</translation>
     </message>
 </context>
 <context>

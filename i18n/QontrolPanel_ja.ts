@@ -702,15 +702,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>互換性のあるデバイスが見つかりません。</translation>
     </message>
     <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translation>ヘッドセット コントロールの監視は無効になっています。一般設定のタブで有効にできます。</translation>
-    </message>
-    <message>
-        <source>Headset Lighting</source>
-        <translation>ヘッドセットのライティング</translation>
-    </message>
-    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -775,24 +766,33 @@ You can enable it in the General tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>パネルのフッターにバッテリーの状態を表示します</translation>
+    </message>
+    <message>
+        <source>Inactive time (minutes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>ヘッドセットの RGB ライトを切り替えます</translation>
     </message>
     <message>
-        <source>Headset Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Microphone Sidetone</source>
-        <translation>マイクのサイドトーン</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -801,6 +801,22 @@ You can enable it in the General tab.</source>
     <message>
         <source>Notification on low battery</source>
         <translation>バッテリーの低残量を通知</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>

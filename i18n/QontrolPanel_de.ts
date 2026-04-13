@@ -702,16 +702,6 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>Kein kompatibles Gerät gefunden.</translation>
     </message>
     <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translation>Die HeadsetControl-Überwachung ist deaktiviert.
-Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
-    </message>
-    <message>
-        <source>Headset Lighting</source>
-        <translation>Headset-Beleuchtung</translation>
-    </message>
-    <message>
         <source>1 - Error conditions</source>
         <translation>1 – Fehlerzustände</translation>
     </message>
@@ -776,24 +766,34 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
         <translation>ChatMix-Wert des angeschlossenen Headsets</translation>
     </message>
     <message>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
+        <translation>Die HeadsetControl-Überwachung ist deaktiviert
+Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Batteriestatus in der Fußzeile des Fensters anzeigen</translation>
+    </message>
+    <message>
+        <source>Inactive time (minutes)</source>
+        <translation>Inaktivitätszeit (Minuten)</translation>
+    </message>
+    <message>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation>Legen Sie die Zeit der Inaktivität fest, nach der Ihr Headset in den Energiesparmodus wechselt</translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation>Beleuchtung</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>RGB-Beleuchtung an Ihrem Headset ein- und ausschalten</translation>
     </message>
     <message>
-        <source>Headset Rotate-to-Mute</source>
-        <translation>Headset: Durch Drehen stummschalten</translation>
-    </message>
-    <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
         <translation>Aktivieren Sie die Funktion „Durch Drehen stummschalten“ an Ihrem Headset</translation>
-    </message>
-    <message>
-        <source>Microphone Sidetone</source>
-        <translation>Mikrofon-Sidetone</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -802,6 +802,22 @@ Sie können sie auf der Registerkarte „Allgemein“ aktivieren.</translation>
     <message>
         <source>Notification on low battery</source>
         <translation>Benachrichtigung bei niedrigem Batteriestand</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation>Zum Stummschalten drehen</translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation>Mithörton</translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation>Sprachansagen</translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
+        <translation>Sprachansagen am Headset aktivieren</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>

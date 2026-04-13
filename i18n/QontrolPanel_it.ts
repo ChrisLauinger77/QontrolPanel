@@ -702,16 +702,6 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
         <translation>Nessun dispositivo compatibile trovato.</translation>
     </message>
     <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translation>Il monitoraggio del controllo cuffie è disabilitato
-Puoi abilitarlo nella scheda Generale.</translation>
-    </message>
-    <message>
-        <source>Headset Lighting</source>
-        <translation>Illuminazione auricolare</translation>
-    </message>
-    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -776,24 +766,33 @@ Puoi abilitarlo nella scheda Generale.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>Visualizza stato batteria nel piè di pagina pannello</translation>
+    </message>
+    <message>
+        <source>Inactive time (minutes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>Attiva luci RGB dell&apos;auricolare</translation>
     </message>
     <message>
-        <source>Headset Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Microphone Sidetone</source>
-        <translation>Sidetone microfono</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -802,6 +801,22 @@ Puoi abilitarlo nella scheda Generale.</translation>
     <message>
         <source>Notification on low battery</source>
         <translation>Notifica batteria scarica</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>

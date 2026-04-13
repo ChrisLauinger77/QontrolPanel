@@ -702,16 +702,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>호환되는 장치를 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translation>헤드셋 제어 모니터링이 비활성화되었습니다
-일반 탭에서 활성화할 수 있습니다.</translation>
-    </message>
-    <message>
-        <source>Headset Lighting</source>
-        <translation>헤드셋 조명</translation>
-    </message>
-    <message>
         <source>1 - Error conditions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -776,24 +766,33 @@ You can enable it in the General tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show battery status in panel footer</source>
         <translation>패널 하단에 배터리 상태 표시</translation>
+    </message>
+    <message>
+        <source>Inactive time (minutes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>헤드셋의 RGB 조명 전환</translation>
     </message>
     <message>
-        <source>Headset Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Microphone Sidetone</source>
-        <translation>마이크 사이드톤</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -802,6 +801,22 @@ You can enable it in the General tab.</source>
     <message>
         <source>Notification on low battery</source>
         <translation>배터리 부족 알림</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>

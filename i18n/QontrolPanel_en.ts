@@ -702,16 +702,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>No compatible device found.</translation>
     </message>
     <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</source>
-        <translation>HeadsetControl monitoring is disabled
-You can enable it in the General tab.</translation>
-    </message>
-    <message>
-        <source>Headset Lighting</source>
-        <translation>Headset Lighting</translation>
-    </message>
-    <message>
         <source>Current battery level of the connected headset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -732,20 +722,24 @@ You can enable it in the General tab.</translation>
         <translation>Show battery status in panel footer</translation>
     </message>
     <message>
+        <source>Inactive time (minutes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Toggle RGB lights on your headset</source>
         <translation>Toggle RGB lights on your headset</translation>
     </message>
     <message>
-        <source>Headset Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Microphone Sidetone</source>
-        <translation>Microphone Sidetone</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -754,6 +748,22 @@ You can enable it in the General tab.</translation>
     <message>
         <source>Notification on low battery</source>
         <translation>Notification on low battery</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sidetone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle voice prompts on your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -810,6 +820,11 @@ You can enable it in the General tab.</translation>
     <message>
         <source>7 - Low battery</source>
         <translation>7 - Low battery</translation>
+    </message>
+    <message>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
