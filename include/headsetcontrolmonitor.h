@@ -37,6 +37,7 @@ public:
     bool hasLightsCapability() const { return m_hasLightsCapability; }
     bool hasRotateToMuteCapability() const { return m_hasRotateToMuteCapability; }
     bool hasChatMixCapability() const { return m_hasChatMixCapability; }
+    bool hasVoicePromptsCapability() const { return m_hasVoicePromptsCapability; }
     bool hasInactivetimeCapability() const { return m_hasInactivetimeCapability; }
     QString deviceName() const { return m_deviceName; }
     QString batteryStatus() const { return m_batteryStatus; }
@@ -51,6 +52,7 @@ public slots:
     void stopMonitoring();
     void setLights(bool enabled);
     void setRotateToMute(bool enabled);
+    void setVoicePrompts(bool enabled);
     void setSidetone(int value);
     void setInactiveTime(int value);
     void setFetchInterval(int intervalMs);
@@ -90,6 +92,7 @@ private:
     bool m_hasLightsCapability;
     bool m_hasRotateToMuteCapability;
     bool m_hasChatMixCapability;
+    bool m_hasVoicePromptsCapability;
     bool m_hasInactivetimeCapability;
     QString m_deviceName;
     QString m_batteryStatus;

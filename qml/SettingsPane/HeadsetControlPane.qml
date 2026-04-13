@@ -193,6 +193,22 @@ ColumnLayout {
 
                 Card {
                     visible: HeadsetControlBridge.anyDeviceFound
+                    enabled: HeadsetControlBridge.hasVoicePromptsCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Voice Prompts")
+                    description: qsTr("Toggle voice prompts on your headset")
+
+                    additionalControl: LabeledSwitch {
+                        checked: UserSettings.headsetcontrolVoicePrompts
+                        onClicked:{
+                            UserSettings.headsetcontrolVoicePrompts = checked
+                            HeadsetControlBridge.setVoicePrompts(checked)
+                        }
+                    }
+                }
+
+                Card {
+                    visible: HeadsetControlBridge.anyDeviceFound
                     enabled: HeadsetControlBridge.hasSidetoneCapability
                     Layout.fillWidth: true
                     title: qsTr("Sidetone")
