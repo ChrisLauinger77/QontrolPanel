@@ -127,7 +127,7 @@ ColumnLayout {
 
                 Card {
                     visible: HeadsetControlBridge.anyDeviceFound
-                    enabled: HeadsetControlBridge.hasInactivetimeCapability
+                    enabled: HeadsetControlBridge.hasInactiveTimeCapability
                     Layout.fillWidth: true
                     title: qsTr("Inactive time (minutes)")
                     description: qsTr("Set the time of inactivity after which your headset will enter power-saving mode")

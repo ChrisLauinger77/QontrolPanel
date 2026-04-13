@@ -38,7 +38,7 @@ public:
     bool hasRotateToMuteCapability() const { return m_hasRotateToMuteCapability; }
     bool hasChatMixCapability() const { return m_hasChatMixCapability; }
     bool hasVoicePromptsCapability() const { return m_hasVoicePromptsCapability; }
-    bool hasInactivetimeCapability() const { return m_hasInactivetimeCapability; }
+    bool hasInactiveTimeCapability() const { return m_hasInactiveTimeCapability; }
     QString deviceName() const { return m_deviceName; }
     QString batteryStatus() const { return m_batteryStatus; }
     int batteryLevel() const { return m_batteryLevel; }
@@ -93,7 +93,7 @@ private:
     bool m_hasRotateToMuteCapability;
     bool m_hasChatMixCapability;
     bool m_hasVoicePromptsCapability;
-    bool m_hasInactivetimeCapability;
+    bool m_hasInactiveTimeCapability;
     QString m_deviceName;
     QString m_batteryStatus;
     int m_batteryLevel;

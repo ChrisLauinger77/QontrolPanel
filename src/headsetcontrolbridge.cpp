@@ -183,10 +183,10 @@ bool HeadsetControlBridge::hasVoicePromptsCapability() const
     return monitor ? monitor->hasVoicePromptsCapability() : false;
 }
 
-bool HeadsetControlBridge::hasInactivetimeCapability() const
+bool HeadsetControlBridge::hasInactiveTimeCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasInactivetimeCapability() : false;
+    return monitor ? monitor->hasInactiveTimeCapability() : false;
 }
 
 QString HeadsetControlBridge::deviceName() const

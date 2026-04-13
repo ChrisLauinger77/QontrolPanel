@@ -12,7 +12,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_hasRotateToMuteCapability(false)
     , m_hasChatMixCapability(false)
     , m_hasVoicePromptsCapability(false)
-    , m_hasInactivetimeCapability(false)
+    , m_hasInactiveTimeCapability(false)
     , m_deviceName("")
     , m_batteryStatus("BATTERY_UNAVAILABLE")
     , m_batteryLevel(-1)
@@ -77,7 +77,7 @@ void HeadsetControlMonitor::stopMonitoring()
     m_hasRotateToMuteCapability = false;
     m_hasChatMixCapability = false;
     m_hasVoicePromptsCapability = false;
-    m_hasInactivetimeCapability = false;
+    m_hasInactiveTimeCapability = false;
     m_deviceName = "";
     m_batteryStatus = "BATTERY_UNAVAILABLE";
     m_batteryLevel = -1;
@@ -226,7 +226,7 @@ void HeadsetControlMonitor::setSidetone(int value)
 
 void HeadsetControlMonitor::setInactiveTime(int value)
 {
-    if (!m_hasInactivetimeCapability) {
+    if (!m_hasInactiveTimeCapability) {
         LOG_WARN("HeadsetControlManager",
                                          "Cannot set inactive time - device does not support inactive time capability");
         return;
@@ -279,7 +279,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             m_hasRotateToMuteCapability = false;
             m_hasChatMixCapability = false;
             m_hasVoicePromptsCapability = false;
-            m_hasInactivetimeCapability = false;
+            m_hasInactiveTimeCapability = false;
             m_deviceName = "";
             m_batteryStatus = "BATTERY_UNAVAILABLE";
             m_batteryLevel = -1;
@@ -433,13 +433,13 @@ void HeadsetControlMonitor::updateCapabilities()
         newRotateToMuteCapability != m_hasRotateToMuteCapability ||
         newChatMixCapability != m_hasChatMixCapability ||
         newVoicePromptsCapability != m_hasVoicePromptsCapability ||
-        newInactivetimeCapability != m_hasInactivetimeCapability) {
+        newInactivetimeCapability != m_hasInactiveTimeCapability) {
         m_hasSidetoneCapability = newSidetoneCapability;
         m_hasLightsCapability = newLightsCapability;
         m_hasRotateToMuteCapability = newRotateToMuteCapability;
         m_hasChatMixCapability = newChatMixCapability;
         m_hasVoicePromptsCapability = newVoicePromptsCapability;
-        m_hasInactivetimeCapability = newInactivetimeCapability;
+        m_hasInactiveTimeCapability = newInactivetimeCapability;
         emit capabilitiesChanged();
     }
 

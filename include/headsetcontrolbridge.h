@@ -16,7 +16,7 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(bool hasRotateToMuteCapability READ hasRotateToMuteCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasChatMixCapability READ hasChatMixCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasVoicePromptsCapability READ hasVoicePromptsCapability NOTIFY capabilitiesChanged)
-    Q_PROPERTY(bool hasInactivetimeCapability READ hasInactivetimeCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasInactiveTimeCapability READ hasInactiveTimeCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString deviceName READ deviceName NOTIFY deviceNameChanged)
     Q_PROPERTY(QString batteryStatus READ batteryStatus NOTIFY batteryStatusChanged)
     Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
@@ -47,7 +47,7 @@ public:
     bool hasRotateToMuteCapability() const;
     bool hasChatMixCapability() const;
     bool hasVoicePromptsCapability() const;
-    bool hasInactivetimeCapability() const;
+    bool hasInactiveTimeCapability() const;
     QString deviceName() const;
     QString batteryStatus() const;
     int batteryLevel() const;
