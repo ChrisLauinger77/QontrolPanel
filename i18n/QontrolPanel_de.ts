@@ -656,7 +656,7 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation>Zeitlimit für die Bestätigung der Stromversorgung (Sekunden)</translation>
+        <translation>Zeitlimit für die Bestätigung der Energieaktion (Sekunden)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
