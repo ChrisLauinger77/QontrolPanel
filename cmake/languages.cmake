@@ -1,17 +1,18 @@
 # Define all supported languages in one place
 # Format: "code|English name|native name"
 set(SUPPORTED_LANGUAGES
-    "en|English|english"
-    "fr|French|français"
     "de|German|deutsch"
+    "en|English|english"
+    "es|Spanish|español"
+    "fr|French|français"
     "it|Italian|italiano"
-    "ko|Korean|한국어"
-    "ru|Russian|pусский"
-    "zh_CN|Chinese (Simplified)|简体中文"
-    "pl|Polish|polski"
     "ja|Japanese|日本語"
+    "ko|Korean|한국어"
+    "pl|Polish|polski"
     "pt_BR|Portuguese (Brazil)|português (Brasil)"
+    "ru|Russian|pусский"
     "sl|Slovenian|slovenščina"
+    "zh_CN|Chinese (Simplified)|简体中文"
 )
 
 # Function to extract language codes only
