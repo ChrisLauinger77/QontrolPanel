@@ -27,6 +27,7 @@ ApplicationWindow {
     ConfirmPowerActionDialog {
         id: powerActionDialog
         anchors.centerIn: parent
+        countdownSeconds: UserSettings.powerDialogTimeout
         onRequestClose: powerConfirmationWindow.hide()
     }
 

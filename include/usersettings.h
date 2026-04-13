@@ -51,6 +51,7 @@ class UserSettings : public QObject
 
     Q_PROPERTY(bool enablePowerMenu READ enablePowerMenu WRITE setEnablePowerMenu NOTIFY enablePowerMenuChanged)
     Q_PROPERTY(bool showPowerDialogConfirmation READ showPowerDialogConfirmation WRITE setShowPowerDialogConfirmation NOTIFY showPowerDialogConfirmationChanged)
+    Q_PROPERTY(int powerDialogTimeout READ powerDialogTimeout WRITE setPowerDialogTimeout NOTIFY powerDialogTimeoutChanged)
 
     Q_PROPERTY(int ddcciBrightness READ ddcciBrightness WRITE setDdcciBrightness NOTIFY ddcciBrightnessChanged)
     Q_PROPERTY(bool displayBatteryFooter READ displayBatteryFooter WRITE setDisplayBatteryFooter NOTIFY displayBatteryFooterChanged)
@@ -110,6 +111,7 @@ public:
 
     bool enablePowerMenu() const { return m_enablePowerMenu; }
     bool showPowerDialogConfirmation() const { return m_showPowerDialogConfirmation; }
+    int powerDialogTimeout() const { return m_powerDialogTimeout; }
 
     int ddcciBrightness() const { return m_ddcciBrightness; }
     bool displayBatteryFooter() const { return m_displayBatteryFooter; }
@@ -165,6 +167,7 @@ public:
 
     void setEnablePowerMenu(bool value);
     void setShowPowerDialogConfirmation(bool value);
+    void setPowerDialogTimeout(int value);
 
     void setDdcciBrightness(int value);
     void setDisplayBatteryFooter(bool value);
@@ -220,6 +223,7 @@ signals:
 
     void enablePowerMenuChanged();
     void showPowerDialogConfirmationChanged();
+    void powerDialogTimeoutChanged();
 
     void ddcciBrightnessChanged();
     void displayBatteryFooterChanged();
@@ -281,6 +285,7 @@ private:
 
     bool m_enablePowerMenu;
     bool m_showPowerDialogConfirmation;
+    int m_powerDialogTimeout;
 
     int m_ddcciBrightness;
     bool m_displayBatteryFooter;

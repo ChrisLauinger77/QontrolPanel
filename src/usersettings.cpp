@@ -75,6 +75,7 @@ void UserSettings::initProperties()
 
     m_enablePowerMenu = settings.value("enablePowerMenu", true).toBool();
     m_showPowerDialogConfirmation = settings.value("showPowerDialogConfirmation", true).toBool();
+    m_powerDialogTimeout = settings.value("powerDialogTimeout", 30).toInt();
 
     m_ddcciBrightness = settings.value("ddcciBrightness", 100).toInt();
     m_displayBatteryFooter = settings.value("displayBatteryFooter", true).toBool();
@@ -411,6 +412,15 @@ void UserSettings::setShowPowerDialogConfirmation(bool value)
         m_showPowerDialogConfirmation = value;
         saveValue("showPowerDialogConfirmation", value);
         emit showPowerDialogConfirmationChanged();
+    }
+}
+
+void UserSettings::setPowerDialogTimeout(int value)
+{
+    if (m_powerDialogTimeout != value) {
+        m_powerDialogTimeout = value;
+        saveValue("powerDialogTimeout", value);
+        emit powerDialogTimeoutChanged();
     }
 }
 

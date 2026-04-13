@@ -42,6 +42,17 @@ ColumnLayout {
 
             Card {
                 Layout.fillWidth: true
+                title: qsTr("Power action confirmation timeout")
+                additionalControl: SpinBox {
+                    from: 1
+                    to: 120
+                    value: UserSettings.powerDialogTimeout
+                    onValueChanged: UserSettings.powerDialogTimeout = value
+                }
+            }
+
+            Card {
+                Layout.fillWidth: true
                 title: qsTr("Slider wheel sensivity")
                 additionalControl: SpinBox {
                     from: 1
