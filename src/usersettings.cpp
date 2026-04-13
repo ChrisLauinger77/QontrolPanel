@@ -68,6 +68,7 @@ void UserSettings::initProperties()
     m_headsetcontrolMonitoring = settings.value("headsetcontrolMonitoring", true).toBool();
     m_headsetcontrolLights = settings.value("headsetcontrolLights", true).toBool();
     m_headsetcontrolRotateToMute = settings.value("headsetcontrolRotateToMute", true).toBool();
+    m_headsetcontrolInactiveTime = settings.value("headsetcontrolInactiveTime", -1).toInt();
     m_headsetcontrolSidetone = settings.value("headsetcontrolSidetone", 0).toInt();
     m_allowBrightnessControl = settings.value("allowBrightnessControl", true).toBool();
     m_avoidApplicationsOverflow = settings.value("avoidApplicationsOverflow", false).toBool();
@@ -358,6 +359,17 @@ void UserSettings::setHeadsetcontrolRotateToMute(bool value)
         m_headsetcontrolRotateToMute = value;
         saveValue("headsetcontrolRotateToMute", value);
         emit headsetcontrolRotateToMuteChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolInactiveTime(int value)
+{
+    value = qBound(0, value, 128);
+
+    if (m_headsetcontrolInactiveTime != value) {
+        m_headsetcontrolInactiveTime = value;
+        saveValue("headsetcontrolInactiveTime", value);
+        emit headsetcontrolInactiveTimeChanged();
     }
 }
 

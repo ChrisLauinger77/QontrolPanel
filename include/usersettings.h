@@ -44,6 +44,7 @@ class UserSettings : public QObject
     Q_PROPERTY(bool headsetcontrolMonitoring READ headsetcontrolMonitoring WRITE setHeadsetcontrolMonitoring NOTIFY headsetcontrolMonitoringChanged)
     Q_PROPERTY(bool headsetcontrolLights READ headsetcontrolLights WRITE setHeadsetcontrolLights NOTIFY headsetcontrolLightsChanged)
     Q_PROPERTY(bool headsetcontrolRotateToMute READ headsetcontrolRotateToMute WRITE setHeadsetcontrolRotateToMute NOTIFY headsetcontrolRotateToMuteChanged)
+    Q_PROPERTY(int headsetcontrolInactiveTime READ headsetcontrolInactiveTime WRITE setHeadsetcontrolInactiveTime NOTIFY headsetcontrolInactiveTimeChanged)
     Q_PROPERTY(int headsetcontrolSidetone READ headsetcontrolSidetone WRITE setHeadsetcontrolSidetone NOTIFY headsetcontrolSidetoneChanged)
     Q_PROPERTY(bool allowBrightnessControl READ allowBrightnessControl WRITE setAllowBrightnessControl NOTIFY allowBrightnessControlChanged)
     Q_PROPERTY(bool avoidApplicationsOverflow READ avoidApplicationsOverflow WRITE setAvoidApplicationsOverflow NOTIFY avoidApplicationsOverflowChanged)
@@ -104,6 +105,7 @@ public:
     bool headsetcontrolMonitoring() const { return m_headsetcontrolMonitoring; }
     bool headsetcontrolLights() const { return m_headsetcontrolLights; }
     bool headsetcontrolRotateToMute() const { return m_headsetcontrolRotateToMute; }
+    int headsetcontrolInactiveTime() const { return m_headsetcontrolInactiveTime; }
     int headsetcontrolSidetone() const { return m_headsetcontrolSidetone; }
     bool allowBrightnessControl() const { return m_allowBrightnessControl; }
     bool avoidApplicationsOverflow() const { return m_avoidApplicationsOverflow; }
@@ -160,6 +162,7 @@ public:
     void setHeadsetcontrolMonitoring(bool value);
     void setHeadsetcontrolLights(bool value);
     void setHeadsetcontrolRotateToMute(bool value);
+    void setHeadsetcontrolInactiveTime(int value);
     void setHeadsetcontrolSidetone(int value);
     void setAllowBrightnessControl(bool value);
     void setAvoidApplicationsOverflow(bool value);
@@ -216,6 +219,7 @@ signals:
     void headsetcontrolMonitoringChanged();
     void headsetcontrolLightsChanged();
     void headsetcontrolRotateToMuteChanged();
+    void headsetcontrolInactiveTimeChanged();
     void headsetcontrolSidetoneChanged();
     void allowBrightnessControlChanged();
     void avoidApplicationsOverflowChanged();
@@ -278,6 +282,7 @@ private:
     bool m_headsetcontrolMonitoring;
     bool m_headsetcontrolLights;
     bool m_headsetcontrolRotateToMute;
+    int m_headsetcontrolInactiveTime;
     int m_headsetcontrolSidetone;
     bool m_allowBrightnessControl;
     bool m_avoidApplicationsOverflow;

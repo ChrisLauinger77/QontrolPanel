@@ -11,6 +11,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_hasLightsCapability(false)
     , m_hasRotateToMuteCapability(false)
     , m_hasChatMixCapability(false)
+    , m_hasInactivetimeCapability(false)
     , m_deviceName("")
     , m_batteryStatus("BATTERY_UNAVAILABLE")
     , m_batteryLevel(-1)
@@ -74,6 +75,7 @@ void HeadsetControlMonitor::stopMonitoring()
     m_hasLightsCapability = false;
     m_hasRotateToMuteCapability = false;
     m_hasChatMixCapability = false;
+    m_hasInactivetimeCapability = false;
     m_deviceName = "";
     m_batteryStatus = "BATTERY_UNAVAILABLE";
     m_batteryLevel = -1;
@@ -191,6 +193,37 @@ void HeadsetControlMonitor::setSidetone(int value)
     }
 }
 
+void HeadsetControlMonitor::setInactiveTime(int value)
+{
+    if (!m_hasInactivetimeCapability) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set inactive time - device does not support inactive time capability");
+        return;
+    }
+
+    if (m_headsets.empty()) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set inactive time - no device connected");
+        return;
+    }
+
+    value = qBound(0, value, 128);
+
+    LOG_INFO("HeadsetControlManager",
+                                    QString("Setting headset inactive time to %1 minutes").arg(value));
+
+    headsetcontrol::Headset& headset = m_headsets[0];
+    headsetcontrol::Result<headsetcontrol::InactiveTimeResult> result = headset.setInactiveTime(static_cast<uint8_t>(value));
+
+    if (!result) {
+        LOG_CRITICAL("HeadsetControlManager",
+                                             QString("Failed to set inactive time: %1").arg(QString::fromStdString(result.error().fullMessage())));
+    } else {
+        LOG_INFO("HeadsetControlManager",
+                                        QString("Inactive time set to %1 minutes successfully").arg(value));
+    }
+}
+
 void HeadsetControlMonitor::fetchHeadsetInfo()
 {
     if (!m_isMonitoring || m_isFetching) {
@@ -214,6 +247,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             m_hasLightsCapability = false;
             m_hasRotateToMuteCapability = false;
             m_hasChatMixCapability = false;
+            m_hasInactivetimeCapability = false;
             m_deviceName = "";
             m_batteryStatus = "BATTERY_UNAVAILABLE";
             m_batteryLevel = -1;
@@ -340,6 +374,7 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newLightsCapability = false;
     bool newRotateToMuteCapability = false;
     bool newChatMixCapability = false;
+    bool newInactivetimeCapability = false;
     QString newDeviceName = "";
     bool newAnyDeviceFound = !m_cachedDevices.isEmpty();
     bool wasDeviceFound = m_anyDeviceFound;
@@ -352,6 +387,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newLightsCapability = headset.supports(CAP_LIGHTS);
         newRotateToMuteCapability = headset.supports(CAP_ROTATE_TO_MUTE);
         newChatMixCapability = headset.supports(CAP_CHATMIX_STATUS);
+        newInactivetimeCapability = headset.supports(CAP_INACTIVE_TIME);
 
         LOG_INFO("HeadsetControlManager",
                                         QString("Device capabilities: %1")
@@ -361,11 +397,13 @@ void HeadsetControlMonitor::updateCapabilities()
     if (newSidetoneCapability != m_hasSidetoneCapability ||
         newLightsCapability != m_hasLightsCapability ||
         newRotateToMuteCapability != m_hasRotateToMuteCapability ||
-        newChatMixCapability != m_hasChatMixCapability) {
+        newChatMixCapability != m_hasChatMixCapability ||
+        newInactivetimeCapability != m_hasInactivetimeCapability) {
         m_hasSidetoneCapability = newSidetoneCapability;
         m_hasLightsCapability = newLightsCapability;
         m_hasRotateToMuteCapability = newRotateToMuteCapability;
         m_hasChatMixCapability = newChatMixCapability;
+        m_hasInactivetimeCapability = newInactivetimeCapability;
         emit capabilitiesChanged();
     }
 
@@ -399,6 +437,14 @@ void HeadsetControlMonitor::updateCapabilities()
                 LOG_INFO("HeadsetControlManager",
                                                 QString("Applying saved sidetone setting: %1").arg(sidetoneValue));
                 setSidetone(sidetoneValue);
+            }
+            if (newInactivetimeCapability) {
+                int inactiveTimeValue = UserSettings::instance()->headsetcontrolInactiveTime();
+                if (inactiveTimeValue >= 0) {
+                    LOG_INFO("HeadsetControlManager",
+                                                    QString("Applying saved inactive time setting: %1").arg(inactiveTimeValue));
+                    setInactiveTime(inactiveTimeValue);
+                }
             }
         }
     }

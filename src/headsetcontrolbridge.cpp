@@ -135,6 +135,15 @@ void HeadsetControlBridge::setSidetone(int value)
     }
 }
 
+void HeadsetControlBridge::setInactiveTime(int value)
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    if (monitor) {
+        QMetaObject::invokeMethod(monitor, "setInactiveTime", Qt::QueuedConnection,
+                                  Q_ARG(int, value));
+    }
+}
+
 bool HeadsetControlBridge::hasSidetoneCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -157,6 +166,12 @@ bool HeadsetControlBridge::hasChatMixCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
     return monitor ? monitor->hasChatMixCapability() : false;
+}
+
+bool HeadsetControlBridge::hasInactivetimeCapability() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->hasInactivetimeCapability() : false;
 }
 
 QString HeadsetControlBridge::deviceName() const
