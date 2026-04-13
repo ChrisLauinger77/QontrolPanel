@@ -20,6 +20,8 @@ on:
       - "**/*.md"
       - "i18n/**"
       - "i18n_compiled/**"
+      - "dependencies/headsetcontrol/**"
+      - ".github/workflows/*.yml"
       - ".assets/**"
 
   workflow_dispatch:
