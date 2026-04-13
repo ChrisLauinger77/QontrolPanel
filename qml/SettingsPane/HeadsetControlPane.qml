@@ -150,19 +150,30 @@ ColumnLayout {
                     Layout.fillWidth: true
                     title: qsTr("Microphone Sidetone")
                     description: qsTr("Adjust your voice feedback level")
-                    additionalControl: NFSlider {
-                        from: 0
-                        to: 128
-                        value: UserSettings.headsetcontrolSidetone
-                        onPressedChanged: {
-                            if (!pressed) {
+                    additionalControl: RowLayout {
+                        spacing: 12
+
+                        NFSlider {
+                            id: sidetoneSlider
+                            from: 0
+                            to: 128
+                            value: UserSettings.headsetcontrolSidetone
+                            Layout.preferredWidth: 180
+                            onPressedChanged: {
+                                if (!pressed) {
+                                    UserSettings.headsetcontrolSidetone = Math.round(value)
+                                    HeadsetControlBridge.setSidetone(Math.round(value))
+                                }
+                            }
+                            onWheelChanged: {
                                 UserSettings.headsetcontrolSidetone = Math.round(value)
                                 HeadsetControlBridge.setSidetone(Math.round(value))
                             }
                         }
-                        onWheelChanged: {
-                            UserSettings.headsetcontrolSidetone = Math.round(value)
-                            HeadsetControlBridge.setSidetone(Math.round(value))
+
+                        Label {
+                            text: Math.round(sidetoneSlider.value).toString()
+                            opacity: 0.7
                         }
                     }
                 }
