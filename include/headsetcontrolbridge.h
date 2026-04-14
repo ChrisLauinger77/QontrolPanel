@@ -84,6 +84,7 @@ private:
     static HeadsetControlBridge* m_instance;
     HeadsetControlMonitor* findMonitor() const;
     void connectToMonitor();
+    void updateLowBatteryNotificationState();
 
     bool m_lowBatteryNotificationSent = false;
 };

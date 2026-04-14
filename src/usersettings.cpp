@@ -3,6 +3,8 @@
 
 namespace {
 constexpr int kMaxSettingsStartupPage = 11;
+constexpr int kMinHeadsetcontrolLowBatteryThreshold = 1;
+constexpr int kMaxHeadsetcontrolLowBatteryThreshold = 30;
 }
 
 UserSettings* UserSettings::m_instance = nullptr;
@@ -89,6 +91,10 @@ void UserSettings::initProperties()
     m_panelStyle = settings.value("panelStyle", 0).toInt();
     m_headsetcontrolFetchRate = settings.value("headsetcontrolFetchRate", 20).toInt();
     m_enableNotifications = settings.value("enableNotifications", false).toBool();
+    m_headsetcontrolLowBatteryThreshold = qBound(
+        kMinHeadsetcontrolLowBatteryThreshold,
+        settings.value("headsetcontrolLowBatteryThreshold", 25).toInt(),
+        kMaxHeadsetcontrolLowBatteryThreshold);
 
     m_enableMediaOverlay = settings.value("enableMediaOverlay", false).toBool();
     m_mediaOverlayPosition = settings.value("mediaOverlayPosition", 1).toInt(); // Default: top-center
@@ -504,6 +510,19 @@ void UserSettings::setEnableNotifications(bool value)
         m_enableNotifications = value;
         saveValue("enableNotifications", value);
         emit enableNotificationsChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolLowBatteryThreshold(int value)
+{
+    value = qBound(kMinHeadsetcontrolLowBatteryThreshold,
+                   value,
+                   kMaxHeadsetcontrolLowBatteryThreshold);
+
+    if (m_headsetcontrolLowBatteryThreshold != value) {
+        m_headsetcontrolLowBatteryThreshold = value;
+        saveValue("headsetcontrolLowBatteryThreshold", value);
+        emit headsetcontrolLowBatteryThresholdChanged();
     }
 }
 

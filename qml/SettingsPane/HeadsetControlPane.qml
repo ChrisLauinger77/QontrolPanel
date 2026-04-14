@@ -93,11 +93,29 @@ ColumnLayout {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Notification on low battery")
-                    additionalControl: LabeledSwitch {
-                        checked: UserSettings.enableNotifications
-                        onClicked: {
-                            UserSettings.enableNotifications = checked
-                            HeadsetControlBridge.notificationsEnabled = checked
+                    description: qsTr("Notify when the connected headset reaches %1% or lower.").arg(UserSettings.headsetcontrolLowBatteryThreshold)
+                    additionalControl: RowLayout {
+                        spacing: 8
+
+                        SpinBox {
+                            from: 1
+                            to: 30
+                            value: UserSettings.headsetcontrolLowBatteryThreshold
+                            editable: true
+                            Layout.preferredWidth: 72
+                            onValueModified: UserSettings.headsetcontrolLowBatteryThreshold = value
+                        }
+
+                        Label {
+                            text: "%"
+                            opacity: 0.7
+                        }
+
+                        LabeledSwitch {
+                            checked: UserSettings.enableNotifications
+                            onClicked: {
+                                UserSettings.enableNotifications = checked
+                            }
                         }
                     }
                 }
