@@ -5,55 +5,55 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Bližnjice za glasnost aplikacij</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Bližnjice za glasnost za posamezno aplikacijo</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodelite globalne tipkovne bližnjice za nadzor glasnosti določenih aplikacij</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Dodaj</translation>
+        <translation>Dodaj</translation>
     </message>
     <message>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Korak</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Odstrani</translation>
+        <translation>Odstrani</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj tipkovno bližnjico za glasnost aplikacije</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikacija</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Bližnjica za povečanje glasnosti</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknite za nastavitev...</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Bližnjica za zmanjšanje glasnosti</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost koraka glasnosti</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Prekliči</translation>
+        <translation>Prekliči</translation>
     </message>
 </context>
 <context>
@@ -647,71 +647,71 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>Začetna stran z nastavitvami</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>Izberite, katera stran z nastavitvami se odpre, ko se prikaže okno z nastavitvami</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Splošno</translation>
+        <translation>Splošno</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished">Komponente</translation>
+        <translation>Komponente</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">Videz</translation>
+        <translation>Videz</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished">Prekrivanje medijev</translation>
+        <translation>Prekrivanje medija</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">Bližnjice</translation>
+        <translation>Bližnjice</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipkovne bližnjice za aplikacije</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">Nadzor slušalk</translation>
+        <translation>Nadzor slušalk</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">Preimenovanje</translation>
+        <translation>Preimenovanje</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Jezik</translation>
+        <translation>Jezik</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished">Posodobitve</translation>
+        <translation>Posodobitve</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">Razhroščevanje</translation>
+        <translation>Razhroščevanje</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži potrditveno pogovorno okno pri izbiri dejanja napajanja v meniju sistemske vrstice</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Časovna omejitev potrditve dejanja napajanja (sekunde)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas, preden pogovorno okno za potrditev dejanja napajanja samodejno sproži izbrano dejanje</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
@@ -739,7 +739,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel se bo zagnal ob zagonu računalnika</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
@@ -758,72 +758,73 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>1 - Pogoji napake</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
+        <translation>2 - Polnjenje baterije</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
+        <translation>3 - Osnovna baterija</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>4 - Baterija ni na voljo</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>5 - Časovna omejitev</translation>
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
+        <translation>6 - Polna baterija</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>7 - Prazna baterija</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spodaj omogočite testni način, da simulirate podprte slušalke in preverite uporabniški vmesnik HeadsetControl.</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Testni način HeadsetControl</translation>
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulirajte podprte slušalke za testiranje. To ostane omogočeno, dokler se aplikacija ne zapre.</translation>
     </message>
     <message>
         <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Testirajte profil slušalk</translation>
     </message>
     <message>
         <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Izberite, kateri scenarij sintetičnih slušalk naj HeadsetControl simulira.</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenutna raven napolnjenosti baterije priključenih slušalk</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obvesti me, ko priključene slušalke dosežejo %1% ali manj.</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix vrednost priključenih slušalk</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nadzor HeadsetControl je onemogočen
+Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
@@ -831,15 +832,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Neaktivni čas (minute)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavite čas neaktivnosti, po katerem bodo slušalke prešle v način varčevanja z energijo</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Luči</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
@@ -847,7 +848,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Vklopite/izklopite funkcijo vrtenja za izklop zvoka na slušalkah</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -859,19 +860,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavrtite za izklop zvoka</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>Stranski ton</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Glasovni pozivi</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Preklopi glasovne ukaze na slušalkah</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -987,11 +988,11 @@ You can enable it in the Components tab.</source>
     <name>Main</name>
     <message>
         <source>Low Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Baterija je skoraj prazna</translation>
     </message>
     <message>
         <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
+        <translation>Baterija slušalk se izpraznjuje</translation>
     </message>
     <message>
         <source>Update Available</source>
@@ -1166,7 +1167,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipkovne bližnjice za aplikacije</translation>
     </message>
     <message>
         <source>Language</source>
@@ -1280,7 +1281,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
