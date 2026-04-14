@@ -669,6 +669,62 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Lancer au démarrage</translation>
     </message>
     <message>
+        <source>Settings startup page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which settings page opens when the settings window is shown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">Général</translation>
+    </message>
+    <message>
+        <source>Components</source>
+        <translation type="unfinished">Composants</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Apparence</translation>
+    </message>
+    <message>
+        <source>Media Overlay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation type="unfinished">Raccourcis</translation>
+    </message>
+    <message>
+        <source>App Hotkeys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">HeadsetControl</translation>
+    </message>
+    <message>
+        <source>Renaming</source>
+        <translation type="unfinished">Renommage</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished">Langage</translation>
+    </message>
+    <message>
+        <source>Updates</source>
+        <translation type="unfinished">Mises à jour</translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished">Déboguer</translation>
+    </message>
+    <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -761,10 +817,6 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>(Charging)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

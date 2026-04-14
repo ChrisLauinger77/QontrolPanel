@@ -651,6 +651,62 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>컴퓨터가 시작되면 QSS가 부팅됩니다</translation>
     </message>
     <message>
+        <source>Settings startup page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which settings page opens when the settings window is shown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">일반</translation>
+    </message>
+    <message>
+        <source>Components</source>
+        <translation type="unfinished">구성 요소</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">외형</translation>
+    </message>
+    <message>
+        <source>Media Overlay</source>
+        <translation type="unfinished">미디어 오버레이</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">채팅 믹스</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation type="unfinished">단축키</translation>
+    </message>
+    <message>
+        <source>App Hotkeys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">헤드셋 제어</translation>
+    </message>
+    <message>
+        <source>Renaming</source>
+        <translation type="unfinished">이름 바꾸기</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished">언어</translation>
+    </message>
+    <message>
+        <source>Updates</source>
+        <translation type="unfinished">업데이트</translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished">디버그</translation>
+    </message>
+    <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -751,10 +807,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>(Charging)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

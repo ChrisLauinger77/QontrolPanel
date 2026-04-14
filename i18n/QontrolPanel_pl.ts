@@ -651,6 +651,62 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation>QSS uruchomi się po uruchomieniu komputera</translation>
     </message>
     <message>
+        <source>Settings startup page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which settings page opens when the settings window is shown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">Ogólne</translation>
+    </message>
+    <message>
+        <source>Components</source>
+        <translation type="unfinished">Komponenty</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Wygląd</translation>
+    </message>
+    <message>
+        <source>Media Overlay</source>
+        <translation type="unfinished">Nakładka Multimedialna</translation>
+    </message>
+    <message>
+        <source>ChatMix</source>
+        <translation type="unfinished">ChatMix</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation type="unfinished">Skróty klawiaturowe</translation>
+    </message>
+    <message>
+        <source>App Hotkeys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">HeadsetControl</translation>
+    </message>
+    <message>
+        <source>Renaming</source>
+        <translation type="unfinished">Zmiana nazwy</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished">Język</translation>
+    </message>
+    <message>
+        <source>Updates</source>
+        <translation type="unfinished">Aktualizacje</translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished">Debugowanie</translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Pokaż potwierdzenie akcji zasilania</translation>
     </message>
@@ -803,10 +859,6 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>(Charging)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
