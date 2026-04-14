@@ -33,6 +33,31 @@ ColumnLayout {
 
             Card {
                 Layout.fillWidth: true
+                title: qsTr("Settings startup page")
+                description: qsTr("Choose which settings page opens when the settings window is shown")
+                additionalControl: CustomComboBox {
+                    Layout.preferredHeight: 35
+                    model: [
+                        qsTr("General"),
+                        qsTr("Components"),
+                        qsTr("Appearance"),
+                        qsTr("Media Overlay"),
+                        qsTr("ChatMix"),
+                        qsTr("Shortcuts"),
+                        qsTr("App Hotkeys"),
+                        qsTr("HeadsetControl"),
+                        qsTr("Renaming"),
+                        qsTr("Language"),
+                        qsTr("Updates"),
+                        qsTr("Debug")
+                    ]
+                    currentIndex: UserSettings.settingsStartupPage
+                    onActivated: UserSettings.settingsStartupPage = currentIndex
+                }
+            }
+
+            Card {
+                Layout.fillWidth: true
                 title: qsTr("Show power action confirmation")
                 description: qsTr("Show a confirmation dialog when selecting a power action from the system tray menu")
                 additionalControl: LabeledSwitch {

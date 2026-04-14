@@ -553,7 +553,7 @@ ApplicationWindow {
         Connections {
             target: systemTray
             function onSettingsWindowRequested() {
-                settingsWindow.show()
+                settingsWindow.showPreferredPane()
             }
         }
     }
@@ -1222,7 +1222,7 @@ ApplicationWindow {
                         Layout.rightMargin: -14
                         Layout.bottomMargin: -14
                         onHidePanel: panel.hidePanel()
-                        onShowSettingsWindow: settingsWindow.show()
+                        onShowSettingsWindow: settingsWindow.showPreferredPane()
                         onShowUpdatePane: settingsWindow.showUpdatePane()
                         onShowPowerConfirmationWindow: function(action) {
                             powerConfirmationWindow.setAction(action)

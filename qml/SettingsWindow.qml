@@ -15,20 +15,57 @@ ApplicationWindow {
     transientParent: null
     title: qsTr("QontrolPanel - Settings")
 
+    readonly property int maxSettingsPageIndex: 11
+
+    function pageComponentForIndex(index) {
+        switch (index) {
+        case 0: return generalPaneComponent
+        case 1: return componentsPaneComponent
+        case 2: return appearancePaneComponent
+        case 3: return mediaOverlayPaneComponent
+        case 4: return commAppsPaneComponent
+        case 5: return shortcutsPaneComponent
+        case 6: return appHotkeysPaneComponent
+        case 7: return headsetControlPaneComponent
+        case 8: return deviceRenamingPaneComponent
+        case 9: return languagePaneComponent
+        case 10: return debugPaneComponent
+        case 11: return consolePaneComponent
+        default: return generalPaneComponent
+        }
+    }
+
+    function openPage(index, forceOpen) {
+        const safeIndex = Math.max(0, Math.min(index, maxSettingsPageIndex))
+        const component = pageComponentForIndex(safeIndex)
+        const shouldNavigate = forceOpen || sidebarList.currentIndex !== safeIndex || !stackView.currentItem
+
+        sidebarList.currentIndex = safeIndex
+
+        if (!shouldNavigate) {
+            return
+        }
+
+        if (stackView.depth === 0) {
+            stackView.push(component)
+        } else {
+            stackView.replace(component)
+        }
+    }
+
+    function showPreferredPane() {
+        show()
+        openPage(UserSettings.settingsStartupPage, true)
+    }
+
     function showUpdatePane() {
         show()
-        if (sidebarList.currentIndex !== 10) {
-            sidebarList.currentIndex = 10
-            stackView.push(debugPaneComponent)
-        }
+        openPage(10, true)
     }
 
     function showHeadsetcontrolPane() {
         show()
-        if (sidebarList.currentIndex !== 7) {
-            sidebarList.currentIndex = 7
-            stackView.push(headsetControlPaneComponent)
-        }
+        openPage(7, true)
     }
 
     property int rowHeight: 35
@@ -148,7 +185,7 @@ ApplicationWindow {
 
                         function onLanguageIndexChanged() {
                             Qt.callLater(function() {
-                                sidebarList.currentIndex = 9
+                                root.openPage(9, true)
                             })
                         }
                     }
@@ -168,23 +205,7 @@ ApplicationWindow {
                         icon.height: 18
                         opacity: text === qsTr("Debug") && !ListView.isCurrentItem ? 0.5 : 1
                         onClicked: {
-                            if (sidebarList.currentIndex !== index) {
-                                sidebarList.currentIndex = index
-                                switch(index) {
-                                    case 0: stackView.push(generalPaneComponent); break
-                                    case 1: stackView.push(componentsPaneComponent); break
-                                    case 2: stackView.push(appearancePaneComponent); break
-                                    case 3: stackView.push(mediaOverlayPaneComponent); break
-                                    case 4: stackView.push(commAppsPaneComponent); break
-                                    case 5: stackView.push(shortcutsPaneComponent); break
-                                    case 6: stackView.push(appHotkeysPaneComponent); break
-                                    case 7: stackView.push(headsetControlPaneComponent); break
-                                    case 8: stackView.push(deviceRenamingPaneComponent); break
-                                    case 9: stackView.push(languagePaneComponent); break
-                                    case 10: stackView.push(debugPaneComponent); break
-                                    case 11: stackView.push(consolePaneComponent); break
-                                }
-                            }
+                            root.openPage(index, false)
                         }
                     }
                 }

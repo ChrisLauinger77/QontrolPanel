@@ -36,6 +36,7 @@ class UserSettings : public QObject
     Q_PROPERTY(int micMuteShortcutModifiers READ micMuteShortcutModifiers WRITE setMicMuteShortcutModifiers NOTIFY micMuteShortcutModifiersChanged)
     Q_PROPERTY(bool autoUpdateTranslations READ autoUpdateTranslations WRITE setAutoUpdateTranslations NOTIFY autoUpdateTranslationsChanged)
     Q_PROPERTY(bool firstRun READ firstRun WRITE setFirstRun NOTIFY firstRunChanged)
+    Q_PROPERTY(int settingsStartupPage READ settingsStartupPage WRITE setSettingsStartupPage NOTIFY settingsStartupPageChanged)
 
     Q_PROPERTY(int trayIconTheme READ trayIconTheme WRITE setTrayIconTheme NOTIFY trayIconThemeChanged)
     Q_PROPERTY(int iconStyle READ iconStyle WRITE setIconStyle NOTIFY iconStyleChanged)
@@ -98,6 +99,7 @@ public:
     int micMuteShortcutModifiers() const { return m_micMuteShortcutModifiers; }
     bool autoUpdateTranslations() const { return m_autoUpdateTranslations; }
     bool firstRun() const { return m_firstRun; }
+    int settingsStartupPage() const { return m_settingsStartupPage; }
 
     int trayIconTheme() const { return m_trayIconTheme; }
     int iconStyle() const { return m_iconStyle; }
@@ -156,6 +158,7 @@ public:
     void setMicMuteShortcutModifiers(int value);
     void setAutoUpdateTranslations(bool value);
     void setFirstRun(bool value);
+    void setSettingsStartupPage(int value);
 
     void setTrayIconTheme(int value);
     void setIconStyle(int value);
@@ -214,6 +217,7 @@ signals:
     void micMuteShortcutModifiersChanged();
     void autoUpdateTranslationsChanged();
     void firstRunChanged();
+    void settingsStartupPageChanged();
 
     void trayIconThemeChanged();
     void iconStyleChanged();
@@ -278,6 +282,7 @@ private:
     int m_micMuteShortcutModifiers;
     bool m_autoUpdateTranslations;
     bool m_firstRun;
+    int m_settingsStartupPage;
 
     int m_trayIconTheme;
     int m_iconStyle;

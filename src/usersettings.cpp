@@ -1,6 +1,10 @@
 #include "usersettings.h"
 #include <QSettings>
 
+namespace {
+constexpr int kMaxSettingsStartupPage = 11;
+}
+
 UserSettings* UserSettings::m_instance = nullptr;
 
 UserSettings::UserSettings(QObject *parent)
@@ -60,6 +64,7 @@ void UserSettings::initProperties()
     m_micMuteShortcutModifiers = settings.value("micMuteShortcutModifiers", 117440512).toInt();
     m_autoUpdateTranslations = settings.value("autoUpdateTranslations", false).toBool();
     m_firstRun = settings.value("firstRun", true).toBool();
+    m_settingsStartupPage = qBound(0, settings.value("settingsStartupPage", 0).toInt(), kMaxSettingsStartupPage);
 
     m_trayIconTheme = settings.value("trayIconTheme", 0).toInt();
     m_iconStyle = settings.value("iconStyle", 0).toInt();
@@ -306,6 +311,17 @@ void UserSettings::setFirstRun(bool value)
         m_firstRun = value;
         saveValue("firstRun", value);
         emit firstRunChanged();
+    }
+}
+
+void UserSettings::setSettingsStartupPage(int value)
+{
+    value = qBound(0, value, kMaxSettingsStartupPage);
+
+    if (m_settingsStartupPage != value) {
+        m_settingsStartupPage = value;
+        saveValue("settingsStartupPage", value);
+        emit settingsStartupPageChanged();
     }
 }
 
