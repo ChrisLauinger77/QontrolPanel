@@ -988,6 +988,14 @@ Puedes activarla en la pestaña Componentes.</translation>
 <context>
     <name>Main</name>
     <message>
+        <source>Low Battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Headset battery is getting low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Update Available</source>
         <translation type="unfinished">Actualización disponible</translation>
     </message>

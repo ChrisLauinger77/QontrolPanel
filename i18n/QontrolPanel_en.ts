@@ -987,6 +987,14 @@ You can enable it in the Components tab.</source>
 <context>
     <name>Main</name>
     <message>
+        <source>Low Battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Headset battery is getting low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Update Available</source>
         <translation>Update Available</translation>
     </message>
