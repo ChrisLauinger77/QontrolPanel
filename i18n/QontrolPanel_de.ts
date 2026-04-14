@@ -810,6 +810,10 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>Aktueller Akkustand des angeschlossenen Headsets</translation>
     </message>
     <message>
+        <source>Notify when the connected headset reaches %1% or lower.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
     </message>

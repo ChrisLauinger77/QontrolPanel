@@ -874,6 +874,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>7 - Low battery</translation>
     </message>
     <message>
+        <source>Notify when the connected headset reaches %1% or lower.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
         <translation type="unfinished"></translation>

@@ -98,11 +98,12 @@ ColumnLayout {
                         spacing: 8
 
                         SpinBox {
+                            Layout.preferredHeight: 35
+                            Layout.preferredWidth: 160
                             from: 1
                             to: 30
                             value: UserSettings.headsetcontrolLowBatteryThreshold
                             editable: true
-                            Layout.preferredWidth: 72
                             onValueModified: UserSettings.headsetcontrolLowBatteryThreshold = value
                         }
 

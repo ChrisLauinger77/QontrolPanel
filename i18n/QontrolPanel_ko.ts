@@ -810,6 +810,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Notify when the connected headset reaches %1% or lower.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation type="unfinished">채팅 믹스</translation>
     </message>
