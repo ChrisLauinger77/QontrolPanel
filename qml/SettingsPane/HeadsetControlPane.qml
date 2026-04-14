@@ -83,8 +83,7 @@ ColumnLayout {
                     Layout.fillWidth: true
                     title: qsTr("Device battery")
                     visible: HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE" && HeadsetControlBridge.anyDeviceFound
-                    description: qsTr("Current battery level of the connected headset") +
-                                 (HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING" ? "\n" + "⚡︎" + qsTr("(Charging)") : "")
+                    description: qsTr("Current battery level of the connected headset")
                     additionalControl: Label {
                         text: "🔋" + HeadsetControlBridge.batteryLevel + "%"
                     }
@@ -94,7 +93,7 @@ ColumnLayout {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Notification on low battery")
-                    additionalControl: Switch {
+                    additionalControl: LabeledSwitch {
                         checked: UserSettings.enableNotifications
                         onClicked: {
                             UserSettings.enableNotifications = checked
