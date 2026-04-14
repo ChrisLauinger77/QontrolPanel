@@ -23,7 +23,7 @@ ColumnLayout {
             Card {
                 Layout.fillWidth: true
                 title: qsTr("Run at system startup")
-                description: qsTr("QSS will boot up when your computer starts")
+                description: qsTr("QontrolPanel will boot up when your computer starts")
 
                 additionalControl: LabeledSwitch {
                     checked: StartupShortcutBridge.getShortcutState()
