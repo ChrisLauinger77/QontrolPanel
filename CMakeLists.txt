@@ -65,6 +65,7 @@ set(SOURCES
     src/powerbridge.cpp
     src/languagebridge.cpp
     src/keyboardshortcutmanager.cpp
+    src/trayiconprovider.cpp
 )
 
 set(HEADERS
@@ -88,6 +89,7 @@ set(HEADERS
     include/powerbridge.h
     include/languagebridge.h
     include/keyboardshortcutmanager.h
+    include/trayiconprovider.h
 )
 
 # Get git commit hash

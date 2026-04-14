@@ -1,6 +1,7 @@
 #include "panelengine.h"
 #include "mediasessionmanager.h"
 #include "LanguageBridge.h"
+#include "trayiconprovider.h"
 #include "usersettings.h"
 #include <QMenu>
 #include <QApplication>
@@ -56,6 +57,7 @@ void PanelEngine::initializeQMLEngine()
     }
 
     engine = new QQmlApplicationEngine(this);
+    engine->addImageProvider("trayicon", new TrayIconProvider());
     engine->loadFromModule("ChrisLauinger77.QontrolPanel", "Main");
 
     if (!engine->rootObjects().isEmpty()) {
