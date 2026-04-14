@@ -994,6 +994,14 @@ You can enable it in the Components tab.</source>
         <translation>有更新可用</translation>
     </message>
     <message>
+        <source>Low Battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Headset battery is getting low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Version %1 is available for download</source>
         <translation>版本 %1 可下载</translation>
     </message>

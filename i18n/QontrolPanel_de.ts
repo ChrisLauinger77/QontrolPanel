@@ -988,6 +988,14 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
 <context>
     <name>Main</name>
     <message>
+        <source>Low Battery</source>
+        <translation>Batterie schwach</translation>
+    </message>
+    <message>
+        <source>Headset battery is getting low</source>
+        <translation>Der Akku des Headsets ist fast leer</translation>
+    </message>
+    <message>
         <source>Update Available</source>
         <translation>Update verfügbar</translation>
     </message>

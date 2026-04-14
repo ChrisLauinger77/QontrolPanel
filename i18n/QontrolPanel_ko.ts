@@ -999,6 +999,14 @@ You can enable it in the Components tab.</source>
         <translation>업데이트 가능</translation>
     </message>
     <message>
+        <source>Low Battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Headset battery is getting low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Version %1 is available for download</source>
         <translation>버전 %1은 다운로드할 수 있습니다</translation>
     </message>
