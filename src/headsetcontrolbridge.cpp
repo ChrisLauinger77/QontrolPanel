@@ -207,6 +207,24 @@ int HeadsetControlBridge::batteryLevel() const
     return monitor ? monitor->batteryLevel() : -1;
 }
 
+QString HeadsetControlBridge::batteryIcon() const
+{
+    const int level = batteryLevel();
+    const QString status = batteryStatus();
+
+    if (status == "BATTERY_UNAVAILABLE" || level < 0) {
+        return QString();
+    }
+
+    QString icon;
+    if (status == "BATTERY_CHARGING") {
+        icon += QString::fromUtf8("⚡︎");
+    }
+
+    icon += level <= 25 ? QString::fromUtf8("🪫") : QString::fromUtf8("🔋");
+    return icon;
+}
+
 int HeadsetControlBridge::chatMix() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -244,6 +262,7 @@ void HeadsetControlBridge::onMonitorDeviceNameChanged()
 void HeadsetControlBridge::onMonitorBatteryStatusChanged()
 {
     emit batteryStatusChanged();
+    emit batteryIconChanged();
 }
 
 void HeadsetControlBridge::onMonitorBatteryLevelChanged()
@@ -260,6 +279,7 @@ void HeadsetControlBridge::onMonitorBatteryLevelChanged()
     }
 
     emit batteryLevelChanged();
+    emit batteryIconChanged();
 }
 
 void HeadsetControlBridge::onMonitorChatMixChanged()
