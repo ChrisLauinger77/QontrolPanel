@@ -543,7 +543,7 @@ ApplicationWindow {
     Connections {
         target: HeadsetControlBridge
         function onLowHeadsetBattery() {
-            systemTray.showMessage("Low Battery", "Headset battery is getting low")
+            systemTray.showMessage(qsTr("Low Battery"), qsTr("Headset battery is getting low"))
         }
     }
 
