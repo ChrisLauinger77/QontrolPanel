@@ -52,11 +52,11 @@ Item {
 
     function getTrayIcon(volume, muted) {
         // Check for battery icon style first
-        if (UserSettings.iconStyle === 2 && HeadsetControlManager.anyDeviceFound) {
-            if (HeadsetControlManager.batteryStatus === "BATTERY_CHARGING") {
+        if (UserSettings.iconStyle === 2 && HeadsetControlBridge.anyDeviceFound) {
+            if (HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING") {
                 return getBatteryChargingIcon()
             } else {
-                return getBatteryIcon(HeadsetControlManager.batteryLevel)
+                return getBatteryIcon(HeadsetControlBridge.batteryLevel)
             }
         }
 
@@ -84,7 +84,13 @@ Item {
         }
 
         let filledSuffix = UserSettings.iconStyle === 1 ? "_filled" : ""
-        return `qrc:/icons/tray_${theme}_${volumeLevel}${filledSuffix}.png`
+        let trayIconName = `tray_${theme}_${volumeLevel}${filledSuffix}.png`
+
+        if (HeadsetControlBridge.anyDeviceFound) {
+            return `image://trayicon/${trayIconName}`
+        }
+
+        return `qrc:/icons/${trayIconName}`
     }
 
     function getBatteryIcon(batteryLevel) {

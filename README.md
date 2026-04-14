@@ -18,10 +18,10 @@ If you like my work, please consider supporting me !
 
 ## Usage
 
-Left click on the tray icon to reveal the panel.  
-Click anywhere or again on the tray icon to close the panel.
-Double click on tray icon will open the settings pane.
-Default page of settings pane is configurable in General section.
+Left click on the tray icon to reveal the panel.<br>
+Click anywhere or left again on the tray icon to close the panel.<br>
+Double click on tray icon will open the settings pane.<br>
+Default section of settings pane is configurable in General section.
 
 ## Translations
 
