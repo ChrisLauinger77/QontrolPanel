@@ -646,10 +646,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>Zaženi ob zagonu sistema</translation>
     </message>
     <message>
-        <source>QSS will boot up when your computer starts</source>
-        <translation>QSS se bo zagnal ob zagonu računalnika</translation>
-    </message>
-    <message>
         <source>Settings startup page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -740,6 +736,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <message>
         <source>DDC/CI brightness update rate</source>
         <translation>Hitrost posodabljanja svetlosti DDC/CI</translation>
+    </message>
+    <message>
+        <source>QontrolPanel will boot up when your computer starts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>

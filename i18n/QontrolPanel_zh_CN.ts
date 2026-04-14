@@ -646,10 +646,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>开机自启</translation>
     </message>
     <message>
-        <source>QSS will boot up when your computer starts</source>
-        <translation>QSS 将随系统启动时自动启动</translation>
-    </message>
-    <message>
         <source>Settings startup page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -740,6 +736,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <message>
         <source>DDC/CI brightness update rate</source>
         <translation>DDC/CI 亮度更新率</translation>
+    </message>
+    <message>
+        <source>QontrolPanel will boot up when your computer starts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>

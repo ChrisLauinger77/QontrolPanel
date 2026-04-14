@@ -648,10 +648,6 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
         <translation>Executar na inicialização do sistema</translation>
     </message>
     <message>
-        <source>QSS will boot up when your computer starts</source>
-        <translation>QSS será iniciado quando o computador for ligado</translation>
-    </message>
-    <message>
         <source>Settings startup page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -742,6 +738,10 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     <message>
         <source>DDC/CI brightness update rate</source>
         <translation>Taxa de atualização do brilho via DDC/CI</translation>
+    </message>
+    <message>
+        <source>QontrolPanel will boot up when your computer starts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>

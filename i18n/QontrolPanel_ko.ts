@@ -647,10 +647,6 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>시스템 시작 시 실행</translation>
     </message>
     <message>
-        <source>QSS will boot up when your computer starts</source>
-        <translation>컴퓨터가 시작되면 QSS가 부팅됩니다</translation>
-    </message>
-    <message>
         <source>Settings startup page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -741,6 +737,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <message>
         <source>DDC/CI brightness update rate</source>
         <translation>DDC/CI 밝기 업데이트 속도</translation>
+    </message>
+    <message>
+        <source>QontrolPanel will boot up when your computer starts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>

@@ -661,12 +661,12 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Normal</translation>
     </message>
     <message>
-        <source>QSS will boot up when your computer starts</source>
-        <translation>QSS démarrera en même temps que l’ordinateur</translation>
-    </message>
-    <message>
         <source>Run at system startup</source>
         <translation>Lancer au démarrage</translation>
+    </message>
+    <message>
+        <source>QontrolPanel will boot up when your computer starts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Settings startup page</source>

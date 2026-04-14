@@ -647,10 +647,6 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation type="unfinished">Iniciar con el sistema</translation>
     </message>
     <message>
-        <source>QSS will boot up when your computer starts</source>
-        <translation type="unfinished">QSS se iniciará cuando arranque el equipo</translation>
-    </message>
-    <message>
         <source>Settings startup page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -741,6 +737,10 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     <message>
         <source>DDC/CI brightness update rate</source>
         <translation type="unfinished">Frecuencia de actualización del brillo DDC/CI</translation>
+    </message>
+    <message>
+        <source>QontrolPanel will boot up when your computer starts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
