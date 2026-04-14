@@ -181,7 +181,18 @@ ApplicationWindow {
 
     SystemTray {
         id: systemTray
-        onTogglePanelRequested: {
+        onTogglePanelRequested: trayToggleTimer.restart()
+        onSettingsWindowRequested: {
+            trayToggleTimer.stop()
+            settingsWindow.showPreferredPane()
+        }
+    }
+
+    Timer {
+        id: trayToggleTimer
+        interval: 200
+        repeat: false
+        onTriggered: {
             if (!panel.visible) {
                 panel.showPanel()
             }
@@ -550,12 +561,6 @@ ApplicationWindow {
 
     SettingsWindow {
         id: settingsWindow
-        Connections {
-            target: systemTray
-            function onSettingsWindowRequested() {
-                settingsWindow.showPreferredPane()
-            }
-        }
     }
 
     Item {

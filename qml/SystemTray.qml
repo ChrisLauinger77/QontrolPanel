@@ -5,34 +5,20 @@ import ChrisLauinger77.QontrolPanel
 Platform.SystemTrayIcon {
     id: systemTray
     visible: true
-    property double suppressSingleClickUntil: 0
     signal togglePanelRequested()
     signal showIntroRequested()
     signal settingsWindowRequested()
     icon.source: Constants.getTrayIcon(AudioBridge.outputVolume, AudioBridge.outputMuted)
     tooltip: getTooltip()
 
-    Timer {
-        id: trayClickTimer
-        interval: 200
-        repeat: false
-        onTriggered: systemTray.togglePanelRequested()
-    }
-
     onActivated: function(reason) {
         if (reason === Platform.SystemTrayIcon.DoubleClick) {
-            trayClickTimer.stop()
-            suppressSingleClickUntil = Date.now() + trayClickTimer.interval
             systemTray.settingsWindowRequested()
             return
         }
 
         if (reason === Platform.SystemTrayIcon.Trigger) {
-            if (Date.now() < suppressSingleClickUntil) {
-                return
-            }
-
-            trayClickTimer.restart()
+            systemTray.togglePanelRequested()
         }
     }
 
