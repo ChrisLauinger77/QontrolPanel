@@ -144,7 +144,7 @@ ColumnLayout {
                 }
 
                 Card {
-                    visible: HeadsetControlBridge.anyDeviceFound
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasInactiveTimeCapability
                     enabled: HeadsetControlBridge.hasInactiveTimeCapability
                     Layout.fillWidth: true
                     title: qsTr("Inactive time (minutes)")
@@ -178,7 +178,7 @@ ColumnLayout {
                 }
 
                 Card {
-                    visible: HeadsetControlBridge.anyDeviceFound
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasLightsCapability
                     enabled: HeadsetControlBridge.hasLightsCapability
                     Layout.fillWidth: true
                     title: qsTr("Lights")
@@ -194,7 +194,7 @@ ColumnLayout {
                 }
 
                 Card {
-                    visible: HeadsetControlBridge.anyDeviceFound
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasRotateToMuteCapability
                     enabled: HeadsetControlBridge.hasRotateToMuteCapability
                     Layout.fillWidth: true
                     title: qsTr("Rotate-to-Mute")
@@ -210,7 +210,7 @@ ColumnLayout {
                 }
 
                 Card {
-                    visible: HeadsetControlBridge.anyDeviceFound
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasSidetoneCapability
                     enabled: HeadsetControlBridge.hasSidetoneCapability
                     Layout.fillWidth: true
                     title: qsTr("Sidetone")
@@ -244,7 +244,7 @@ ColumnLayout {
                 }
 
                 Card {
-                    visible: HeadsetControlBridge.anyDeviceFound
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasVoicePromptsCapability
                     enabled: HeadsetControlBridge.hasVoicePromptsCapability
                     Layout.fillWidth: true
                     title: qsTr("Voice Prompts")
