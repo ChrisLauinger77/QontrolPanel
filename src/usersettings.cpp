@@ -76,7 +76,7 @@ void UserSettings::initProperties()
     m_headsetcontrolLights = settings.value("headsetcontrolLights", true).toBool();
     m_headsetcontrolRotateToMute = settings.value("headsetcontrolRotateToMute", true).toBool();
     m_headsetcontrolVoicePrompts = settings.value("headsetcontrolVoicePrompts", true).toBool();
-    m_headsetcontrolInactiveTime = settings.value("headsetcontrolInactiveTime", -1).toInt();
+    m_headsetcontrolInactiveTime = settings.value("headsetcontrolInactiveTime", 30).toInt();
     m_headsetcontrolSidetone = settings.value("headsetcontrolSidetone", 0).toInt();
     m_allowBrightnessControl = settings.value("allowBrightnessControl", true).toBool();
     m_avoidApplicationsOverflow = settings.value("avoidApplicationsOverflow", false).toBool();
