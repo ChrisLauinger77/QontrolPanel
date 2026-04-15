@@ -265,7 +265,7 @@ ColumnLayout {
                     title: qsTr("Fetch rate (seconds)")
                     additionalControl: SpinBox {
                         from: 10
-                        to: 600
+                        to: 3600
                         value: UserSettings.headsetcontrolFetchRate
                         editable: true
                         stepSize: 5
