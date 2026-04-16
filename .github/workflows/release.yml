@@ -63,7 +63,7 @@ jobs:
           tag_name: ${{ steps.cmake_version.outputs.version }}
           name: ${{ steps.cmake_version.outputs.version }}
           body: ""
-          draft: true
+          draft: false
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
