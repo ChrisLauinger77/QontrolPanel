@@ -24,8 +24,9 @@ struct AudioApplication {
     int volume;              // 0-100
     bool isMuted;            // Mute state
     int streamIndex;         // Index within the same executable (0, 1, 2, ...)
+    bool isSystemSounds;     // Stable internal flag for Windows system sounds
 
-    AudioApplication() : volume(0), isMuted(false), streamIndex(0) {}
+    AudioApplication() : volume(0), isMuted(false), streamIndex(0), isSystemSounds(false) {}
 
     bool operator==(const AudioApplication& other) const {
         return id == other.id;

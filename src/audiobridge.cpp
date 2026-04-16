@@ -261,6 +261,7 @@ void AudioBridge::updateGroupedApplications()
         bool muted = m_applicationModel->data(index, ApplicationModel::IsMutedRole).toBool();
         QString appId = m_applicationModel->data(index, ApplicationModel::IdRole).toString();
         int streamIndex = m_applicationModel->data(index, ApplicationModel::StreamIndexRole).toInt();
+        bool isSystemSounds = m_applicationModel->data(index, ApplicationModel::IsSystemSoundsRole).toBool();
 
         AudioApplication app;
         app.id = appId;
@@ -270,6 +271,7 @@ void AudioBridge::updateGroupedApplications()
         app.volume = volume;
         app.isMuted = muted;
         app.streamIndex = streamIndex;
+        app.isSystemSounds = isSystemSounds;
 
         if (!groups.contains(executableName)) {
             ApplicationGroup group;
@@ -286,6 +288,7 @@ void AudioBridge::updateGroupedApplications()
             }
 
             group.iconPath = iconPath;
+            group.isSystemSounds = isSystemSounds;
             group.sessions.append(app);
             groups[executableName] = group;
         } else {
@@ -315,8 +318,8 @@ void AudioBridge::updateGroupedApplications()
     // Sort groups (System sounds last, others alphabetically)
     std::sort(groupList.begin(), groupList.end(),
               [](const ApplicationGroup& a, const ApplicationGroup& b) {
-                  if (a.executableName == "System sounds") return false;
-                  if (b.executableName == "System sounds") return true;
+                  if (a.isSystemSounds) return false;
+                  if (b.isSystemSounds) return true;
                   return a.displayName.toLower() < b.displayName.toLower();
               });
 
@@ -396,8 +399,9 @@ void AudioBridge::applyChatMixToApplications(int value)
         QString appId = m_applicationModel->data(index, ApplicationModel::IdRole).toString();
         QString appName = m_applicationModel->data(index, ApplicationModel::NameRole).toString();
         int streamIndex = m_applicationModel->data(index, ApplicationModel::StreamIndexRole).toInt();
+        bool isSystemSounds = m_applicationModel->data(index, ApplicationModel::IsSystemSoundsRole).toBool();
 
-        if (appName == "System sounds" || appId == "system_sounds") {
+        if (isSystemSounds) {
             continue;
         }
 
@@ -424,8 +428,9 @@ void AudioBridge::restoreOriginalVolumes()
         QString appId = m_applicationModel->data(index, ApplicationModel::IdRole).toString();
         QString appName = m_applicationModel->data(index, ApplicationModel::NameRole).toString();
         int streamIndex = m_applicationModel->data(index, ApplicationModel::StreamIndexRole).toInt();
+        bool isSystemSounds = m_applicationModel->data(index, ApplicationModel::IsSystemSoundsRole).toBool();
 
-        if (appName == "System sounds" || appId == "system_sounds") {
+        if (isSystemSounds) {
             continue;
         }
 
@@ -693,8 +698,9 @@ void AudioBridge::restoreOriginalVolumesSync()
         QString appId = m_applicationModel->data(index, ApplicationModel::IdRole).toString();
         QString appName = m_applicationModel->data(index, ApplicationModel::NameRole).toString();
         int streamIndex = m_applicationModel->data(index, ApplicationModel::StreamIndexRole).toInt();
+        bool isSystemSounds = m_applicationModel->data(index, ApplicationModel::IsSystemSoundsRole).toBool();
 
-        if (appName == "System sounds" || appId == "system_sounds") {
+        if (isSystemSounds) {
             continue;
         }
 

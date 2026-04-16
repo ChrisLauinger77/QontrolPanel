@@ -1389,6 +1389,7 @@ void AudioWorker::enumerateApplications()
             app.volume = tempData->volume;
             app.isMuted = tempData->isMuted;
             app.streamIndex = tempData->isSystemSounds ? 0 : streamIndex;
+            app.isSystemSounds = tempData->isSystemSounds;
 
             // Cache the volume control
             m_sessionVolumeControls[app.id] = tempData->volumeControl;
@@ -1427,6 +1428,7 @@ void AudioWorker::enumerateApplications()
         systemApp.isMuted = false;
         systemApp.iconPath = "";
         systemApp.streamIndex = 0;
+        systemApp.isSystemSounds = true;
 
         newApplications.append(systemApp);
     }

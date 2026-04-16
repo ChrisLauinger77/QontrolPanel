@@ -953,7 +953,7 @@ ApplicationWindow {
                                         ToolTip.delay: 1000
                                         opacity: highlighted ? 0.3 : (enabled ? 1 : 0.5)
                                         icon.color: "transparent"
-                                        icon.source: appDelegateRoot.model.executableName === "System sounds" ? Constants.systemIcon : appDelegateRoot.model.iconPath
+                                        icon.source: appDelegateRoot.model.isSystemSounds ? Constants.systemIcon : appDelegateRoot.model.iconPath
                                         onClicked: AudioBridge.setExecutableMute(appDelegateRoot.model.executableName, checked)
                                         Component.onCompleted: palette.accent = palette.button
                                     }
@@ -969,11 +969,11 @@ ApplicationWindow {
                                             Layout.rightMargin: 25
                                             text: {
                                                 let name = appDelegateRoot.model.displayName
-                                                if (name === "System sounds") {
+                                                if (appDelegateRoot.model.isSystemSounds) {
                                                     name = qsTr("System sounds")
                                                 }
 
-                                                if (UserSettings.chatMixEnabled && AudioBridge.isCommApp(name) && name !== "System sounds") {
+                                                if (UserSettings.chatMixEnabled && AudioBridge.isCommApp(name) && !appDelegateRoot.model.isSystemSounds) {
                                                     name += " (Comm)"
                                                 }
                                                 return name
@@ -983,7 +983,7 @@ ApplicationWindow {
                                                 anchors.fill: parent
                                                 acceptedButtons: Qt.RightButton
                                                 onClicked: function(mouse) {
-                                                    if (mouse.button === Qt.RightButton && appDelegateRoot.model.executableName !== "System sounds") {
+                                                    if (mouse.button === Qt.RightButton && !appDelegateRoot.model.isSystemSounds) {
                                                         executableRenameContextMenu.originalName = appDelegateRoot.model.executableName
                                                         executableRenameContextMenu.currentCustomName = AudioBridge.getCustomExecutableName(appDelegateRoot.model.executableName)
                                                         executableRenameContextMenu.popup()
@@ -1001,8 +1001,8 @@ ApplicationWindow {
                                             enabled: !UserSettings.chatMixEnabled && !executableMuteButton.highlighted
                                             opacity: enabled ? 1 : 0.5
                                             Layout.fillWidth: true
-                                            displayProgress: appDelegateRoot.model.executableName !== "System sounds"
-                                            audioLevel: appDelegateRoot.model.executableName !== "System sounds"
+                                            displayProgress: !appDelegateRoot.model.isSystemSounds
+                                            audioLevel: !appDelegateRoot.model.isSystemSounds
                                                         ? (appDelegateRoot.model.averageAudioLevel || 0)
                                                         : 0
                                             onValueChanged: {
