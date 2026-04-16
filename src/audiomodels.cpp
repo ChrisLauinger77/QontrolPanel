@@ -39,6 +39,8 @@ QVariant ApplicationModel::data(const QModelIndex &index, int role) const
         return app.isMuted;
     case StreamIndexRole:
         return app.streamIndex;
+    case IsSystemSoundsRole:
+        return app.isSystemSounds;
     default:
         return QVariant();
     }
@@ -54,6 +56,7 @@ QHash<int, QByteArray> ApplicationModel::roleNames() const
     roles[VolumeRole] = "volume";
     roles[IsMutedRole] = "isMuted";
     roles[StreamIndexRole] = "streamIndex";
+    roles[IsSystemSoundsRole] = "isSystemSounds";
     return roles;
 }
 
@@ -66,7 +69,7 @@ void ApplicationModel::setApplications(const QList<AudioApplication>& applicatio
     bool hasSystemSounds = false;
 
     for (const AudioApplication& app : applications) {
-        if (app.name == "System sounds" || app.id == "system_sounds") {
+        if (app.isSystemSounds || app.id == "system_sounds") {
             systemSounds = app;
             hasSystemSounds = true;
         } else {
@@ -301,6 +304,8 @@ QVariant GroupedApplicationModel::data(const QModelIndex &index, int role) const
         return group.sessionCount;
     case AverageAudioLevelRole:
         return group.averageAudioLevel;
+    case IsSystemSoundsRole:
+        return group.isSystemSounds;
     default:
         return QVariant();
     }
@@ -317,6 +322,7 @@ QHash<int, QByteArray> GroupedApplicationModel::roleNames() const
     roles[AllMutedRole] = "allMuted";
     roles[SessionCountRole] = "sessionCount";
     roles[AverageAudioLevelRole] = "averageAudioLevel";
+    roles[IsSystemSoundsRole] = "isSystemSounds";
     return roles;
 }
 
@@ -403,6 +409,8 @@ QVariant ExecutableSessionModel::data(const QModelIndex &index, int role) const
         return session.isMuted;
     case StreamIndexRole:
         return session.streamIndex;
+    case IsSystemSoundsRole:
+        return session.isSystemSounds;
     default:
         return QVariant();
     }
@@ -418,6 +426,7 @@ QHash<int, QByteArray> ExecutableSessionModel::roleNames() const
     roles[VolumeRole] = "volume";
     roles[IsMutedRole] = "isMuted";
     roles[StreamIndexRole] = "streamIndex";
+    roles[IsSystemSoundsRole] = "isSystemSounds";
     return roles;
 }
 

@@ -95,7 +95,7 @@ Rectangle {
                 ToolTip.delay: 1000
                 opacity: highlighted ? 0.3 : (enabled ? 1 : 0.5)
                 icon.color: "transparent"
-                icon.source: individualAppLayout.model.name === "System sounds" ? Constants.systemIcon : individualAppLayout.model.iconPath
+                icon.source: individualAppLayout.model.isSystemSounds ? Constants.systemIcon : individualAppLayout.model.iconPath
 
                 onClicked: {
                     let newMutedState = !individualAppLayout.model.isMuted
@@ -120,7 +120,7 @@ Rectangle {
                         let originalName = individualAppLayout.model.name
                         let streamIndex = individualAppLayout.model.streamIndex
 
-                        if (originalName === "System sounds") {
+                        if (individualAppLayout.model.isSystemSounds) {
                             return qsTr("System sounds")
                         }
 
@@ -139,7 +139,7 @@ Rectangle {
                         anchors.fill: parent
                         acceptedButtons: Qt.RightButton
                         onClicked: function(mouse) {
-                            if (mouse.button === Qt.RightButton && individualAppLayout.model.name !== "System sounds") {
+                            if (mouse.button === Qt.RightButton && !individualAppLayout.model.isSystemSounds) {
                                 renameContextMenu.originalName = individualAppLayout.model.name
                                 renameContextMenu.streamIndex = individualAppLayout.model.streamIndex
                                 renameContextMenu.currentCustomName = AudioBridge.getCustomApplicationName(individualAppLayout.model.name, individualAppLayout.model.streamIndex)

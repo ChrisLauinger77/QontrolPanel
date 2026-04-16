@@ -26,6 +26,7 @@ public:
         VolumeRole,
         IsMutedRole,
         StreamIndexRole,
+        IsSystemSoundsRole,
     };
     Q_ENUM(ApplicationRoles)
 
@@ -110,6 +111,7 @@ struct ApplicationGroup {
     bool allMuted;
     int sessionCount;
     int averageAudioLevel;
+    bool isSystemSounds = false;
 };
 
 // ============================================================================
@@ -129,7 +131,8 @@ public:
         AnyMutedRole,
         AllMutedRole,
         SessionCountRole,
-        AverageAudioLevelRole
+        AverageAudioLevelRole,
+        IsSystemSoundsRole
     };
     Q_ENUM(GroupRoles)
 
@@ -167,7 +170,8 @@ public:
         IconPathRole,
         VolumeRole,
         IsMutedRole,
-        StreamIndexRole
+        StreamIndexRole,
+        IsSystemSoundsRole
     };
     Q_ENUM(SessionRoles)
 

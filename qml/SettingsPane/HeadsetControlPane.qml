@@ -99,7 +99,7 @@ ColumnLayout {
 
                         SpinBox {
                             Layout.preferredHeight: 35
-                            Layout.preferredWidth: 160
+                            Layout.preferredWidth: 100
                             from: 1
                             to: 30
                             value: UserSettings.headsetcontrolLowBatteryThreshold
