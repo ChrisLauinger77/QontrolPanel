@@ -295,7 +295,7 @@ def main():
         # Special case for English - always 100%
         if language_code.lower() in ['en', 'english', 'en_us', 'en_gb']:
             # English is the source language - use current date and original author
-            current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S %z')
+            current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             translation_progress[language_code] = {
                 'percentage': 100,
                 'last_updated': current_date,
