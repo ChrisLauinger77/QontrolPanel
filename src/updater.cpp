@@ -10,6 +10,7 @@
 #include <QNetworkRequest>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QTimeZone>
 #include <QUrl>
 #include <QDebug>
 #include "version.h"
@@ -41,6 +42,13 @@ QString formatLocalizedTimestamp(const QString& timestamp)
     }
 
     parsedDateTime = QDateTime::fromString(normalizedTimestamp, Qt::ISODate);
+    if (!parsedDateTime.isValid()) {
+        parsedDateTime = QDateTime::fromString(trimmedTimestamp, "yyyy-MM-dd HH:mm:ss 'UTC'");
+        if (parsedDateTime.isValid()) {
+            parsedDateTime.setTimeZone(QTimeZone::UTC);
+        }
+    }
+
     if (!parsedDateTime.isValid()) {
         parsedDateTime = QDateTime::fromString(trimmedTimestamp, "yyyy-MM-dd HH:mm:ss");
         if (parsedDateTime.isValid()) {
@@ -649,5 +657,5 @@ QString Updater::getCommitHash() const
 
 QString Updater::getBuildTimestamp() const
 {
-    return QString(BUILD_TIMESTAMP);
+    return formatLocalizedTimestamp(QString(BUILD_TIMESTAMP));
 }
