@@ -936,6 +936,10 @@ You can enable it in the Components tab.</source>
         <translation>번역 업데이트</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">언어</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>GitHub에서 최신 번역 파일 다운로드</translation>
     </message>
@@ -1180,6 +1184,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Debug</source>
         <translation>디버그</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Updates</source>

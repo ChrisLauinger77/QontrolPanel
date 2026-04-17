@@ -211,7 +211,7 @@ ApplicationWindow {
                 }
 
                 ItemDelegate {
-                    text: "Donate"
+                    text: qsTr("Donate")
                     Layout.fillWidth: true
                     Layout.preferredHeight: 43
                     spacing: 10

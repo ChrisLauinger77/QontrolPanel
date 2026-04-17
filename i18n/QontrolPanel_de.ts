@@ -937,6 +937,10 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>Übersetzungen aktualisieren</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation>Sprache</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>Laden Sie die neuesten Übersetzungsdateien von GitHub herunter</translation>
     </message>
@@ -1177,6 +1181,10 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     <message>
         <source>Updates</source>
         <translation>Updates</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>Spenden</translation>
     </message>
     <message>
         <source>HeadsetControl</source>

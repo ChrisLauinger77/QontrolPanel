@@ -924,6 +924,10 @@ You can enable it in the Components tab.</source>
         <translation>Aktualizacja tłumaczeń</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">Język</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>Pobierz najnowsze pliki tłumaczenia z GitHub</translation>
     </message>
@@ -1192,6 +1196,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Debug</source>
         <translation>Debugowanie</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

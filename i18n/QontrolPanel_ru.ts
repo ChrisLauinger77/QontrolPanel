@@ -935,6 +935,10 @@ You can enable it in the Components tab.</source>
         <translation>Обновление перевода</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">Язык</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>Загрузить последнее обновление с  GitHub</translation>
     </message>
@@ -1179,6 +1183,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Debug</source>
         <translation>Информация</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Updates</source>

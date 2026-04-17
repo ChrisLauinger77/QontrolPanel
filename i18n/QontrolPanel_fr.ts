@@ -930,6 +930,10 @@ You can enable it in the Components tab.</source>
         <translation>Rechercher des mises à jour de traductions au démarrage et toutes les 4 heures</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">Langage</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>Télécharger les dernieres traductions sur GitHub</translation>
     </message>
@@ -1183,6 +1187,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Updates</source>
         <translation>Mises à jour</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>General</source>

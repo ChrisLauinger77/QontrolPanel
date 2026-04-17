@@ -939,6 +939,10 @@ You can enable it in the Components tab.</source>
         <translation>更新语言</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">语言</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>从 GitHub 下载最新的语言文件</translation>
     </message>
@@ -1179,6 +1183,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Debug</source>
         <translation>调试</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Updates</source>

@@ -936,6 +936,10 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>Posodobi prevode</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">Jezik</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>Prenesite najnovejše datoteke za prevod z GitHuba</translation>
     </message>
@@ -1176,6 +1180,10 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>Updates</source>
         <translation>Posodobitve</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HeadsetControl</source>
