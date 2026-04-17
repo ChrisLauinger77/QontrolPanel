@@ -1278,7 +1278,7 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>Exit</source>
-        <translation>Esci da QuickSoundSwitcher</translation>
+        <translation>Esci da QontrolPanel</translation>
     </message>
     <message>
         <source>ChatMix</source>
