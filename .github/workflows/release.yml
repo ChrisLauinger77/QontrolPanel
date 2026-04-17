@@ -7,6 +7,7 @@ on:
         required: false
 
 permissions:
+  actions: write
   contents: write
 
 jobs:
@@ -71,3 +72,18 @@ jobs:
             QontrolPanel_Installer.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger WinGet publish workflow
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'winget-publish.yml',
+              ref: context.ref.replace('refs/heads/', ''),
+              inputs: {
+                release_tag: '${{ steps.cmake_version.outputs.version }}'
+              }
+            });
