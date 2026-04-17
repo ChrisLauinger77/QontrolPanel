@@ -5,55 +5,55 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasti rapidi app volume</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasti rapidi app volume</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Assegna tasti scelta rapida globali per controllo volume di specfiche applicazioni</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Aggiungi</translation>
+        <translation>Aggiungi</translation>
     </message>
     <message>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Step</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Rimuovi</translation>
+        <translation>Rimuovi</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi tasto rapido volume app</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Applicazione</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasto rapido volume +</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>Clic per impostare</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasto rapido volume -</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Step incremento volume</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annulla</translation>
+        <translation>Annulla</translation>
     </message>
 </context>
 <context>
@@ -335,11 +335,11 @@
     </message>
     <message>
         <source>Enable HeadsetControl integration</source>
-        <translation>Abilita integrazione controllo auricolari</translation>
+        <translation>Abilita integrazione controllo cuffie</translation>
     </message>
     <message>
         <source>Monitor battery using HeadsetControl for supported devices</source>
-        <translation>Monitora batteria usando il controllo auricolari per i dispositivi supportati</translation>
+        <translation>Monitora batteria usando il controllo cuffie per i dispositivi supportati</translation>
     </message>
     <message>
         <source>Enable audio device manager</source>
@@ -648,71 +648,71 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina iniziale impostazioni</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli quale pagina impostazioni aprire quando viene visualizzata la finestra impostazioni</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Generale</translation>
+        <translation>Generale</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished">Componenti</translation>
+        <translation>Componenti</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">Apparenza</translation>
+        <translation>Apparenza</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished">Overlay media</translation>
+        <translation>Overlay media</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">Tasti rapidi</translation>
+        <translation>Tasti rapidi</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasti rapidi app</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">Controllo cuffie</translation>
+        <translation>Controllo cuffie</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">Rinomina</translation>
+        <translation>Rinomina</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Lingua interfaccia</translation>
+        <translation>Lingua interfaccia</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished">Aggiornamenti</translation>
+        <translation>Aggiornamenti</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">Debug</translation>
+        <translation>Debug</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Quando si seleziona un&apos;azione di alimentazione dal menu della barra applicazioni visualizza una finestra di conferma</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Timeout conferma azione alimentazione (secondi)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempo trascorso prima che la finestra di conferma dell&apos;azione di alimentazione attivi automaticamente l&apos;azione selezionata</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
@@ -740,7 +740,7 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel verrà eseguito all&apos;avvio del computer</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
@@ -759,72 +759,73 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>1 - Condizioni errore</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
+        <translation>2 - Carica batteria</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
+        <translation>3 - Batteria base</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>4 - Batteria non disponibile</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>5 - Timeout</translation>
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
+        <translation>6 - Batteria completamente carica</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>7 - Batteria scarica</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Abilita la modalità test di seguito per simulare una cuffia supportata e convalidare l&apos;interfaccia utente di Controllo cuffie</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo test controllo cuffie</translation>
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simula una cuffia supportata per il test. Questo rimane abilitato fino alla chiusura dell&apos;app.</translation>
     </message>
     <message>
         <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Test profilo cuffie</translation>
     </message>
     <message>
         <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli quale scenario controllo cuffie vuoi simulare.</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Livello attuale batteria cuffie collegate</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Avvisa quando la cuffia connessa raggiunge %1% o meno.</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Valore ChatMix auricolare collegato</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il monitoraggio di controllo cuffie è disabilitato
+Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
@@ -832,23 +833,23 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempo di inattività (minuti)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposta il tempo di inattività dopo il quale le cuffie entreranno in modalità risparmio energetico</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Luci</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
-        <translation>Attiva luci RGB dell&apos;auricolare</translation>
+        <translation>Attiva luci RGB delle cuffie</translation>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Attiva/disattiva funzione rotazione per disattivare l&apos;audio nelle cuffie</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -860,19 +861,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruota per audio off</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>Tono laterale</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Comandi vocali</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Attiva/disattiva comandi vocali nelle cuffie</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -981,18 +982,18 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown date</source>
-        <translation>14.02.2026</translation>
+        <translation>17.04.2026</translation>
     </message>
 </context>
 <context>
     <name>Main</name>
     <message>
         <source>Low Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Batteria scarica</translation>
     </message>
     <message>
         <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
+        <translation>La batteria dell&apos;auricolare si sta scaricando</translation>
     </message>
     <message>
         <source>Update Available</source>
@@ -1019,7 +1020,7 @@ You can enable it in the Components tab.</source>
     <name>MediaOverlay</name>
     <message>
         <source>No media playing</source>
-        <translation>Messun media da riprodurre</translation>
+        <translation>Nessun media da riprodurre</translation>
     </message>
 </context>
 <context>
@@ -1167,7 +1168,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasti rapidi app</translation>
     </message>
     <message>
         <source>Language</source>
@@ -1206,7 +1207,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Allow QontrolPanel to respond to keyboard shortcuts globally</source>
-        <translation>Consenti a Qontrolpanel di rispondere alle scorciatoie da tastiera a livello globale</translation>
+        <translation>Consenti a QontrolPanel di rispondere ai tasti rapidi a livello globale</translation>
     </message>
     <message>
         <source>Notification on ChatMix toggle</source>
@@ -1234,11 +1235,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle Microphone Mute</source>
-        <translation>Muting microfono ON/OFF</translation>
+        <translation>Microfono ON/OFF</translation>
     </message>
     <message>
         <source>Shortcut to mute/unmute microphone</source>
-        <translation>Collegamento a muting microfono ON/OFF</translation>
+        <translation>Collegamento a microfono ON/OFF</translation>
     </message>
     <message>
         <source>Set Panel Shortcut</source>
@@ -1246,7 +1247,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Set Microphone Mute Shortcut</source>
-        <translation>Imposta scorciatoia muting microfono</translation>
+        <translation>Imposta tasto rapido microfono on/off</translation>
     </message>
     <message>
         <source>Press the desired key combination</source>
@@ -1281,7 +1282,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
