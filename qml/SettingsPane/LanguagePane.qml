@@ -9,7 +9,7 @@ ColumnLayout {
     spacing: 3
 
     Label {
-        text: qsTr("Application language")
+        text: qsTr("Language")
         font.pixelSize: 22
         font.bold: true
         Layout.bottomMargin: 15
