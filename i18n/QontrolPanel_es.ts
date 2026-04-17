@@ -937,6 +937,10 @@ Puedes activarla en la pestaña Componentes.</translation>
         <translation type="unfinished">Actualizar traducciones</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">Idioma</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation type="unfinished">Descargar los archivos de traducción más recientes desde GitHub</translation>
     </message>
@@ -1177,6 +1181,10 @@ Puedes activarla en la pestaña Componentes.</translation>
     <message>
         <source>Updates</source>
         <translation type="unfinished">Actualizaciones</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HeadsetControl</source>

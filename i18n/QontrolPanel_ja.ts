@@ -936,6 +936,10 @@ You can enable it in the Components tab.</source>
         <translation>翻訳を更新</translation>
     </message>
     <message>
+        <source>Language</source>
+        <translation type="unfinished">言語</translation>
+    </message>
+    <message>
         <source>Download the latest translation files from GitHub</source>
         <translation>GitHub から最新の翻訳ファイルをダウンロードします</translation>
     </message>
@@ -1176,6 +1180,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Updates</source>
         <translation>更新</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HeadsetControl</source>
