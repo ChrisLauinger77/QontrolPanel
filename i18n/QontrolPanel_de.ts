@@ -964,7 +964,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
-        <translation>Stellen Sie die Lautstärke Ihrer Sprachausgabe ein</translation>
+        <translation>Passen Sie die Lautstärke des Sprachfeedbacks an</translation>
     </message>
     <message>
         <source>Notification on low battery</source>
