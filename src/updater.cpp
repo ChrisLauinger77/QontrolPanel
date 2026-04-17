@@ -5,6 +5,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDateTime>
+#include <QLocale>
 #include <QNetworkRequest>
 #include <QProcess>
 #include <QStandardPaths>
@@ -16,6 +18,43 @@
 #include "usersettings.h"
 
 Updater* Updater::m_instance = nullptr;
+
+namespace {
+QString formatLocalizedTimestamp(const QString& timestamp)
+{
+    const QString trimmedTimestamp = timestamp.trimmed();
+    if (trimmedTimestamp.isEmpty()) {
+        return QString();
+    }
+
+    QDateTime parsedDateTime;
+    QString normalizedTimestamp = trimmedTimestamp;
+
+    const int separatorIndex = normalizedTimestamp.lastIndexOf(' ');
+    if (separatorIndex > 0) {
+        const QString timezonePart = normalizedTimestamp.mid(separatorIndex + 1);
+        if ((timezonePart.startsWith('+') || timezonePart.startsWith('-'))
+            && timezonePart.size() == 5
+            && !timezonePart.contains(':')) {
+            normalizedTimestamp.insert(separatorIndex + 4, ':');
+        }
+    }
+
+    parsedDateTime = QDateTime::fromString(normalizedTimestamp, Qt::ISODate);
+    if (!parsedDateTime.isValid()) {
+        parsedDateTime = QDateTime::fromString(trimmedTimestamp, "yyyy-MM-dd HH:mm:ss");
+        if (parsedDateTime.isValid()) {
+            parsedDateTime.setTimeSpec(Qt::LocalTime);
+        }
+    }
+
+    if (!parsedDateTime.isValid()) {
+        return trimmedTimestamp;
+    }
+
+    return QLocale::system().toString(parsedDateTime.toLocalTime(), QLocale::ShortFormat);
+}
+}
 
 Updater* Updater::instance()
 {
@@ -535,7 +574,7 @@ QString Updater::getTranslationLastUpdated(const QString& languageCode)
         if (value.isObject()) {
             QString dateStr = value.toObject()["last_updated"].toString();
             if (!dateStr.isEmpty()) {
-                return dateStr;
+                return formatLocalizedTimestamp(dateStr);
             }
         }
     }
