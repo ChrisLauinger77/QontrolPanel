@@ -65,7 +65,15 @@ def get_last_commit_info(file_path):
     """Get the last commit hash and date for a specific file"""
     try:
         result = subprocess.run(
-            ['git', 'log', '-1', '--format=%H %ci', '--', str(file_path)],
+            [
+                'git',
+                'log',
+                '-1',
+                '--date=format:%Y-%m-%d %H:%M:%S',
+                '--format=%H|%cd',
+                '--',
+                str(file_path)
+            ],
             capture_output=True,
             text=True,
             encoding='utf-8',
@@ -73,7 +81,7 @@ def get_last_commit_info(file_path):
             cwd=file_path.parent.parent
         )
         if result.returncode == 0 and result.stdout.strip():
-            parts = result.stdout.strip().split(' ', 1)
+            parts = result.stdout.strip().split('|', 1)
             commit_hash = parts[0]
             date_str = parts[1] if len(parts) > 1 else None
             return commit_hash, date_str
@@ -195,7 +203,14 @@ def find_last_single_file_commit(file_path, i18n_dir):
                 if ts_count == 1:
                     # Found a commit with only this file, get its date
                     date_result = subprocess.run(
-                        ['git', 'show', '--format=%ci', '--no-patch', commit_hash],
+                        [
+                            'git',
+                            'show',
+                            '--date=format:%Y-%m-%d %H:%M:%S',
+                            '--format=%cd',
+                            '--no-patch',
+                            commit_hash
+                        ],
                         capture_output=True,
                         text=True,
                         encoding='utf-8',
