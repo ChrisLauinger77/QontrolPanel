@@ -76,6 +76,7 @@ void UserSettings::initProperties()
     m_headsetcontrolLights = settings.value("headsetcontrolLights", true).toBool();
     m_headsetcontrolRotateToMute = settings.value("headsetcontrolRotateToMute", true).toBool();
     m_headsetcontrolVoicePrompts = settings.value("headsetcontrolVoicePrompts", true).toBool();
+    m_headsetcontrolEqualizerPreset = qMax(0, settings.value("headsetcontrolEqualizerPreset", 0).toInt());
     m_headsetcontrolInactiveTime = settings.value("headsetcontrolInactiveTime", 30).toInt();
     m_headsetcontrolSidetone = settings.value("headsetcontrolSidetone", 0).toInt();
     m_allowBrightnessControl = settings.value("allowBrightnessControl", true).toBool();
@@ -391,6 +392,17 @@ void UserSettings::setHeadsetcontrolVoicePrompts(bool value)
         m_headsetcontrolVoicePrompts = value;
         saveValue("headsetcontrolVoicePrompts", value);
         emit headsetcontrolVoicePromptsChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolEqualizerPreset(int value)
+{
+    value = qMax(0, value);
+
+    if (m_headsetcontrolEqualizerPreset != value) {
+        m_headsetcontrolEqualizerPreset = value;
+        saveValue("headsetcontrolEqualizerPreset", value);
+        emit headsetcontrolEqualizerPresetChanged();
     }
 }
 
