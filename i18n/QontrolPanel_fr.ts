@@ -1104,10 +1104,6 @@ You can enable it in the Components tab.</source>
 <context>
     <name>LogBridge</name>
     <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>

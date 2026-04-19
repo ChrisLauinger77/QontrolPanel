@@ -1103,10 +1103,6 @@ Puoi abilitarlo nella scheda Componenti.</translation>
 <context>
     <name>LogBridge</name>
     <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>

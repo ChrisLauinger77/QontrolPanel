@@ -1103,10 +1103,6 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
 <context>
     <name>LogBridge</name>
     <message>
-        <source>All</source>
-        <translation>Alle</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
