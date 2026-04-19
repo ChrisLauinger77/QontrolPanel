@@ -122,7 +122,7 @@ ColumnLayout {
             Layout.preferredWidth: 200
             model: ListModel {
                 id: senderOptions
-                ListElement { text: qsTr("All"); value: qsTr("All") }
+                ListElement { text: qsTr("All"); value: "All" }
             }
             textRole: "text"
             valueRole: "value"

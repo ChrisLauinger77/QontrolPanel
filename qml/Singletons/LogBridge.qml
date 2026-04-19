@@ -8,7 +8,7 @@ Item {
     property int maxLogEntries: 500
     property ListModel logModel: ListModel {}
     property ListModel filteredModel: ListModel {}
-    property string currentFilter: qsTr("All")
+    property string currentFilter: "All"
     property var senderRegex: /^\[[^\]]+\]\s+(\w+)\s+\[\w+\]/
 
     signal logEntryAdded(string message, int type, string sender)
