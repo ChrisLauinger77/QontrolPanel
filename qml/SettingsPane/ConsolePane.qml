@@ -8,7 +8,7 @@ ColumnLayout {
     id: logViewer
     spacing: 3
 
-    property string selectedSender: qsTr("All")
+    property string selectedSender: "All"
     property bool autoScroll: true
 
     Component.onCompleted: {
