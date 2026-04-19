@@ -5,7 +5,7 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation>アプリ音量ホットキー</translation>
+        <translation>アプリ音量のホットキー</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
@@ -33,7 +33,7 @@
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation>アプリ音量ホットキーを追加</translation>
+        <translation>アプリ音量のホットキーを追加</translation>
     </message>
     <message>
         <source>Application</source>
