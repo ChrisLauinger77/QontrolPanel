@@ -24,7 +24,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>  (Step: %1)</source>
+        <source>(Step: %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
