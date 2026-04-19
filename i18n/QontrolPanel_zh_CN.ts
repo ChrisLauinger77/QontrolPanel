@@ -20,7 +20,11 @@
         <translation type="unfinished">添加</translation>
     </message>
     <message>
-        <source>Step</source>
+        <source>Up %1  Down %2%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>  (Step: %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -428,6 +432,34 @@
 <context>
     <name>ConsolePane</name>
     <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QontrolPanel Log Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Commit: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Date: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Entries: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Console output</source>
         <translation>控制台输出</translation>
     </message>
@@ -445,6 +477,85 @@
     </message>
     <message>
         <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Context</name>
+    <message>
+        <source>Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">左</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">右</translation>
+    </message>
+    <message>
+        <source>Space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Backspace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>End</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -988,6 +1099,17 @@ You can enable it in the Components tab.</source>
     </message>
 </context>
 <context>
+    <name>LogBridge</name>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Main</name>
     <message>
         <source>ChatMix</source>
@@ -1149,6 +1271,14 @@ You can enable it in the Components tab.</source>
         <translation>QontrolPanel - 设置</translation>
     </message>
     <message>
+        <source>You just lost the game</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too bad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>General</source>
         <translation>常规</translation>
     </message>
@@ -1279,12 +1409,24 @@ You can enable it in the Components tab.</source>
         <translation>输出: </translation>
     </message>
     <message>
+        <source>Loading...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Input: </source>
         <translation>输入: </translation>
     </message>
     <message>
         <source>Exit</source>
         <translation>退出</translation>
+    </message>
+    <message>
+        <source>Unknown Device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QontrolPanel</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix</source>
