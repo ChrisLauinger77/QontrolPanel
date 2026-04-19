@@ -5,59 +5,59 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリ音量ホットキー</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリごとに音量のショートカット キーを設定します</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>特定のアプリで音量をコントロールするためのグローバル ホットキーを割り当てます</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">追加</translation>
+        <translation>追加</translation>
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>上げる %1  下げる %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ステップ: %1)</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリ音量ホットキーを追加</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリ</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>音量を上げるショートカット</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックで設定...</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>音量を下げるショートカット</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>音量のステップ サイズ</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
 </context>
 <context>
@@ -433,31 +433,31 @@
     <name>ConsolePane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>すべて</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel のログをエクスポート</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>バージョン: %1</translation>
     </message>
     <message>
         <source>Commit: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>コミット: %1</translation>
     </message>
     <message>
         <source>Export Date: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポートした日付: %1</translation>
     </message>
     <message>
         <source>Filter: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルター: %1</translation>
     </message>
     <message>
         <source>Total Entries: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>エントリの合計: %1</translation>
     </message>
     <message>
         <source>Console output</source>
@@ -484,79 +484,79 @@
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>↑</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>↓</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">左</translation>
+        <translation>←</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">右</translation>
+        <translation>→</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Space</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Insert</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Up</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Down</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>不明</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
@@ -759,75 +759,75 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>設定の開始ページ</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>設定の項目を表示したときに開く設定ページを選択します</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">一般</translation>
+        <translation>一般</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished">コンポーネント</translation>
+        <translation>コンポーネント</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">外観</translation>
+        <translation>外観</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>メディア オーバーレイ</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">ショートカット</translation>
+        <translation>ショートカット</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリ ホットキー</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">ヘッドセット コントロール</translation>
+        <translation>ヘッドセット コントロール</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">名前の変更</translation>
+        <translation>名前の変更</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">言語</translation>
+        <translation>言語</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished">更新</translation>
+        <translation>更新</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">デバッグ</translation>
+        <translation>デバッグ</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>システム トレイ メニューから電源の操作を行うときに確認ダイアログを表示します</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>電源操作の確認のタイムアウト (秒単位)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>電源操作の確認ダイアログが選択した操作を自動でトリガーするまでの時間を設定します</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
-        <translation type="unfinished"></translation>
+        <translation>スライダー ホイールの感度</translation>
     </message>
     <message>
         <source>Normal</source>
@@ -851,7 +851,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel をコンピューターの起動時に自動で起動します</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
@@ -870,72 +870,72 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>1 - エラーの状態</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
+        <translation>2 - バッテリーの充電中</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
+        <translation>3 - 基本的なバッテリー</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>4 - バッテリーが利用不可</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>5 - タイムアウト</translation>
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
+        <translation>6 - バッテリー満充電</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>7 - バッテリー残量低</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
+        <translation>以下のテストモードを有効にすると、対応しているヘッドセットをシミュレートしてヘッドセット コントロール UI を検証できます。</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセット コントロール テスト モード</translation>
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
+        <translation>テスト用に対応しているヘッドセットをシミュレートします。この機能はアプリが終了するまで有効になります。</translation>
     </message>
     <message>
         <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセット プロファイルをテスト</translation>
     </message>
     <message>
         <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセット コントロールがシミュレートする合成ヘッドセットのシナリオを選択してください。</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>接続しているヘッドセットの現在のバッテリー残量です</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>接続されたヘッドセットのバッテリー残量が  %1% 以下になったときに通知します。</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>接続されたヘッドセットの ChatMix の値</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセット コントロールの監視は無効になっています。コンポーネント タブで有効にできます。</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
@@ -943,15 +943,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>非アクティブの時間 (分単位)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセットが省電力モードに入るまでの非アクティブの時間を設定します</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>ライト</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
@@ -959,7 +959,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセットの回転でミュートを切り替える機能を使用します</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -971,19 +971,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>回転でミュート</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>サイド トーン</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>音声プロンプト</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセットの音声プロンプトを切り替えます</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -1048,7 +1048,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">言語</translation>
+        <translation>言語</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -1092,7 +1092,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown author</source>
-        <translation type="unfinished"></translation>
+        <translation>不明な作者</translation>
     </message>
     <message>
         <source>Unknown date</source>
@@ -1103,18 +1103,18 @@ You can enable it in the Components tab.</source>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>不明</translation>
     </message>
 </context>
 <context>
     <name>Main</name>
     <message>
         <source>Low Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>バッテリー残量低</translation>
     </message>
     <message>
         <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセットのバッテリー残量が少なくなっています</translation>
     </message>
     <message>
         <source>Update Available</source>
@@ -1141,82 +1141,82 @@ You can enable it in the Components tab.</source>
     <name>MediaOverlay</name>
     <message>
         <source>No media playing</source>
-        <translation type="unfinished"></translation>
+        <translation>メディアを再生していません</translation>
     </message>
 </context>
 <context>
     <name>MediaOverlayPane</name>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>メディア オーバーレイ</translation>
     </message>
     <message>
         <source>Enable media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>メディア オーバーレイを有効</translation>
     </message>
     <message>
         <source>Show a notification overlay when the currently playing song changes</source>
-        <translation type="unfinished"></translation>
+        <translation>再生中の曲が変わったときに通知オーバーレイを表示します</translation>
     </message>
     <message>
         <source>Overlay size</source>
-        <translation type="unfinished"></translation>
+        <translation>オーバーレイのサイズ</translation>
     </message>
     <message>
         <source>Choose the size of the media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>メディア オーバーレイのサイズを選択してください</translation>
     </message>
     <message>
         <source>Tiny</source>
-        <translation type="unfinished"></translation>
+        <translation>小</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished">通常</translation>
+        <translation>通常</translation>
     </message>
     <message>
         <source>Big</source>
-        <translation type="unfinished"></translation>
+        <translation>大</translation>
     </message>
     <message>
         <source>Overlay position</source>
-        <translation type="unfinished"></translation>
+        <translation>オーバーレイの位置</translation>
     </message>
     <message>
         <source>Choose where the media overlay appears on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>画面上に表示するメディア オーバーレイの位置を選択してください</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>上部の左</translation>
     </message>
     <message>
         <source>Top Center</source>
-        <translation type="unfinished"></translation>
+        <translation>上部の中央</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>上部の右</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">左</translation>
+        <translation>左</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">右</translation>
+        <translation>右</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>下部の左</translation>
     </message>
     <message>
         <source>Bottom Center</source>
-        <translation type="unfinished"></translation>
+        <translation>下部の中央</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>下部の右</translation>
     </message>
 </context>
 <context>
@@ -1269,11 +1269,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
+        <translation>あなたはゲームに負けました</translation>
     </message>
     <message>
         <source>Too bad</source>
-        <translation type="unfinished"></translation>
+        <translation>残念</translation>
     </message>
     <message>
         <source>General</source>
@@ -1285,7 +1285,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>メディア オーバーレイ</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1297,7 +1297,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリ ホットキー</translation>
     </message>
     <message>
         <source>Language</source>
@@ -1309,7 +1309,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>寄付する</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
@@ -1407,7 +1407,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>読み込み中...</translation>
     </message>
     <message>
         <source>Input: </source>
@@ -1419,15 +1419,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>不明なデバイス</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
