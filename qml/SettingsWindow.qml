@@ -95,14 +95,14 @@ ApplicationWindow {
             anchors.fill: parent
 
             Label {
-                text: "You just lost the game"
+                text: qsTr("You just lost the game")
                 font.bold: true
                 font.pixelSize: 18
                 Layout.alignment: Qt.AlignCenter
             }
 
             Button {
-                text: "Too bad"
+                text: qsTr("Too bad")
                 onClicked: easterEggDialog.close()
                 Layout.alignment: Qt.AlignCenter
             }

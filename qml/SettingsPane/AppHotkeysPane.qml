@@ -48,9 +48,12 @@ ColumnLayout {
                         required property int index
                         width: parent.width
                         title: hotkeyCard.modelData.executableName
-                        description: "▲ " + Context.getShortcutText(hotkeyCard.modelData.volumeUpModifiers, hotkeyCard.modelData.volumeUpKey) +
-                                     "  ▼ " + Context.getShortcutText(hotkeyCard.modelData.volumeDownModifiers, hotkeyCard.modelData.volumeDownKey) +
-                                     (hotkeyCard.modelData.volumeStepSize > 0 ? "  (" + qsTr("Step") + ": " + hotkeyCard.modelData.volumeStepSize + ")" : "")
+                        description: qsTr("Up %1  Down %2%3")
+                                     .arg(Context.getShortcutText(hotkeyCard.modelData.volumeUpModifiers, hotkeyCard.modelData.volumeUpKey))
+                                     .arg(Context.getShortcutText(hotkeyCard.modelData.volumeDownModifiers, hotkeyCard.modelData.volumeDownKey))
+                                     .arg(hotkeyCard.modelData.volumeStepSize > 0
+                                          ? qsTr("  (Step: %1)").arg(hotkeyCard.modelData.volumeStepSize)
+                                          : "")
 
                         additionalControl: Button {
                             text: qsTr("Remove")

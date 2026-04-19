@@ -8,7 +8,7 @@ ColumnLayout {
     id: logViewer
     spacing: 3
 
-    property string selectedSender: "All"
+    property string selectedSender: qsTr("All")
     property bool autoScroll: true
 
     Component.onCompleted: {
@@ -63,13 +63,13 @@ ColumnLayout {
         let version = Updater.getAppVersion()
         let commitHash = Updater.getCommitHash()
         let currentDate = new Date().toISOString().split('T')[0]
-        let header = "QontrolPanel Log Export\n"
+        let header = qsTr("QontrolPanel Log Export") + "\n"
         header += "========================\n"
-        header += "Version: " + version + "\n"
-        header += "Commit: " + commitHash + "\n"
-        header += "Export Date: " + currentDate + "\n"
-        header += "Filter: " + selectedSender + "\n"
-        header += "Total Entries: " + LogBridge.filteredModel.count + "\n"
+        header += qsTr("Version: %1").arg(version) + "\n"
+        header += qsTr("Commit: %1").arg(commitHash) + "\n"
+        header += qsTr("Export Date: %1").arg(currentDate) + "\n"
+        header += qsTr("Filter: %1").arg(selectedSender) + "\n"
+        header += qsTr("Total Entries: %1").arg(LogBridge.filteredModel.count) + "\n"
         header += "========================\n\n"
 
         let allLogsText = header
@@ -122,7 +122,7 @@ ColumnLayout {
             Layout.preferredWidth: 200
             model: ListModel {
                 id: senderOptions
-                ListElement { text: "All"; value: "All" }
+                ListElement { text: qsTr("All"); value: qsTr("All") }
             }
             textRole: "text"
             valueRole: "value"

@@ -45,7 +45,7 @@ ApplicationWindow {
 
             if (UserSettings.chatMixShortcutNotification) {
                 notificationType = "chatmix"
-                var message = UserSettings.chatMixEnabled ? "ChatMix Enabled" : "ChatMix Disabled"
+                var message = UserSettings.chatMixEnabled ? qsTr("ChatMix Enabled") : qsTr("ChatMix Disabled")
                 notificationWindow.showNotification(message)
 
                 if (UserSettings.chatMixEnabled) {
