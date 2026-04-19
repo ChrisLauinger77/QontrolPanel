@@ -20,8 +20,12 @@
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <source>Step</source>
-        <translation>Schritt</translation>
+        <source>Up %1  Down %2%3</source>
+        <translation>Hoch %1 Runter %2%3</translation>
+    </message>
+    <message>
+        <source>(Step: %1)</source>
+        <translation>(Schritt: %1)</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -428,6 +432,34 @@
 <context>
     <name>ConsolePane</name>
     <message>
+        <source>All</source>
+        <translation>Alle</translation>
+    </message>
+    <message>
+        <source>QontrolPanel Log Export</source>
+        <translation>QontrolPanel-Protokollexport</translation>
+    </message>
+    <message>
+        <source>Version: %1</source>
+        <translation>Version: %1</translation>
+    </message>
+    <message>
+        <source>Commit: %1</source>
+        <translation>Commit: %1</translation>
+    </message>
+    <message>
+        <source>Export Date: %1</source>
+        <translation>Exportdatum: %1</translation>
+    </message>
+    <message>
+        <source>Filter: %1</source>
+        <translation>Filter: %1</translation>
+    </message>
+    <message>
+        <source>Total Entries: %1</source>
+        <translation>Gesamtzahl der Einträge: %1</translation>
+    </message>
+    <message>
         <source>Console output</source>
         <translation>Konsolenausgabe</translation>
     </message>
@@ -446,6 +478,85 @@
     <message>
         <source>Clear</source>
         <translation>Löschen</translation>
+    </message>
+</context>
+<context>
+    <name>Context</name>
+    <message>
+        <source>Up</source>
+        <translation>Hoch</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation>Runter</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Links</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Rechts</translation>
+    </message>
+    <message>
+        <source>Space</source>
+        <translation>Leer</translation>
+    </message>
+    <message>
+        <source>Enter</source>
+        <translation>Eingabe</translation>
+    </message>
+    <message>
+        <source>Tab</source>
+        <translation>Tab</translation>
+    </message>
+    <message>
+        <source>Esc</source>
+        <translation>Esc</translation>
+    </message>
+    <message>
+        <source>Backspace</source>
+        <translation>Rücktaste</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <source>Insert</source>
+        <translation>Einfügen</translation>
+    </message>
+    <message>
+        <source>Home</source>
+        <translation>Pos 1</translation>
+    </message>
+    <message>
+        <source>End</source>
+        <translation>Ende</translation>
+    </message>
+    <message>
+        <source>Page Up</source>
+        <translation>Bild auf</translation>
+    </message>
+    <message>
+        <source>Page Down</source>
+        <translation>Bild ab</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Unbekannt</translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation>Strg</translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation>Umschalt</translation>
+    </message>
+    <message>
+        <source>Alt</source>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
@@ -990,6 +1101,17 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
 </context>
 <context>
+    <name>LogBridge</name>
+    <message>
+        <source>All</source>
+        <translation>Alle</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Unbekannt</translation>
+    </message>
+</context>
+<context>
     <name>Main</name>
     <message>
         <source>Low Battery</source>
@@ -1151,6 +1273,14 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>QontrolPanel - Einstellungen</translation>
     </message>
     <message>
+        <source>You just lost the game</source>
+        <translation>Du hast gerade das Spiel verloren</translation>
+    </message>
+    <message>
+        <source>Too bad</source>
+        <translation>Schade</translation>
+    </message>
+    <message>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
@@ -1281,12 +1411,24 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>Ausgabe: </translation>
     </message>
     <message>
+        <source>Loading...</source>
+        <translation>Wird geladen...</translation>
+    </message>
+    <message>
         <source>Input: </source>
         <translation>Eingabe: </translation>
     </message>
     <message>
         <source>Exit</source>
         <translation>Beenden</translation>
+    </message>
+    <message>
+        <source>Unknown Device</source>
+        <translation>Unbekanntes Gerät</translation>
+    </message>
+    <message>
+        <source>QontrolPanel</source>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>ChatMix</source>

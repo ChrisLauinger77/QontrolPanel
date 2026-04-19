@@ -26,12 +26,12 @@ Platform.SystemTrayIcon {
         Platform.MenuItem {
             enabled: false
             text: systemTray.truncateText(qsTr("Output: ") + (AudioBridge.isReady ?
-                                                                  systemTray.getOutputDeviceInfo() : "Loading..."), 50)
+                                                                  systemTray.getOutputDeviceInfo() : qsTr("Loading...")), 50)
         }
         Platform.MenuItem {
             enabled: false
             text: systemTray.truncateText(qsTr("Input: ") + (AudioBridge.isReady ?
-                                                                 systemTray.getInputDeviceInfo() : "Loading..."), 50)
+                                                                 systemTray.getInputDeviceInfo() : qsTr("Loading...")), 50)
         }
         Platform.MenuSeparator {}
         Platform.MenuItem {
@@ -59,15 +59,15 @@ Platform.SystemTrayIcon {
     }
 
     function getOutputDeviceInfo() {
-        return AudioBridge.outputDeviceDisplayName || "Unknown Device"
+        return AudioBridge.outputDeviceDisplayName || qsTr("Unknown Device")
     }
 
     function getInputDeviceInfo() {
-        return AudioBridge.inputDeviceDisplayName || "Unknown Device"
+        return AudioBridge.inputDeviceDisplayName || qsTr("Unknown Device")
     }
 
     function getTooltip() {
-        var baseTooltip = "QontrolPanel";
+        var baseTooltip = qsTr("QontrolPanel");
         var isWirelessHeadsetAvailable = HeadsetControlBridge.anyDeviceFound &&
                 HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE";
         if (!isWirelessHeadsetAvailable) {

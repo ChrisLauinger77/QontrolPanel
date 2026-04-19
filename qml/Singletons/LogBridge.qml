@@ -50,7 +50,7 @@ Item {
         logModel.append(newEntry)
 
         // Only add to filtered model if it matches current filter
-        if (currentFilter === "All" || sender === currentFilter) {
+        if (currentFilter === qsTr("All") || sender === currentFilter) {
             filteredModel.append(newEntry)
         }
 
@@ -59,7 +59,7 @@ Item {
 
     function extractSenderFromMessage(message) {
         let match = message.match(senderRegex)
-        return match ? match[1] : "Unknown"
+        return match ? match[1] : qsTr("Unknown")
     }
 
     function clearLogs() {
@@ -74,7 +74,7 @@ Item {
         currentFilter = selectedSender
         filteredModel.clear()
 
-        if (selectedSender === "All") {
+        if (selectedSender === qsTr("All")) {
             // Copy all entries
             for (let i = 0; i < logModel.count; i++) {
                 filteredModel.append(logModel.get(i))

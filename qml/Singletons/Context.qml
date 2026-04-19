@@ -27,22 +27,22 @@ QtObject {
             [Qt.Key_0]: "0", [Qt.Key_1]: "1", [Qt.Key_2]: "2", [Qt.Key_3]: "3",
             [Qt.Key_4]: "4", [Qt.Key_5]: "5", [Qt.Key_6]: "6", [Qt.Key_7]: "7",
             [Qt.Key_8]: "8", [Qt.Key_9]: "9",
-            [Qt.Key_Up]: "Up", [Qt.Key_Down]: "Down", [Qt.Key_Left]: "Left", [Qt.Key_Right]: "Right",
-            [Qt.Key_Space]: "Space", [Qt.Key_Return]: "Enter", [Qt.Key_Enter]: "Enter",
-            [Qt.Key_Tab]: "Tab", [Qt.Key_Escape]: "Esc", [Qt.Key_Backspace]: "Backspace",
-            [Qt.Key_Delete]: "Delete", [Qt.Key_Insert]: "Insert",
-            [Qt.Key_Home]: "Home", [Qt.Key_End]: "End",
-            [Qt.Key_PageUp]: "Page Up", [Qt.Key_PageDown]: "Page Down"
+            [Qt.Key_Up]: qsTr("Up"), [Qt.Key_Down]: qsTr("Down"), [Qt.Key_Left]: qsTr("Left"), [Qt.Key_Right]: qsTr("Right"),
+            [Qt.Key_Space]: qsTr("Space"), [Qt.Key_Return]: qsTr("Enter"), [Qt.Key_Enter]: qsTr("Enter"),
+            [Qt.Key_Tab]: qsTr("Tab"), [Qt.Key_Escape]: qsTr("Esc"), [Qt.Key_Backspace]: qsTr("Backspace"),
+            [Qt.Key_Delete]: qsTr("Delete"), [Qt.Key_Insert]: qsTr("Insert"),
+            [Qt.Key_Home]: qsTr("Home"), [Qt.Key_End]: qsTr("End"),
+            [Qt.Key_PageUp]: qsTr("Page Up"), [Qt.Key_PageDown]: qsTr("Page Down")
         }
-        return keyMap[key] || "Unknown"
+        return keyMap[key] || qsTr("Unknown")
     }
 
     function getShortcutText(modifiers, key) {
         let parts = []
 
-        if (modifiers & Qt.ControlModifier) parts.push("Ctrl")
-        if (modifiers & Qt.ShiftModifier) parts.push("Shift")
-        if (modifiers & Qt.AltModifier) parts.push("Alt")
+        if (modifiers & Qt.ControlModifier) parts.push(qsTr("Ctrl"))
+        if (modifiers & Qt.ShiftModifier) parts.push(qsTr("Shift"))
+        if (modifiers & Qt.AltModifier) parts.push(qsTr("Alt"))
 
         let keyText = getKeyText(key)
         if (keyText) parts.push(keyText)
