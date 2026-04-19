@@ -69,11 +69,11 @@ ColumnLayout {
         let currentDate = new Date().toISOString().split('T')[0]
         let header = qsTr("QontrolPanel Log Export") + "\n"
         header += "========================\n"
-        header += qsTr("Version: %1").arg(version) + "\n"
-        header += qsTr("Commit: %1").arg(commitHash) + "\n"
-        header += qsTr("Export Date: %1").arg(currentDate) + "\n"
-        header += qsTr("Filter: %1").arg(getFilterLabel(selectedSender)) + "\n"
-        header += qsTr("Total Entries: %1").arg(LogBridge.filteredModel.count) + "\n"
+        header += "Version: " + version + "\n"
+        header += "Commit: " + commitHash + "\n"
+        header += "Export Date: " + currentDate + "\n"
+        header += "Filter: " + getFilterLabel(selectedSender) + "\n"
+        header += "Total Entries: " + LogBridge.filteredModel.count + "\n"
         header += "========================\n\n"
 
         let allLogsText = header
