@@ -52,7 +52,7 @@ ColumnLayout {
                                      .arg(Context.getShortcutText(hotkeyCard.modelData.volumeUpModifiers, hotkeyCard.modelData.volumeUpKey))
                                      .arg(Context.getShortcutText(hotkeyCard.modelData.volumeDownModifiers, hotkeyCard.modelData.volumeDownKey))
                                      .arg(hotkeyCard.modelData.volumeStepSize > 0
-                                          ? qsTr("  (Step: %1)").arg(hotkeyCard.modelData.volumeStepSize)
+                                          ? "  " + qsTr("(Step: %1)").arg(hotkeyCard.modelData.volumeStepSize)
                                           : "")
 
                         additionalControl: Button {
