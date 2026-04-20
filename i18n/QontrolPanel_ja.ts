@@ -440,26 +440,6 @@
         <translation>QontrolPanel のログをエクスポート</translation>
     </message>
     <message>
-        <source>Version: %1</source>
-        <translation>バージョン: %1</translation>
-    </message>
-    <message>
-        <source>Commit: %1</source>
-        <translation>コミット: %1</translation>
-    </message>
-    <message>
-        <source>Export Date: %1</source>
-        <translation>エクスポートした日付: %1</translation>
-    </message>
-    <message>
-        <source>Filter: %1</source>
-        <translation>フィルター: %1</translation>
-    </message>
-    <message>
-        <source>Total Entries: %1</source>
-        <translation>エントリの合計: %1</translation>
-    </message>
-    <message>
         <source>Console output</source>
         <translation>コンソール出力</translation>
     </message>
@@ -931,6 +911,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <message>
         <source>ChatMix value of the connected headset</source>
         <translation>接続されたヘッドセットの ChatMix の値</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the equalizer preset for your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled

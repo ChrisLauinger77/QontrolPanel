@@ -440,26 +440,6 @@
         <translation>QontrolPanel-Protokollexport</translation>
     </message>
     <message>
-        <source>Version: %1</source>
-        <translation>Version: %1</translation>
-    </message>
-    <message>
-        <source>Commit: %1</source>
-        <translation>Commit: %1</translation>
-    </message>
-    <message>
-        <source>Export Date: %1</source>
-        <translation>Exportdatum: %1</translation>
-    </message>
-    <message>
-        <source>Filter: %1</source>
-        <translation>Filter: %1</translation>
-    </message>
-    <message>
-        <source>Total Entries: %1</source>
-        <translation>Gesamtzahl der Einträge: %1</translation>
-    </message>
-    <message>
         <source>Console output</source>
         <translation>Konsolenausgabe</translation>
     </message>
@@ -931,6 +911,14 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     <message>
         <source>ChatMix value of the connected headset</source>
         <translation>ChatMix-Wert des angeschlossenen Headsets</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation>Equalizer-Voreinstellung</translation>
+    </message>
+    <message>
+        <source>Set the equalizer preset for your headset</source>
+        <translation>Stellen Sie die Equalizer-Voreinstellung für Ihr Headset ein</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
