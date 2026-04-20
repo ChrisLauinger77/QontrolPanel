@@ -12,6 +12,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_hasRotateToMuteCapability(false)
     , m_hasChatMixCapability(false)
     , m_hasVoicePromptsCapability(false)
+    , m_hasEqualizerPresetsCapability(false)
     , m_hasInactiveTimeCapability(false)
     , m_deviceName("")
     , m_batteryStatus("BATTERY_UNAVAILABLE")
@@ -77,11 +78,16 @@ void HeadsetControlMonitor::stopMonitoring()
     m_hasRotateToMuteCapability = false;
     m_hasChatMixCapability = false;
     m_hasVoicePromptsCapability = false;
+    m_hasEqualizerPresetsCapability = false;
     m_hasInactiveTimeCapability = false;
     m_deviceName = "";
     m_batteryStatus = "BATTERY_UNAVAILABLE";
     m_batteryLevel = -1;
     m_chatMix = -1;
+    if (!m_equalizerPresetNames.isEmpty()) {
+        m_equalizerPresetNames.clear();
+        emit equalizerPresetNamesChanged();
+    }
     bool wasDeviceFound = m_anyDeviceFound;
     m_anyDeviceFound = false;
 
@@ -193,6 +199,40 @@ void HeadsetControlMonitor::setVoicePrompts(bool enabled)
     }
 }
 
+void HeadsetControlMonitor::setEqualizerPreset(int preset)
+{
+    if (!m_hasEqualizerPresetsCapability) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set equalizer preset - device does not support equalizer presets capability");
+        return;
+    }
+
+    if (m_headsets.empty()) {
+        LOG_WARN("HeadsetControlManager",
+                                         "Cannot set equalizer preset - no device connected");
+        return;
+    }
+
+    const int maxPresetIndex = m_equalizerPresetNames.isEmpty()
+        ? static_cast<int>(m_headsets[0].getEqualizerPresetsCount()) - 1
+        : m_equalizerPresetNames.size() - 1;
+    preset = qBound(0, preset, qMax(0, maxPresetIndex));
+
+    LOG_INFO("HeadsetControlManager",
+                                    QString("Setting headset equalizer preset to %1").arg(preset));
+
+    headsetcontrol::Headset& headset = m_headsets[0];
+    headsetcontrol::Result<headsetcontrol::EqualizerPresetResult> result = headset.setEqualizerPreset(static_cast<uint8_t>(preset));
+
+    if (!result) {
+        LOG_CRITICAL("HeadsetControlManager",
+                                             QString("Failed to set equalizer preset: %1").arg(QString::fromStdString(result.error().fullMessage())));
+    } else {
+        LOG_INFO("HeadsetControlManager",
+                                        QString("Equalizer preset set to %1 successfully").arg(preset));
+    }
+}
+
 void HeadsetControlMonitor::setSidetone(int value)
 {
     if (!m_hasSidetoneCapability) {
@@ -279,11 +319,16 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             m_hasRotateToMuteCapability = false;
             m_hasChatMixCapability = false;
             m_hasVoicePromptsCapability = false;
+            m_hasEqualizerPresetsCapability = false;
             m_hasInactiveTimeCapability = false;
             m_deviceName = "";
             m_batteryStatus = "BATTERY_UNAVAILABLE";
             m_batteryLevel = -1;
             m_chatMix = -1;
+            if (!m_equalizerPresetNames.isEmpty()) {
+                m_equalizerPresetNames.clear();
+                emit equalizerPresetNamesChanged();
+            }
             bool wasDeviceFound = m_anyDeviceFound;
             m_anyDeviceFound = false;
 
@@ -407,8 +452,10 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newRotateToMuteCapability = false;
     bool newChatMixCapability = false;
     bool newVoicePromptsCapability = false;
+    bool newEqualizerPresetsCapability = false;
     bool newInactivetimeCapability = false;
     QString newDeviceName = "";
+    QStringList newEqualizerPresetNames;
     bool newAnyDeviceFound = !m_cachedDevices.isEmpty();
     bool wasDeviceFound = m_anyDeviceFound;
 
@@ -421,7 +468,23 @@ void HeadsetControlMonitor::updateCapabilities()
         newRotateToMuteCapability = headset.supports(CAP_ROTATE_TO_MUTE);
         newChatMixCapability = headset.supports(CAP_CHATMIX_STATUS);
         newVoicePromptsCapability = headset.supports(CAP_VOICE_PROMPTS);
+        newEqualizerPresetsCapability = headset.supports(CAP_EQUALIZER_PRESET);
         newInactivetimeCapability = headset.supports(CAP_INACTIVE_TIME);
+
+        if (newEqualizerPresetsCapability) {
+            if (const auto presets = headset.getEqualizerPresets()) {
+                for (const auto& preset : presets->presets) {
+                    newEqualizerPresetNames.append(QString::fromStdString(preset.name));
+                }
+            }
+
+            if (newEqualizerPresetNames.isEmpty()) {
+                const int presetCount = headset.getEqualizerPresetsCount();
+                for (int presetIndex = 0; presetIndex < presetCount; ++presetIndex) {
+                    newEqualizerPresetNames.append(QString("Preset %1").arg(presetIndex + 1));
+                }
+            }
+        }
 
         LOG_INFO("HeadsetControlManager",
                                         QString("Device capabilities: %1")
@@ -433,14 +496,21 @@ void HeadsetControlMonitor::updateCapabilities()
         newRotateToMuteCapability != m_hasRotateToMuteCapability ||
         newChatMixCapability != m_hasChatMixCapability ||
         newVoicePromptsCapability != m_hasVoicePromptsCapability ||
+        newEqualizerPresetsCapability != m_hasEqualizerPresetsCapability ||
         newInactivetimeCapability != m_hasInactiveTimeCapability) {
         m_hasSidetoneCapability = newSidetoneCapability;
         m_hasLightsCapability = newLightsCapability;
         m_hasRotateToMuteCapability = newRotateToMuteCapability;
         m_hasChatMixCapability = newChatMixCapability;
         m_hasVoicePromptsCapability = newVoicePromptsCapability;
+        m_hasEqualizerPresetsCapability = newEqualizerPresetsCapability;
         m_hasInactiveTimeCapability = newInactivetimeCapability;
         emit capabilitiesChanged();
+    }
+
+    if (newEqualizerPresetNames != m_equalizerPresetNames) {
+        m_equalizerPresetNames = newEqualizerPresetNames;
+        emit equalizerPresetNamesChanged();
     }
 
     if (newDeviceName != m_deviceName) {
@@ -473,6 +543,12 @@ void HeadsetControlMonitor::updateCapabilities()
                 LOG_INFO("HeadsetControlManager",
                                                 QString("Applying saved voice prompts setting: %1").arg(voicePromptsEnabled ? "ON" : "OFF"));
                 setVoicePrompts(voicePromptsEnabled);
+            }
+            if (newEqualizerPresetsCapability && !m_equalizerPresetNames.isEmpty()) {
+                int equalizerPresetValue = UserSettings::instance()->headsetcontrolEqualizerPreset();
+                LOG_INFO("HeadsetControlManager",
+                                                QString("Applying saved equalizer preset: %1").arg(equalizerPresetValue));
+                setEqualizerPreset(equalizerPresetValue);
             }
             if (newSidetoneCapability) {
                 int sidetoneValue = UserSettings::instance()->headsetcontrolSidetone();

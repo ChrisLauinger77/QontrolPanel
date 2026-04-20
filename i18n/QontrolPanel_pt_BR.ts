@@ -441,26 +441,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Version: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Commit: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export Date: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Total Entries: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Console output</source>
         <translation>Saída do console</translation>
     </message>
@@ -931,6 +911,14 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the equalizer preset for your headset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

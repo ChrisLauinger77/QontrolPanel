@@ -64,6 +64,8 @@ void HeadsetControlBridge::connectToMonitor()
                 this, &HeadsetControlBridge::onMonitorBatteryLevelChanged);
         connect(monitor, &HeadsetControlMonitor::chatMixChanged,
             this, &HeadsetControlBridge::onMonitorChatMixChanged);
+        connect(monitor, &HeadsetControlMonitor::equalizerPresetNamesChanged,
+            this, &HeadsetControlBridge::onMonitorEqualizerPresetNamesChanged);
         connect(monitor, &HeadsetControlMonitor::anyDeviceFoundChanged,
                 this, &HeadsetControlBridge::onMonitorAnyDeviceFoundChanged);
         connect(monitor, &HeadsetControlMonitor::testModeEnabledChanged,
@@ -86,6 +88,7 @@ void HeadsetControlBridge::connectToMonitor()
         emit batteryLevelChanged();
         emit batteryIconChanged();
         emit chatMixChanged();
+        emit equalizerPresetNamesChanged();
         emit anyDeviceFoundChanged();
         emit testModeEnabledChanged();
         emit testProfileChanged();
@@ -143,6 +146,15 @@ void HeadsetControlBridge::setVoicePrompts(bool enabled)
     }
 }
 
+void HeadsetControlBridge::setEqualizerPreset(int preset)
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    if (monitor) {
+        QMetaObject::invokeMethod(monitor, "setEqualizerPreset", Qt::QueuedConnection,
+                                  Q_ARG(int, preset));
+    }
+}
+
 void HeadsetControlBridge::setSidetone(int value)
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -189,6 +201,12 @@ bool HeadsetControlBridge::hasVoicePromptsCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
     return monitor ? monitor->hasVoicePromptsCapability() : false;
+}
+
+bool HeadsetControlBridge::hasEqualizerPresetsCapability() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->hasEqualizerPresetsCapability() : false;
 }
 
 bool HeadsetControlBridge::hasInactiveTimeCapability() const
@@ -240,6 +258,12 @@ int HeadsetControlBridge::chatMix() const
     return monitor ? monitor->chatMix() : -1;
 }
 
+QStringList HeadsetControlBridge::equalizerPresetNames() const
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    return monitor ? monitor->equalizerPresetNames() : QStringList();
+}
+
 bool HeadsetControlBridge::anyDeviceFound() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
@@ -284,6 +308,11 @@ void HeadsetControlBridge::onMonitorBatteryLevelChanged()
 void HeadsetControlBridge::onMonitorChatMixChanged()
 {
     emit chatMixChanged();
+}
+
+void HeadsetControlBridge::onMonitorEqualizerPresetNamesChanged()
+{
+    emit equalizerPresetNamesChanged();
 }
 
 void HeadsetControlBridge::onMonitorAnyDeviceFoundChanged()

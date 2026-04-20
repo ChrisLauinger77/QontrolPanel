@@ -1,5 +1,6 @@
 #pragma once
 #include <QObject>
+#include <QStringList>
 #include <QTimer>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -43,6 +44,8 @@ public:
     QString batteryStatus() const { return m_batteryStatus; }
     int batteryLevel() const { return m_batteryLevel; }
     int chatMix() const { return m_chatMix; }
+    bool hasEqualizerPresetsCapability() const { return m_hasEqualizerPresetsCapability; }
+    QStringList equalizerPresetNames() const { return m_equalizerPresetNames; }
     bool anyDeviceFound() const { return m_anyDeviceFound; }
     bool testModeEnabled() const { return m_testModeEnabled; }
     int testProfile() const { return m_testProfile; }
@@ -53,6 +56,7 @@ public slots:
     void setLights(bool enabled);
     void setRotateToMute(bool enabled);
     void setVoicePrompts(bool enabled);
+    void setEqualizerPreset(int preset);
     void setSidetone(int value);
     void setInactiveTime(int value);
     void setFetchInterval(int intervalMs);
@@ -67,6 +71,7 @@ signals:
     void batteryStatusChanged();
     void batteryLevelChanged();
     void chatMixChanged();
+    void equalizerPresetNamesChanged();
     void anyDeviceFoundChanged();
     void testModeEnabledChanged();
     void testProfileChanged();
@@ -93,11 +98,13 @@ private:
     bool m_hasRotateToMuteCapability;
     bool m_hasChatMixCapability;
     bool m_hasVoicePromptsCapability;
+    bool m_hasEqualizerPresetsCapability;
     bool m_hasInactiveTimeCapability;
     QString m_deviceName;
     QString m_batteryStatus;
     int m_batteryLevel;
     int m_chatMix;
+    QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;
     bool m_testModeEnabled;

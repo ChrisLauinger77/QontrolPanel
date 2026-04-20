@@ -144,6 +144,30 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasEqualizerPresetsCapability
+                    enabled: HeadsetControlBridge.hasEqualizerPresetsCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Equalizer Preset")
+                    description: qsTr("Set the equalizer preset for your headset")
+                    additionalControl: CustomComboBox {
+                        Layout.preferredHeight: 35
+                        model: HeadsetControlBridge.equalizerPresetNames
+                        enabled: count > 0
+                        currentIndex: {
+                            if (count <= 0) {
+                                return -1
+                            }
+
+                            return Math.min(Math.max(0, UserSettings.headsetcontrolEqualizerPreset), count - 1)
+                        }
+                        onActivated: {
+                            UserSettings.headsetcontrolEqualizerPreset = currentIndex
+                            HeadsetControlBridge.setEqualizerPreset(currentIndex)
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasInactiveTimeCapability
                     enabled: HeadsetControlBridge.hasInactiveTimeCapability
                     Layout.fillWidth: true

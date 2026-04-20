@@ -440,26 +440,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Version: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Commit: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export Date: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Total Entries: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Console output</source>
         <translation>Output console</translation>
     </message>
@@ -931,6 +911,14 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
     <message>
         <source>ChatMix value of the connected headset</source>
         <translation>Valore ChatMix auricolare collegato</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the equalizer preset for your headset</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
