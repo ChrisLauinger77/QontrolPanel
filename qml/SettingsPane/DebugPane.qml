@@ -9,7 +9,7 @@ ColumnLayout {
     spacing: 3
 
     Label {
-        text: qsTr("Debug and information")
+        text: qsTr("Updates and information")
         font.pixelSize: 22
         font.bold: true
         Layout.bottomMargin: 15
@@ -151,6 +151,15 @@ ColumnLayout {
                         opacity: 0.5
                     }
                 }
+                Card {
+                    Layout.fillWidth: true
+                    title: qsTr("GitHub repository")
+                    description: "https://github.com/ChrisLauinger77/QontrolPanel"
+
+                    additionalControl: Button {
+                        text: qsTr("View on GitHub")
+                        onClicked: Qt.openUrlExternally("https://github.com/ChrisLauinger77/QontrolPanel")
+                    }
             }
         }
 
