@@ -7,15 +7,7 @@ import ChrisLauinger77.QontrolPanel
 
 ColumnLayout {
     spacing: 3
-    readonly property var testProfiles: [
-        qsTr("1 - Error conditions"),
-        qsTr("2 - Charging battery"),
-        qsTr("3 - Basic battery"),
-        qsTr("4 - Battery unavailable"),
-        qsTr("5 - Timeout"),
-        qsTr("6 - Full battery"),
-        qsTr("7 - Low battery")
-    ]
+    readonly property var testProfiles: [qsTr("1 - Error conditions"), qsTr("2 - Charging battery"), qsTr("3 - Basic battery"), qsTr("4 - Battery unavailable"), qsTr("5 - Timeout"), qsTr("6 - Full battery"), qsTr("7 - Low battery")]
 
     Label {
         text: HeadsetControlBridge.deviceName
@@ -115,7 +107,7 @@ ColumnLayout {
                         LabeledSwitch {
                             checked: UserSettings.enableNotifications
                             onClicked: {
-                                UserSettings.enableNotifications = checked
+                                UserSettings.enableNotifications = checked;
                             }
                         }
                     }
@@ -127,8 +119,8 @@ ColumnLayout {
                     title: qsTr("Show battery status in panel footer")
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.displayBatteryFooter
-                        onClicked:{
-                            UserSettings.displayBatteryFooter = checked
+                        onClicked: {
+                            UserSettings.displayBatteryFooter = checked;
                         }
                     }
                 }
@@ -139,7 +131,7 @@ ColumnLayout {
                     visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasChatMixCapability
                     description: qsTr("ChatMix value of the connected headset")
                     additionalControl: Label {
-                        text:  HeadsetControlBridge.chatMix
+                        text: HeadsetControlBridge.chatMix
                     }
                 }
 
@@ -155,14 +147,14 @@ ColumnLayout {
                         enabled: count > 0
                         currentIndex: {
                             if (count <= 0) {
-                                return -1
+                                return -1;
                             }
 
-                            return Math.min(Math.max(0, UserSettings.headsetcontrolEqualizerPreset), count - 1)
+                            return Math.min(Math.max(0, UserSettings.headsetcontrolEqualizerPreset), count - 1);
                         }
                         onActivated: {
-                            UserSettings.headsetcontrolEqualizerPreset = currentIndex
-                            HeadsetControlBridge.setEqualizerPreset(currentIndex)
+                            UserSettings.headsetcontrolEqualizerPreset = currentIndex;
+                            HeadsetControlBridge.setEqualizerPreset(currentIndex);
                         }
                     }
                 }
@@ -184,13 +176,13 @@ ColumnLayout {
                             Layout.preferredWidth: 180
                             onPressedChanged: {
                                 if (!pressed) {
-                                    UserSettings.headsetcontrolInactiveTime = Math.round(value)
-                                    HeadsetControlBridge.setInactiveTime(Math.round(value))
+                                    UserSettings.headsetcontrolInactiveTime = Math.round(value);
+                                    HeadsetControlBridge.setInactiveTime(Math.round(value));
                                 }
                             }
                             onWheelChanged: {
-                                UserSettings.headsetcontrolInactiveTime = Math.round(value)
-                                HeadsetControlBridge.setInactiveTime(Math.round(value))
+                                UserSettings.headsetcontrolInactiveTime = Math.round(value);
+                                HeadsetControlBridge.setInactiveTime(Math.round(value));
                             }
                         }
 
@@ -210,9 +202,9 @@ ColumnLayout {
 
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.headsetcontrolLights
-                        onClicked:{
-                            UserSettings.headsetcontrolLights = checked
-                            HeadsetControlBridge.setLights(checked)
+                        onClicked: {
+                            UserSettings.headsetcontrolLights = checked;
+                            HeadsetControlBridge.setLights(checked);
                         }
                     }
                 }
@@ -226,9 +218,9 @@ ColumnLayout {
 
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.headsetcontrolRotateToMute
-                        onClicked:{
-                            UserSettings.headsetcontrolRotateToMute = checked
-                            HeadsetControlBridge.setRotateToMute(checked)
+                        onClicked: {
+                            UserSettings.headsetcontrolRotateToMute = checked;
+                            HeadsetControlBridge.setRotateToMute(checked);
                         }
                     }
                 }
@@ -250,13 +242,13 @@ ColumnLayout {
                             Layout.preferredWidth: 180
                             onPressedChanged: {
                                 if (!pressed) {
-                                    UserSettings.headsetcontrolSidetone = Math.round(value)
-                                    HeadsetControlBridge.setSidetone(Math.round(value))
+                                    UserSettings.headsetcontrolSidetone = Math.round(value);
+                                    HeadsetControlBridge.setSidetone(Math.round(value));
                                 }
                             }
                             onWheelChanged: {
-                                UserSettings.headsetcontrolSidetone = Math.round(value)
-                                HeadsetControlBridge.setSidetone(Math.round(value))
+                                UserSettings.headsetcontrolSidetone = Math.round(value);
+                                HeadsetControlBridge.setSidetone(Math.round(value));
                             }
                         }
 
@@ -276,9 +268,9 @@ ColumnLayout {
 
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.headsetcontrolVoicePrompts
-                        onClicked:{
-                            UserSettings.headsetcontrolVoicePrompts = checked
-                            HeadsetControlBridge.setVoicePrompts(checked)
+                        onClicked: {
+                            UserSettings.headsetcontrolVoicePrompts = checked;
+                            HeadsetControlBridge.setVoicePrompts(checked);
                         }
                     }
                 }
@@ -288,20 +280,24 @@ ColumnLayout {
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")
                     description: qsTr("How often the status from your headset is fetched. Lower values may increase battery usage.")
-                    additionalControl: Button {
-                        text: qsTr("Fetch")
-                        enabled: true
-                        onClicked: HeadsetControlBridge.refreshNow()
-                    }
-                    additionalControl: SpinBox {
-                        from: 10
-                        to: 3600
-                        value: UserSettings.headsetcontrolFetchRate
-                        editable: true
-                        stepSize: 5
-                        onValueModified: {
-                            UserSettings.headsetcontrolFetchRate = (value)
-                            HeadsetControlBridge.setFetchRate(value)
+                    additionalControl: RowLayout {
+                        spacing: 8
+
+                        Button {
+                            text: qsTr("Fetch")
+                            onClicked: HeadsetControlBridge.refreshNow()
+                        }
+
+                        SpinBox {
+                            from: 10
+                            to: 3600
+                            value: UserSettings.headsetcontrolFetchRate
+                            editable: true
+                            stepSize: 5
+                            onValueModified: {
+                                UserSettings.headsetcontrolFetchRate = value;
+                                HeadsetControlBridge.setFetchRate(value);
+                            }
                         }
                     }
                 }
@@ -316,6 +312,7 @@ ColumnLayout {
                         text: qsTr("View on GitHub")
                         onClicked: Qt.openUrlExternally("https://github.com/Sapd/HeadsetControl#headsetcontrol")
                     }
+                }
             }
         }
 

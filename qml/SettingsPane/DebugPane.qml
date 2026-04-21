@@ -19,7 +19,7 @@ ColumnLayout {
         target: Updater
 
         function onUpdateFinished(success, message) {
-            toastNotification.showToast(message, success)
+            toastNotification.showToast(message, success);
         }
     }
 
@@ -45,18 +45,21 @@ ColumnLayout {
                         NFButton {
                             id: updateBtn
                             text: {
-                                if (Updater.isChecking) return qsTr("Checking...")
-                                if (Updater.isDownloading) return qsTr("Downloading...")
-                                if (Updater.updateAvailable) return qsTr("Download and Install")
-                                return qsTr("Check for Updates")
+                                if (Updater.isChecking)
+                                    return qsTr("Checking...");
+                                if (Updater.isDownloading)
+                                    return qsTr("Downloading...");
+                                if (Updater.updateAvailable)
+                                    return qsTr("Download and Install");
+                                return qsTr("Check for Updates");
                             }
 
                             enabled: !Updater.isChecking && !Updater.isDownloading
                             onClicked: {
                                 if (Updater.updateAvailable) {
-                                    Updater.downloadAndInstall()
+                                    Updater.downloadAndInstall();
                                 } else {
-                                    Updater.checkForUpdates()
+                                    Updater.checkForUpdates();
                                 }
                             }
                         }
@@ -105,11 +108,11 @@ ColumnLayout {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            parent.clickCount++
+                            parent.clickCount++;
                             if (parent.clickCount >= 5) {
                                 //easterEggDialog.open()
-                                Context.easterEggRequested()
-                                parent.clickCount = 0
+                                Context.easterEggRequested();
+                                parent.clickCount = 0;
                             }
                         }
                     }
@@ -160,6 +163,7 @@ ColumnLayout {
                         text: qsTr("View on GitHub")
                         onClicked: Qt.openUrlExternally("https://github.com/ChrisLauinger77/QontrolPanel")
                     }
+                }
             }
         }
 
@@ -182,11 +186,11 @@ ColumnLayout {
             color: isSuccess ? "#4CAF50" : "#F44336"
 
             function showToast(message, success) {
-                toastText.text = message
-                isSuccess = success
-                visible = true
-                showAnimation.start()
-                hideTimer.start()
+                toastText.text = message;
+                isSuccess = success;
+                visible = true;
+                showAnimation.start();
+                hideTimer.start();
             }
 
             Label {
