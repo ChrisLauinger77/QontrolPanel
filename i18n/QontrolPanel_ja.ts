@@ -9,11 +9,11 @@
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation>アプリごとに音量のショートカット キーを設定します</translation>
+        <translation>アプリごとの音量のショートカット キーを設定する</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation>特定のアプリで音量をコントロールするためのグローバル ホットキーを割り当てます</translation>
+        <translation>特定のアプリで音量をコントロールするためのグローバル ホットキーを割り当てます。</translation>
     </message>
     <message>
         <source>Add</source>
@@ -96,7 +96,7 @@
     </message>
     <message>
         <source>Control panel X axis margin</source>
-        <translation>コントロール パネルの X 軸マージンを設定します</translation>
+        <translation>コントロール パネルの X 軸のマージンを設定します。</translation>
     </message>
     <message>
         <source>Panel Y margin</source>
@@ -104,7 +104,7 @@
     </message>
     <message>
         <source>Control panel Y axis margin</source>
-        <translation>コントロール パネルの Y 軸マージンを設定します</translation>
+        <translation>コントロール パネルの Y 軸のマージンを設定します。</translation>
     </message>
     <message>
         <source>Show audio level</source>
@@ -112,7 +112,7 @@
     </message>
     <message>
         <source>Display audio level value in slider</source>
-        <translation>スライダー内にオーディオ  レベルの値を表示します</translation>
+        <translation>スライダー内にオーディオ  レベルの値を表示します。</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
@@ -124,7 +124,7 @@
     </message>
     <message>
         <source>Choose the appearance of the system tray icon</source>
-        <translation>システム トレイ アイコンの外観を選択できます</translation>
+        <translation>システム トレイ アイコンの外観を選択できます。</translation>
     </message>
     <message>
         <source>Auto</source>
@@ -140,11 +140,11 @@
     </message>
     <message>
         <source>Windows taskbar size (Only set if using W11 and taskbar is not at screen bottom)</source>
-        <translation>Windows タスク バーのサイズを指定できます (W11 を使用中でタスク バーが画面の下部にない場合にのみ設定)</translation>
+        <translation>Windows タスク バーのサイズを指定できます (W11 を使用中でタスク バーが画面の下部にない場合にのみ設定)。</translation>
     </message>
     <message>
         <source>Choose the color of the system tray icon</source>
-        <translation>システム トレイ アイコンの色を選択できます</translation>
+        <translation>システム トレイ アイコンの色を選択できます。</translation>
     </message>
     <message>
         <source>Tray icon style</source>
@@ -156,7 +156,7 @@
     </message>
     <message>
         <source>Filled</source>
-        <translation>フィルド</translation>
+        <translation>塗りつぶし</translation>
     </message>
     <message>
         <source>Battery</source>
@@ -167,7 +167,7 @@
     <name>ApplicationsListView</name>
     <message>
         <source>System sounds</source>
-        <translation>システム サウンド</translation>
+        <translation>システムのサウンド</translation>
     </message>
     <message>
         <source>Rename Application</source>
@@ -210,7 +210,7 @@
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
-        <translation>システム サウンド</translation>
+        <translation>システムのサウンド</translation>
     </message>
 </context>
 <context>
@@ -244,7 +244,7 @@
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
-        <translation>通信アプリを他のアプリとは別にコントロールします</translation>
+        <translation>通信アプリを他のアプリとは別に制御します。</translation>
     </message>
     <message>
         <source>Restored volume</source>
@@ -252,7 +252,7 @@
     </message>
     <message>
         <source>The volume to set for applications when ChatMix is disabled</source>
-        <translation>ChatMix が無効になっている場合の音量を設定します</translation>
+        <translation>ChatMix が無効になっている場合の音量を設定します。</translation>
     </message>
     <message>
         <source>Communication Applications</source>
@@ -272,7 +272,7 @@
     </message>
     <message>
         <source>Add application names that should be treated as communication apps</source>
-        <translation>コミュニケーション アプリとして扱うアプリ名を追加します</translation>
+        <translation>コミュニケーション アプリとして扱うアプリ名を追加します。</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -312,7 +312,7 @@
     </message>
     <message>
         <source>The volume to set for non communication applications when ChatMix is enabled</source>
-        <translation>ChatMix が有効時の非通信アプリの音量を設定します</translation>
+        <translation>ChatMix が有効時の非通信アプリの音量を設定します。</translation>
     </message>
     <message>
         <source>Activate ChatMix</source>
@@ -331,7 +331,7 @@
     </message>
     <message>
         <source>Show power button in the panel footer</source>
-        <translation>パネルのフッターに電源ボタンを表示します</translation>
+        <translation>パネルのフッターに電源ボタンを表示します。</translation>
     </message>
     <message>
         <source>Enable brightness control</source>
@@ -343,7 +343,7 @@
     </message>
     <message>
         <source>Monitor battery using HeadsetControl for supported devices</source>
-        <translation>対応しているデバイスでヘッドセット コントロールを使用したバッテリーの監視を行います</translation>
+        <translation>対応しているデバイスでヘッドセット コントロールを使用したバッテリーの監視を行います。</translation>
     </message>
     <message>
         <source>Enable audio device manager</source>
@@ -351,7 +351,7 @@
     </message>
     <message>
         <source>Display audio device manager in panel</source>
-        <translation>オーディオ デバイス マネージャーをパネル内に表示します</translation>
+        <translation>オーディオ デバイス マネージャーをパネル内に表示します。</translation>
     </message>
     <message>
         <source>Enable application volume mixer</source>
@@ -359,11 +359,11 @@
     </message>
     <message>
         <source>Display application volume mixer in panel</source>
-        <translation>アプリの音量ミキサーをパネル内に表示します</translation>
+        <translation>アプリの音量ミキサーをパネル内に表示します。</translation>
     </message>
     <message>
         <source>Show brightness control in panel</source>
-        <translation>明るさのコントロール パネルを表示します</translation>
+        <translation>明るさのコントロール パネルを表示します。</translation>
     </message>
     <message>
         <source>Enable media session manager</source>
@@ -371,7 +371,7 @@
     </message>
     <message>
         <source>Display currently playing media from Windows known sources</source>
-        <translation>Windows の既知のソースから現在再生中のメディアを表示します</translation>
+        <translation>Windows の既知のソースから現在再生中のメディアを表示します。</translation>
     </message>
 </context>
 <context>
@@ -611,7 +611,7 @@
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation>起動時および 4 時間ごとにアプリの更新を確認します</translation>
+        <translation>起動時および 4 時間ごとにアプリの更新を確認します。</translation>
     </message>
 </context>
 <context>
@@ -743,11 +743,11 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation>設定の項目を表示したときに開く設定ページを選択します</translation>
+        <translation>設定の項目を表示したときに開く設定ページを選択します。</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>一般</translation>
+        <translation>一般設定</translation>
     </message>
     <message>
         <source>Components</source>
@@ -755,7 +755,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Appearance</source>
-        <translation>外観</translation>
+        <translation>外観と位置</translation>
     </message>
     <message>
         <source>Media Overlay</source>
@@ -795,7 +795,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation>システム トレイ メニューから電源の操作を行うときに確認ダイアログを表示します</translation>
+        <translation>システム トレイ メニューから電源の操作を行うときに確認ダイアログを表示します。</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
@@ -803,7 +803,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation>電源操作の確認ダイアログが選択した操作を自動でトリガーするまでの時間を設定します</translation>
+        <translation>電源操作の確認ダイアログが選択した操作を自動でトリガーするまでの時間を設定します。</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
@@ -831,11 +831,11 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation>QontrolPanel をコンピューターの起動時に自動で起動します</translation>
+        <translation>QontrolPanel をコンピューターの起動時に自動で起動します。</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
-        <translation>外部ディスプレイに明るさのコマンドを送信する頻度を制御します</translation>
+        <translation>外部ディスプレイに明るさのコマンドを送信する頻度を制御します。</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>
@@ -846,7 +846,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <name>HeadsetControlPane</name>
     <message>
         <source>No compatible device found.</source>
-        <translation>互換性のあるデバイスが見つかりません。</translation>
+        <translation>互換性のあるデバイスが見つかりません</translation>
     </message>
     <message>
         <source>1 - Error conditions</source>
@@ -854,11 +854,11 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation>2 - バッテリーの充電中</translation>
+        <translation>2 - バッテリーを充電中</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation>3 - 基本的なバッテリー</translation>
+        <translation>3 - バッテリーを放電中</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
@@ -870,11 +870,11 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation>6 - バッテリー満充電</translation>
+        <translation>6 - バッテリーが満充電</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation>7 - バッテリー残量低</translation>
+        <translation>7 - バッテリー残量が低い</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
@@ -898,7 +898,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation>接続しているヘッドセットの現在のバッテリー残量です</translation>
+        <translation>接続しているヘッドセットの現在のバッテリー残量です。</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
@@ -910,15 +910,15 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation>接続されたヘッドセットの ChatMix の値</translation>
+        <translation>接続されたヘッドセットの ChatMix の値です。</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>イコライザー プリセット</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセットのイコライザー プリセットを設定します。</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
@@ -927,7 +927,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
-        <translation>パネルのフッターにバッテリーの状態を表示します</translation>
+        <translation>パネルのフッターにバッテリーの状態を表示</translation>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
@@ -935,7 +935,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation>ヘッドセットが省電力モードに入るまでの非アクティブの時間を設定します</translation>
+        <translation>ヘッドセットが省電力モードに入るまでの非アクティブの時間を設定します。</translation>
     </message>
     <message>
         <source>Lights</source>
@@ -943,15 +943,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
-        <translation>ヘッドセットの RGB ライトを切り替えます</translation>
+        <translation>ヘッドセットの RGB ライトを切り替えます。</translation>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation>ヘッドセットの回転でミュートを切り替える機能を使用します</translation>
+        <translation>ヘッドセットの回転でミュートを切り替える機能を使用します。</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
-        <translation>音声フィードバック レベルを調整します</translation>
+        <translation>音声のフィードバック レベルを調整します。</translation>
     </message>
     <message>
         <source>Notification on low battery</source>
@@ -971,11 +971,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation>ヘッドセットの音声プロンプトを切り替えます</translation>
+        <translation>ヘッドセットの音声プロンプトを切り替えます。</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
-        <translation>取得レート (秒)</translation>
+        <translation>取得レート (秒単位)</translation>
     </message>
     <message>
         <source>Device battery</source>
@@ -1040,7 +1040,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
-        <translation>GitHub から最新の翻訳ファイルをダウンロードします</translation>
+        <translation>GitHub から最新の翻訳ファイルをダウンロードします。</translation>
     </message>
     <message>
         <source>Download</source>
@@ -1064,7 +1064,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Fetch for translations update at startup and every 4 hours</source>
-        <translation>起動時および 4 時間ごとに翻訳の更新を取得します</translation>
+        <translation>起動時および 4 時間ごとに翻訳の更新を取得します。</translation>
     </message>
     <message>
         <source>Translation Progress</source>
@@ -1072,11 +1072,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Current language completion</source>
-        <translation>現在の言語の進捗状況です</translation>
+        <translation>現在の言語の進捗状況です。</translation>
     </message>
     <message>
         <source>Fetch for new translation to get data</source>
-        <translation>新しい翻訳を取得してデータを取得します</translation>
+        <translation>新しい翻訳を取得してデータを取得します。</translation>
     </message>
     <message>
         <source>Unknown author</source>
@@ -1114,7 +1114,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>System sounds</source>
-        <translation>システム サウンド</translation>
+        <translation>システムのサウンド</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1144,7 +1144,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Show a notification overlay when the currently playing song changes</source>
-        <translation>再生中の曲が変わったときに通知オーバーレイを表示します</translation>
+        <translation>再生中の曲が変わったときに通知オーバーレイを表示します。</translation>
     </message>
     <message>
         <source>Overlay size</source>
@@ -1152,7 +1152,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Choose the size of the media overlay</source>
-        <translation>メディア オーバーレイのサイズを選択してください</translation>
+        <translation>メディア オーバーレイのサイズを選択します。</translation>
     </message>
     <message>
         <source>Tiny</source>
@@ -1172,7 +1172,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Choose where the media overlay appears on screen</source>
-        <translation>画面上に表示するメディア オーバーレイの位置を選択してください</translation>
+        <translation>画面上に表示するメディア オーバーレイの位置を選択します。</translation>
     </message>
     <message>
         <source>Top Left</source>
@@ -1265,11 +1265,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>General</source>
-        <translation>一般</translation>
+        <translation>一般設定</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation>外観</translation>
+        <translation>外観と位置</translation>
     </message>
     <message>
         <source>Media Overlay</source>
@@ -1328,19 +1328,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Allow QontrolPanel to respond to keyboard shortcuts globally</source>
-        <translation>QontrolPanel がキーボード ショートカットにグローバルで応答可能にします</translation>
+        <translation>QontrolPanel がキーボード ショートカットにグローバルで応答可能にします。</translation>
     </message>
     <message>
         <source>Notification on ChatMix toggle</source>
-        <translation>通知で ChatMix を切り替え</translation>
+        <translation>通知で ChatMix を切り替える</translation>
     </message>
     <message>
         <source>Show/Hide Panel</source>
-        <translation>パネルの表示/非表示</translation>
+        <translation>パネルを表示/非表示</translation>
     </message>
     <message>
         <source>Shortcut to toggle the main panel visibility</source>
-        <translation>ショートカットでメイン パネルの表示を切り替えます</translation>
+        <translation>ショートカットでメイン パネルの表示を切り替えます。</translation>
     </message>
     <message>
         <source>Change</source>
@@ -1348,19 +1348,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle ChatMix</source>
-        <translation>ChatMix に切り替え</translation>
+        <translation>ChatMix に切り替える</translation>
     </message>
     <message>
         <source>Shortcut to enable/disable ChatMix feature</source>
-        <translation>ショートカットで ChatMix 機能を有効/無効にします</translation>
+        <translation>ショートカットで ChatMix 機能を有効/無効にします。</translation>
     </message>
     <message>
         <source>Toggle Microphone Mute</source>
-        <translation>マイクのミュートを切り替え</translation>
+        <translation>マイクのミュートを切り替える</translation>
     </message>
     <message>
         <source>Shortcut to mute/unmute microphone</source>
-        <translation>ショートカットでマイクのミュート/ミュート解除を切り替えます</translation>
+        <translation>ショートカットでマイクのミュート/ミュート解除を切り替えます。</translation>
     </message>
     <message>
         <source>Set Panel Shortcut</source>
