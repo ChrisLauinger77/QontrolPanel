@@ -167,7 +167,7 @@
     <name>ApplicationsListView</name>
     <message>
         <source>System sounds</source>
-        <translation>システム サウンド</translation>
+        <translation>システムのサウンド</translation>
     </message>
     <message>
         <source>Rename Application</source>
@@ -210,7 +210,7 @@
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
-        <translation>システム サウンド</translation>
+        <translation>システムのサウンド</translation>
     </message>
 </context>
 <context>
