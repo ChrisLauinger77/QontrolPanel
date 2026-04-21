@@ -68,16 +68,18 @@ Platform.SystemTrayIcon {
 
     function getTooltip() {
         var baseTooltip = qsTr("QontrolPanel");
-        var isWirelessHeadsetAvailable = HeadsetControlBridge.anyDeviceFound &&
-                HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE";
+        var isWirelessHeadsetAvailable = HeadsetControlBridge.anyDeviceFound;
         if (!isWirelessHeadsetAvailable) {
             return baseTooltip;
         }
 
         var batteryText = "\n" + "🎧" + HeadsetControlBridge.deviceName + "\n";
 
-        batteryText += HeadsetControlBridge.batteryIcon;
-        batteryText += HeadsetControlBridge.batteryLevel + "%";
+        if (HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE") {
+            batteryText += HeadsetControlBridge.batteryIcon;
+            batteryText += HeadsetControlBridge.batteryLevel + "%"; 
+        }
+        
         if (HeadsetControlBridge.hasChatMixCapability) {
             batteryText += " " + "🎤" + qsTr("ChatMix") + ": " + HeadsetControlBridge.chatMix;
         }
