@@ -291,7 +291,7 @@ ColumnLayout {
                     additionalControl: Button {
                         text: qsTr("Fetch")
                         enabled: true
-                        onClicked: HeadsetControlBridge.fetch()
+                        onClicked: HeadsetControlBridge.refreshNow()
                     }
                     additionalControl: SpinBox {
                         from: 10

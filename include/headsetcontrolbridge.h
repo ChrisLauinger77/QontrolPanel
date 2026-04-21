@@ -43,6 +43,7 @@ public:
     Q_INVOKABLE void setEqualizerPreset(int preset);
     Q_INVOKABLE void setSidetone(int value);
     Q_INVOKABLE void setInactiveTime(int value);
+    Q_INVOKABLE void refreshNow();
     Q_INVOKABLE void setFetchRate(int seconds);
     Q_INVOKABLE void setTestModeEnabled(bool enabled);
     Q_INVOKABLE void setTestProfile(int profile);

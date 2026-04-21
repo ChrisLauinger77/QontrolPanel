@@ -173,6 +173,14 @@ void HeadsetControlBridge::setInactiveTime(int value)
     }
 }
 
+void HeadsetControlBridge::refreshNow()
+{
+    HeadsetControlMonitor* monitor = findMonitor();
+    if (monitor) {
+        QMetaObject::invokeMethod(monitor, "fetchHeadsetInfo", Qt::QueuedConnection);
+    }
+}
+
 bool HeadsetControlBridge::hasSidetoneCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();

@@ -18,6 +18,7 @@ Platform.SystemTrayIcon {
         }
 
         if (reason === Platform.SystemTrayIcon.Trigger) {
+            HeadsetControlBridge.refreshNow()
             systemTray.togglePanelRequested()
         }
     }
