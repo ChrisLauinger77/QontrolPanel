@@ -287,6 +287,12 @@ ColumnLayout {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")
+                    description: qsTr("How often the status from your headset is fetched. Lower values may increase battery usage.")
+                    additionalControl: Button {
+                        text: qsTr("Fetch")
+                        enabled: true
+                        onClicked: HeadsetControlBridge.fetch()
+                    }
                     additionalControl: SpinBox {
                         from: 10
                         to: 3600
@@ -299,6 +305,17 @@ ColumnLayout {
                         }
                     }
                 }
+
+                Card {
+                    visible: UserSettings.headsetcontrolMonitoring
+                    Layout.fillWidth: true
+                    title: qsTr("GitHub repository")
+                    description: "https://github.com/Sapd/HeadsetControl"
+
+                    additionalControl: Button {
+                        text: qsTr("View on GitHub")
+                        onClicked: Qt.openUrlExternally("https://github.com/Sapd/HeadsetControl#headsetcontrol")
+                    }
             }
         }
 
