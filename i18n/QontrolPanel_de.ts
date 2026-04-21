@@ -563,7 +563,7 @@
     </message>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Updates und Informationen</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
@@ -599,11 +599,11 @@
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub-Repository</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf GitHub anzeigen</translation>
     </message>
     <message>
         <source>No release notes available</source>
@@ -930,19 +930,19 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wie oft der Status Ihres Headsets abgerufen wird. Niedrigere Werte können den Akkuverbrauch erhöhen.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrufen</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub-Repository</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf GitHub anzeigen</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
