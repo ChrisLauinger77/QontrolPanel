@@ -543,10 +543,6 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Debug and information</source>
-        <translation>Depuração e informações</translation>
-    </message>
-    <message>
         <source>Application version</source>
         <translation>Versão do aplicativo</translation>
     </message>
@@ -565,6 +561,10 @@
     <message>
         <source>Application Updates</source>
         <translation>Atualizações do aplicativo</translation>
+    </message>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Version %1 is available</source>
@@ -597,6 +597,14 @@
     <message>
         <source>Show</source>
         <translation>Exibir</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No release notes available</source>
@@ -919,6 +927,22 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

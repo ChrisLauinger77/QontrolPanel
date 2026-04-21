@@ -552,6 +552,10 @@
         <translation>Télécharger et Installer</translation>
     </message>
     <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Version %1 is available</source>
         <translation>La version %1 est disponible</translation>
     </message>
@@ -572,16 +576,20 @@
         <translation>Commit</translation>
     </message>
     <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>No release notes available</source>
         <translation>Notes de mise à jour indisponibles</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
         <translation>Quoi de neuf dans la version %1</translation>
-    </message>
-    <message>
-        <source>Debug and information</source>
-        <translation>Informations et debug</translation>
     </message>
     <message>
         <source>Version %1</source>
@@ -928,6 +936,22 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

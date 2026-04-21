@@ -542,10 +542,6 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Debug and information</source>
-        <translation>Debug und Informationen</translation>
-    </message>
-    <message>
         <source>Application version</source>
         <translation>Anwendungsversion</translation>
     </message>
@@ -564,6 +560,10 @@
     <message>
         <source>Application Updates</source>
         <translation>Anwendungsaktualisierungen</translation>
+    </message>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Version %1 is available</source>
@@ -596,6 +596,14 @@
     <message>
         <source>Show</source>
         <translation>Anzeigen</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No release notes available</source>
@@ -919,6 +927,22 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     <message>
         <source>Set the equalizer preset for your headset</source>
         <translation>Stellen Sie die Equalizer-Voreinstellung für Ihr Headset ein</translation>
+    </message>
+    <message>
+        <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled

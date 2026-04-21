@@ -542,10 +542,6 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Debug and information</source>
-        <translation>디버그 및 정보</translation>
-    </message>
-    <message>
         <source>Application version</source>
         <translation>응용 프로그램 버전</translation>
     </message>
@@ -564,6 +560,10 @@
     <message>
         <source>Application Updates</source>
         <translation>응용 프로그램 업데이트</translation>
+    </message>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Version %1 is available</source>
@@ -596,6 +596,14 @@
     <message>
         <source>Show</source>
         <translation>표시</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No release notes available</source>
@@ -918,6 +926,22 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

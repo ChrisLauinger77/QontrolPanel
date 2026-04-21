@@ -542,10 +542,6 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Debug and information</source>
-        <translation type="unfinished">Depuración e información</translation>
-    </message>
-    <message>
         <source>Application version</source>
         <translation type="unfinished">Versión de la aplicación</translation>
     </message>
@@ -564,6 +560,10 @@
     <message>
         <source>Application Updates</source>
         <translation type="unfinished">Actualizaciones de la aplicación</translation>
+    </message>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Version %1 is available</source>
@@ -596,6 +596,14 @@
     <message>
         <source>Show</source>
         <translation type="unfinished">Mostrar</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No release notes available</source>
@@ -974,6 +982,22 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
