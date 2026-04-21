@@ -168,6 +168,8 @@ jobs:
 
       - name: Commit compiled translations to PR branch
         if: github.event_name == 'workflow_run' && steps.pr_context.outputs.has_translation_changes == 'true'
+        env:
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
@@ -179,7 +181,7 @@ jobs:
           fi
 
           git commit -m "Update compiled translations [skip ci]"
-          git push origin HEAD:${{ github.event.workflow_run.head_branch }}
+          git push origin "HEAD:$HEAD_BRANCH"
 
       - name: Commit compiled translations to current branch
         if: github.event_name != 'workflow_run' && github.ref_name != 'main'
