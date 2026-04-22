@@ -1122,6 +1122,10 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
 <context>
     <name>Main</name>
     <message>
+        <source>Low headset battery detected at %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Low Battery</source>
         <translation>Batterie schwach</translation>
     </message>

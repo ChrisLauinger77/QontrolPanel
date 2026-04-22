@@ -1133,6 +1133,10 @@ You can enable it in the Components tab.</source>
         <translation>업데이트 가능</translation>
     </message>
     <message>
+        <source>Low headset battery detected at %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Low Battery</source>
         <translation type="unfinished"></translation>
     </message>

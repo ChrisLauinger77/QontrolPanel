@@ -1121,6 +1121,10 @@ Omogočite ga lahko na zavihku Komponente.</translation>
 <context>
     <name>Main</name>
     <message>
+        <source>Low headset battery detected at %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Low Battery</source>
         <translation>Baterija je skoraj prazna</translation>
     </message>
