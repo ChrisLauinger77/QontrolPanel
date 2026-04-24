@@ -129,6 +129,38 @@ Rectangle {
             id: additionalControlLoader
             sourceComponent: card.additionalControl
             visible: card.additionalControl !== null
+            implicitWidth: {
+                if (!item) {
+                    return 0
+                }
+
+                if (item.Layout.preferredWidth > 0) {
+                    return item.Layout.preferredWidth
+                }
+
+                if (item.implicitWidth > 0) {
+                    return item.implicitWidth
+                }
+
+                return item.width
+            }
+            implicitHeight: {
+                if (!item) {
+                    return 0
+                }
+
+                if (item.Layout.preferredHeight > 0) {
+                    return item.Layout.preferredHeight
+                }
+
+                if (item.implicitHeight > 0) {
+                    return item.implicitHeight
+                }
+
+                return item.height
+            }
+            width: implicitWidth
+            height: implicitHeight
         }
     }
 }
