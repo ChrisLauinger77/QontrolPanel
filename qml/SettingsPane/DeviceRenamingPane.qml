@@ -54,13 +54,13 @@ ColumnLayout {
                     title: model.name || ""
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 200
+                        width: 250
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomDeviceName(deviceCard.model.name || "")
 
                         onTextChanged: {
                             if (text !== AudioBridge.getCustomDeviceName(deviceCard.model.name || "")) {
-                                AudioBridge.setCustomDeviceName(deviceCard.model.name || "", text)
+                                AudioBridge.setCustomDeviceName(deviceCard.model.name || "", text);
                             }
                         }
                     }
@@ -77,13 +77,13 @@ ColumnLayout {
                     title: model.name || ""
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 250
+                        width: 250
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomDeviceName(inDeviceCard.model.name || "")
 
                         onTextChanged: {
                             if (text !== AudioBridge.getCustomDeviceName(inDeviceCard.model.name || "")) {
-                                AudioBridge.setCustomDeviceName(inDeviceCard.model.name || "", text)
+                                AudioBridge.setCustomDeviceName(inDeviceCard.model.name || "", text);
                             }
                         }
                     }
@@ -101,13 +101,13 @@ ColumnLayout {
                     title: model.displayName || ""
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 200
+                        width: 250
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomExecutableName(groupAppCard.model.executableName || "")
 
                         onTextChanged: {
                             if (text !== AudioBridge.getCustomExecutableName(groupAppCard.model.executableName || "")) {
-                                AudioBridge.setCustomExecutableName(groupAppCard.model.executableName || "", text)
+                                AudioBridge.setCustomExecutableName(groupAppCard.model.executableName || "", text);
                             }
                         }
                     }
@@ -125,13 +125,13 @@ ColumnLayout {
                     visible: viewSelector.currentIndex === 2
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 200
+                        width: 250
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0)
 
                         onTextChanged: {
                             if (text !== AudioBridge.getCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0)) {
-                                AudioBridge.setCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0, text)
+                                AudioBridge.setCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0, text);
                             }
                         }
                     }
