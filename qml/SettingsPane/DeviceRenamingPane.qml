@@ -54,7 +54,7 @@ ColumnLayout {
                     title: model.name || ""
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 800
+                        width: 800
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomDeviceName(deviceCard.model.name || "")
 
@@ -77,7 +77,7 @@ ColumnLayout {
                     title: model.name || ""
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 800
+                        width: 800
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomDeviceName(inDeviceCard.model.name || "")
 
@@ -101,7 +101,7 @@ ColumnLayout {
                     title: model.displayName || ""
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 800
+                        width: 800
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomExecutableName(groupAppCard.model.executableName || "")
 
@@ -125,7 +125,7 @@ ColumnLayout {
                     visible: viewSelector.currentIndex === 2
 
                     additionalControl: TextField {
-                        Layout.preferredWidth: 800
+                        width: 800
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0)
 
