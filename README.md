@@ -54,7 +54,3 @@ See [here](.github/BUILDING.md).
 - Used icons from FlatIcon and VeryIcon
 - Application icon from [Yogi Aprelliyanto](https://www.flaticon.com/authors/yogi-aprelliyanto)
 - [Sapd](https://github.com/sapd/) for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
-
-```
-
-```
