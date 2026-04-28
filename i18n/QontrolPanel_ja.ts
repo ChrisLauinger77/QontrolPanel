@@ -72,11 +72,11 @@
     </message>
     <message>
         <source>Top</source>
-        <translation>上部</translation>
+        <translation>上</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>下部</translation>
+        <translation>下</translation>
     </message>
     <message>
         <source>Left</source>
@@ -563,7 +563,7 @@
     </message>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>更新と情報</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
@@ -599,11 +599,11 @@
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub リポジトリ</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub を表示</translation>
     </message>
     <message>
         <source>No release notes available</source>
@@ -930,19 +930,19 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッドセットの状態情報を取得する頻度です。値を低く設定するとバッテリーの消費量が増加する可能性があります。</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>取得</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub リポジトリ</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub を表示</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
@@ -1200,15 +1200,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Top Left</source>
-        <translation>上部の左</translation>
+        <translation>左上</translation>
     </message>
     <message>
         <source>Top Center</source>
-        <translation>上部の中央</translation>
+        <translation>上中央</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation>上部の右</translation>
+        <translation>右上</translation>
     </message>
     <message>
         <source>Left</source>
@@ -1220,15 +1220,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation>下部の左</translation>
+        <translation>左下</translation>
     </message>
     <message>
         <source>Bottom Center</source>
-        <translation>下部の中央</translation>
+        <translation>下中央</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation>下部の右</translation>
+        <translation>右下</translation>
     </message>
 </context>
 <context>
