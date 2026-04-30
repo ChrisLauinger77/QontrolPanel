@@ -31,12 +31,18 @@ Default section of settings pane is configurable in General section.
 
 Translators should have a look [here](.github/TRANSLATIONS.md).
 
-## Installation
+## Installation / Upgrade
 
-### Winget
+#### Winget install
 
 ```pwsh
 winget install ChrisLauinger77.QontrolPanel
+```
+
+#### Winget upgrade
+
+```pwsh
+winget upgrade ChrisLauinger77.QontrolPanel
 ```
 
 ### Manual
