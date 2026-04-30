@@ -248,7 +248,7 @@ QString HeadsetControlBridge::batteryIcon() const
     const int lowBatteryThreshold = UserSettings::instance()->headsetcontrolLowBatteryThreshold();
 
     if (status == "BATTERY_UNAVAILABLE" || level < 0) {
-        return QString();
+        return QString::fromUtf8("❌");
     }
 
     QString icon;
