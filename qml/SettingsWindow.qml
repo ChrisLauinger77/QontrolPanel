@@ -19,73 +19,86 @@ ApplicationWindow {
 
     function pageComponentForIndex(index) {
         switch (index) {
-        case 0: return generalPaneComponent
-        case 1: return componentsPaneComponent
-        case 2: return appearancePaneComponent
-        case 3: return mediaOverlayPaneComponent
-        case 4: return commAppsPaneComponent
-        case 5: return shortcutsPaneComponent
-        case 6: return appHotkeysPaneComponent
-        case 7: return headsetControlPaneComponent
-        case 8: return deviceRenamingPaneComponent
-        case 9: return languagePaneComponent
-        case 10: return debugPaneComponent
-        case 11: return consolePaneComponent
-        default: return generalPaneComponent
+        case 0:
+            return generalPaneComponent;
+        case 1:
+            return componentsPaneComponent;
+        case 2:
+            return appearancePaneComponent;
+        case 3:
+            return mediaOverlayPaneComponent;
+        case 4:
+            return commAppsPaneComponent;
+        case 5:
+            return shortcutsPaneComponent;
+        case 6:
+            return appHotkeysPaneComponent;
+        case 7:
+            return headsetControlPaneComponent;
+        case 8:
+            return deviceRenamingPaneComponent;
+        case 9:
+            return languagePaneComponent;
+        case 10:
+            return updatePaneComponent;
+        case 11:
+            return consolePaneComponent;
+        default:
+            return generalPaneComponent;
         }
     }
 
     function openPage(index, forceOpen) {
-        const safeIndex = Math.max(0, Math.min(index, maxSettingsPageIndex))
-        const component = pageComponentForIndex(safeIndex)
-        const shouldNavigate = forceOpen || sidebarList.currentIndex !== safeIndex || !stackView.currentItem
+        const safeIndex = Math.max(0, Math.min(index, maxSettingsPageIndex));
+        const component = pageComponentForIndex(safeIndex);
+        const shouldNavigate = forceOpen || sidebarList.currentIndex !== safeIndex || !stackView.currentItem;
 
-        sidebarList.currentIndex = safeIndex
+        sidebarList.currentIndex = safeIndex;
 
         if (!shouldNavigate) {
-            return
+            return;
         }
 
         if (stackView.depth === 0) {
-            stackView.push(component)
+            stackView.push(component);
         } else {
-            stackView.replace(component)
+            stackView.replace(component);
         }
     }
 
     function showPreferredPane() {
-        show()
-        openPage(UserSettings.settingsStartupPage, true)
+        show();
+        openPage(UserSettings.settingsStartupPage, true);
     }
 
     function showUpdatePane() {
-        show()
-        openPage(10, true)
+        show();
+        openPage(10, true);
     }
 
     function showHeadsetcontrolPane() {
-        show()
-        openPage(7, true)
+        show();
+        openPage(7, true);
     }
 
     property int rowHeight: 35
 
     DonatePopup {
-        anchors.centerIn: parent
         id: donatePopup
+        anchors.centerIn: parent
     }
 
     Popup {
+        id: easterEggDialog
         anchors.centerIn: parent
         width: mainPopupLyt.implicitWidth + 50
         height: implicitHeight + 20
-        id: easterEggDialog
         modal: true
 
         Connections {
             target: Context
             function onEasterEggRequested() {
-                easterEggDialog.open()
+                easterEggDialog.open();
             }
         }
 
@@ -184,9 +197,9 @@ ApplicationWindow {
                         target: UserSettings
 
                         function onLanguageIndexChanged() {
-                            Qt.callLater(function() {
-                                root.openPage(9, true)
-                            })
+                            Qt.callLater(function () {
+                                root.openPage(9, true);
+                            });
                         }
                     }
 
@@ -205,7 +218,7 @@ ApplicationWindow {
                         icon.height: 18
                         opacity: text === qsTr("Debug") && !ListView.isCurrentItem ? 0.5 : 1
                         onClicked: {
-                            root.openPage(index, false)
+                            root.openPage(index, false);
                         }
                     }
                 }
@@ -232,36 +245,84 @@ ApplicationWindow {
 
             popEnter: Transition {
                 ParallelAnimation {
-                    NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 150; easing.type: Easing.InQuint }
-                    NumberAnimation { property: "y"; from: (stackView.mirrored ? -0.3 : 0.3) * -stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 150
+                        easing.type: Easing.InQuint
+                    }
+                    NumberAnimation {
+                        property: "y"
+                        from: (stackView.mirrored ? -0.3 : 0.3) * -stackView.width
+                        to: 0
+                        duration: 300
+                        easing.type: Easing.OutCubic
+                    }
                 }
             }
 
             pushEnter: Transition {
                 ParallelAnimation {
-                    NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 150; easing.type: Easing.InQuint }
-                    NumberAnimation { property: "y"; from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 150
+                        easing.type: Easing.InQuint
+                    }
+                    NumberAnimation {
+                        property: "y"
+                        from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
+                        to: 0
+                        duration: 300
+                        easing.type: Easing.OutCubic
+                    }
                 }
             }
 
             popExit: Transition {
-                NumberAnimation { property: "opacity"; from: 1; to: 0; duration: 150; easing.type: Easing.OutQuint }
+                NumberAnimation {
+                    property: "opacity"
+                    from: 1
+                    to: 0
+                    duration: 150
+                    easing.type: Easing.OutQuint
+                }
             }
 
             pushExit: Transition {
-                NumberAnimation { property: "opacity"; from: 1; to: 0; duration: 150; easing.type: Easing.OutQuint }
+                NumberAnimation {
+                    property: "opacity"
+                    from: 1
+                    to: 0
+                    duration: 150
+                    easing.type: Easing.OutQuint
+                }
             }
 
             replaceEnter: Transition {
                 ParallelAnimation {
-                    NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 150; easing.type: Easing.InQuint }
-                    NumberAnimation { property: "y"; from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width; to: 0; duration: 300; easing.type: Easing.OutCubic }
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 150
+                        easing.type: Easing.InQuint
+                    }
+                    NumberAnimation {
+                        property: "y"
+                        from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
+                        to: 0
+                        duration: 300
+                        easing.type: Easing.OutCubic
+                    }
                 }
             }
 
             Component {
                 id: generalPaneComponent
-                GeneralPane{}
+                GeneralPane {}
             }
 
             Component {
@@ -310,8 +371,8 @@ ApplicationWindow {
             }
 
             Component {
-                id: debugPaneComponent
-                DebugPane {}
+                id: updatePaneComponent
+                UpdatePane {}
             }
 
             Component {

@@ -182,7 +182,7 @@ set(QML_FILES
     qml/SettingsPane/ComponentsPane.qml
     qml/SettingsPane/GeneralPane.qml
     qml/SettingsPane/LanguagePane.qml
-    qml/SettingsPane/DebugPane.qml
+    qml/SettingsPane/UpdatePane.qml
     qml/SettingsPane/CommAppsPane.qml
     qml/SettingsPane/ShortcutsPane.qml
     qml/SettingsPane/AppHotkeysPane.qml
