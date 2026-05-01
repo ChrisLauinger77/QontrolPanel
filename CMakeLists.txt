@@ -187,7 +187,7 @@ set(QML_FILES
     qml/SettingsPane/ShortcutsPane.qml
     qml/SettingsPane/AppHotkeysPane.qml
     qml/SettingsPane/HeadsetControlPane.qml
-    qml/SettingsPane/ConsolePane.qml
+    qml/SettingsPane/DebugPane.qml
     qml/SettingsPane/DeviceRenamingPane.qml
     qml/SettingsPane/MediaOverlayPane.qml
     qml/Debug/DebugRectangle.qml

@@ -42,7 +42,7 @@ ApplicationWindow {
         case 10:
             return updatePaneComponent;
         case 11:
-            return consolePaneComponent;
+            return debugPaneComponent;
         default:
             return generalPaneComponent;
         }
@@ -376,8 +376,8 @@ ApplicationWindow {
             }
 
             Component {
-                id: consolePaneComponent
-                ConsolePane {}
+                id: debugPaneComponent
+                DebugPane {}
             }
         }
     }
