@@ -430,37 +430,6 @@
     </message>
 </context>
 <context>
-    <name>ConsolePane</name>
-    <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Console output</source>
-        <translation>Izhod konzole</translation>
-    </message>
-    <message>
-        <source>Filter by:</source>
-        <translation>Filtriraj po:</translation>
-    </message>
-    <message>
-        <source>Auto-scroll</source>
-        <translation>Samodejno pomikanje</translation>
-    </message>
-    <message>
-        <source>Copy All</source>
-        <translation>Kopiraj vse</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>Počisti</translation>
-    </message>
-</context>
-<context>
     <name>Context</name>
     <message>
         <source>Up</source>
@@ -542,84 +511,32 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Application version</source>
-        <translation>Različica aplikacije</translation>
-    </message>
-    <message>
-        <source>QT version</source>
-        <translation>Različica QT</translation>
-    </message>
-    <message>
-        <source>Commit</source>
-        <translation>Commit</translation>
-    </message>
-    <message>
-        <source>Build date</source>
-        <translation>Datum gradnje</translation>
-    </message>
-    <message>
-        <source>Application Updates</source>
-        <translation>Posodobitve aplikacije</translation>
-    </message>
-    <message>
-        <source>Updates and information</source>
+        <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Version %1 is available</source>
-        <translation>Različica %1 je na voljo</translation>
-    </message>
-    <message>
-        <source>Checking...</source>
-        <translation>Preverjanje ...</translation>
-    </message>
-    <message>
-        <source>Downloading...</source>
-        <translation>Prenos ...</translation>
-    </message>
-    <message>
-        <source>Check for Updates</source>
-        <translation>Preveri posodobitve</translation>
-    </message>
-    <message>
-        <source>Download and Install</source>
-        <translation>Prenesi in namesti</translation>
-    </message>
-    <message>
-        <source>Release notes</source>
-        <translation>Opombe k izdaji</translation>
-    </message>
-    <message>
-        <source>View what&apos;s new in version %1</source>
-        <translation>Oglejte si novosti v različici %1</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation>Prikaži</translation>
-    </message>
-    <message>
-        <source>GitHub repository</source>
+        <source>QontrolPanel Log Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <source>Console output</source>
+        <translation type="unfinished">Izhod konzole</translation>
     </message>
     <message>
-        <source>No release notes available</source>
-        <translation>Ni opomb ob izdaji</translation>
+        <source>Filter by:</source>
+        <translation type="unfinished">Filtriraj po:</translation>
     </message>
     <message>
-        <source>Version %1</source>
-        <translation>Različica %1</translation>
+        <source>Auto-scroll</source>
+        <translation type="unfinished">Samodejno pomikanje</translation>
     </message>
     <message>
-        <source>Auto check for app updates</source>
-        <translation>Samodejno preverjanje posodobitev aplikacij</translation>
+        <source>Copy All</source>
+        <translation type="unfinished">Kopiraj vse</translation>
     </message>
     <message>
-        <source>Check for application updates at startup and every 4 hours</source>
-        <translation>Preveri posodobitve aplikacije ob zagonu in nato vsake 4 ure</translation>
+        <source>Clear</source>
+        <translation type="unfinished">Počisti</translation>
     </message>
 </context>
 <context>
@@ -1426,6 +1343,26 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>Vnos: </translation>
     </message>
     <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">Nadzor slušalk</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished">Luči</translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished">Glasovni pozivi</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished">Zavrtite za izklop zvoka</translation>
+    </message>
+    <message>
         <source>Exit</source>
         <translation>Izhod</translation>
     </message>
@@ -1452,6 +1389,89 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel nastavitve</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatePane</name>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application Updates</source>
+        <translation type="unfinished">Posodobitve aplikacije</translation>
+    </message>
+    <message>
+        <source>Version %1 is available</source>
+        <translation type="unfinished">Različica %1 je na voljo</translation>
+    </message>
+    <message>
+        <source>Checking...</source>
+        <translation type="unfinished">Preverjanje ...</translation>
+    </message>
+    <message>
+        <source>Downloading...</source>
+        <translation type="unfinished">Prenos ...</translation>
+    </message>
+    <message>
+        <source>Download and Install</source>
+        <translation type="unfinished">Prenesi in namesti</translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <translation type="unfinished">Preveri posodobitve</translation>
+    </message>
+    <message>
+        <source>Release notes</source>
+        <translation type="unfinished">Opombe k izdaji</translation>
+    </message>
+    <message>
+        <source>View what&apos;s new in version %1</source>
+        <translation type="unfinished">Oglejte si novosti v različici %1</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished">Prikaži</translation>
+    </message>
+    <message>
+        <source>Auto check for app updates</source>
+        <translation type="unfinished">Samodejno preverjanje posodobitev aplikacij</translation>
+    </message>
+    <message>
+        <source>Check for application updates at startup and every 4 hours</source>
+        <translation type="unfinished">Preveri posodobitve aplikacije ob zagonu in nato vsake 4 ure</translation>
+    </message>
+    <message>
+        <source>Application version</source>
+        <translation type="unfinished">Različica aplikacije</translation>
+    </message>
+    <message>
+        <source>QT version</source>
+        <translation type="unfinished">Različica QT</translation>
+    </message>
+    <message>
+        <source>Commit</source>
+        <translation type="unfinished">Commit</translation>
+    </message>
+    <message>
+        <source>Build date</source>
+        <translation type="unfinished">Datum gradnje</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version %1</source>
+        <translation type="unfinished">Različica %1</translation>
+    </message>
+    <message>
+        <source>No release notes available</source>
+        <translation type="unfinished">Ni opomb ob izdaji</translation>
     </message>
 </context>
 <context>

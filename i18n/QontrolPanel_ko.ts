@@ -430,37 +430,6 @@
     </message>
 </context>
 <context>
-    <name>ConsolePane</name>
-    <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Console output</source>
-        <translation>콘솔 출력</translation>
-    </message>
-    <message>
-        <source>Filter by:</source>
-        <translation>필터 기준:</translation>
-    </message>
-    <message>
-        <source>Auto-scroll</source>
-        <translation>자동 스크롤</translation>
-    </message>
-    <message>
-        <source>Copy All</source>
-        <translation>모두 복사</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>지우기</translation>
-    </message>
-</context>
-<context>
     <name>Context</name>
     <message>
         <source>Up</source>
@@ -542,84 +511,32 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Application version</source>
-        <translation>응용 프로그램 버전</translation>
-    </message>
-    <message>
-        <source>QT version</source>
-        <translation>QT 버전</translation>
-    </message>
-    <message>
-        <source>Commit</source>
-        <translation>커밋</translation>
-    </message>
-    <message>
-        <source>Build date</source>
-        <translation>빌드 날짜</translation>
-    </message>
-    <message>
-        <source>Application Updates</source>
-        <translation>응용 프로그램 업데이트</translation>
-    </message>
-    <message>
-        <source>Updates and information</source>
+        <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Version %1 is available</source>
-        <translation>버전 %1 사용 가능</translation>
-    </message>
-    <message>
-        <source>Checking...</source>
-        <translation>확인 중...</translation>
-    </message>
-    <message>
-        <source>Downloading...</source>
-        <translation>다운로드 중...</translation>
-    </message>
-    <message>
-        <source>Check for Updates</source>
-        <translation>업데이트 확인</translation>
-    </message>
-    <message>
-        <source>Download and Install</source>
-        <translation>다운로드 및 설치</translation>
-    </message>
-    <message>
-        <source>Release notes</source>
-        <translation>릴리스 노트</translation>
-    </message>
-    <message>
-        <source>View what&apos;s new in version %1</source>
-        <translation>버전 %1의 새로운 기능 보기</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation>표시</translation>
-    </message>
-    <message>
-        <source>GitHub repository</source>
+        <source>QontrolPanel Log Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <source>Console output</source>
+        <translation type="unfinished">콘솔 출력</translation>
     </message>
     <message>
-        <source>No release notes available</source>
-        <translation>사용 가능한 릴리스 노트 없음</translation>
+        <source>Filter by:</source>
+        <translation type="unfinished">필터 기준:</translation>
     </message>
     <message>
-        <source>Version %1</source>
-        <translation>버전 %1</translation>
+        <source>Auto-scroll</source>
+        <translation type="unfinished">자동 스크롤</translation>
     </message>
     <message>
-        <source>Auto check for app updates</source>
-        <translation>앱 업데이트 자동 확인</translation>
+        <source>Copy All</source>
+        <translation type="unfinished">모두 복사</translation>
     </message>
     <message>
-        <source>Check for application updates at startup and every 4 hours</source>
-        <translation>시작 시 및 4시간마다 응용 프로그램 업데이트 확인</translation>
+        <source>Clear</source>
+        <translation type="unfinished">지우기</translation>
     </message>
 </context>
 <context>
@@ -1426,6 +1343,26 @@ You can enable it in the Components tab.</source>
         <translation>입력: </translation>
     </message>
     <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">헤드셋 제어</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
@@ -1452,6 +1389,89 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel 설정</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatePane</name>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application Updates</source>
+        <translation type="unfinished">응용 프로그램 업데이트</translation>
+    </message>
+    <message>
+        <source>Version %1 is available</source>
+        <translation type="unfinished">버전 %1 사용 가능</translation>
+    </message>
+    <message>
+        <source>Checking...</source>
+        <translation type="unfinished">확인 중...</translation>
+    </message>
+    <message>
+        <source>Downloading...</source>
+        <translation type="unfinished">다운로드 중...</translation>
+    </message>
+    <message>
+        <source>Download and Install</source>
+        <translation type="unfinished">다운로드 및 설치</translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <translation type="unfinished">업데이트 확인</translation>
+    </message>
+    <message>
+        <source>Release notes</source>
+        <translation type="unfinished">릴리스 노트</translation>
+    </message>
+    <message>
+        <source>View what&apos;s new in version %1</source>
+        <translation type="unfinished">버전 %1의 새로운 기능 보기</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished">표시</translation>
+    </message>
+    <message>
+        <source>Auto check for app updates</source>
+        <translation type="unfinished">앱 업데이트 자동 확인</translation>
+    </message>
+    <message>
+        <source>Check for application updates at startup and every 4 hours</source>
+        <translation type="unfinished">시작 시 및 4시간마다 응용 프로그램 업데이트 확인</translation>
+    </message>
+    <message>
+        <source>Application version</source>
+        <translation type="unfinished">응용 프로그램 버전</translation>
+    </message>
+    <message>
+        <source>QT version</source>
+        <translation type="unfinished">QT 버전</translation>
+    </message>
+    <message>
+        <source>Commit</source>
+        <translation type="unfinished">커밋</translation>
+    </message>
+    <message>
+        <source>Build date</source>
+        <translation type="unfinished">빌드 날짜</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version %1</source>
+        <translation type="unfinished">버전 %1</translation>
+    </message>
+    <message>
+        <source>No release notes available</source>
+        <translation type="unfinished">사용 가능한 릴리스 노트 없음</translation>
     </message>
 </context>
 <context>

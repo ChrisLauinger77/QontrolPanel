@@ -430,37 +430,6 @@
     </message>
 </context>
 <context>
-    <name>ConsolePane</name>
-    <message>
-        <source>All</source>
-        <translation>すべて</translation>
-    </message>
-    <message>
-        <source>QontrolPanel Log Export</source>
-        <translation>QontrolPanel のログをエクスポート</translation>
-    </message>
-    <message>
-        <source>Console output</source>
-        <translation>コンソール出力</translation>
-    </message>
-    <message>
-        <source>Filter by:</source>
-        <translation>フィルター:</translation>
-    </message>
-    <message>
-        <source>Auto-scroll</source>
-        <translation>自動スクロール</translation>
-    </message>
-    <message>
-        <source>Copy All</source>
-        <translation>すべてコピー</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>消去</translation>
-    </message>
-</context>
-<context>
     <name>Context</name>
     <message>
         <source>Up</source>
@@ -542,84 +511,32 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Application version</source>
-        <translation>アプリのバージョン</translation>
+        <source>All</source>
+        <translation type="unfinished">すべて</translation>
     </message>
     <message>
-        <source>QT version</source>
-        <translation>QT のバージョン</translation>
+        <source>QontrolPanel Log Export</source>
+        <translation type="unfinished">QontrolPanel のログをエクスポート</translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation>コミット</translation>
+        <source>Console output</source>
+        <translation type="unfinished">コンソール出力</translation>
     </message>
     <message>
-        <source>Build date</source>
-        <translation>ビルド日時</translation>
+        <source>Filter by:</source>
+        <translation type="unfinished">フィルター:</translation>
     </message>
     <message>
-        <source>Application Updates</source>
-        <translation>アプリを更新</translation>
+        <source>Auto-scroll</source>
+        <translation type="unfinished">自動スクロール</translation>
     </message>
     <message>
-        <source>Updates and information</source>
-        <translation>更新と情報</translation>
+        <source>Copy All</source>
+        <translation type="unfinished">すべてコピー</translation>
     </message>
     <message>
-        <source>Version %1 is available</source>
-        <translation>バージョン %1 が利用可能です</translation>
-    </message>
-    <message>
-        <source>Checking...</source>
-        <translation>確認中...</translation>
-    </message>
-    <message>
-        <source>Downloading...</source>
-        <translation>ダウンロード中...</translation>
-    </message>
-    <message>
-        <source>Check for Updates</source>
-        <translation>更新を確認</translation>
-    </message>
-    <message>
-        <source>Download and Install</source>
-        <translation>ダウンロードとインストール</translation>
-    </message>
-    <message>
-        <source>Release notes</source>
-        <translation>リリース ノート</translation>
-    </message>
-    <message>
-        <source>View what&apos;s new in version %1</source>
-        <translation>バージョン %1 の新着情報を表示</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation>表示</translation>
-    </message>
-    <message>
-        <source>GitHub repository</source>
-        <translation>GitHub リポジトリ</translation>
-    </message>
-    <message>
-        <source>View on GitHub</source>
-        <translation>GitHub を表示</translation>
-    </message>
-    <message>
-        <source>No release notes available</source>
-        <translation>有効なリリース ノートはありません</translation>
-    </message>
-    <message>
-        <source>Version %1</source>
-        <translation>バージョン %1</translation>
-    </message>
-    <message>
-        <source>Auto check for app updates</source>
-        <translation>アプリの更新を自動で確認</translation>
-    </message>
-    <message>
-        <source>Check for application updates at startup and every 4 hours</source>
-        <translation>起動時および 4 時間ごとにアプリの更新を確認します。</translation>
+        <source>Clear</source>
+        <translation type="unfinished">消去</translation>
     </message>
 </context>
 <context>
@@ -1426,6 +1343,26 @@ You can enable it in the Components tab.</source>
         <translation>入力: </translation>
     </message>
     <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">ヘッドセット コントロール</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished">イコライザー プリセット</translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished">ライト</translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished">音声プロンプト</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished">回転でミュート</translation>
+    </message>
+    <message>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
@@ -1452,6 +1389,89 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel の設定</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatePane</name>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished">更新と情報</translation>
+    </message>
+    <message>
+        <source>Application Updates</source>
+        <translation type="unfinished">アプリを更新</translation>
+    </message>
+    <message>
+        <source>Version %1 is available</source>
+        <translation type="unfinished">バージョン %1 が利用可能です</translation>
+    </message>
+    <message>
+        <source>Checking...</source>
+        <translation type="unfinished">確認中...</translation>
+    </message>
+    <message>
+        <source>Downloading...</source>
+        <translation type="unfinished">ダウンロード中...</translation>
+    </message>
+    <message>
+        <source>Download and Install</source>
+        <translation type="unfinished">ダウンロードとインストール</translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <translation type="unfinished">更新を確認</translation>
+    </message>
+    <message>
+        <source>Release notes</source>
+        <translation type="unfinished">リリース ノート</translation>
+    </message>
+    <message>
+        <source>View what&apos;s new in version %1</source>
+        <translation type="unfinished">バージョン %1 の新着情報を表示</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished">表示</translation>
+    </message>
+    <message>
+        <source>Auto check for app updates</source>
+        <translation type="unfinished">アプリの更新を自動で確認</translation>
+    </message>
+    <message>
+        <source>Check for application updates at startup and every 4 hours</source>
+        <translation type="unfinished">起動時および 4 時間ごとにアプリの更新を確認します。</translation>
+    </message>
+    <message>
+        <source>Application version</source>
+        <translation type="unfinished">アプリのバージョン</translation>
+    </message>
+    <message>
+        <source>QT version</source>
+        <translation type="unfinished">QT のバージョン</translation>
+    </message>
+    <message>
+        <source>Commit</source>
+        <translation type="unfinished">コミット</translation>
+    </message>
+    <message>
+        <source>Build date</source>
+        <translation type="unfinished">ビルド日時</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished">GitHub リポジトリ</translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished">GitHub を表示</translation>
+    </message>
+    <message>
+        <source>Version %1</source>
+        <translation type="unfinished">バージョン %1</translation>
+    </message>
+    <message>
+        <source>No release notes available</source>
+        <translation type="unfinished">有効なリリース ノートはありません</translation>
     </message>
 </context>
 <context>

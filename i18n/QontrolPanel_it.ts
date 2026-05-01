@@ -430,37 +430,6 @@
     </message>
 </context>
 <context>
-    <name>ConsolePane</name>
-    <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Console output</source>
-        <translation>Output console</translation>
-    </message>
-    <message>
-        <source>Filter by:</source>
-        <translation>Filtra per:</translation>
-    </message>
-    <message>
-        <source>Auto-scroll</source>
-        <translation>Scorrimento automatico</translation>
-    </message>
-    <message>
-        <source>Copy All</source>
-        <translation>Copia tutto</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>Azzera</translation>
-    </message>
-</context>
-<context>
     <name>Context</name>
     <message>
         <source>Up</source>
@@ -542,84 +511,32 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Application version</source>
-        <translation>Versione applicazione</translation>
-    </message>
-    <message>
-        <source>QT version</source>
-        <translation>Versione QT</translation>
-    </message>
-    <message>
-        <source>Commit</source>
-        <translation>Commit</translation>
-    </message>
-    <message>
-        <source>Build date</source>
-        <translation>Data build</translation>
-    </message>
-    <message>
-        <source>Application Updates</source>
-        <translation>Aggiornamento applicazione</translation>
-    </message>
-    <message>
-        <source>Updates and information</source>
+        <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Version %1 is available</source>
-        <translation>Disponibile versione %1</translation>
-    </message>
-    <message>
-        <source>Checking...</source>
-        <translation>Controllo...</translation>
-    </message>
-    <message>
-        <source>Downloading...</source>
-        <translation>Download...</translation>
-    </message>
-    <message>
-        <source>Check for Updates</source>
-        <translation>Controlla aggiornamenti</translation>
-    </message>
-    <message>
-        <source>Download and Install</source>
-        <translation>Download ed installazione</translation>
-    </message>
-    <message>
-        <source>Release notes</source>
-        <translation>Note rilascio</translation>
-    </message>
-    <message>
-        <source>View what&apos;s new in version %1</source>
-        <translation>Visualizza novità versione %1</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation>Visualizza</translation>
-    </message>
-    <message>
-        <source>GitHub repository</source>
+        <source>QontrolPanel Log Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <source>Console output</source>
+        <translation type="unfinished">Output console</translation>
     </message>
     <message>
-        <source>No release notes available</source>
-        <translation>Nessuna nota rilascio disponibile</translation>
+        <source>Filter by:</source>
+        <translation type="unfinished">Filtra per:</translation>
     </message>
     <message>
-        <source>Version %1</source>
-        <translation>Versione %1</translation>
+        <source>Auto-scroll</source>
+        <translation type="unfinished">Scorrimento automatico</translation>
     </message>
     <message>
-        <source>Auto check for app updates</source>
-        <translation>Controlla automaticamente aggiornamenti app</translation>
+        <source>Copy All</source>
+        <translation type="unfinished">Copia tutto</translation>
     </message>
     <message>
-        <source>Check for application updates at startup and every 4 hours</source>
-        <translation>Controlla aggiornamenti app all&apos;avvio ed ogni 4 ore</translation>
+        <source>Clear</source>
+        <translation type="unfinished">Azzera</translation>
     </message>
 </context>
 <context>
@@ -1427,6 +1344,26 @@ Puoi abilitarlo nella scheda Componenti.</translation>
         <translation>Ingresso: </translation>
     </message>
     <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">Controllo cuffie</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished">Luci</translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished">Comandi vocali</translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished">Ruota per audio off</translation>
+    </message>
+    <message>
         <source>Exit</source>
         <translation>Esci da QontrolPanel</translation>
     </message>
@@ -1453,6 +1390,89 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>Impostazioni QontrolPanel</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatePane</name>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application Updates</source>
+        <translation type="unfinished">Aggiornamento applicazione</translation>
+    </message>
+    <message>
+        <source>Version %1 is available</source>
+        <translation type="unfinished">Disponibile versione %1</translation>
+    </message>
+    <message>
+        <source>Checking...</source>
+        <translation type="unfinished">Controllo...</translation>
+    </message>
+    <message>
+        <source>Downloading...</source>
+        <translation type="unfinished">Download...</translation>
+    </message>
+    <message>
+        <source>Download and Install</source>
+        <translation type="unfinished">Download ed installazione</translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <translation type="unfinished">Controlla aggiornamenti</translation>
+    </message>
+    <message>
+        <source>Release notes</source>
+        <translation type="unfinished">Note rilascio</translation>
+    </message>
+    <message>
+        <source>View what&apos;s new in version %1</source>
+        <translation type="unfinished">Visualizza novità versione %1</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished">Visualizza</translation>
+    </message>
+    <message>
+        <source>Auto check for app updates</source>
+        <translation type="unfinished">Controlla automaticamente aggiornamenti app</translation>
+    </message>
+    <message>
+        <source>Check for application updates at startup and every 4 hours</source>
+        <translation type="unfinished">Controlla aggiornamenti app all&apos;avvio ed ogni 4 ore</translation>
+    </message>
+    <message>
+        <source>Application version</source>
+        <translation type="unfinished">Versione applicazione</translation>
+    </message>
+    <message>
+        <source>QT version</source>
+        <translation type="unfinished">Versione QT</translation>
+    </message>
+    <message>
+        <source>Commit</source>
+        <translation type="unfinished">Commit</translation>
+    </message>
+    <message>
+        <source>Build date</source>
+        <translation type="unfinished">Data build</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version %1</source>
+        <translation type="unfinished">Versione %1</translation>
+    </message>
+    <message>
+        <source>No release notes available</source>
+        <translation type="unfinished">Nessuna nota rilascio disponibile</translation>
     </message>
 </context>
 <context>

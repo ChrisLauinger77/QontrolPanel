@@ -430,37 +430,6 @@
     </message>
 </context>
 <context>
-    <name>ConsolePane</name>
-    <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Console output</source>
-        <translation>控制台输出</translation>
-    </message>
-    <message>
-        <source>Filter by:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Auto-scroll</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Context</name>
     <message>
         <source>Up</source>
@@ -542,84 +511,32 @@
 <context>
     <name>DebugPane</name>
     <message>
-        <source>Application version</source>
-        <translation>应用程序版本</translation>
-    </message>
-    <message>
-        <source>QT version</source>
-        <translation>QT 版本</translation>
-    </message>
-    <message>
-        <source>Commit</source>
-        <translation>提交</translation>
-    </message>
-    <message>
-        <source>Build date</source>
-        <translation>构建日期</translation>
-    </message>
-    <message>
-        <source>Application Updates</source>
-        <translation>应用程序更新</translation>
-    </message>
-    <message>
-        <source>Updates and information</source>
+        <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Version %1 is available</source>
-        <translation>版本 %1 可用</translation>
-    </message>
-    <message>
-        <source>Checking...</source>
-        <translation>检查中...</translation>
-    </message>
-    <message>
-        <source>Downloading...</source>
-        <translation>下载中...</translation>
-    </message>
-    <message>
-        <source>Check for Updates</source>
-        <translation>检查更新</translation>
-    </message>
-    <message>
-        <source>Download and Install</source>
-        <translation>下载安装</translation>
-    </message>
-    <message>
-        <source>Release notes</source>
-        <translation>更新记录</translation>
-    </message>
-    <message>
-        <source>View what&apos;s new in version %1</source>
-        <translation>显示版本 %1 的更新内容</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation>显示</translation>
-    </message>
-    <message>
-        <source>GitHub repository</source>
+        <source>QontrolPanel Log Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>View on GitHub</source>
+        <source>Console output</source>
+        <translation type="unfinished">控制台输出</translation>
+    </message>
+    <message>
+        <source>Filter by:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No release notes available</source>
-        <translation>没有更新</translation>
+        <source>Auto-scroll</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Version %1</source>
-        <translation>版本 %1</translation>
+        <source>Copy All</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Auto check for app updates</source>
-        <translation>自动检查应用程序更新</translation>
-    </message>
-    <message>
-        <source>Check for application updates at startup and every 4 hours</source>
-        <translation>应用程序启动时检查更新然后每 4 小时检查一次</translation>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1425,6 +1342,26 @@ You can enable it in the Components tab.</source>
         <translation>输入: </translation>
     </message>
     <message>
+        <source>HeadsetControl</source>
+        <translation type="unfinished">耳机控制</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice Prompts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate-to-Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
@@ -1451,6 +1388,89 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel 设置</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatePane</name>
+    <message>
+        <source>Updates and information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application Updates</source>
+        <translation type="unfinished">应用程序更新</translation>
+    </message>
+    <message>
+        <source>Version %1 is available</source>
+        <translation type="unfinished">版本 %1 可用</translation>
+    </message>
+    <message>
+        <source>Checking...</source>
+        <translation type="unfinished">检查中...</translation>
+    </message>
+    <message>
+        <source>Downloading...</source>
+        <translation type="unfinished">下载中...</translation>
+    </message>
+    <message>
+        <source>Download and Install</source>
+        <translation type="unfinished">下载安装</translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <translation type="unfinished">检查更新</translation>
+    </message>
+    <message>
+        <source>Release notes</source>
+        <translation type="unfinished">更新记录</translation>
+    </message>
+    <message>
+        <source>View what&apos;s new in version %1</source>
+        <translation type="unfinished">显示版本 %1 的更新内容</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished">显示</translation>
+    </message>
+    <message>
+        <source>Auto check for app updates</source>
+        <translation type="unfinished">自动检查应用程序更新</translation>
+    </message>
+    <message>
+        <source>Check for application updates at startup and every 4 hours</source>
+        <translation type="unfinished">应用程序启动时检查更新然后每 4 小时检查一次</translation>
+    </message>
+    <message>
+        <source>Application version</source>
+        <translation type="unfinished">应用程序版本</translation>
+    </message>
+    <message>
+        <source>QT version</source>
+        <translation type="unfinished">QT 版本</translation>
+    </message>
+    <message>
+        <source>Commit</source>
+        <translation type="unfinished">提交</translation>
+    </message>
+    <message>
+        <source>Build date</source>
+        <translation type="unfinished">构建日期</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version %1</source>
+        <translation type="unfinished">版本 %1</translation>
+    </message>
+    <message>
+        <source>No release notes available</source>
+        <translation type="unfinished">没有更新</translation>
     </message>
 </context>
 <context>
