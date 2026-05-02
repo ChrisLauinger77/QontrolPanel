@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation>Assigner des raccourcis globaux pour contrôler le volume d'applications spécifiques</translation>
+        <translation>Assigner des raccourcis globaux pour contrôler le volume d&apos;applications spécifiques</translation>
     </message>
     <message>
         <source>Add</source>
@@ -33,7 +33,7 @@
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation>Ajouter un raccourci de volume d'application</translation>
+        <translation>Ajouter un raccourci de volume d&apos;application</translation>
     </message>
     <message>
         <source>Application</source>
@@ -41,7 +41,7 @@
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation>Raccourci d'augmentation du volume</translation>
+        <translation>Raccourci d&apos;augmentation du volume</translation>
     </message>
     <message>
         <source>Click to set...</source>
@@ -690,7 +690,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation>Choisissez la page de paramètres qui s'ouvre lorsque la fenêtre des paramètres s'affiche</translation>
+        <translation>Choisissez la page de paramètres qui s&apos;ouvre lorsque la fenêtre des paramètres s&apos;affiche</translation>
     </message>
     <message>
         <source>General</source>
@@ -718,7 +718,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation>Raccourcis d'application</translation>
+        <translation>Raccourcis d&apos;application</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
@@ -742,15 +742,15 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation>Afficher une boîte de dialogue de confirmation lors de la sélection d'une action d'alimentation depuis le menu de la zone de notification</translation>
+        <translation>Afficher une boîte de dialogue de confirmation lors de la sélection d&apos;une action d&apos;alimentation depuis le menu de la zone de notification</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation>Délai de confirmation de l'action d'alimentation (secondes)</translation>
+        <translation>Délai de confirmation de l&apos;action d&apos;alimentation (secondes)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation>Délai avant que la boîte de dialogue de confirmation de l'action d'alimentation ne déclenche automatiquement l'action sélectionnée</translation>
+        <translation>Délai avant que la boîte de dialogue de confirmation de l&apos;action d&apos;alimentation ne déclenche automatiquement l&apos;action sélectionnée</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
@@ -785,7 +785,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation>1 - Conditions d'erreur</translation>
+        <translation>1 - Conditions d&apos;erreur</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
@@ -813,7 +813,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation>Activez le mode test ci-dessous pour simuler un casque pris en charge et valider l'interface HeadsetControl.</translation>
+        <translation>Activez le mode test ci-dessous pour simuler un casque pris en charge et valider l&apos;interface HeadsetControl.</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
@@ -821,7 +821,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation>Simule un casque pris en charge pour les tests. Cela reste activé jusqu'à la fermeture de l'application.</translation>
+        <translation>Simule un casque pris en charge pour les tests. Cela reste activé jusqu&apos;à la fermeture de l&apos;application.</translation>
     </message>
     <message>
         <source>Test headset profile</source>
@@ -849,15 +849,15 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation>Préréglage de l'égaliseur</translation>
+        <translation>Préréglage de l&apos;égaliseur</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation>Définissez le préréglage de l'égaliseur pour votre casque</translation>
+        <translation>Définissez le préréglage de l&apos;égaliseur pour votre casque</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation>Fréquence de récupération de l'état du casque. Des valeurs plus faibles peuvent augmenter l'utilisation de la batterie.</translation>
+        <translation>Fréquence de récupération de l&apos;état du casque. Des valeurs plus faibles peuvent augmenter l&apos;utilisation de la batterie.</translation>
     </message>
     <message>
         <source>Fetch</source>
@@ -875,7 +875,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
         <translation>La surveillance HeadsetControl est désactivée
-    Vous pouvez l'activer dans l'onglet Composants.</translation>
+    Vous pouvez l&apos;activer dans l&apos;onglet Composants.</translation>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
@@ -891,11 +891,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation>Temps d'inactivité (minutes)</translation>
+        <translation>Temps d&apos;inactivité (minutes)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation>Définissez le temps d'inactivité après lequel votre casque passera en mode économie d'énergie</translation>
+        <translation>Définissez le temps d&apos;inactivité après lequel votre casque passera en mode économie d&apos;énergie</translation>
     </message>
     <message>
         <source>Lights</source>
@@ -1116,7 +1116,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Choose where the media overlay appears on screen</source>
-        <translation>Choisissez où la superposition multimédia apparaît à l'écran</translation>
+        <translation>Choisissez où la superposition multimédia apparaît à l&apos;écran</translation>
     </message>
     <message>
         <source>Top Left</source>
@@ -1234,7 +1234,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation>Raccourcis d'application</translation>
+        <translation>Raccourcis d&apos;application</translation>
     </message>
     <message>
         <source>Renaming</source>
@@ -1368,7 +1368,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation>Préréglage de l'égaliseur</translation>
+        <translation>Préréglage de l&apos;égaliseur</translation>
     </message>
     <message>
         <source>Lights</source>
