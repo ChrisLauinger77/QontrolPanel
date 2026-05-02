@@ -1,0 +1,8 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "/^perl -0pi -e 's/<translation type=\"unfinished\">/<translation>/g' i18n/QontrolPanel_es\\.ts i18n/QontrolPanel_fr\\.ts$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

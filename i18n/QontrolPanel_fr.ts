@@ -5,59 +5,59 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourcis de volume des applications</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourcis de volume par application</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Assigner des raccourcis globaux pour contrôler le volume d'applications spécifiques</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Ajouter</translation>
+        <translation>Ajouter</translation>
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Monter %1  Descendre %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Pas : %1)</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Retirer</translation>
+        <translation>Retirer</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un raccourci de volume d'application</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Application</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourci d'augmentation du volume</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquez pour définir...</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourci de diminution du volume</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille du pas de volume</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -435,110 +435,110 @@
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Haut</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Bas</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Gauche</translation>
+        <translation>Gauche</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Droite</translation>
+        <translation>Droite</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espace</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrée</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabulation</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Échap</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Retour arrière</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Suppr</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Inser</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Début</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Page préc.</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Page suiv.</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Inconnu</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Maj</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
     <name>DebugPane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export du journal QontrolPanel</translation>
     </message>
     <message>
         <source>Console output</source>
-        <translation type="unfinished">Sortie console</translation>
+        <translation>Sortie console</translation>
     </message>
     <message>
         <source>Filter by:</source>
-        <translation type="unfinished">Filtrer par:</translation>
+        <translation>Filtrer par:</translation>
     </message>
     <message>
         <source>Auto-scroll</source>
-        <translation type="unfinished">Défilement automatique</translation>
+        <translation>Défilement automatique</translation>
     </message>
     <message>
         <source>Copy All</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Tout copier</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
 </context>
 <context>
@@ -682,79 +682,79 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel se lancera au démarrage de votre ordinateur</translation>
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>Page de démarrage des paramètres</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez la page de paramètres qui s'ouvre lorsque la fenêtre des paramètres s'affiche</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Général</translation>
+        <translation>Général</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished">Composants</translation>
+        <translation>Composants</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">Apparence</translation>
+        <translation>Apparence</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Superposition multimédia</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">Raccourcis</translation>
+        <translation>Raccourcis</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourcis d'application</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">HeadsetControl</translation>
+        <translation>HeadsetControl</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">Renommage</translation>
+        <translation>Renommage</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Langage</translation>
+        <translation>Langue</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished">Mises à jour</translation>
+        <translation>Mises à jour</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">Déboguer</translation>
+        <translation>Débogage</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher une boîte de dialogue de confirmation lors de la sélection d'une action d'alimentation depuis le menu de la zone de notification</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Délai de confirmation de l'action d'alimentation (secondes)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Délai avant que la boîte de dialogue de confirmation de l'action d'alimentation ne déclenche automatiquement l'action sélectionnée</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensibilité de la molette du curseur</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
@@ -785,100 +785,101 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>1 - Conditions d'erreur</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
+        <translation>2 - Batterie en charge</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
+        <translation>3 - Batterie standard</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>4 - Batterie indisponible</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>5 - Délai dépassé</translation>
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
+        <translation>6 - Batterie pleine</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>7 - Batterie faible</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Activez le mode test ci-dessous pour simuler un casque pris en charge et valider l'interface HeadsetControl.</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode test HeadsetControl</translation>
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simule un casque pris en charge pour les tests. Cela reste activé jusqu'à la fermeture de l'application.</translation>
     </message>
     <message>
         <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil de casque de test</translation>
     </message>
     <message>
         <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez le scénario synthétique de casque que HeadsetControl doit simuler.</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveau de batterie actuel du casque connecté</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Notifier lorsque le casque connecté atteint %1 % ou moins.</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur ChatMix du casque connecté</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Préréglage de l'égaliseur</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Définissez le préréglage de l'égaliseur pour votre casque</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence de récupération de l'état du casque. Des valeurs plus faibles peuvent augmenter l'utilisation de la batterie.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Récupérer</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Dépôt GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Voir sur GitHub</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>La surveillance HeadsetControl est désactivée
+    Vous pouvez l'activer dans l'onglet Composants.</translation>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Active ou désactive la fonction pivoter pour couper le micro sur votre casque</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -890,31 +891,31 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Temps d'inactivité (minutes)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Définissez le temps d'inactivité après lequel votre casque passera en mode économie d'énergie</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Lumières</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Pivoter pour couper le micro</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>Retour de voix</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Invites vocales</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Active ou désactive les invites vocales sur votre casque</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -971,7 +972,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Langage</translation>
+        <translation>Langue</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -983,11 +984,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown author</source>
-        <translation type="unfinished"></translation>
+        <translation>Auteur inconnu</translation>
     </message>
     <message>
         <source>Unknown date</source>
-        <translation type="unfinished"></translation>
+        <translation>Date inconnue</translation>
     </message>
     <message>
         <source>Download</source>
@@ -1034,7 +1035,7 @@ You can enable it in the Components tab.</source>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Inconnu</translation>
     </message>
 </context>
 <context>
@@ -1049,11 +1050,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Low Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Batterie faible</translation>
     </message>
     <message>
         <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
+        <translation>La batterie du casque est presque vide</translation>
     </message>
     <message>
         <source>Brightness</source>
@@ -1072,82 +1073,82 @@ You can enable it in the Components tab.</source>
     <name>MediaOverlay</name>
     <message>
         <source>No media playing</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun média en cours de lecture</translation>
     </message>
 </context>
 <context>
     <name>MediaOverlayPane</name>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Superposition multimédia</translation>
     </message>
     <message>
         <source>Enable media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer la superposition multimédia</translation>
     </message>
     <message>
         <source>Show a notification overlay when the currently playing song changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher une superposition de notification lorsque la chanson en cours de lecture change</translation>
     </message>
     <message>
         <source>Overlay size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de la superposition</translation>
     </message>
     <message>
         <source>Choose the size of the media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez la taille de la superposition multimédia</translation>
     </message>
     <message>
         <source>Tiny</source>
-        <translation type="unfinished"></translation>
+        <translation>Petite</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normale</translation>
     </message>
     <message>
         <source>Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Grande</translation>
     </message>
     <message>
         <source>Overlay position</source>
-        <translation type="unfinished"></translation>
+        <translation>Position de la superposition</translation>
     </message>
     <message>
         <source>Choose where the media overlay appears on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez où la superposition multimédia apparaît à l'écran</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>En haut à gauche</translation>
     </message>
     <message>
         <source>Top Center</source>
-        <translation type="unfinished"></translation>
+        <translation>En haut au centre</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>En haut à droite</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Gauche</translation>
+        <translation>Gauche</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Droite</translation>
+        <translation>Droite</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>En bas à gauche</translation>
     </message>
     <message>
         <source>Bottom Center</source>
-        <translation type="unfinished"></translation>
+        <translation>En bas au centre</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>En bas à droite</translation>
     </message>
 </context>
 <context>
@@ -1217,11 +1218,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous venez de perdre au jeu</translation>
     </message>
     <message>
         <source>Too bad</source>
-        <translation type="unfinished"></translation>
+        <translation>Dommage</translation>
     </message>
     <message>
         <source>Appearance</source>
@@ -1229,11 +1230,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Superposition multimédia</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourcis d'application</translation>
     </message>
     <message>
         <source>Renaming</source>
@@ -1245,7 +1246,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Faire un don</translation>
     </message>
     <message>
         <source>General</source>
@@ -1355,7 +1356,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement...</translation>
     </message>
     <message>
         <source>QontrolPanel settings</source>
@@ -1363,118 +1364,118 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">HeadsetControl</translation>
+        <translation>HeadsetControl</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Préréglage de l'égaliseur</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Lumières</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Invites vocales</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Pivoter pour couper le micro</translation>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Périphérique inconnu</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
 </context>
 <context>
     <name>UpdatePane</name>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Mises à jour et informations</translation>
     </message>
     <message>
         <source>Application Updates</source>
-        <translation type="unfinished">Mises à jour</translation>
+        <translation>Mises à jour</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
-        <translation type="unfinished">La version %1 est disponible</translation>
+        <translation>La version %1 est disponible</translation>
     </message>
     <message>
         <source>Checking...</source>
-        <translation type="unfinished">Recherche...</translation>
+        <translation>Recherche...</translation>
     </message>
     <message>
         <source>Downloading...</source>
-        <translation type="unfinished">Téléchargement...</translation>
+        <translation>Téléchargement...</translation>
     </message>
     <message>
         <source>Download and Install</source>
-        <translation type="unfinished">Télécharger et Installer</translation>
+        <translation>Télécharger et Installer</translation>
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation type="unfinished">Vérifier les mises à jour</translation>
+        <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
         <source>Release notes</source>
-        <translation type="unfinished">Changements</translation>
+        <translation>Changements</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
-        <translation type="unfinished">Quoi de neuf dans la version %1</translation>
+        <translation>Quoi de neuf dans la version %1</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">Afficher</translation>
+        <translation>Afficher</translation>
     </message>
     <message>
         <source>Auto check for app updates</source>
-        <translation type="unfinished">Mises à jour automatiques</translation>
+        <translation>Mises à jour automatiques</translation>
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation type="unfinished">Rechercher des mises à jour de l&apos;application au démarrage et toutes les 4 heures</translation>
+        <translation>Rechercher des mises à jour de l&apos;application au démarrage et toutes les 4 heures</translation>
     </message>
     <message>
         <source>Application version</source>
-        <translation type="unfinished">Version de l&apos;application</translation>
+        <translation>Version de l&apos;application</translation>
     </message>
     <message>
         <source>QT version</source>
-        <translation type="unfinished">Version de QT</translation>
+        <translation>Version de QT</translation>
     </message>
     <message>
         <source>Commit</source>
-        <translation type="unfinished">Commit</translation>
+        <translation>Commit</translation>
     </message>
     <message>
         <source>Build date</source>
-        <translation type="unfinished">Date du build</translation>
+        <translation>Date du build</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Dépôt GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Voir sur GitHub</translation>
     </message>
     <message>
         <source>Version %1</source>
-        <translation type="unfinished">Version %1</translation>
+        <translation>Version %1</translation>
     </message>
     <message>
         <source>No release notes available</source>
-        <translation type="unfinished">Notes de mise à jour indisponibles</translation>
+        <translation>Notes de mise à jour indisponibles</translation>
     </message>
 </context>
 <context>
