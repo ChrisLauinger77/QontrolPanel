@@ -1347,6 +1347,10 @@ You can enable it in the Components tab.</source>
         <translation type="unfinished">헤드셋 제어</translation>
     </message>
     <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation type="unfinished"></translation>
     </message>

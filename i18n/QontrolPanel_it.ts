@@ -1348,6 +1348,10 @@ Puoi abilitarlo nella scheda Componenti.</translation>
         <translation type="unfinished">Controllo cuffie</translation>
     </message>
     <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation type="unfinished"></translation>
     </message>

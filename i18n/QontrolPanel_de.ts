@@ -1348,6 +1348,10 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>HeadsetControl</translation>
     </message>
     <message>
+        <source>Fetch</source>
+        <translation type="unfinished">Abrufen</translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>Equalizer-Voreinstellung</translation>
     </message>

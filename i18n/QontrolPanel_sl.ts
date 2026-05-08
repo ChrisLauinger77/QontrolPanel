@@ -1347,6 +1347,10 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation type="unfinished">Nadzor slušalk</translation>
     </message>
     <message>
+        <source>Fetch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation type="unfinished"></translation>
     </message>

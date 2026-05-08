@@ -1347,6 +1347,10 @@ You can enable it in the Components tab.</source>
         <translation>ヘッドセット コントロール</translation>
     </message>
     <message>
+        <source>Fetch</source>
+        <translation type="unfinished">取得</translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>イコライザー プリセット</translation>
     </message>

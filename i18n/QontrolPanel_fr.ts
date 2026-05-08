@@ -1367,6 +1367,10 @@ You can enable it in the Components tab.</source>
         <translation>HeadsetControl</translation>
     </message>
     <message>
+        <source>Fetch</source>
+        <translation type="unfinished">Récupérer</translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>Préréglage de l&apos;égaliseur</translation>
     </message>

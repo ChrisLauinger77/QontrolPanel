@@ -1348,6 +1348,10 @@ Puedes activarla en la pestaña Componentes.</translation>
         <translation>HeadsetControl</translation>
     </message>
     <message>
+        <source>Fetch</source>
+        <translation type="unfinished">Obtener</translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>Preajuste del ecualizador</translation>
     </message>
