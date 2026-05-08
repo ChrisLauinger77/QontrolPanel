@@ -1377,7 +1377,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerät nicht verbunden</translation>
     </message>
     <message>
         <source>ChatMix</source>
