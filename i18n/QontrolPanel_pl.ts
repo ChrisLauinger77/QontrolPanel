@@ -1387,6 +1387,10 @@ You can enable it in the Components tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Device disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation type="unfinished">ChatMix</translation>
     </message>

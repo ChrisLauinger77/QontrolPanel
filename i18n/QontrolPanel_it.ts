@@ -1376,6 +1376,10 @@ Puoi abilitarlo nella scheda Componenti.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Device disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
     </message>

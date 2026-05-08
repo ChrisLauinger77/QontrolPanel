@@ -1376,6 +1376,10 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>QontrolPanel</translation>
     </message>
     <message>
+        <source>Device disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
     </message>
