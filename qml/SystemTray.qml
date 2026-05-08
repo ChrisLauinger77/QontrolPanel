@@ -143,10 +143,11 @@ Platform.SystemTrayIcon {
         }
 
         var batteryText = "\n" + "🎧" + HeadsetControlBridge.deviceName + "\n";
-
+        batteryText += HeadsetControlBridge.batteryIcon;
         if (HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE") {
-            batteryText += HeadsetControlBridge.batteryIcon;
             batteryText += HeadsetControlBridge.batteryLevel + "%";
+        } else {
+            batteryText += qsTr("Device disconnected");
         }
 
         if (HeadsetControlBridge.hasChatMixCapability) {
