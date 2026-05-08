@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es">
+<TS version="2.1" language="es_ES">
 <context>
     <name>AppHotkeysPane</name>
     <message>
@@ -1349,7 +1349,7 @@ Puedes activarla en la pestaña Componentes.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished">Obtener</translation>
+        <translation>Obtener</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
@@ -1381,7 +1381,7 @@ Puedes activarla en la pestaña Componentes.</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo desconectado</translation>
     </message>
     <message>
         <source>ChatMix</source>

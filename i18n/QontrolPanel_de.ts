@@ -1349,7 +1349,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished">Abrufen</translation>
+        <translation>Abrufen</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>

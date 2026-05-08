@@ -1368,7 +1368,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished">Récupérer</translation>
+        <translation>Récupérer</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
@@ -1396,7 +1396,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Appareil déconnecté</translation>
     </message>
     <message>
         <source>ChatMix</source>
