@@ -11,7 +11,7 @@ permissions:
   contents: read
 jobs:
   publish:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Publish to WinGet
         uses: vedantmgoyal9/winget-releaser@v2
