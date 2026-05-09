@@ -5,59 +5,59 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>앱 볼륨 단축키</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>응용 프로그램별 볼륨 단축키</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>특정 응용 프로그램의 볼륨을 제어하기 위해 전역 단축키 할당</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">추가</translation>
+        <translation>추가</translation>
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>높이기 %1  낮추기 %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(단계: %1)</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">제거</translation>
+        <translation>제거</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>앱 볼륨 단축키 추가</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>응용 프로그램</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>볼륨 높이기 단축키</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>설정하려면 클릭...</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>볼륨 낮추기 단축키</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>볼륨 단계 크기</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">취소</translation>
+        <translation>취소</translation>
     </message>
 </context>
 <context>
@@ -267,10 +267,6 @@
         <translation>앱 추가</translation>
     </message>
     <message>
-        <source>Activate ChatMix</source>
-        <translation>채팅 믹스 활성화</translation>
-    </message>
-    <message>
         <source>ChatMix volume</source>
         <translation>채팅 믹스 볼륨</translation>
     </message>
@@ -316,7 +312,11 @@
     </message>
     <message>
         <source>The volume to set for non communication applications when ChatMix is enabled</source>
-        <translation>채팅 믹스를 활성화할 때 비통신 응용 프로그램에 설정할 볼륨</translation>
+        <translation>채팅 믹스를 사용할 때 비통신 응용 프로그램에 설정할 볼륨</translation>
+    </message>
+    <message>
+        <source>Activate ChatMix</source>
+        <translation>채팅 믹스 사용함</translation>
     </message>
 </context>
 <context>
@@ -433,110 +433,110 @@
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Up</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Down</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">왼쪽</translation>
+        <translation>왼쪽</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">오른쪽</translation>
+        <translation>오른쪽</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Space</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Insert</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Up</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Down</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>알 수 없음</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
     <name>DebugPane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>모두</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel 로그 내보내기</translation>
     </message>
     <message>
         <source>Console output</source>
-        <translation type="unfinished">콘솔 출력</translation>
+        <translation>콘솔 출력</translation>
     </message>
     <message>
         <source>Filter by:</source>
-        <translation type="unfinished">필터 기준:</translation>
+        <translation>필터 기준:</translation>
     </message>
     <message>
         <source>Auto-scroll</source>
-        <translation type="unfinished">자동 스크롤</translation>
+        <translation>자동 스크롤</translation>
     </message>
     <message>
         <source>Copy All</source>
-        <translation type="unfinished">모두 복사</translation>
+        <translation>모두 복사</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">지우기</translation>
+        <translation>지우기</translation>
     </message>
 </context>
 <context>
@@ -664,71 +664,71 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>설정 시작 페이지</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>설정 창이 표시될 때 열리는 설정 페이지 선택</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">일반</translation>
+        <translation>일반</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished">구성 요소</translation>
+        <translation>구성 요소</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">외형</translation>
+        <translation>외형</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished">미디어 오버레이</translation>
+        <translation>미디어 오버레이</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">채팅 믹스</translation>
+        <translation>채팅 믹스</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">단축키</translation>
+        <translation>단축키</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>앱 단축키</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">헤드셋 제어</translation>
+        <translation>헤드셋 제어</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">이름 바꾸기</translation>
+        <translation>이름 바꾸기</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">언어</translation>
+        <translation>언어</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished">업데이트</translation>
+        <translation>업데이트</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">디버그</translation>
+        <translation>디버그</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>시스템 트레이 메뉴에서 전원 작업을 선택할 때 확인 대화 상자 표시</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>전원 동작 확인 시간 초과 (초)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>전원 동작 확인 대화 상자가 선택한 동작을 자동으로 트리거하기까지의 시간</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
@@ -756,7 +756,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel은 컴퓨터가 시작될 때 자동으로 실행</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
@@ -774,97 +774,16 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>호환되는 장치를 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>연결된 헤드셋의 현재 배터리 수준</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">채팅 믹스</translation>
+        <translation>채팅 믹스</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fetch</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>HeadsetControl monitoring is disabled
-You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>연결된 헤드셋의 채팅 믹스 값</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
@@ -872,15 +791,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>비활성 시간 (분)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋이 절전 모드로 전환될 때까지 비활성 시간 설정</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>조명</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
@@ -888,7 +807,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋에서 회전 시 음소거 기능 전환</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -900,19 +819,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>회전 시 음소거</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>사이드톤</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>음성 프롬프트</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋에서 음성 프롬프트 전환</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -921,6 +840,88 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Device battery</source>
         <translation>장치 배터리</translation>
+    </message>
+    <message>
+        <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
+        <translation>아래에서 테스트 모드를 활성화하여 지원되는 헤드셋을 시뮬레이션하고 헤드셋 제어 UI를 검증합니다.</translation>
+    </message>
+    <message>
+        <source>HeadsetControl test mode</source>
+        <translation>헤드셋 제어 테스트 모드</translation>
+    </message>
+    <message>
+        <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
+        <translation>테스트를 위해 지원되는 헤드셋을 시뮬레이션합니다. 앱이 종료될 때까지 활성화된 상태로 유지됩니다.</translation>
+    </message>
+    <message>
+        <source>Test headset profile</source>
+        <translation>헤드셋 프로필 테스트</translation>
+    </message>
+    <message>
+        <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
+        <translation>헤드셋 제어가 시뮬레이션해야 할 합성 헤드셋 시나리오를 선택합니다.</translation>
+    </message>
+    <message>
+        <source>1 - Error conditions</source>
+        <translation>1 - 오류 상태</translation>
+    </message>
+    <message>
+        <source>2 - Charging battery</source>
+        <translation>2 - 배터리 충전 중</translation>
+    </message>
+    <message>
+        <source>3 - Basic battery</source>
+        <translation>3 - 기본 배터리</translation>
+    </message>
+    <message>
+        <source>4 - Battery unavailable</source>
+        <translation>4 - 배터리 없ㅇ</translation>
+    </message>
+    <message>
+        <source>5 - Timeout</source>
+        <translation>5 - 시간 초과</translation>
+    </message>
+    <message>
+        <source>6 - Full battery</source>
+        <translation>6 - 배터리 완충</translation>
+    </message>
+    <message>
+        <source>7 - Low battery</source>
+        <translation>7 - 배터리 부족</translation>
+    </message>
+    <message>
+        <source>Notify when the connected headset reaches %1% or lower.</source>
+        <translation>연결된 헤드셋이 %1% 이하에 도달하면 알려줍니다.</translation>
+    </message>
+    <message>
+        <source>Equalizer Preset</source>
+        <translation>이퀄라이저 프리셋</translation>
+    </message>
+    <message>
+        <source>Set the equalizer preset for your headset</source>
+        <translation>헤드셋용 이퀄라이저 프리셋 설정</translation>
+    </message>
+    <message>
+        <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
+        <translation>헤드셋에서 상태를 가져오는 빈도. 값이 낮을수록 배터리 사용량이 증가할 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Fetch</source>
+        <translation>가져오기</translation>
+    </message>
+    <message>
+        <source>GitHub repository</source>
+        <translation>GitHub 저장소</translation>
+    </message>
+    <message>
+        <source>View on GitHub</source>
+        <translation>GitHub에서 보기</translation>
+    </message>
+    <message>
+        <source>HeadsetControl monitoring is disabled
+You can enable it in the Components tab.</source>
+        <translation>헤드셋 제어 모니터링이 비활성화되었습니다
+구성 요소 탭에서 활성화할 수 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -977,7 +978,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">언어</translation>
+        <translation>언어</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -1017,26 +1018,42 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Fetch for new translation to get data</source>
-        <translation>데이터를 얻기 위해 새 번역을 가져옵니다</translation>
+        <translation>데이터를 얻기 위해 새 번역 가져오기</translation>
     </message>
     <message>
         <source>Unknown author</source>
-        <translation>저자 미상</translation>
+        <translation>비너스걸💋: https://venusgirls.tistory.com/</translation>
     </message>
     <message>
         <source>Unknown date</source>
-        <translation>날짜 미상</translation>
+        <translation>알 수 없는 날짜</translation>
     </message>
 </context>
 <context>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>알 수 없음</translation>
     </message>
 </context>
 <context>
     <name>Main</name>
+    <message>
+        <source>Low Battery</source>
+        <translation>배터리 부족</translation>
+    </message>
+    <message>
+        <source>Headset battery is getting low</source>
+        <translation>헤드셋 배터리가 부족해지고 있습니다</translation>
+    </message>
+    <message>
+        <source>Update Available</source>
+        <translation>업데이트 가능</translation>
+    </message>
+    <message>
+        <source>Version %1 is available for download</source>
+        <translation>버전 %1을 다운로드할 수 있습니다</translation>
+    </message>
     <message>
         <source>System sounds</source>
         <translation>시스템 사운드</translation>
@@ -1044,22 +1061,6 @@ You can enable it in the Components tab.</source>
     <message>
         <source>ChatMix</source>
         <translation>채팅 믹스</translation>
-    </message>
-    <message>
-        <source>Update Available</source>
-        <translation>업데이트 가능</translation>
-    </message>
-    <message>
-        <source>Low Battery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Version %1 is available for download</source>
-        <translation>버전 %1은 다운로드할 수 있습니다</translation>
     </message>
     <message>
         <source>Brightness</source>
@@ -1198,11 +1199,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
+        <translation>방금 게임에서 졌습니다</translation>
     </message>
     <message>
         <source>Too bad</source>
-        <translation type="unfinished"></translation>
+        <translation>안타깝습니다</translation>
     </message>
     <message>
         <source>General</source>
@@ -1226,7 +1227,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>앱 단축키</translation>
     </message>
     <message>
         <source>Renaming</source>
@@ -1242,7 +1243,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>기부</translation>
     </message>
     <message>
         <source>Updates</source>
@@ -1336,7 +1337,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>로드 중</translation>
     </message>
     <message>
         <source>Input: </source>
@@ -1344,27 +1345,27 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">헤드셋 제어</translation>
+        <translation>헤드셋 제어</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>가져오기</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>이퀄라이저 프리셋</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>조명</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>음성 프롬프트</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>회전 시 음소거</translation>
     </message>
     <message>
         <source>Exit</source>
@@ -1372,19 +1373,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>알 수 없는 장치</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>장치 연결이 끊겼습니다</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">채팅 믹스</translation>
+        <translation>채팅 믹스</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
@@ -1403,83 +1404,83 @@ You can enable it in the Components tab.</source>
     <name>UpdatePane</name>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>업데이트 및 정보</translation>
     </message>
     <message>
         <source>Application Updates</source>
-        <translation type="unfinished">응용 프로그램 업데이트</translation>
+        <translation>응용 프로그램 업데이트</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
-        <translation type="unfinished">버전 %1 사용 가능</translation>
+        <translation>버전 %1 사용 가능</translation>
     </message>
     <message>
         <source>Checking...</source>
-        <translation type="unfinished">확인 중...</translation>
+        <translation>확인 중...</translation>
     </message>
     <message>
         <source>Downloading...</source>
-        <translation type="unfinished">다운로드 중...</translation>
+        <translation>다운로드 중...</translation>
     </message>
     <message>
         <source>Download and Install</source>
-        <translation type="unfinished">다운로드 및 설치</translation>
+        <translation>다운로드 및 설치</translation>
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation type="unfinished">업데이트 확인</translation>
+        <translation>업데이트 확인</translation>
     </message>
     <message>
         <source>Release notes</source>
-        <translation type="unfinished">릴리스 노트</translation>
+        <translation>릴리스 노트</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
-        <translation type="unfinished">버전 %1의 새로운 기능 보기</translation>
+        <translation>버전 %1의 새로운 기능 보기</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">표시</translation>
+        <translation>표시</translation>
     </message>
     <message>
         <source>Auto check for app updates</source>
-        <translation type="unfinished">앱 업데이트 자동 확인</translation>
+        <translation>앱 업데이트 자동 확인</translation>
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation type="unfinished">시작 시 및 4시간마다 응용 프로그램 업데이트 확인</translation>
+        <translation>시작 시 및 4시간마다 응용 프로그램 업데이트 확인</translation>
     </message>
     <message>
         <source>Application version</source>
-        <translation type="unfinished">응용 프로그램 버전</translation>
+        <translation>응용 프로그램 버전</translation>
     </message>
     <message>
         <source>QT version</source>
-        <translation type="unfinished">QT 버전</translation>
+        <translation>QT 버전</translation>
     </message>
     <message>
         <source>Commit</source>
-        <translation type="unfinished">커밋</translation>
+        <translation>커밋</translation>
     </message>
     <message>
         <source>Build date</source>
-        <translation type="unfinished">빌드 날짜</translation>
+        <translation>빌드 날짜</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub 저장소</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub에서 보기</translation>
     </message>
     <message>
         <source>Version %1</source>
-        <translation type="unfinished">버전 %1</translation>
+        <translation>버전 %1</translation>
     </message>
     <message>
         <source>No release notes available</source>
-        <translation type="unfinished">사용 가능한 릴리스 노트 없음</translation>
+        <translation>사용 가능한 릴리스 노트 없음</translation>
     </message>
 </context>
 <context>
@@ -1493,6 +1494,10 @@ You can enable it in the Components tab.</source>
         <translation>최신 버전을 사용하고 있습니다</translation>
     </message>
     <message>
+        <source>Update started.</source>
+        <translation>업데이트가 시작되었습니다.</translation>
+    </message>
+    <message>
         <source>No translation files to download</source>
         <translation>다운로드할 번역 파일이 없습니다</translation>
     </message>
@@ -1502,11 +1507,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
-        <translation>%1 / %2 번역 파일을 다운로드했습니다</translation>
-    </message>
-    <message>
-        <source>Update started.</source>
-        <translation>업데이트가 시작되었습니다.</translation>
+        <translation>%2개의 번역 파일 중 %1개를 다운로드했습니다</translation>
     </message>
 </context>
 </TS>
