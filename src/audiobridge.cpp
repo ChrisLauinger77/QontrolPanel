@@ -367,6 +367,11 @@ void AudioBridge::setApplicationMute(const QString& appId, bool mute)
 // Device management methods (unchanged)
 void AudioBridge::setDefaultDevice(const QString& deviceId, bool isInput, bool forCommunications)
 {
+    LOG_INFO("AudioBridge",
+             QString("Request default %1 device switch id=%2 communicationsRole=%3")
+                 .arg(isInput ? "input" : "output")
+                 .arg(deviceId)
+                 .arg(forCommunications ? "true" : "false"));
     AudioManager::instance()->setDefaultDeviceAsync(deviceId, isInput, forCommunications);
 }
 

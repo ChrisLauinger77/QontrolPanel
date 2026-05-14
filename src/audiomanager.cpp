@@ -1728,12 +1728,26 @@ void AudioWorker::setDefaultDevice(const QString& deviceId, bool isInput, bool f
         return;
     }
 
-    ERole role = forCommunications ? eCommunications : eConsole;
+    LOG_INFO("AudioManager",
+             QString("Applying default %1 device switch id=%2 communicationsRole=%3")
+                 .arg(isInput ? "input" : "output")
+                 .arg(deviceId)
+                 .arg(forCommunications ? "true" : "false"));
+
     std::wstring wDeviceId = deviceId.toStdWString();
-    HRESULT hr = m_policyConfig->SetDefaultEndpoint(wDeviceId.c_str(), role);
-    if (!SUCCEEDED(hr)) {
-        LOG_CRITICAL("AudioManager",
-                                             QString("Failed to set default device, HRESULT: %1").arg(QString::number(hr, 16)));
+    const QVector<ERole> roles = forCommunications
+        ? QVector<ERole>{eCommunications}
+        : QVector<ERole>{eConsole, eMultimedia};
+
+    for (const ERole role : roles) {
+        const HRESULT hr = m_policyConfig->SetDefaultEndpoint(wDeviceId.c_str(), role);
+        if (!SUCCEEDED(hr)) {
+            LOG_CRITICAL("AudioManager",
+                         QString("Failed to set default %1 device endpoint role=%2, HRESULT: %3")
+                             .arg(isInput ? "input" : "output")
+                             .arg(static_cast<int>(role))
+                             .arg(QString::number(hr, 16)));
+        }
     }
 }
 
@@ -1976,8 +1990,17 @@ void AudioManager::setApplicationMuteAsync(const QString& appId, bool mute)
 void AudioManager::setDefaultDeviceAsync(const QString& deviceId, bool isInput, bool forCommunications)
 {
     if (m_worker) {
-        QMetaObject::invokeMethod(m_worker, "setDefaultDevice", Qt::QueuedConnection,
-                                  Q_ARG(QString, deviceId), Q_ARG(bool, isInput), Q_ARG(bool, forCommunications));
+        const bool invokeOk = QMetaObject::invokeMethod(m_worker, [this, deviceId, isInput, forCommunications]() {
+            if (m_worker) {
+                m_worker->setDefaultDevice(deviceId, isInput, forCommunications);
+            }
+        }, Qt::QueuedConnection);
+
+        if (!invokeOk) {
+            LOG_CRITICAL("AudioManager",
+                         QString("Failed to queue setDefaultDevice call for %1 device")
+                             .arg(isInput ? "input" : "output"));
+        }
     }
 }
 
