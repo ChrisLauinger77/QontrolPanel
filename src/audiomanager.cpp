@@ -1728,6 +1728,12 @@ void AudioWorker::setDefaultDevice(const QString& deviceId, bool isInput, bool f
         return;
     }
 
+    LOG_INFO("AudioManager",
+             QString("Applying default %1 device switch id=%2 communicationsRole=%3")
+                 .arg(isInput ? "input" : "output")
+                 .arg(deviceId)
+                 .arg(forCommunications ? "true" : "false"));
+
     std::wstring wDeviceId = deviceId.toStdWString();
     const QVector<ERole> roles = forCommunications
         ? QVector<ERole>{eCommunications}
@@ -1984,8 +1990,17 @@ void AudioManager::setApplicationMuteAsync(const QString& appId, bool mute)
 void AudioManager::setDefaultDeviceAsync(const QString& deviceId, bool isInput, bool forCommunications)
 {
     if (m_worker) {
-        QMetaObject::invokeMethod(m_worker, "setDefaultDevice", Qt::QueuedConnection,
-                                  Q_ARG(QString, deviceId), Q_ARG(bool, isInput), Q_ARG(bool, forCommunications));
+        const bool invokeOk = QMetaObject::invokeMethod(m_worker, [this, deviceId, isInput, forCommunications]() {
+            if (m_worker) {
+                m_worker->setDefaultDevice(deviceId, isInput, forCommunications);
+            }
+        }, Qt::QueuedConnection);
+
+        if (!invokeOk) {
+            LOG_CRITICAL("AudioManager",
+                         QString("Failed to queue setDefaultDevice call for %1 device")
+                             .arg(isInput ? "input" : "output"));
+        }
     }
 }
 
