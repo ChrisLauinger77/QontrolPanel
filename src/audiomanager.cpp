@@ -1728,12 +1728,20 @@ void AudioWorker::setDefaultDevice(const QString& deviceId, bool isInput, bool f
         return;
     }
 
-    ERole role = forCommunications ? eCommunications : eConsole;
     std::wstring wDeviceId = deviceId.toStdWString();
-    HRESULT hr = m_policyConfig->SetDefaultEndpoint(wDeviceId.c_str(), role);
-    if (!SUCCEEDED(hr)) {
-        LOG_CRITICAL("AudioManager",
-                                             QString("Failed to set default device, HRESULT: %1").arg(QString::number(hr, 16)));
+    const QVector<ERole> roles = forCommunications
+        ? QVector<ERole>{eCommunications}
+        : QVector<ERole>{eConsole, eMultimedia};
+
+    for (const ERole role : roles) {
+        const HRESULT hr = m_policyConfig->SetDefaultEndpoint(wDeviceId.c_str(), role);
+        if (!SUCCEEDED(hr)) {
+            LOG_CRITICAL("AudioManager",
+                         QString("Failed to set default %1 device endpoint role=%2, HRESULT: %3")
+                             .arg(isInput ? "input" : "output")
+                             .arg(static_cast<int>(role))
+                             .arg(QString::number(hr, 16)));
+        }
     }
 }
 
