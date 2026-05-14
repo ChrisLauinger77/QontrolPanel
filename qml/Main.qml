@@ -361,31 +361,41 @@ ApplicationWindow {
     }
 
     function positionPanelAtTarget() {
-        const screenWidth = Utils.getAvailableDesktopWidth()
-        const screenHeight = Utils.getAvailableDesktopHeight()
+        const screenGeometry = panel.screen ? panel.screen.availableGeometry : null
+        const screenX = screenGeometry ? screenGeometry.x : 0
+        const screenY = screenGeometry ? screenGeometry.y : 0
+        const screenWidth = screenGeometry ? screenGeometry.width : Utils.getAvailableDesktopWidth()
+        const screenHeight = screenGeometry ? screenGeometry.height : Utils.getAvailableDesktopHeight()
+
+        let targetX = screenX + screenWidth - panel.width
+        let targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
 
         switch (panel.taskbarPos) {
         case "top":
-            panel.x = screenWidth - width
-            panel.y = UserSettings.taskbarOffset
+            targetX = screenX + screenWidth - panel.width
+            targetY = screenY + UserSettings.taskbarOffset
             break
         case "bottom":
-            panel.x = screenWidth - width
-            panel.y = screenHeight - height - UserSettings.taskbarOffset
+            targetX = screenX + screenWidth - panel.width
+            targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
             break
         case "left":
-            panel.x = UserSettings.taskbarOffset
-            panel.y = screenHeight - height
+            targetX = screenX + UserSettings.taskbarOffset
+            targetY = screenY + screenHeight - panel.height
             break
         case "right":
-            panel.x = screenWidth - width - UserSettings.taskbarOffset
-            panel.y = screenHeight - height
-            break
-        default:
-            panel.x = screenWidth - width
-            panel.y = screenHeight - height - UserSettings.taskbarOffset
+            targetX = screenX + screenWidth - panel.width - UserSettings.taskbarOffset
+            targetY = screenY + screenHeight - panel.height
             break
         }
+
+        const minX = screenX
+        const maxX = screenX + screenWidth - panel.width
+        const minY = screenY
+        const maxY = screenY + screenHeight - panel.height
+
+        panel.x = Math.max(minX, Math.min(targetX, maxX))
+        panel.y = Math.max(minY, Math.min(targetY, maxY))
     }
 
     function setInitialTransform() {
