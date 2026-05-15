@@ -10,7 +10,7 @@ For new languages we also need to add a new line in [cmake/languages.cmake](../c
 
 ### Testing your changes
 
-You can override the qm files in your QSS install (default: `%localappdata%\programs\QontrolPanel\bin\i18n`) with `file` -> `release as...`
+You can override the qm files in your QontrolPanel install (default: `%localappdata%\programs\QontrolPanel\bin\i18n`) with `file` -> `release as...`
 
 ### Validating your changes
 
