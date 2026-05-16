@@ -1,0 +1,101 @@
+name: Bug report
+description: Report something that is broken or behaving unexpectedly.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve QontrolPanel. Please include enough detail for someone without your exact machine or devices to understand the problem.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the bug and the visible result.
+      placeholder: QontrolPanel crashes when... / The brightness slider does not...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      description: Describe the behavior you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps that trigger the issue.
+      placeholder: |
+        1. Open QontrolPanel
+        2. Go to ...
+        3. Click ...
+        4. See ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: QontrolPanel version
+      description: Include the release version, commit SHA, or installer/build source.
+      placeholder: v0.0.0 / commit abc1234 / built from main
+    validations:
+      required: true
+
+  - type: input
+    id: windows-version
+    attributes:
+      label: Windows version
+      description: Include edition and build number if possible.
+      placeholder: Windows 11 Pro 24H2, build 26100.x
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      multiple: true
+      options:
+        - Tray/menu UI
+        - Settings UI
+        - Audio devices or sessions
+        - Media controls
+        - Display or brightness
+        - Power actions
+        - Shortcuts or hotkeys
+        - Headset or HID device support
+        - Installer, startup, or updates
+        - Translations
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: devices
+    attributes:
+      label: Relevant hardware or devices
+      description: List monitors, audio devices, headsets, HID devices, GPUs, docks, or USB hubs involved.
+      placeholder: |
+        Headset:
+        Monitor:
+        Audio device:
+        GPU/dock/USB hub:
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, screenshots, or recordings
+      description: Paste logs or attach screenshots/recordings if they help show the problem.
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Add anything else that might help, such as whether the issue started after an update or only occurs with a specific app running.

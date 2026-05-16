@@ -1,0 +1,75 @@
+name: Feature request
+description: Suggest a new capability or improvement for QontrolPanel.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing an idea for QontrolPanel. The most helpful requests describe the workflow, affected devices, and what a good solution would feel like in daily use.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the workflow, frustration, or missing capability.
+      placeholder: I want to... because...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the feature
+      description: Explain what you would like QontrolPanel to do.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      multiple: true
+      options:
+        - Tray/menu UI
+        - Settings UI
+        - Audio devices or sessions
+        - Media controls
+        - Display or brightness
+        - Power actions
+        - Shortcuts or hotkeys
+        - Headset or HID device support
+        - Installer, startup, or updates
+        - Translations
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: How would you use it?
+      description: Describe the expected user flow or where this should appear in the app.
+      placeholder: |
+        I would open...
+        Then I would...
+        QontrolPanel should remember...
+
+  - type: textarea
+    id: devices
+    attributes:
+      label: Relevant hardware or devices
+      description: List monitors, audio devices, headsets, HID devices, GPUs, docks, or USB hubs this feature should support.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention workarounds, other apps, scripts, or manual steps you use today.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add screenshots, mockups, links, or related issues if they help explain the request.
