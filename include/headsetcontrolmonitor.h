@@ -81,6 +81,7 @@ private slots:
 
 private:
     void applyTestDeviceConfiguration();
+    void updateFetchTimerInterval(bool deviceFound);
     void updateDeviceCache();
     void updateCapabilities();
     QString batteryStatusToString(battery_status status) const;
