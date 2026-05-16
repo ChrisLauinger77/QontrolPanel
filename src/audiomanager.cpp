@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QRegularExpression>
+#include <algorithm>
 #include <atlbase.h>
 #include <psapi.h>
 #include <Shlobj.h>
@@ -1754,9 +1755,22 @@ void AudioWorker::setDefaultDevice(const QString& deviceId, bool isInput, bool f
 void AudioWorker::setVolumeForDevice(EDataFlow dataFlow, int volume)
 {
     IAudioEndpointVolume* volumeControl = (dataFlow == eRender) ? m_outputVolumeControl : m_inputVolumeControl;
-    if (volumeControl) {
-        float volumeScalar = static_cast<float>(volume) / 100.0f;
-        volumeControl->SetMasterVolumeLevelScalar(volumeScalar, nullptr);
+    if (!volumeControl) {
+        LOG_WARN("AudioManager",
+                 QString("No %1 endpoint volume control available")
+                     .arg(dataFlow == eRender ? "output" : "input"));
+        return;
+    }
+
+    const int clampedVolume = std::clamp(volume, 0, 100);
+    const float volumeScalar = static_cast<float>(clampedVolume) / 100.0f;
+    const HRESULT hr = volumeControl->SetMasterVolumeLevelScalar(volumeScalar, nullptr);
+    if (!SUCCEEDED(hr)) {
+        LOG_CRITICAL("AudioManager",
+                     QString("Failed to set %1 volume to %2, HRESULT: %3")
+                         .arg(dataFlow == eRender ? "output" : "input")
+                         .arg(clampedVolume)
+                         .arg(QString::number(hr, 16)));
     }
 }
 
