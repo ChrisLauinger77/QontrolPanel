@@ -1002,10 +1002,6 @@ void AudioWorker::enumerateDevices()
         if (!cachedDevices.isEmpty()) {
             updateDevicesBatteryInfo(cachedDevices);
         }
-        // Trigger a fresh fetch
-        QMetaObject::invokeMethod(m_headsetControlMonitor,
-                                  "fetchHeadsetInfo",
-                                  Qt::QueuedConnection);
     } else if (m_headsetControlMonitor) {
         // If monitoring is stopped, clear any headset battery info
         updateDevicesBatteryInfo(QList<HeadsetControlDevice>());
