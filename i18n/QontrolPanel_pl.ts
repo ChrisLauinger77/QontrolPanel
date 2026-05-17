@@ -154,15 +154,15 @@
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished">Rozmiar Kroku Głośności</translation>
+        <translation>Rozmiar Kroku Głośności</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished">Przypisz globalne skróty klawiaturowe do kontrolowania głośność określonych aplikacji</translation>
+        <translation>Przypisz globalne skróty klawiaturowe do kontrolowania głośność określonych aplikacji</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished">Skrót Zmniejszania Głośności</translation>
+        <translation>Skrót Zmniejszania Głośności</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -186,7 +186,7 @@
     </message>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished">Skróty Klawiaturowe Głośności Aplikacji</translation>
+        <translation>Skróty Klawiaturowe Głośności Aplikacji</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
@@ -194,7 +194,7 @@
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished">Skróty głośności do poszczególnych aplikacji</translation>
+        <translation>Skróty głośności do poszczególnych aplikacji</translation>
     </message>
     <message>
         <source>Application</source>
@@ -237,7 +237,7 @@
     </message>
     <message>
         <source>Communication Apps</source>
-        <translation type="unfinished">Aplikacje Komunikacyjne</translation>
+        <translation>Aplikacje Komunikacyjne</translation>
     </message>
     <message>
         <source>Add App</source>
@@ -257,7 +257,7 @@
     </message>
     <message>
         <source>ChatMix volume</source>
-        <translation type="unfinished">Głośność ChatMix</translation>
+        <translation>Głośność ChatMix</translation>
     </message>
     <message>
         <source>Activate</source>
@@ -273,7 +273,7 @@
     </message>
     <message>
         <source>Enable ChatMix Warning</source>
-        <translation type="unfinished">Włącz Ostrzeżenia ChatMix</translation>
+        <translation>Włącz Ostrzeżenia ChatMix</translation>
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
@@ -281,7 +281,7 @@
     </message>
     <message>
         <source>Restored volume</source>
-        <translation type="unfinished">Przywrócona głośność</translation>
+        <translation>Przywrócona głośność</translation>
     </message>
     <message>
         <source>Enable ChatMix</source>
@@ -584,7 +584,7 @@
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">Skróty Klawiaturowe</translation>
+        <translation>Skróty Klawiaturowe</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
@@ -620,7 +620,7 @@
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">Zmiana Nazwy</translation>
+        <translation>Zmiana Nazwy</translation>
     </message>
     <message>
         <source>Updates</source>
@@ -636,7 +636,7 @@
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished">Skróty Klawiaturowe Aplikacji</translation>
+        <translation>Skróty Klawiaturowe Aplikacji</translation>
     </message>
     <message>
         <source>Lightspeed</source>
@@ -772,7 +772,7 @@
     </message>
     <message>
         <source>Rename Device</source>
-        <translation type="unfinished">Zmiana Nazwy Urządzenia</translation>
+        <translation>Zmiana Nazwy Urządzenia</translation>
     </message>
     <message>
         <source>Reset to Original Name</source>
@@ -1070,11 +1070,11 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Set Microphone Mute Shortcut</source>
-        <translation type="unfinished">Ustaw Skrót Klawiaturowy Wyciszania Mikrofonu</translation>
+        <translation>Ustaw Skrót Klawiaturowy Wyciszania Mikrofonu</translation>
     </message>
     <message>
         <source>Set ChatMix Shortcut</source>
-        <translation type="unfinished">Ustaw Skrót Klawiaturowy ChatMix</translation>
+        <translation>Ustaw Skrót Klawiaturowy ChatMix</translation>
     </message>
     <message>
         <source>Toggle ChatMix</source>
@@ -1090,7 +1090,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Allow QontrolPanel to respond to keyboard shortcuts globally</source>
-        <translation type="unfinished">Pozwól QontrolPanel globalnie reagować na skróty klawiaturowe</translation>
+        <translation>Pozwól QontrolPanel globalnie reagować na skróty klawiaturowe</translation>
     </message>
     <message>
         <source>Shortcut to toggle the main panel visibility</source>
@@ -1141,7 +1141,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">Zmiana Nazwy</translation>
+        <translation>Zmiana Nazwy</translation>
     </message>
     <message>
         <source>Updates</source>
@@ -1319,7 +1319,7 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
     </message>
     <message>
         <source>Auto update translations</source>
-        <translation type="unfinished">Automatyczna Aktualizacja Tłumaczeń</translation>
+        <translation>Automatyczna Aktualizacja Tłumaczeń</translation>
     </message>
     <message>
         <source>Translation last updated</source>
@@ -1342,7 +1342,7 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
     </message>
     <message>
         <source>Automatic translations update</source>
-        <translation type="unfinished">Automatyczna aktualizacja tłumaczeń</translation>
+        <translation>Automatyczna aktualizacja tłumaczeń</translation>
     </message>
     <message>
         <source>Get Started</source>
