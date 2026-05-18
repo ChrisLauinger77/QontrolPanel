@@ -152,7 +152,7 @@ jobs:
           content = path.read_text(encoding="utf-8")
           updated, count = re.subn(
               rf"(project\s*\(\s*QontrolPanel\s+VERSION\s+){re.escape(current_version)}(\b)",
-              rf"\1{new_version}\2",
+              rf"\g<1>{new_version}\g<2>",
               content,
               count=1,
               flags=re.IGNORECASE,
