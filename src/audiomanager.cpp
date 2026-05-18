@@ -1999,18 +1999,93 @@ void AudioManager::setApplicationMuteAsync(const QString& appId, bool mute)
 
 void AudioManager::setDefaultDeviceAsync(const QString& deviceId, bool isInput, bool forCommunications)
 {
-    if (m_worker) {
-        const bool invokeOk = QMetaObject::invokeMethod(m_worker, [this, deviceId, isInput, forCommunications]() {
-            if (m_worker) {
-                m_worker->setDefaultDevice(deviceId, isInput, forCommunications);
-            }
-        }, Qt::QueuedConnection);
+    if (!m_worker) {
+        return;
+    }
+
+    bool shouldQueueDispatcher = false;
+    {
+        QMutexLocker pendingLock(&m_pendingDefaultDeviceMutex);
+        const int requestIndex = (isInput ? 2 : 0) + (forCommunications ? 1 : 0);
+        m_pendingDefaultDeviceSwitches[requestIndex] = PendingDefaultDeviceSwitch{deviceId, isInput, forCommunications};
+        if (!m_defaultDeviceSwitchDispatchQueued) {
+            m_defaultDeviceSwitchDispatchQueued = true;
+            shouldQueueDispatcher = true;
+        }
+    }
+
+    if (!shouldQueueDispatcher) {
+        return;
+    }
+
+    const bool invokeOk = QMetaObject::invokeMethod(this, &AudioManager::processPendingDefaultDeviceSwitches, Qt::QueuedConnection);
+    if (!invokeOk) {
+        LOG_CRITICAL("AudioManager",
+                     QString("Failed to queue setDefaultDevice dispatcher for %1 device")
+                         .arg(isInput ? "input" : "output"));
+
+        QMutexLocker pendingLock(&m_pendingDefaultDeviceMutex);
+        m_defaultDeviceSwitchDispatchQueued = false;
+    }
+}
+
+void AudioManager::processPendingDefaultDeviceSwitches()
+{
+    std::array<std::optional<PendingDefaultDeviceSwitch>, 4> switchesToProcess;
+    {
+        QMutexLocker pendingLock(&m_pendingDefaultDeviceMutex);
+        switchesToProcess = m_pendingDefaultDeviceSwitches;
+        m_pendingDefaultDeviceSwitches.fill(std::nullopt);
+        m_defaultDeviceSwitchDispatchQueued = false;
+    }
+
+    if (!m_worker) {
+        return;
+    }
+
+    bool hadQueuedRequest = false;
+    for (const auto& pendingSwitch : switchesToProcess) {
+        if (!pendingSwitch.has_value()) {
+            continue;
+        }
+
+        hadQueuedRequest = true;
+        const PendingDefaultDeviceSwitch request = *pendingSwitch;
+        const bool invokeOk = QMetaObject::invokeMethod(
+            m_worker,
+            [worker = m_worker, request]() {
+                if (worker) {
+                    worker->setDefaultDevice(request.deviceId, request.isInput, request.forCommunications);
+                }
+            },
+            Qt::QueuedConnection);
 
         if (!invokeOk) {
             LOG_CRITICAL("AudioManager",
-                         QString("Failed to queue setDefaultDevice call for %1 device")
-                             .arg(isInput ? "input" : "output"));
+                         QString("Failed to queue setDefaultDevice execution for %1 device communicationsRole=%2")
+                             .arg(request.isInput ? "input" : "output")
+                             .arg(request.forCommunications ? "true" : "false"));
         }
+    }
+
+    if (!hadQueuedRequest) {
+        return;
+    }
+
+    bool needsAnotherPass = false;
+    {
+        QMutexLocker pendingLock(&m_pendingDefaultDeviceMutex);
+        for (const auto& pendingSwitch : m_pendingDefaultDeviceSwitches) {
+            if (pendingSwitch.has_value() && !m_defaultDeviceSwitchDispatchQueued) {
+                m_defaultDeviceSwitchDispatchQueued = true;
+                needsAnotherPass = true;
+                break;
+            }
+        }
+    }
+
+    if (needsAnotherPass) {
+        QMetaObject::invokeMethod(this, &AudioManager::processPendingDefaultDeviceSwitches, Qt::QueuedConnection);
     }
 }
 

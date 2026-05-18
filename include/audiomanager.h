@@ -6,6 +6,8 @@
 #include <QIcon>
 #include <QMap>
 #include <QAbstractListModel>
+#include <array>
+#include <optional>
 #include <windows.h>
 #include <mmdeviceapi.h>
 #include <endpointvolume.h>
@@ -411,4 +413,16 @@ private:
     bool m_cachedInputMute;
     QList<AudioApplication> m_cachedApplications;
     QList<AudioDevice> m_cachedDevices;
+
+    struct PendingDefaultDeviceSwitch {
+        QString deviceId;
+        bool isInput = false;
+        bool forCommunications = false;
+    };
+
+    void processPendingDefaultDeviceSwitches();
+
+    mutable QMutex m_pendingDefaultDeviceMutex;
+    std::array<std::optional<PendingDefaultDeviceSwitch>, 4> m_pendingDefaultDeviceSwitches;
+    bool m_defaultDeviceSwitchDispatchQueued = false;
 };
