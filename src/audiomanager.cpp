@@ -1897,6 +1897,12 @@ void AudioManager::cleanup()
 {
     QMutexLocker locker(&m_mutex);
 
+    {
+        QMutexLocker pendingLock(&m_pendingDefaultDeviceMutex);
+        m_pendingDefaultDeviceSwitches.fill(std::nullopt);
+        m_defaultDeviceSwitchDispatchQueued = false;
+    }
+
     if (!m_workerThread) return;
 
     if (m_worker) {
