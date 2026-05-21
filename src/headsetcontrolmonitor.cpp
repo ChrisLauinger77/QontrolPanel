@@ -312,6 +312,8 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
     }
 
     m_isFetching = true;
+    LOG_INFO("HeadsetControlManager",
+             "Starting headset polling");
 
     try {
         applyTestDeviceConfiguration();
