@@ -1223,11 +1223,11 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
+        <translation>Właśnie przegrałeś mecz</translation>
     </message>
     <message>
         <source>Too bad</source>
-        <translation type="unfinished"></translation>
+        <translation>Szkoda</translation>
     </message>
     <message>
         <source>Appearance</source>
@@ -1235,7 +1235,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished">Skróty Klawiaturowe Aplikacji</translation>
+        <translation>Skróty Klawiaturowe Aplikacji</translation>
     </message>
     <message>
         <source>Renaming</source>
@@ -1247,7 +1247,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekaż darowiznę</translation>
     </message>
     <message>
         <source>General</source>
@@ -1349,7 +1349,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ładowanie...</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
@@ -1357,35 +1357,35 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished">Wydobycie</translation>
+        <translation>Wydobycie</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished">Predefiniowane Korektora</translation>
+        <translation>Predefiniowane Korektora</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished">Jasność</translation>
+        <translation>Jasność</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished">Podpowiedzi głosowe</translation>
+        <translation>Podpowiedzi głosowe</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished">Obrót-do-wyciszenia</translation>
+        <translation>Obrót-do-wyciszenia</translation>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznane urządzenie</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Urządzenie zostało odłączone</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1412,7 +1412,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualności i informacje</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
@@ -1436,11 +1436,11 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished">GitHub repository</translation>
+        <translation>Repozytorium GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished">Zobacz w GitHubie</translation>
+        <translation>Zobacz w GitHubie</translation>
     </message>
     <message>
         <source>No release notes available</source>

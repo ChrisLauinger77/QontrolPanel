@@ -1,7 +1,7 @@
 {
   "en": {
     "percentage": 100,
-    "last_updated": "2026-05-17 09:31:43",
+    "last_updated": "2026-05-25 06:30:21",
     "contributor": "ChrisLauinger77"
   },
   "ja": {
@@ -11,7 +11,7 @@
   },
   "pl": {
     "percentage": 100,
-    "last_updated": "2026-05-17 11:26:56",
+    "last_updated": "2026-05-25 08:29:09",
     "contributor": "Christian Lauinger"
   },
   "de": {
@@ -30,12 +30,12 @@
     "contributor": "Felipe Ribeiro"
   },
   "zh_CN": {
-    "percentage": 50,
+    "percentage": 100,
     "last_updated": "2025-10-05 23:26:29",
     "contributor": "rampageX"
   },
   "ru": {
-    "percentage": 20,
+    "percentage": 100,
     "last_updated": "2025-05-11 09:46:00",
     "contributor": "Steve"
   },

@@ -5,59 +5,59 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>应用音量快捷键</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>单独应用音量快捷键</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>分配全局快捷键来控制指定应用的音量</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">添加</translation>
+        <translation>添加</translation>
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>增大 %1  减小 %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>（步长：%1）</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">移除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>添加应用音量快捷键</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>应用程序</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>增大音量快捷键</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>点击设置...</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>减小音量快捷键</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>音量步长</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -144,7 +144,7 @@
     </message>
     <message>
         <source>Panel theme</source>
-        <translation type="unfinished"></translation>
+        <translation>面板主题</translation>
     </message>
     <message>
         <source>Tray icon style</source>
@@ -217,11 +217,11 @@
     <name>ChatMixNotification</name>
     <message>
         <source>Microphone Muted</source>
-        <translation type="unfinished"></translation>
+        <translation>麦克风已静音</translation>
     </message>
     <message>
         <source>Microphone Unmuted</source>
-        <translation type="unfinished"></translation>
+        <translation>麦克风已取消静音</translation>
     </message>
     <message>
         <source>ChatMix Enabled</source>
@@ -272,7 +272,7 @@
     </message>
     <message>
         <source>ChatMix volume</source>
-        <translation></translation>
+        <translation>ChatMix 音量</translation>
     </message>
     <message>
         <source>Add application names that should be treated as communication apps</source>
@@ -367,11 +367,11 @@
     </message>
     <message>
         <source>Enable media session manager</source>
-        <translation type="unfinished"></translation>
+        <translation>启用媒体会话管理器</translation>
     </message>
     <message>
         <source>Display currently playing media from Windows known sources</source>
-        <translation type="unfinished">显示Windows识别的当前播放媒体信息</translation>
+        <translation>显示 Windows 已知来源当前播放的媒体</translation>
     </message>
 </context>
 <context>
@@ -410,11 +410,11 @@
     </message>
     <message>
         <source>Restart to UEFI</source>
-        <translation type="unfinished"></translation>
+        <translation>重启到 UEFI</translation>
     </message>
     <message>
         <source>System will restart to UEFI in %1 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>系统将在 %1 秒后重启到 UEFI</translation>
     </message>
     <message>
         <source>OK</source>
@@ -433,137 +433,137 @@
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>上</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>下</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">左</translation>
+        <translation>左</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">右</translation>
+        <translation>右</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>空格</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Insert</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Up</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Down</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>未知</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
     <name>DebugPane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>全部</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>导出 QontrolPanel 日志</translation>
     </message>
     <message>
         <source>Console output</source>
-        <translation type="unfinished">控制台输出</translation>
+        <translation>控制台输出</translation>
     </message>
     <message>
         <source>Filter by:</source>
-        <translation type="unfinished"></translation>
+        <translation>筛选：</translation>
     </message>
     <message>
         <source>Auto-scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>自动滚动</translation>
     </message>
     <message>
         <source>Copy All</source>
-        <translation type="unfinished"></translation>
+        <translation>全部复制</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>清除</translation>
     </message>
 </context>
 <context>
     <name>DeviceRenamingPane</name>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名</translation>
     </message>
     <message>
         <source>Show:</source>
-        <translation type="unfinished"></translation>
+        <translation>显示：</translation>
     </message>
     <message>
         <source>Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>设备</translation>
     </message>
     <message>
         <source>Applications</source>
-        <translation type="unfinished"></translation>
+        <translation>应用程序</translation>
     </message>
     <message>
         <source>Streams</source>
-        <translation type="unfinished"></translation>
+        <translation>音频流</translation>
     </message>
     <message>
         <source>Custom name</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义名称</translation>
     </message>
 </context>
 <context>
@@ -663,75 +663,75 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>设置启动页</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>选择打开设置窗口时显示的设置页面</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">常规</translation>
+        <translation>常规</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished">组件</translation>
+        <translation>组件</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">外观</translation>
+        <translation>外观</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>媒体浮层</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">快捷键</translation>
+        <translation>快捷键</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>应用快捷键</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">耳机控制</translation>
+        <translation>耳机控制</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">语言</translation>
+        <translation>语言</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished">更新</translation>
+        <translation>更新</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">调试</translation>
+        <translation>调试</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>从系统托盘菜单选择电源操作时显示确认对话框</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>电源操作确认超时（秒）</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>电源操作确认对话框自动执行所选操作前的等待时间</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
-        <translation type="unfinished"></translation>
+        <translation>滑块滚轮灵敏度</translation>
     </message>
     <message>
         <source>Normal</source>
@@ -755,7 +755,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel 将在电脑启动时自动启动</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
@@ -774,112 +774,113 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>1 - 错误状态</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
+        <translation>2 - 电池正在充电</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
+        <translation>3 - 基本电池</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>4 - 电池不可用</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>5 - 超时</translation>
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
+        <translation>6 - 电池已充满</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>7 - 电量低</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
+        <translation>启用下方测试模式，以模拟受支持的耳机并验证 HeadsetControl 界面。</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl 测试模式</translation>
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
+        <translation>模拟受支持的耳机进行测试。该模式会一直启用，直到应用关闭。</translation>
     </message>
     <message>
         <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
+        <translation>测试耳机配置</translation>
     </message>
     <message>
         <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
+        <translation>选择 HeadsetControl 要模拟的耳机场景。</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>已连接耳机的当前电量</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>当已连接耳机电量达到 %1% 或更低时通知。</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>已连接耳机的 ChatMix 值</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>均衡器预设</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>设置耳机的均衡器预设</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>获取耳机状态的频率。较低的值可能会增加电量消耗。</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>获取</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub 仓库</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>在 GitHub 上查看</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl 监控已禁用
+你可以在“组件”选项卡中启用。</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
-        <translation type="unfinished"></translation>
+        <translation>在面板底部显示电池状态</translation>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>空闲时间（分钟）</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>设置耳机进入省电模式前的空闲时间</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>灯光</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
@@ -887,7 +888,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>切换耳机上的旋转静音功能</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -895,27 +896,27 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Notification on low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>低电量通知</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>旋转静音</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>侧音</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>语音提示</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>切换耳机上的语音提示</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>获取频率（秒）</translation>
     </message>
     <message>
         <source>Device battery</source>
@@ -926,7 +927,7 @@ You can enable it in the Components tab.</source>
     <name>IntroWindow</name>
     <message>
         <source>Automatic application update</source>
-        <translation type="unfinished"></translation>
+        <translation>自动更新应用程序</translation>
     </message>
     <message>
         <source>Get Started</source>
@@ -980,7 +981,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">语言</translation>
+        <translation>语言</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -1020,18 +1021,18 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown author</source>
-        <translation type="unfinished"></translation>
+        <translation>未知作者</translation>
     </message>
     <message>
         <source>Unknown date</source>
-        <translation type="unfinished"></translation>
+        <translation>未知日期</translation>
     </message>
 </context>
 <context>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>未知</translation>
     </message>
 </context>
 <context>
@@ -1046,11 +1047,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Low Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>电量低</translation>
     </message>
     <message>
         <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
+        <translation>耳机电量偏低</translation>
     </message>
     <message>
         <source>Version %1 is available for download</source>
@@ -1069,82 +1070,82 @@ You can enable it in the Components tab.</source>
     <name>MediaOverlay</name>
     <message>
         <source>No media playing</source>
-        <translation type="unfinished"></translation>
+        <translation>没有正在播放的媒体</translation>
     </message>
 </context>
 <context>
     <name>MediaOverlayPane</name>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>媒体浮层</translation>
     </message>
     <message>
         <source>Enable media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>启用媒体浮层</translation>
     </message>
     <message>
         <source>Show a notification overlay when the currently playing song changes</source>
-        <translation type="unfinished"></translation>
+        <translation>当前播放歌曲变化时显示通知浮层</translation>
     </message>
     <message>
         <source>Overlay size</source>
-        <translation type="unfinished"></translation>
+        <translation>浮层大小</translation>
     </message>
     <message>
         <source>Choose the size of the media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>选择媒体浮层大小</translation>
     </message>
     <message>
         <source>Tiny</source>
-        <translation type="unfinished"></translation>
+        <translation>极小</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished">正常</translation>
+        <translation>正常</translation>
     </message>
     <message>
         <source>Big</source>
-        <translation type="unfinished"></translation>
+        <translation>大</translation>
     </message>
     <message>
         <source>Overlay position</source>
-        <translation type="unfinished"></translation>
+        <translation>浮层位置</translation>
     </message>
     <message>
         <source>Choose where the media overlay appears on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>选择媒体浮层在屏幕上的显示位置</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左上</translation>
     </message>
     <message>
         <source>Top Center</source>
-        <translation type="unfinished"></translation>
+        <translation>顶部居中</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右上</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">左</translation>
+        <translation>左</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">右</translation>
+        <translation>右</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左下</translation>
     </message>
     <message>
         <source>Bottom Center</source>
-        <translation type="unfinished"></translation>
+        <translation>底部居中</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右下</translation>
     </message>
 </context>
 <context>
@@ -1170,7 +1171,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Restart UEFI</source>
-        <translation type="unfinished"></translation>
+        <translation>重启到 UEFI</translation>
     </message>
     <message>
         <source>Shutdown</source>
@@ -1197,11 +1198,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
+        <translation>你刚刚输了游戏</translation>
     </message>
     <message>
         <source>Too bad</source>
-        <translation type="unfinished"></translation>
+        <translation>太可惜了</translation>
     </message>
     <message>
         <source>General</source>
@@ -1213,7 +1214,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>媒体浮层</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1225,11 +1226,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>应用快捷键</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名</translation>
     </message>
     <message>
         <source>Language</source>
@@ -1241,7 +1242,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>捐助</translation>
     </message>
     <message>
         <source>Updates</source>
@@ -1296,11 +1297,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle Microphone Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>切换麦克风静音</translation>
     </message>
     <message>
         <source>Shortcut to mute/unmute microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>用于静音/取消静音麦克风的快捷键</translation>
     </message>
     <message>
         <source>Set Panel Shortcut</source>
@@ -1308,7 +1309,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Set Microphone Mute Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>设置麦克风静音快捷键</translation>
     </message>
     <message>
         <source>Press the desired key combination</source>
@@ -1335,7 +1336,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>加载中...</translation>
     </message>
     <message>
         <source>Input: </source>
@@ -1343,27 +1344,27 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">耳机控制</translation>
+        <translation>耳机控制</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>获取</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>均衡器预设</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>灯光</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>语音提示</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>旋转静音</translation>
     </message>
     <message>
         <source>Exit</source>
@@ -1371,19 +1372,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>未知设备</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>设备已断开</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
@@ -1402,83 +1403,83 @@ You can enable it in the Components tab.</source>
     <name>UpdatePane</name>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>更新与信息</translation>
     </message>
     <message>
         <source>Application Updates</source>
-        <translation type="unfinished">应用程序更新</translation>
+        <translation>应用程序更新</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
-        <translation type="unfinished">版本 %1 可用</translation>
+        <translation>版本 %1 可用</translation>
     </message>
     <message>
         <source>Checking...</source>
-        <translation type="unfinished">检查中...</translation>
+        <translation>检查中...</translation>
     </message>
     <message>
         <source>Downloading...</source>
-        <translation type="unfinished">下载中...</translation>
+        <translation>下载中...</translation>
     </message>
     <message>
         <source>Download and Install</source>
-        <translation type="unfinished">下载安装</translation>
+        <translation>下载并安装</translation>
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation type="unfinished">检查更新</translation>
+        <translation>检查更新</translation>
     </message>
     <message>
         <source>Release notes</source>
-        <translation type="unfinished">更新记录</translation>
+        <translation>更新记录</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
-        <translation type="unfinished">显示版本 %1 的更新内容</translation>
+        <translation>查看版本 %1 的新增内容</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">显示</translation>
+        <translation>显示</translation>
     </message>
     <message>
         <source>Auto check for app updates</source>
-        <translation type="unfinished">自动检查应用程序更新</translation>
+        <translation>自动检查应用程序更新</translation>
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation type="unfinished">应用程序启动时检查更新然后每 4 小时检查一次</translation>
+        <translation>应用程序启动时检查更新，之后每 4 小时检查一次</translation>
     </message>
     <message>
         <source>Application version</source>
-        <translation type="unfinished">应用程序版本</translation>
+        <translation>应用程序版本</translation>
     </message>
     <message>
         <source>QT version</source>
-        <translation type="unfinished">QT 版本</translation>
+        <translation>Qt 版本</translation>
     </message>
     <message>
         <source>Commit</source>
-        <translation type="unfinished">提交</translation>
+        <translation>提交</translation>
     </message>
     <message>
         <source>Build date</source>
-        <translation type="unfinished">构建日期</translation>
+        <translation>构建日期</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub 仓库</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>在 GitHub 上查看</translation>
     </message>
     <message>
         <source>Version %1</source>
-        <translation type="unfinished">版本 %1</translation>
+        <translation>版本 %1</translation>
     </message>
     <message>
         <source>No release notes available</source>
-        <translation type="unfinished">没有更新</translation>
+        <translation>没有可用的更新记录</translation>
     </message>
 </context>
 <context>
@@ -1497,15 +1498,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>No translation files to download</source>
-        <translation type="unfinished">无可用语言文件下载</translation>
+        <translation>没有可下载的翻译文件</translation>
     </message>
     <message>
         <source>All translations downloaded successfully</source>
-        <translation type="unfinished">所有语言文件下载成功</translation>
+        <translation>所有翻译文件下载成功</translation>
     </message>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
-        <translation type="unfinished">%2 所有语言文件中的 1% 已下载</translation>
+        <translation>已下载 %1/%2 个翻译文件</translation>
     </message>
 </context>
 </TS>
