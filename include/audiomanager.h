@@ -1,11 +1,11 @@
 #pragma once
 
 #include <QObject>
-#include <QThread>
 #include <QMutex>
 #include <QIcon>
 #include <QMap>
 #include <QAbstractListModel>
+#include <QThread>
 #include <array>
 #include <optional>
 #include <windows.h>
@@ -226,6 +226,7 @@ private:
 
     QTimer* m_audioLevelTimer;
     QList<AudioApplication> m_cachedApplications;
+    QList<HeadsetControlDevice> m_cachedHeadsetDevices;
 
     int getDeviceAudioLevel(EDataFlow dataFlow);
 
@@ -240,6 +241,7 @@ private:
     void updateDevicesBatteryInfo(const QList<HeadsetControlDevice>& headsetDevices);
 
     HeadsetControlMonitor* m_headsetControlMonitor;
+    QThread* m_headsetControlThread;
 };
 
 // Device change notification callback
