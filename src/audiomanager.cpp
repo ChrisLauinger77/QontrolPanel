@@ -629,11 +629,19 @@ void AudioWorker::cleanup()
 
     if (m_headsetControlThread) {
         m_headsetControlThread->quit();
-        if (!m_headsetControlThread->wait(3000)) {
+        bool headsetThreadStopped = m_headsetControlThread->wait(3000);
+        if (!headsetThreadStopped) {
             LOG_WARN("AudioManager", "HeadsetControl thread did not finish gracefully, terminating...");
             m_headsetControlThread->terminate();
-            m_headsetControlThread->wait(1000);
+            headsetThreadStopped = m_headsetControlThread->wait();
         }
+
+        if (!headsetThreadStopped) {
+            LOG_CRITICAL("AudioManager",
+                         "HeadsetControl thread failed to stop; refusing to continue cleanup to avoid deleting a running QThread");
+            return;
+        }
+
         m_headsetControlThread = nullptr;
     }
 
