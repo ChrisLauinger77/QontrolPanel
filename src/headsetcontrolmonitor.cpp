@@ -399,7 +399,8 @@ void HeadsetControlMonitor::requestRefresh()
 
 bool HeadsetControlMonitor::shouldBypassRecentFetchForManualRequest() const
 {
-    return !m_anyDeviceFound
+    return m_testModeEnabled
+        || !m_anyDeviceFound
         || m_batteryLevel < 0
         || m_batteryStatus == "BATTERY_UNAVAILABLE"
         || m_batteryStatus == "BATTERY_HIDERROR"
