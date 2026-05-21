@@ -448,6 +448,8 @@ AudioWorker::AudioWorker()
     qRegisterMetaType<QList<AudioApplication>>("QList<AudioApplication>");
     qRegisterMetaType<AudioDevice>("AudioDevice");
     qRegisterMetaType<QList<AudioDevice>>("QList<AudioDevice>");
+    qRegisterMetaType<HeadsetControlDevice>("HeadsetControlDevice");
+    qRegisterMetaType<QList<HeadsetControlDevice>>("QList<HeadsetControlDevice>");
 
     m_headsetControlMonitor = new HeadsetControlMonitor();
     m_headsetControlThread = new QThread(this);
