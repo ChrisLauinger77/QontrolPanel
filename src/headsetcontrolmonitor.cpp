@@ -302,6 +302,11 @@ void HeadsetControlMonitor::setInactiveTime(int value)
 
 void HeadsetControlMonitor::fetchHeadsetInfo()
 {
+    fetchHeadsetInfo(false);
+}
+
+void HeadsetControlMonitor::fetchHeadsetInfo(bool bypassRecentFetch)
+{
     if (!m_isMonitoring) {
         return;
     }
@@ -312,9 +317,9 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
         return;
     }
 
-    if (m_lastSuccessfulFetch.isValid() && m_lastSuccessfulFetch.elapsed() < kMinimumFetchIntervalMs) {
+    if (!bypassRecentFetch && m_lastFetchCompleted.isValid() && m_lastFetchCompleted.elapsed() < kMinimumFetchIntervalMs) {
         LOG_INFO("HeadsetControlManager",
-                 "Headset data was already fetched during the last 60 seconds, skipping polling request");
+                 "Headset polling completed during the last 60 seconds, skipping polling request");
         return;
     }
 
@@ -361,7 +366,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             }
             emit headsetDataUpdated(m_cachedDevices);
             updateFetchTimerInterval(false);
-            m_lastSuccessfulFetch.start();
+            m_lastFetchCompleted.start();
             m_isFetching = false;
             return;
         }
@@ -372,7 +377,6 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
                                         QString("Found %1 headset device(s)").arg(m_headsets.size()));
 
         updateDeviceCache();
-        m_lastSuccessfulFetch.start();
 
     } catch (const std::exception& e) {
         LOG_CRITICAL("HeadsetControlManager",
@@ -381,12 +385,13 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
         emit headsetDataUpdated(m_cachedDevices);
     }
 
+    m_lastFetchCompleted.start();
     m_isFetching = false;
 }
 
 void HeadsetControlMonitor::requestRefresh()
 {
-    fetchHeadsetInfo();
+    fetchHeadsetInfo(!m_anyDeviceFound);
 }
 
 void HeadsetControlMonitor::updateDeviceCache()
@@ -661,7 +666,7 @@ void HeadsetControlMonitor::setTestModeEnabled(bool enabled)
     emit testModeEnabledChanged();
 
     if (m_isMonitoring) {
-        fetchHeadsetInfo();
+        fetchHeadsetInfo(true);
     }
 }
 
@@ -677,7 +682,7 @@ void HeadsetControlMonitor::setTestProfile(int profile)
     emit testProfileChanged();
 
     if (m_testModeEnabled && m_isMonitoring) {
-        fetchHeadsetInfo();
+        fetchHeadsetInfo(true);
     }
 }
 

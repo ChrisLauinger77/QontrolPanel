@@ -82,6 +82,7 @@ private slots:
     void fetchHeadsetInfo();
 
 private:
+    void fetchHeadsetInfo(bool bypassRecentFetch);
     void applyTestDeviceConfiguration();
     void updateFetchTimerInterval(bool deviceFound);
     void updateDeviceCache();
@@ -110,7 +111,7 @@ private:
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;
-    QElapsedTimer m_lastSuccessfulFetch;
+    QElapsedTimer m_lastFetchCompleted;
     bool m_testModeEnabled;
     int m_testProfile;
 };
