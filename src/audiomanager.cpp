@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QRegularExpression>
+#include <QtConcurrent/QtConcurrentRun>
 #include <algorithm>
 #include <atlbase.h>
 #include <psapi.h>
@@ -1748,6 +1749,67 @@ void AudioWorker::setDefaultDevice(const QString& deviceId, bool isInput, bool f
     }
 }
 
+namespace {
+void applyDefaultEndpointSwitchDirect(const QString& deviceId, bool isInput, bool forCommunications)
+{
+    static QMutex switchMutex;
+    QMutexLocker lock(&switchMutex);
+
+    const HRESULT initHr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    const bool shouldUninitialize = SUCCEEDED(initHr);
+    if (FAILED(initHr) && initHr != RPC_E_CHANGED_MODE) {
+        LOG_CRITICAL("AudioManager",
+                     QString("Failed to initialize COM for default device switch, HRESULT: %1")
+                         .arg(QString::number(initHr, 16)));
+        return;
+    }
+
+    IPolicyConfig* policyConfig = nullptr;
+    HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), nullptr, CLSCTX_ALL,
+                                  __uuidof(IPolicyConfig), (void**)&policyConfig);
+    if (FAILED(hr)) {
+        hr = CoCreateInstance(__uuidof(CPolicyConfigVistaClient), nullptr, CLSCTX_ALL,
+                              __uuidof(IPolicyConfigVista), (void**)&policyConfig);
+    }
+
+    if (FAILED(hr) || !policyConfig) {
+        LOG_CRITICAL("AudioManager",
+                     QString("Failed to create policy config for default device switch, HRESULT: %1")
+                         .arg(QString::number(hr, 16)));
+        if (shouldUninitialize) {
+            CoUninitialize();
+        }
+        return;
+    }
+
+    LOG_INFO("AudioManager",
+             QString("Applying default %1 device switch id=%2 communicationsRole=%3")
+                 .arg(isInput ? "input" : "output")
+                 .arg(deviceId)
+                 .arg(forCommunications ? "true" : "false"));
+
+    const QVector<ERole> roles = forCommunications
+        ? QVector<ERole>{eCommunications}
+        : QVector<ERole>{eConsole, eMultimedia};
+    const std::wstring wDeviceId = deviceId.toStdWString();
+    for (const ERole role : roles) {
+        const HRESULT setHr = policyConfig->SetDefaultEndpoint(wDeviceId.c_str(), role);
+        if (!SUCCEEDED(setHr)) {
+            LOG_CRITICAL("AudioManager",
+                         QString("Failed to set default %1 device endpoint role=%2, HRESULT: %3")
+                             .arg(isInput ? "input" : "output")
+                             .arg(static_cast<int>(role))
+                             .arg(QString::number(setHr, 16)));
+        }
+    }
+
+    policyConfig->Release();
+    if (shouldUninitialize) {
+        CoUninitialize();
+    }
+}
+}
+
 void AudioWorker::setVolumeForDevice(EDataFlow dataFlow, int volume)
 {
     IAudioEndpointVolume* volumeControl = (dataFlow == eRender) ? m_outputVolumeControl : m_inputVolumeControl;
@@ -2080,21 +2142,9 @@ void AudioManager::processPendingDefaultDeviceSwitches()
 
         hadQueuedRequest = true;
         const PendingDefaultDeviceSwitch request = *pendingSwitch;
-        const bool invokeOk = QMetaObject::invokeMethod(
-            worker,
-            [worker, request]() {
-                if (worker) {
-                    worker->setDefaultDevice(request.deviceId, request.isInput, request.forCommunications);
-                }
-            },
-            Qt::QueuedConnection);
-
-        if (!invokeOk) {
-            LOG_CRITICAL("AudioManager",
-                         QString("Failed to queue setDefaultDevice execution for %1 device communicationsRole=%2")
-                             .arg(request.isInput ? "input" : "output")
-                             .arg(request.forCommunications ? "true" : "false"));
-        }
+        QtConcurrent::run([request]() {
+            applyDefaultEndpointSwitchDirect(request.deviceId, request.isInput, request.forCommunications);
+        });
     }
 
     if (!hadQueuedRequest) {
