@@ -177,7 +177,7 @@ void HeadsetControlBridge::refreshNow()
 {
     HeadsetControlMonitor* monitor = findMonitor();
     if (monitor) {
-        QMetaObject::invokeMethod(monitor, "fetchHeadsetInfo", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(monitor, "requestRefresh", Qt::QueuedConnection);
     }
 }
 

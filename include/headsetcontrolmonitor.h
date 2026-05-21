@@ -53,6 +53,7 @@ public:
 public slots:
     void startMonitoring();
     void stopMonitoring();
+    void requestRefresh();
     void setLights(bool enabled);
     void setRotateToMute(bool enabled);
     void setVoicePrompts(bool enabled);

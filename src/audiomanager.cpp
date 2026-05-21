@@ -442,13 +442,17 @@ AudioWorker::AudioWorker()
     , m_audioLevelTimer(nullptr)
     , m_sessionManagerInvalid(false)
     , m_headsetControlMonitor(nullptr)
+    , m_headsetControlThread(nullptr)
 {
     qRegisterMetaType<AudioApplication>("AudioApplication");
     qRegisterMetaType<QList<AudioApplication>>("QList<AudioApplication>");
     qRegisterMetaType<AudioDevice>("AudioDevice");
     qRegisterMetaType<QList<AudioDevice>>("QList<AudioDevice>");
 
-    m_headsetControlMonitor = new HeadsetControlMonitor(this);
+    m_headsetControlMonitor = new HeadsetControlMonitor();
+    m_headsetControlThread = new QThread(this);
+    m_headsetControlMonitor->moveToThread(m_headsetControlThread);
+    m_headsetControlThread->start();
     connect(m_headsetControlMonitor, &HeadsetControlMonitor::headsetDataUpdated,
             this, &AudioWorker::onHeadsetDataUpdated);
 }
@@ -519,6 +523,10 @@ void AudioWorker::initialize()
 
 void AudioWorker::cleanup()
 {
+    if (m_headsetControlMonitor) {
+        QMetaObject::invokeMethod(m_headsetControlMonitor, "stopMonitoring", Qt::QueuedConnection);
+    }
+
     if (m_audioLevelTimer) {
         m_audioLevelTimer->stop();
         delete m_audioLevelTimer;
@@ -610,6 +618,21 @@ void AudioWorker::cleanup()
     if (m_deviceEnumerator) {
         m_deviceEnumerator->Release();
         m_deviceEnumerator = nullptr;
+    }
+
+    if (m_headsetControlMonitor) {
+        QMetaObject::invokeMethod(m_headsetControlMonitor, "deleteLater", Qt::QueuedConnection);
+        m_headsetControlMonitor = nullptr;
+    }
+
+    if (m_headsetControlThread) {
+        m_headsetControlThread->quit();
+        if (!m_headsetControlThread->wait(3000)) {
+            LOG_WARN("AudioManager", "HeadsetControl thread did not finish gracefully, terminating...");
+            m_headsetControlThread->terminate();
+            m_headsetControlThread->wait(1000);
+        }
+        m_headsetControlThread = nullptr;
     }
 
     CoUninitialize();

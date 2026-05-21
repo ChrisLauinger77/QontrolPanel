@@ -301,7 +301,13 @@ void HeadsetControlMonitor::setInactiveTime(int value)
 
 void HeadsetControlMonitor::fetchHeadsetInfo()
 {
-    if (!m_isMonitoring || m_isFetching) {
+    if (!m_isMonitoring) {
+        return;
+    }
+
+    if (m_isFetching) {
+        LOG_INFO("HeadsetControlManager",
+                 "Headset polling already active, skipping duplicate polling request");
         return;
     }
 
@@ -365,6 +371,11 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
     }
 
     m_isFetching = false;
+}
+
+void HeadsetControlMonitor::requestRefresh()
+{
+    fetchHeadsetInfo();
 }
 
 void HeadsetControlMonitor::updateDeviceCache()
