@@ -33,7 +33,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
                                         .arg(QString::fromStdString(std::string(headsetcontrol::version()))));
 
     m_fetchTimer->setInterval(m_fetchIntervalMs);
-    m_fetchTimer->setSingleShot(false);
+    m_fetchTimer->setSingleShot(true);
 
     connect(m_fetchTimer, &QTimer::timeout, this, &HeadsetControlMonitor::fetchHeadsetInfo);
 }
@@ -57,9 +57,9 @@ void HeadsetControlMonitor::startMonitoring()
                                     QString("Starting headset monitoring (fetch interval: %1ms)").arg(m_fetchIntervalMs));
 
     m_isMonitoring = true;
+    m_lastFetchCompleted = QElapsedTimer();
     applyTestDeviceConfiguration();
-    m_fetchTimer->start();
-    fetchHeadsetInfo();
+    fetchHeadsetInfoInternal(true);
 
     emit monitoringStateChanged(true);
 }
@@ -302,7 +302,7 @@ void HeadsetControlMonitor::setInactiveTime(int value)
 
 void HeadsetControlMonitor::fetchHeadsetInfo()
 {
-    fetchHeadsetInfoInternal(false);
+    fetchHeadsetInfoInternal(true);
 }
 
 void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
@@ -324,6 +324,7 @@ void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
     }
 
     m_isFetching = true;
+    m_fetchTimer->stop();
     LOG_INFO("HeadsetControlManager",
              "Starting headset polling");
 
@@ -368,6 +369,7 @@ void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
             updateFetchTimerInterval(false);
             m_lastFetchCompleted.start();
             m_isFetching = false;
+            scheduleNextFetch();
             return;
         }
 
@@ -387,6 +389,7 @@ void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
 
     m_lastFetchCompleted.start();
     m_isFetching = false;
+    scheduleNextFetch();
 }
 
 void HeadsetControlMonitor::requestRefresh()
@@ -401,6 +404,13 @@ bool HeadsetControlMonitor::shouldBypassRecentFetchForManualRequest() const
         || m_batteryStatus == "BATTERY_UNAVAILABLE"
         || m_batteryStatus == "BATTERY_HIDERROR"
         || m_batteryStatus == "BATTERY_TIMEOUT";
+}
+
+void HeadsetControlMonitor::scheduleNextFetch()
+{
+    if (m_isMonitoring) {
+        m_fetchTimer->start();
+    }
 }
 
 void HeadsetControlMonitor::updateDeviceCache()
