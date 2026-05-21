@@ -2,6 +2,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QTimer>
+#include <QElapsedTimer>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -109,6 +110,7 @@ private:
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;
+    QElapsedTimer m_lastSuccessfulFetch;
     bool m_testModeEnabled;
     int m_testProfile;
 };

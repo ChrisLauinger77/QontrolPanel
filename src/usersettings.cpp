@@ -5,6 +5,7 @@ namespace {
 constexpr int kMaxSettingsStartupPage = 11;
 constexpr int kMinHeadsetcontrolLowBatteryThreshold = 1;
 constexpr int kMaxHeadsetcontrolLowBatteryThreshold = 30;
+constexpr int kMinHeadsetcontrolFetchRate = 60;
 }
 
 UserSettings* UserSettings::m_instance = nullptr;
@@ -90,7 +91,7 @@ void UserSettings::initProperties()
     m_ddcciBrightness = settings.value("ddcciBrightness", 100).toInt();
     m_displayBatteryFooter = settings.value("displayBatteryFooter", true).toBool();
     m_panelStyle = settings.value("panelStyle", 0).toInt();
-    m_headsetcontrolFetchRate = settings.value("headsetcontrolFetchRate", 20).toInt();
+    m_headsetcontrolFetchRate = qMax(kMinHeadsetcontrolFetchRate, settings.value("headsetcontrolFetchRate", kMinHeadsetcontrolFetchRate).toInt());
     m_enableNotifications = settings.value("enableNotifications", false).toBool();
     m_headsetcontrolLowBatteryThreshold = qBound(
         kMinHeadsetcontrolLowBatteryThreshold,
@@ -509,6 +510,7 @@ void UserSettings::setPanelStyle(int value)
 
 void UserSettings::setHeadsetcontrolFetchRate(int value)
 {
+    value = qMax(kMinHeadsetcontrolFetchRate, value);
     if (m_headsetcontrolFetchRate != value) {
         m_headsetcontrolFetchRate = value;
         saveValue("headsetcontrolFetchRate", value);

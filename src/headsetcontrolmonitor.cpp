@@ -4,6 +4,7 @@
 
 namespace {
 constexpr int kDisconnectedFetchIntervalMs = 60000;
+constexpr int kMinimumFetchIntervalMs = 60000;
 }
 
 HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
@@ -311,6 +312,12 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
         return;
     }
 
+    if (m_lastSuccessfulFetch.isValid() && m_lastSuccessfulFetch.elapsed() < kMinimumFetchIntervalMs) {
+        LOG_INFO("HeadsetControlManager",
+                 "Headset data was already fetched during the last 60 seconds, skipping polling request");
+        return;
+    }
+
     m_isFetching = true;
     LOG_INFO("HeadsetControlManager",
              "Starting headset polling");
@@ -354,6 +361,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             }
             emit headsetDataUpdated(m_cachedDevices);
             updateFetchTimerInterval(false);
+            m_lastSuccessfulFetch.start();
             m_isFetching = false;
             return;
         }
@@ -364,6 +372,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
                                         QString("Found %1 headset device(s)").arg(m_headsets.size()));
 
         updateDeviceCache();
+        m_lastSuccessfulFetch.start();
 
     } catch (const std::exception& e) {
         LOG_CRITICAL("HeadsetControlManager",
@@ -623,7 +632,7 @@ QStringList HeadsetControlMonitor::getCapabilityList(const headsetcontrol::Heads
 
 void HeadsetControlMonitor::setFetchInterval(int intervalMs)
 {
-    m_fetchIntervalMs = intervalMs;
+    m_fetchIntervalMs = qMax(kMinimumFetchIntervalMs, intervalMs);
     updateFetchTimerInterval(m_anyDeviceFound);
 
     LOG_INFO("HeadsetControlManager",
