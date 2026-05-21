@@ -391,7 +391,16 @@ void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
 
 void HeadsetControlMonitor::requestRefresh()
 {
-    fetchHeadsetInfoInternal(!m_anyDeviceFound);
+    fetchHeadsetInfoInternal(shouldBypassRecentFetchForManualRequest());
+}
+
+bool HeadsetControlMonitor::shouldBypassRecentFetchForManualRequest() const
+{
+    return !m_anyDeviceFound
+        || m_batteryLevel < 0
+        || m_batteryStatus == "BATTERY_UNAVAILABLE"
+        || m_batteryStatus == "BATTERY_HIDERROR"
+        || m_batteryStatus == "BATTERY_TIMEOUT";
 }
 
 void HeadsetControlMonitor::updateDeviceCache()
