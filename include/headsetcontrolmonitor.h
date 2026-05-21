@@ -82,7 +82,7 @@ private slots:
     void fetchHeadsetInfo();
 
 private:
-    void fetchHeadsetInfo(bool bypassRecentFetch);
+    void fetchHeadsetInfoInternal(bool bypassRecentFetch);
     void applyTestDeviceConfiguration();
     void updateFetchTimerInterval(bool deviceFound);
     void updateDeviceCache();

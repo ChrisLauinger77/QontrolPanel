@@ -302,10 +302,10 @@ void HeadsetControlMonitor::setInactiveTime(int value)
 
 void HeadsetControlMonitor::fetchHeadsetInfo()
 {
-    fetchHeadsetInfo(false);
+    fetchHeadsetInfoInternal(false);
 }
 
-void HeadsetControlMonitor::fetchHeadsetInfo(bool bypassRecentFetch)
+void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
 {
     if (!m_isMonitoring) {
         return;
@@ -391,7 +391,7 @@ void HeadsetControlMonitor::fetchHeadsetInfo(bool bypassRecentFetch)
 
 void HeadsetControlMonitor::requestRefresh()
 {
-    fetchHeadsetInfo(!m_anyDeviceFound);
+    fetchHeadsetInfoInternal(!m_anyDeviceFound);
 }
 
 void HeadsetControlMonitor::updateDeviceCache()
@@ -666,7 +666,7 @@ void HeadsetControlMonitor::setTestModeEnabled(bool enabled)
     emit testModeEnabledChanged();
 
     if (m_isMonitoring) {
-        fetchHeadsetInfo(true);
+        fetchHeadsetInfoInternal(true);
     }
 }
 
@@ -682,7 +682,7 @@ void HeadsetControlMonitor::setTestProfile(int profile)
     emit testProfileChanged();
 
     if (m_testModeEnabled && m_isMonitoring) {
-        fetchHeadsetInfo(true);
+        fetchHeadsetInfoInternal(true);
     }
 }
 
