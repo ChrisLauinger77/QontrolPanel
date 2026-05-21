@@ -2024,7 +2024,12 @@ void AudioManager::setDefaultDeviceAsync(const QString& deviceId, bool isInput, 
         return;
     }
 
-    const bool invokeOk = QMetaObject::invokeMethod(this, &AudioManager::processPendingDefaultDeviceSwitches, Qt::QueuedConnection);
+    const bool invokeOk = QMetaObject::invokeMethod(
+        m_worker,
+        [this]() {
+            processPendingDefaultDeviceSwitches();
+        },
+        Qt::QueuedConnection);
     if (!invokeOk) {
         LOG_CRITICAL("AudioManager",
                      QString("Failed to queue setDefaultDevice dispatcher for %1 device")
@@ -2091,7 +2096,12 @@ void AudioManager::processPendingDefaultDeviceSwitches()
     }
 
     if (needsAnotherPass) {
-        QMetaObject::invokeMethod(this, &AudioManager::processPendingDefaultDeviceSwitches, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(
+            m_worker,
+            [this]() {
+                processPendingDefaultDeviceSwitches();
+            },
+            Qt::QueuedConnection);
     }
 }
 
