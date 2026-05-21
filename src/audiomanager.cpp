@@ -1905,10 +1905,16 @@ void AudioManager::cleanup()
 
     if (!m_workerThread) return;
 
-    if (m_worker) {
-        QMetaObject::invokeMethod(m_worker, "cleanup", Qt::QueuedConnection);
-        QMetaObject::invokeMethod(m_worker, "deleteLater", Qt::QueuedConnection);
+    AudioWorker* workerToCleanup = nullptr;
+    {
+        QMutexLocker workerLock(&m_workerAccessMutex);
+        workerToCleanup = m_worker;
         m_worker = nullptr;
+    }
+
+    if (workerToCleanup) {
+        QMetaObject::invokeMethod(workerToCleanup, "cleanup", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(workerToCleanup, "deleteLater", Qt::QueuedConnection);
     }
 
     m_workerThread->quit();
@@ -2005,7 +2011,13 @@ void AudioManager::setApplicationMuteAsync(const QString& appId, bool mute)
 
 void AudioManager::setDefaultDeviceAsync(const QString& deviceId, bool isInput, bool forCommunications)
 {
-    if (!m_worker) {
+    AudioWorker* worker = nullptr;
+    {
+        QMutexLocker workerLock(&m_workerAccessMutex);
+        worker = m_worker;
+    }
+
+    if (!worker) {
         return;
     }
 
@@ -2025,7 +2037,7 @@ void AudioManager::setDefaultDeviceAsync(const QString& deviceId, bool isInput, 
     }
 
     const bool invokeOk = QMetaObject::invokeMethod(
-        m_worker,
+        worker,
         [this]() {
             processPendingDefaultDeviceSwitches();
         },
@@ -2050,7 +2062,13 @@ void AudioManager::processPendingDefaultDeviceSwitches()
         m_defaultDeviceSwitchDispatchQueued = false;
     }
 
-    if (!m_worker) {
+    AudioWorker* worker = nullptr;
+    {
+        QMutexLocker workerLock(&m_workerAccessMutex);
+        worker = m_worker;
+    }
+
+    if (!worker) {
         return;
     }
 
@@ -2063,8 +2081,8 @@ void AudioManager::processPendingDefaultDeviceSwitches()
         hadQueuedRequest = true;
         const PendingDefaultDeviceSwitch request = *pendingSwitch;
         const bool invokeOk = QMetaObject::invokeMethod(
-            m_worker,
-            [worker = m_worker, request]() {
+            worker,
+            [worker, request]() {
                 if (worker) {
                     worker->setDefaultDevice(request.deviceId, request.isInput, request.forCommunications);
                 }
@@ -2097,7 +2115,7 @@ void AudioManager::processPendingDefaultDeviceSwitches()
 
     if (needsAnotherPass) {
         QMetaObject::invokeMethod(
-            m_worker,
+            worker,
             [this]() {
                 processPendingDefaultDeviceSwitches();
             },

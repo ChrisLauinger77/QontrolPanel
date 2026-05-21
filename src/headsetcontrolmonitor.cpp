@@ -354,6 +354,10 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             emit headsetDataUpdated(m_cachedDevices);
             updateFetchTimerInterval(false);
             m_isFetching = false;
+
+            if (m_fetchQueued && m_isMonitoring) {
+                QTimer::singleShot(0, this, &HeadsetControlMonitor::fetchHeadsetInfo);
+            }
             return;
         }
 

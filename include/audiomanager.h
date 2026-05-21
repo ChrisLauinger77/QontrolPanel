@@ -404,6 +404,7 @@ private:
 
     QThread* m_workerThread;
     AudioWorker* m_worker;
+    mutable QMutex m_workerAccessMutex;
 
     // Thread-safe cache
     mutable QMutex m_cacheMutex;
