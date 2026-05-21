@@ -226,6 +226,7 @@ private:
 
     QTimer* m_audioLevelTimer;
     QList<AudioApplication> m_cachedApplications;
+    QList<HeadsetControlDevice> m_cachedHeadsetDevices;
 
     int getDeviceAudioLevel(EDataFlow dataFlow);
 

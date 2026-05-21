@@ -635,12 +635,15 @@ void AudioWorker::cleanup()
         m_headsetControlThread = nullptr;
     }
 
+    m_cachedHeadsetDevices.clear();
+
     CoUninitialize();
 }
 
 void AudioWorker::onHeadsetDataUpdated(const QList<HeadsetControlDevice>& headsetDevices)
 {
-    updateDevicesBatteryInfo(headsetDevices);
+    m_cachedHeadsetDevices = headsetDevices;
+    updateDevicesBatteryInfo(m_cachedHeadsetDevices);
     emit devicesChanged(m_devices);
 }
 
@@ -1020,15 +1023,7 @@ void AudioWorker::enumerateDevices()
     m_devices = newDevices;
 
 
-    if (m_headsetControlMonitor && m_headsetControlMonitor->isMonitoring()) {
-        QList<HeadsetControlDevice> cachedDevices = m_headsetControlMonitor->getCachedDevices();
-        if (!cachedDevices.isEmpty()) {
-            updateDevicesBatteryInfo(cachedDevices);
-        }
-    } else if (m_headsetControlMonitor) {
-        // If monitoring is stopped, clear any headset battery info
-        updateDevicesBatteryInfo(QList<HeadsetControlDevice>());
-    }
+    updateDevicesBatteryInfo(m_cachedHeadsetDevices);
 
     emit devicesChanged(m_devices);
 }
