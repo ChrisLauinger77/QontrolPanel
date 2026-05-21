@@ -24,6 +24,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_chatMix(-1)
     , m_anyDeviceFound(false)
     , m_isFetching(false)
+    , m_fetchQueued(false)
     , m_testModeEnabled(false)
     , m_testProfile(3)
 {
@@ -301,11 +302,17 @@ void HeadsetControlMonitor::setInactiveTime(int value)
 
 void HeadsetControlMonitor::fetchHeadsetInfo()
 {
-    if (!m_isMonitoring || m_isFetching) {
+    if (!m_isMonitoring) {
+        return;
+    }
+
+    if (m_isFetching) {
+        m_fetchQueued = true;
         return;
     }
 
     m_isFetching = true;
+    m_fetchQueued = false;
 
     try {
         applyTestDeviceConfiguration();
@@ -365,6 +372,10 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
     }
 
     m_isFetching = false;
+
+    if (m_fetchQueued && m_isMonitoring) {
+        QTimer::singleShot(0, this, &HeadsetControlMonitor::fetchHeadsetInfo);
+    }
 }
 
 void HeadsetControlMonitor::updateDeviceCache()

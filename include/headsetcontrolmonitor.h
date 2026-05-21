@@ -108,6 +108,7 @@ private:
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;
+    bool m_fetchQueued;
     bool m_testModeEnabled;
     int m_testProfile;
 };
