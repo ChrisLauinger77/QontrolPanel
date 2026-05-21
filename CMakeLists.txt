@@ -17,6 +17,7 @@ set(CMAKE_DISABLE_FIND_PACKAGE_WrapVulkanHeaders TRUE)
 
 find_package(Qt6 REQUIRED COMPONENTS
     Core
+    Concurrent
     Gui
     Qml
     Quick
@@ -216,6 +217,7 @@ target_include_directories(QontrolPanel PRIVATE
 
 target_link_libraries(QontrolPanel PRIVATE
     Qt::Core
+    Qt::Concurrent
     Qt::Gui
     Qt::Qml
     Qt::Quick
