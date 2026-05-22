@@ -4,6 +4,25 @@
 #include "usersettings.h"
 #include <QTimer>
 
+namespace {
+template <typename T, typename Func>
+T getFromMonitorThread(HeadsetControlMonitor* monitor, T fallback, Func&& reader)
+{
+    if (!monitor) {
+        return fallback;
+    }
+
+    T result = fallback;
+    QMetaObject::invokeMethod(
+        monitor,
+        [&result, &reader]() {
+            result = reader();
+        },
+        Qt::BlockingQueuedConnection);
+    return result;
+}
+}
+
 HeadsetControlBridge* HeadsetControlBridge::m_instance = nullptr;
 
 HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
@@ -184,61 +203,81 @@ void HeadsetControlBridge::refreshNow()
 bool HeadsetControlBridge::hasSidetoneCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasSidetoneCapability() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->hasSidetoneCapability();
+    });
 }
 
 bool HeadsetControlBridge::hasLightsCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasLightsCapability() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->hasLightsCapability();
+    });
 }
 
 bool HeadsetControlBridge::hasRotateToMuteCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasRotateToMuteCapability() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->hasRotateToMuteCapability();
+    });
 }
 
 bool HeadsetControlBridge::hasChatMixCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasChatMixCapability() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->hasChatMixCapability();
+    });
 }
 
 bool HeadsetControlBridge::hasVoicePromptsCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasVoicePromptsCapability() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->hasVoicePromptsCapability();
+    });
 }
 
 bool HeadsetControlBridge::hasEqualizerPresetsCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasEqualizerPresetsCapability() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->hasEqualizerPresetsCapability();
+    });
 }
 
 bool HeadsetControlBridge::hasInactiveTimeCapability() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->hasInactiveTimeCapability() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->hasInactiveTimeCapability();
+    });
 }
 
 QString HeadsetControlBridge::deviceName() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->deviceName() : QString();
+    return getFromMonitorThread<QString>(monitor, QString(), [monitor]() {
+        return monitor->deviceName();
+    });
 }
 
 QString HeadsetControlBridge::batteryStatus() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->batteryStatus() : QString("BATTERY_UNAVAILABLE");
+    return getFromMonitorThread<QString>(monitor, QString("BATTERY_UNAVAILABLE"), [monitor]() {
+        return monitor->batteryStatus();
+    });
 }
 
 int HeadsetControlBridge::batteryLevel() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->batteryLevel() : -1;
+    return getFromMonitorThread<int>(monitor, -1, [monitor]() {
+        return monitor->batteryLevel();
+    });
 }
 
 QString HeadsetControlBridge::batteryIcon() const
@@ -263,31 +302,41 @@ QString HeadsetControlBridge::batteryIcon() const
 int HeadsetControlBridge::chatMix() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->chatMix() : -1;
+    return getFromMonitorThread<int>(monitor, -1, [monitor]() {
+        return monitor->chatMix();
+    });
 }
 
 QStringList HeadsetControlBridge::equalizerPresetNames() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->equalizerPresetNames() : QStringList();
+    return getFromMonitorThread<QStringList>(monitor, QStringList(), [monitor]() {
+        return monitor->equalizerPresetNames();
+    });
 }
 
 bool HeadsetControlBridge::anyDeviceFound() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->anyDeviceFound() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->anyDeviceFound();
+    });
 }
 
 bool HeadsetControlBridge::testModeEnabled() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->testModeEnabled() : false;
+    return getFromMonitorThread<bool>(monitor, false, [monitor]() {
+        return monitor->testModeEnabled();
+    });
 }
 
 int HeadsetControlBridge::testProfile() const
 {
     HeadsetControlMonitor* monitor = findMonitor();
-    return monitor ? monitor->testProfile() : 1;
+    return getFromMonitorThread<int>(monitor, 1, [monitor]() {
+        return monitor->testProfile();
+    });
 }
 
 void HeadsetControlBridge::onMonitorCapabilitiesChanged()
