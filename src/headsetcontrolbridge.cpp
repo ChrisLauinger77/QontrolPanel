@@ -89,16 +89,6 @@ void HeadsetControlBridge::connectToMonitor()
             QMetaObject::invokeMethod(monitor, "startMonitoring", Qt::QueuedConnection);
         }
 
-        emit capabilitiesChanged();
-        emit deviceNameChanged();
-        emit batteryStatusChanged();
-        emit batteryLevelChanged();
-        emit batteryIconChanged();
-        emit chatMixChanged();
-        emit equalizerPresetNamesChanged();
-        emit anyDeviceFoundChanged();
-        emit testModeEnabledChanged();
-        emit testProfileChanged();
         queueCacheRefresh(monitor);
     } else {
         QTimer::singleShot(200, this, &HeadsetControlBridge::connectToMonitor);
@@ -289,7 +279,6 @@ void HeadsetControlBridge::onMonitorCapabilitiesChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    emit capabilitiesChanged();
 }
 
 void HeadsetControlBridge::onMonitorDeviceNameChanged()
@@ -298,7 +287,6 @@ void HeadsetControlBridge::onMonitorDeviceNameChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    emit deviceNameChanged();
 }
 
 void HeadsetControlBridge::onMonitorBatteryStatusChanged()
@@ -307,8 +295,6 @@ void HeadsetControlBridge::onMonitorBatteryStatusChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    emit batteryStatusChanged();
-    emit batteryIconChanged();
 }
 
 void HeadsetControlBridge::onMonitorBatteryLevelChanged()
@@ -317,9 +303,6 @@ void HeadsetControlBridge::onMonitorBatteryLevelChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    updateLowBatteryNotificationState();
-    emit batteryLevelChanged();
-    emit batteryIconChanged();
 }
 
 void HeadsetControlBridge::onMonitorChatMixChanged()
@@ -328,7 +311,6 @@ void HeadsetControlBridge::onMonitorChatMixChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    emit chatMixChanged();
 }
 
 void HeadsetControlBridge::onMonitorEqualizerPresetNamesChanged()
@@ -337,7 +319,6 @@ void HeadsetControlBridge::onMonitorEqualizerPresetNamesChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    emit equalizerPresetNamesChanged();
 }
 
 void HeadsetControlBridge::onMonitorAnyDeviceFoundChanged()
@@ -346,11 +327,6 @@ void HeadsetControlBridge::onMonitorAnyDeviceFoundChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    if (!anyDeviceFound()) {
-        m_lowBatteryNotificationSent = false;
-    }
-
-    emit anyDeviceFoundChanged();
 }
 
 void HeadsetControlBridge::updateLowBatteryNotificationState()
@@ -375,7 +351,6 @@ void HeadsetControlBridge::onMonitorTestModeEnabledChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    emit testModeEnabledChanged();
 }
 
 void HeadsetControlBridge::onMonitorTestProfileChanged()
@@ -384,7 +359,6 @@ void HeadsetControlBridge::onMonitorTestProfileChanged()
     if (monitor) {
         queueCacheRefresh(monitor);
     }
-    emit testProfileChanged();
 }
 
 void HeadsetControlBridge::queueCacheRefresh(HeadsetControlMonitor* monitor)
@@ -414,7 +388,51 @@ void HeadsetControlBridge::queueCacheRefresh(HeadsetControlMonitor* monitor)
             state.testProfile = monitor->testProfile();
 
             QMetaObject::invokeMethod(this, [this, state]() {
+                const CachedState previous = m_cachedState;
                 m_cachedState = state;
+
+                const bool capabilitiesChangedNow =
+                    previous.hasSidetoneCapability != m_cachedState.hasSidetoneCapability ||
+                    previous.hasLightsCapability != m_cachedState.hasLightsCapability ||
+                    previous.hasRotateToMuteCapability != m_cachedState.hasRotateToMuteCapability ||
+                    previous.hasChatMixCapability != m_cachedState.hasChatMixCapability ||
+                    previous.hasVoicePromptsCapability != m_cachedState.hasVoicePromptsCapability ||
+                    previous.hasEqualizerPresetsCapability != m_cachedState.hasEqualizerPresetsCapability ||
+                    previous.hasInactiveTimeCapability != m_cachedState.hasInactiveTimeCapability;
+
+                if (capabilitiesChangedNow) {
+                    emit capabilitiesChanged();
+                }
+                if (previous.deviceName != m_cachedState.deviceName) {
+                    emit deviceNameChanged();
+                }
+                if (previous.batteryStatus != m_cachedState.batteryStatus) {
+                    emit batteryStatusChanged();
+                    emit batteryIconChanged();
+                }
+                if (previous.batteryLevel != m_cachedState.batteryLevel) {
+                    updateLowBatteryNotificationState();
+                    emit batteryLevelChanged();
+                    emit batteryIconChanged();
+                }
+                if (previous.chatMix != m_cachedState.chatMix) {
+                    emit chatMixChanged();
+                }
+                if (previous.equalizerPresetNames != m_cachedState.equalizerPresetNames) {
+                    emit equalizerPresetNamesChanged();
+                }
+                if (previous.anyDeviceFound != m_cachedState.anyDeviceFound) {
+                    if (!m_cachedState.anyDeviceFound) {
+                        m_lowBatteryNotificationSent = false;
+                    }
+                    emit anyDeviceFoundChanged();
+                }
+                if (previous.testModeEnabled != m_cachedState.testModeEnabled) {
+                    emit testModeEnabledChanged();
+                }
+                if (previous.testProfile != m_cachedState.testProfile) {
+                    emit testProfileChanged();
+                }
             }, Qt::QueuedConnection);
         },
         Qt::QueuedConnection);
