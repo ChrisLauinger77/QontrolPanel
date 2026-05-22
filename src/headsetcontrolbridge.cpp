@@ -2,6 +2,7 @@
 #include "headsetcontrolmonitor.h"
 #include "audiomanager.h"
 #include "usersettings.h"
+#include <QPointer>
 #include <QTimer>
 
 HeadsetControlBridge* HeadsetControlBridge::m_instance = nullptr;
@@ -385,9 +386,14 @@ void HeadsetControlBridge::queueCacheRefresh(HeadsetControlMonitor* monitor)
         return;
     }
 
+    QPointer<HeadsetControlBridge> bridge(this);
     QMetaObject::invokeMethod(
         monitor,
-        [this, monitor]() {
+        [bridge, monitor]() {
+            if (!bridge) {
+                return;
+            }
+
             CachedState state;
             state.hasSidetoneCapability = monitor->hasSidetoneCapability();
             state.hasLightsCapability = monitor->hasLightsCapability();
@@ -405,51 +411,55 @@ void HeadsetControlBridge::queueCacheRefresh(HeadsetControlMonitor* monitor)
             state.testModeEnabled = monitor->testModeEnabled();
             state.testProfile = monitor->testProfile();
 
-            QMetaObject::invokeMethod(this, [this, state]() {
-                const CachedState previous = m_cachedState;
-                m_cachedState = state;
+            QMetaObject::invokeMethod(bridge.data(), [bridge, state]() {
+                if (!bridge) {
+                    return;
+                }
+
+                const CachedState previous = bridge->m_cachedState;
+                bridge->m_cachedState = state;
 
                 const bool capabilitiesChangedNow =
-                    previous.hasSidetoneCapability != m_cachedState.hasSidetoneCapability ||
-                    previous.hasLightsCapability != m_cachedState.hasLightsCapability ||
-                    previous.hasRotateToMuteCapability != m_cachedState.hasRotateToMuteCapability ||
-                    previous.hasChatMixCapability != m_cachedState.hasChatMixCapability ||
-                    previous.hasVoicePromptsCapability != m_cachedState.hasVoicePromptsCapability ||
-                    previous.hasEqualizerPresetsCapability != m_cachedState.hasEqualizerPresetsCapability ||
-                    previous.hasInactiveTimeCapability != m_cachedState.hasInactiveTimeCapability;
+                    previous.hasSidetoneCapability != bridge->m_cachedState.hasSidetoneCapability ||
+                    previous.hasLightsCapability != bridge->m_cachedState.hasLightsCapability ||
+                    previous.hasRotateToMuteCapability != bridge->m_cachedState.hasRotateToMuteCapability ||
+                    previous.hasChatMixCapability != bridge->m_cachedState.hasChatMixCapability ||
+                    previous.hasVoicePromptsCapability != bridge->m_cachedState.hasVoicePromptsCapability ||
+                    previous.hasEqualizerPresetsCapability != bridge->m_cachedState.hasEqualizerPresetsCapability ||
+                    previous.hasInactiveTimeCapability != bridge->m_cachedState.hasInactiveTimeCapability;
 
                 if (capabilitiesChangedNow) {
-                    emit capabilitiesChanged();
+                    emit bridge->capabilitiesChanged();
                 }
-                if (previous.deviceName != m_cachedState.deviceName) {
-                    emit deviceNameChanged();
+                if (previous.deviceName != bridge->m_cachedState.deviceName) {
+                    emit bridge->deviceNameChanged();
                 }
-                if (previous.batteryStatus != m_cachedState.batteryStatus) {
-                    emit batteryStatusChanged();
-                    emit batteryIconChanged();
+                if (previous.batteryStatus != bridge->m_cachedState.batteryStatus) {
+                    emit bridge->batteryStatusChanged();
+                    emit bridge->batteryIconChanged();
                 }
-                if (previous.batteryLevel != m_cachedState.batteryLevel) {
-                    updateLowBatteryNotificationState();
-                    emit batteryLevelChanged();
-                    emit batteryIconChanged();
+                if (previous.batteryLevel != bridge->m_cachedState.batteryLevel) {
+                    bridge->updateLowBatteryNotificationState();
+                    emit bridge->batteryLevelChanged();
+                    emit bridge->batteryIconChanged();
                 }
-                if (previous.chatMix != m_cachedState.chatMix) {
-                    emit chatMixChanged();
+                if (previous.chatMix != bridge->m_cachedState.chatMix) {
+                    emit bridge->chatMixChanged();
                 }
-                if (previous.equalizerPresetNames != m_cachedState.equalizerPresetNames) {
-                    emit equalizerPresetNamesChanged();
+                if (previous.equalizerPresetNames != bridge->m_cachedState.equalizerPresetNames) {
+                    emit bridge->equalizerPresetNamesChanged();
                 }
-                if (previous.anyDeviceFound != m_cachedState.anyDeviceFound) {
-                    if (!m_cachedState.anyDeviceFound) {
-                        m_lowBatteryNotificationSent = false;
+                if (previous.anyDeviceFound != bridge->m_cachedState.anyDeviceFound) {
+                    if (!bridge->m_cachedState.anyDeviceFound) {
+                        bridge->m_lowBatteryNotificationSent = false;
                     }
-                    emit anyDeviceFoundChanged();
+                    emit bridge->anyDeviceFoundChanged();
                 }
-                if (previous.testModeEnabled != m_cachedState.testModeEnabled) {
-                    emit testModeEnabledChanged();
+                if (previous.testModeEnabled != bridge->m_cachedState.testModeEnabled) {
+                    emit bridge->testModeEnabledChanged();
                 }
-                if (previous.testProfile != m_cachedState.testProfile) {
-                    emit testProfileChanged();
+                if (previous.testProfile != bridge->m_cachedState.testProfile) {
+                    emit bridge->testProfileChanged();
                 }
             }, Qt::QueuedConnection);
         },
