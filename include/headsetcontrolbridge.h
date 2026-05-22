@@ -90,10 +90,30 @@ private slots:
     void onMonitorTestProfileChanged();
 
 private:
+    struct CachedState {
+        bool hasSidetoneCapability = false;
+        bool hasLightsCapability = false;
+        bool hasRotateToMuteCapability = false;
+        bool hasChatMixCapability = false;
+        bool hasVoicePromptsCapability = false;
+        bool hasEqualizerPresetsCapability = false;
+        bool hasInactiveTimeCapability = false;
+        QString deviceName;
+        QString batteryStatus = "BATTERY_UNAVAILABLE";
+        int batteryLevel = -1;
+        int chatMix = -1;
+        QStringList equalizerPresetNames;
+        bool anyDeviceFound = false;
+        bool testModeEnabled = false;
+        int testProfile = 1;
+    };
+
     static HeadsetControlBridge* m_instance;
     HeadsetControlMonitor* findMonitor() const;
     void connectToMonitor();
+    void queueCacheRefresh(HeadsetControlMonitor* monitor);
     void updateLowBatteryNotificationState();
 
     bool m_lowBatteryNotificationSent = false;
+    CachedState m_cachedState;
 };
