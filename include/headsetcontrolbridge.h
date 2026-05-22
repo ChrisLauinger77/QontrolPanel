@@ -112,6 +112,7 @@ private:
     HeadsetControlMonitor* findMonitor() const;
     void connectToMonitor();
     void queueCacheRefresh(HeadsetControlMonitor* monitor);
+    void resetCachedStateToDefaults();
     void updateLowBatteryNotificationState();
 
     bool m_lowBatteryNotificationSent = false;
