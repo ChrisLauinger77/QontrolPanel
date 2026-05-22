@@ -4,6 +4,7 @@
 
 namespace {
 constexpr int kDisconnectedFetchIntervalMs = 60000;
+constexpr int kMinimumFetchIntervalMs = 60000;
 }
 
 HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
@@ -32,7 +33,7 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
                                         .arg(QString::fromStdString(std::string(headsetcontrol::version()))));
 
     m_fetchTimer->setInterval(m_fetchIntervalMs);
-    m_fetchTimer->setSingleShot(false);
+    m_fetchTimer->setSingleShot(true);
 
     connect(m_fetchTimer, &QTimer::timeout, this, &HeadsetControlMonitor::fetchHeadsetInfo);
 }
@@ -56,9 +57,9 @@ void HeadsetControlMonitor::startMonitoring()
                                     QString("Starting headset monitoring (fetch interval: %1ms)").arg(m_fetchIntervalMs));
 
     m_isMonitoring = true;
+    m_lastFetchCompleted = QElapsedTimer();
     applyTestDeviceConfiguration();
-    m_fetchTimer->start();
-    fetchHeadsetInfo();
+    fetchHeadsetInfoInternal(true);
 
     emit monitoringStateChanged(true);
 }
@@ -301,6 +302,11 @@ void HeadsetControlMonitor::setInactiveTime(int value)
 
 void HeadsetControlMonitor::fetchHeadsetInfo()
 {
+    fetchHeadsetInfoInternal(true);
+}
+
+void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
+{
     if (!m_isMonitoring) {
         return;
     }
@@ -311,7 +317,16 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
         return;
     }
 
+    if (!bypassRecentFetch && m_lastFetchCompleted.isValid() && m_lastFetchCompleted.elapsed() < kMinimumFetchIntervalMs) {
+        LOG_INFO("HeadsetControlManager",
+                 "Headset polling completed during the last 60 seconds, skipping polling request");
+        return;
+    }
+
     m_isFetching = true;
+    m_fetchTimer->stop();
+    LOG_INFO("HeadsetControlManager",
+             "Starting headset polling");
 
     try {
         applyTestDeviceConfiguration();
@@ -352,7 +367,9 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
             }
             emit headsetDataUpdated(m_cachedDevices);
             updateFetchTimerInterval(false);
+            m_lastFetchCompleted.start();
             m_isFetching = false;
+            scheduleNextFetch();
             return;
         }
 
@@ -370,12 +387,31 @@ void HeadsetControlMonitor::fetchHeadsetInfo()
         emit headsetDataUpdated(m_cachedDevices);
     }
 
+    m_lastFetchCompleted.start();
     m_isFetching = false;
+    scheduleNextFetch();
 }
 
 void HeadsetControlMonitor::requestRefresh()
 {
-    fetchHeadsetInfo();
+    fetchHeadsetInfoInternal(shouldBypassRecentFetchForManualRequest());
+}
+
+bool HeadsetControlMonitor::shouldBypassRecentFetchForManualRequest() const
+{
+    return m_testModeEnabled
+        || !m_anyDeviceFound
+        || m_batteryLevel < 0
+        || m_batteryStatus == "BATTERY_UNAVAILABLE"
+        || m_batteryStatus == "BATTERY_HIDERROR"
+        || m_batteryStatus == "BATTERY_TIMEOUT";
+}
+
+void HeadsetControlMonitor::scheduleNextFetch()
+{
+    if (m_isMonitoring) {
+        m_fetchTimer->start();
+    }
 }
 
 void HeadsetControlMonitor::updateDeviceCache()
@@ -621,7 +657,7 @@ QStringList HeadsetControlMonitor::getCapabilityList(const headsetcontrol::Heads
 
 void HeadsetControlMonitor::setFetchInterval(int intervalMs)
 {
-    m_fetchIntervalMs = intervalMs;
+    m_fetchIntervalMs = qMax(kMinimumFetchIntervalMs, intervalMs);
     updateFetchTimerInterval(m_anyDeviceFound);
 
     LOG_INFO("HeadsetControlManager",
@@ -650,7 +686,7 @@ void HeadsetControlMonitor::setTestModeEnabled(bool enabled)
     emit testModeEnabledChanged();
 
     if (m_isMonitoring) {
-        fetchHeadsetInfo();
+        fetchHeadsetInfoInternal(true);
     }
 }
 
@@ -666,7 +702,7 @@ void HeadsetControlMonitor::setTestProfile(int profile)
     emit testProfileChanged();
 
     if (m_testModeEnabled && m_isMonitoring) {
-        fetchHeadsetInfo();
+        fetchHeadsetInfoInternal(true);
     }
 }
 

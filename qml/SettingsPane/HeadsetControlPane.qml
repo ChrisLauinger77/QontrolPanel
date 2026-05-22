@@ -289,7 +289,7 @@ ColumnLayout {
                         }
 
                         SpinBox {
-                            from: 10
+                            from: 60
                             to: 3600
                             value: UserSettings.headsetcontrolFetchRate
                             editable: true

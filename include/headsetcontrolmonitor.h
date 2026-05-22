@@ -2,6 +2,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QTimer>
+#include <QElapsedTimer>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -81,6 +82,9 @@ private slots:
     void fetchHeadsetInfo();
 
 private:
+    void fetchHeadsetInfoInternal(bool bypassRecentFetch);
+    bool shouldBypassRecentFetchForManualRequest() const;
+    void scheduleNextFetch();
     void applyTestDeviceConfiguration();
     void updateFetchTimerInterval(bool deviceFound);
     void updateDeviceCache();
@@ -109,6 +113,7 @@ private:
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;
+    QElapsedTimer m_lastFetchCompleted;
     bool m_testModeEnabled;
     int m_testProfile;
 };
