@@ -5,59 +5,59 @@
     <name>AppHotkeysPane</name>
     <message>
         <source>App Volume Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячие клавиши громкости приложений</translation>
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетания клавиш громкости для отдельных приложений</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Назначьте глобальные сочетания клавиш для управления громкостью отдельных приложений</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Добавить</translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить %1  Уменьшить %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Шаг: %1)</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <source>Add App Volume Hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить горячую клавишу громкости приложения</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Приложение</translation>
     </message>
     <message>
         <source>Volume Up Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетание для увеличения громкости</translation>
     </message>
     <message>
         <source>Click to set...</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите, чтобы задать...</translation>
     </message>
     <message>
         <source>Volume Down Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетание для уменьшения громкости</translation>
     </message>
     <message>
         <source>Volume Step Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер шага громкости</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -116,112 +116,112 @@
     </message>
     <message>
         <source>Tray icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема значка в трее</translation>
     </message>
     <message>
         <source>Choose the appearance of the system tray icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите внешний вид значка в системном трее</translation>
     </message>
     <message>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Авто</translation>
     </message>
     <message>
         <source>Dark</source>
-        <translation type="unfinished"></translation>
+        <translation>Темная</translation>
     </message>
     <message>
         <source>Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Светлая</translation>
     </message>
     <message>
         <source>Windows taskbar size (Only set if using W11 and taskbar is not at screen bottom)</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер панели задач Windows (задавайте только в W11, если панель задач не внизу экрана)</translation>
     </message>
     <message>
         <source>Choose the color of the system tray icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите цвет значка в системном трее</translation>
     </message>
     <message>
         <source>Panel theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема панели</translation>
     </message>
     <message>
         <source>Tray icon style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль значка в трее</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Обычный</translation>
     </message>
     <message>
         <source>Filled</source>
-        <translation type="unfinished"></translation>
+        <translation>Заполненный</translation>
     </message>
     <message>
         <source>Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Батарея</translation>
     </message>
 </context>
 <context>
     <name>ApplicationsListView</name>
     <message>
         <source>System sounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Системные звуки</translation>
     </message>
     <message>
         <source>Rename Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать приложение</translation>
     </message>
     <message>
         <source>Reset to Original Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить исходное имя</translation>
     </message>
     <message>
         <source>Original name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Исходное имя: </translation>
     </message>
     <message>
         <source>Stream index: </source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс потока: </translation>
     </message>
     <message>
         <source>Custom name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательское имя:</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <source>Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>Разблокировать</translation>
     </message>
     <message>
         <source>Lock</source>
-        <translation type="unfinished"></translation>
+        <translation>Заблокировать</translation>
     </message>
 </context>
 <context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Системные звуки</translation>
     </message>
 </context>
 <context>
     <name>ChatMixNotification</name>
     <message>
         <source>Microphone Muted</source>
-        <translation type="unfinished"></translation>
+        <translation>Микрофон отключен</translation>
     </message>
     <message>
         <source>Microphone Unmuted</source>
-        <translation type="unfinished"></translation>
+        <translation>Микрофон включен</translation>
     </message>
     <message>
         <source>ChatMix Enabled</source>
@@ -323,332 +323,333 @@
     <name>ComponentsPane</name>
     <message>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Компоненты</translation>
     </message>
     <message>
         <source>Enable power menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить меню питания</translation>
     </message>
     <message>
         <source>Show power button in the panel footer</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать кнопку питания в нижней части панели</translation>
     </message>
     <message>
         <source>Enable brightness control</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить управление яркостью</translation>
     </message>
     <message>
         <source>Enable HeadsetControl integration</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить интеграцию HeadsetControl</translation>
     </message>
     <message>
         <source>Monitor battery using HeadsetControl for supported devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Отслеживать батарею поддерживаемых устройств через HeadsetControl</translation>
     </message>
     <message>
         <source>Enable audio device manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить диспетчер аудиоустройств</translation>
     </message>
     <message>
         <source>Display audio device manager in panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать диспетчер аудиоустройств на панели</translation>
     </message>
     <message>
         <source>Enable application volume mixer</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить микшер громкости приложений</translation>
     </message>
     <message>
         <source>Display application volume mixer in panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать микшер громкости приложений на панели</translation>
     </message>
     <message>
         <source>Show brightness control in panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать управление яркостью на панели</translation>
     </message>
     <message>
         <source>Enable media session manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить диспетчер медиасеансов</translation>
     </message>
     <message>
         <source>Display currently playing media from Windows known sources</source>
-        <translation type="unfinished">Отображение текущего медиа из Windows приложений</translation>
+        <translation>Показывать текущие медиа из известных Windows источников</translation>
     </message>
 </context>
 <context>
     <name>ConfirmPowerActionDialog</name>
     <message>
         <source>System will hibernate in %1 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>Система перейдет в гибернацию через %1 с</translation>
     </message>
     <message>
         <source>System will restart in %1 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>Система перезагрузится через %1 с</translation>
     </message>
     <message>
         <source>System will shutdown in %1 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>Система выключится через %1 с</translation>
     </message>
     <message>
         <source>You will be signed out in %1 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы выйдете из системы через %1 с</translation>
     </message>
     <message>
         <source>Hibernate</source>
-        <translation type="unfinished"></translation>
+        <translation>Гибернация</translation>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезагрузка</translation>
     </message>
     <message>
         <source>Shutdown</source>
-        <translation type="unfinished"></translation>
+        <translation>Выключение</translation>
     </message>
     <message>
         <source>Sign Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Выйти</translation>
     </message>
     <message>
         <source>Restart to UEFI</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезагрузить в UEFI</translation>
     </message>
     <message>
         <source>System will restart to UEFI in %1 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>Система перезагрузится в UEFI через %1 с</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ОК</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Действие</translation>
     </message>
 </context>
 <context>
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Вверх</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Вниз</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Слева</translation>
+        <translation>Слева</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Справа</translation>
+        <translation>Справа</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Пробел</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Insert</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Up</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Down</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестно</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
     <name>DebugPane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Все</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт журнала QontrolPanel</translation>
     </message>
     <message>
         <source>Console output</source>
-        <translation type="unfinished"></translation>
+        <translation>Вывод консоли</translation>
     </message>
     <message>
         <source>Filter by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр:</translation>
     </message>
     <message>
         <source>Auto-scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>Автопрокрутка</translation>
     </message>
     <message>
         <source>Copy All</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать все</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
 </context>
 <context>
     <name>DeviceRenamingPane</name>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименование</translation>
     </message>
     <message>
         <source>Show:</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать:</translation>
     </message>
     <message>
         <source>Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройства</translation>
     </message>
     <message>
         <source>Applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Приложения</translation>
     </message>
     <message>
         <source>Streams</source>
-        <translation type="unfinished"></translation>
+        <translation>Потоки</translation>
     </message>
     <message>
         <source>Custom name</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательское имя</translation>
     </message>
 </context>
 <context>
     <name>DevicesListView</name>
     <message>
         <source>Rename Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать устройство</translation>
     </message>
     <message>
         <source>Reset to Original Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить исходное имя</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <source>Change Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить значок</translation>
     </message>
     <message>
         <source>Change Device Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить значок устройства</translation>
     </message>
 </context>
 <context>
     <name>DonatePopup</name>
     <message>
         <source>Found this app useful?</source>
-        <translation type="unfinished"></translation>
+        <translation>Приложение оказалось полезным?</translation>
     </message>
     <message>
         <source>This app is made with care by an independent developer and is not financed by ad revenue.
 If you&apos;d like to support my work, any contribution would be greatly appreciated!</source>
-        <translation type="unfinished"></translation>
+        <translation>Это приложение с заботой создано независимым разработчиком и не финансируется рекламой.
+Если вы хотите поддержать мою работу, любой вклад будет очень ценен!</translation>
     </message>
     <message>
         <source>Support</source>
-        <translation type="unfinished"></translation>
+        <translation>Поддержать</translation>
     </message>
     <message>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>Позже</translation>
     </message>
 </context>
 <context>
     <name>ExecutableRenameContextMenu</name>
     <message>
         <source>Rename Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать приложение</translation>
     </message>
     <message>
         <source>Reset to Original Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить исходное имя</translation>
     </message>
     <message>
         <source>Mute in Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключать звук в фоне</translation>
     </message>
 </context>
 <context>
     <name>ExecutableRenameDialog</name>
     <message>
         <source>Rename Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать приложение</translation>
     </message>
     <message>
         <source>Original name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Исходное имя: </translation>
     </message>
     <message>
         <source>Custom name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательское имя:</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
 </context>
 <context>
@@ -663,293 +664,294 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальная страница настроек</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите, какая страница открывается при показе окна настроек</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Основные</translation>
+        <translation>Основные</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Компоненты</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">Вид</translation>
+        <translation>Внешний вид</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Медиаоверлей</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">Сочетания клавиш</translation>
+        <translation>Сочетания клавиш</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячие клавиши приложений</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименование</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Язык</translation>
+        <translation>Язык</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">Информация</translation>
+        <translation>Отладка</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать окно подтверждения при выборе действия питания в меню системного трея</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Тайм-аут подтверждения действия питания (секунды)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Время до автоматического выполнения выбранного действия в окне подтверждения питания</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Чувствительность колеса для слайдеров</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Обычный</translation>
     </message>
     <message>
         <source>Fast</source>
-        <translation type="unfinished"></translation>
+        <translation>Быстро</translation>
     </message>
     <message>
         <source>Faster</source>
-        <translation type="unfinished"></translation>
+        <translation>Быстрее</translation>
     </message>
     <message>
         <source>Lightspeed</source>
-        <translation type="unfinished"></translation>
+        <translation>Молниеносно</translation>
     </message>
     <message>
         <source>DDC/CI brightness update rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Частота обновления яркости DDC/CI</translation>
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel будет запускаться при старте компьютера</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
-        <translation type="unfinished"></translation>
+        <translation>Определяет, как часто команды яркости отправляются на внешние мониторы</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать подтверждение действия питания</translation>
     </message>
 </context>
 <context>
     <name>HeadsetControlPane</name>
     <message>
         <source>No compatible device found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Совместимое устройство не найдено.</translation>
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>1 - Ошибки</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
+        <translation>2 - Батарея заряжается</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
+        <translation>3 - Обычная батарея</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>4 - Батарея недоступна</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>5 - Тайм-аут</translation>
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
+        <translation>6 - Батарея заряжена</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>7 - Низкий заряд батареи</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Включите тестовый режим ниже, чтобы имитировать поддерживаемую гарнитуру и проверить интерфейс HeadsetControl.</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Тестовый режим HeadsetControl</translation>
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имитировать поддерживаемую гарнитуру для тестирования. Режим остается включенным до закрытия приложения.</translation>
     </message>
     <message>
         <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Тестовый профиль гарнитуры</translation>
     </message>
     <message>
         <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите сценарий синтетической гарнитуры, который должен имитировать HeadsetControl.</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущий уровень заряда подключенной гарнитуры</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Уведомлять, когда заряд подключенной гарнитуры достигнет %1% или ниже.</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Значение ChatMix подключенной гарнитуры</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Пресет эквалайзера</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Задать пресет эквалайзера для гарнитуры</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Как часто запрашивается статус гарнитуры. Меньшие значения могут увеличить расход батареи.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Получить</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Репозиторий GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть на GitHub</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Мониторинг HeadsetControl отключен
+Его можно включить на вкладке «Компоненты».</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать состояние батареи в нижней части панели</translation>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Время бездействия (минуты)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Задайте время бездействия, после которого гарнитура перейдет в режим энергосбережения</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсветка</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить или отключить RGB-подсветку гарнитуры</translation>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить или отключить функцию поворота для отключения микрофона</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроить уровень самопрослушивания голоса</translation>
     </message>
     <message>
         <source>Notification on low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Уведомление о низком заряде</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Поворот для отключения микрофона</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>Самопрослушивание</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Голосовые подсказки</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить или отключить голосовые подсказки гарнитуры</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Частота опроса (секунды)</translation>
     </message>
     <message>
         <source>Device battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Батарея устройства</translation>
     </message>
 </context>
 <context>
     <name>IntroWindow</name>
     <message>
         <source>Automatic application update</source>
-        <translation type="unfinished"></translation>
+        <translation>Автообновление приложения</translation>
     </message>
     <message>
         <source>Get Started</source>
-        <translation type="unfinished"></translation>
+        <translation>Начать</translation>
     </message>
     <message>
         <source>Automatic translations update</source>
-        <translation type="unfinished"></translation>
+        <translation>Автообновление переводов</translation>
     </message>
     <message>
         <source>Welcome to QontrolPanel!</source>
-        <translation type="unfinished"></translation>
+        <translation>Добро пожаловать в QontrolPanel!</translation>
     </message>
 </context>
 <context>
     <name>LabeledSwitch</name>
     <message>
         <source>On</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкл.</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Выкл.</translation>
     </message>
 </context>
 <context>
@@ -976,7 +978,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Язык</translation>
+        <translation>Язык</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -1008,185 +1010,185 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Translation Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Ход перевода</translation>
     </message>
     <message>
         <source>Current language completion</source>
-        <translation type="unfinished"></translation>
+        <translation>Готовность текущего языка</translation>
     </message>
     <message>
         <source>Fetch for new translation to get data</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузите новые переводы, чтобы получить данные</translation>
     </message>
     <message>
         <source>Unknown author</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный автор</translation>
     </message>
     <message>
         <source>Unknown date</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная дата</translation>
     </message>
 </context>
 <context>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестно</translation>
     </message>
 </context>
 <context>
     <name>Main</name>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Update Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступно обновление</translation>
     </message>
     <message>
         <source>Low Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Низкий заряд</translation>
     </message>
     <message>
         <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
+        <translation>Заряд батареи гарнитуры низкий</translation>
     </message>
     <message>
         <source>Version %1 is available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия %1 доступна для загрузки</translation>
     </message>
     <message>
         <source>System sounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Системные звуки</translation>
     </message>
     <message>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Яркость</translation>
     </message>
 </context>
 <context>
     <name>MediaOverlay</name>
     <message>
         <source>No media playing</source>
-        <translation type="unfinished"></translation>
+        <translation>Медиа не воспроизводится</translation>
     </message>
 </context>
 <context>
     <name>MediaOverlayPane</name>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Медиаоверлей</translation>
     </message>
     <message>
         <source>Enable media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить медиаоверлей</translation>
     </message>
     <message>
         <source>Show a notification overlay when the currently playing song changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать уведомление при смене текущей песни</translation>
     </message>
     <message>
         <source>Overlay size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер оверлея</translation>
     </message>
     <message>
         <source>Choose the size of the media overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите размер медиаоверлея</translation>
     </message>
     <message>
         <source>Tiny</source>
-        <translation type="unfinished"></translation>
+        <translation>Крошечный</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Обычный</translation>
     </message>
     <message>
         <source>Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Большой</translation>
     </message>
     <message>
         <source>Overlay position</source>
-        <translation type="unfinished"></translation>
+        <translation>Положение оверлея</translation>
     </message>
     <message>
         <source>Choose where the media overlay appears on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите, где на экране появляется медиаоверлей</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Вверху слева</translation>
     </message>
     <message>
         <source>Top Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Вверху по центру</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Вверху справа</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Слева</translation>
+        <translation>Слева</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Справа</translation>
+        <translation>Справа</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Внизу слева</translation>
     </message>
     <message>
         <source>Bottom Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Внизу по центру</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Внизу справа</translation>
     </message>
 </context>
 <context>
     <name>PanelFooter</name>
     <message>
         <source>Update available</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступно обновление</translation>
     </message>
 </context>
 <context>
     <name>PowerMenu</name>
     <message>
         <source>Sleep</source>
-        <translation type="unfinished"></translation>
+        <translation>Сон</translation>
     </message>
     <message>
         <source>Hibernate</source>
-        <translation type="unfinished"></translation>
+        <translation>Гибернация</translation>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезагрузка</translation>
     </message>
     <message>
         <source>Restart UEFI</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезагрузка в UEFI</translation>
     </message>
     <message>
         <source>Shutdown</source>
-        <translation type="unfinished"></translation>
+        <translation>Выключение</translation>
     </message>
     <message>
         <source>Lock</source>
-        <translation type="unfinished"></translation>
+        <translation>Заблокировать</translation>
     </message>
     <message>
         <source>Sign Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Выйти</translation>
     </message>
     <message>
         <source>Switch User</source>
-        <translation type="unfinished"></translation>
+        <translation>Сменить пользователя</translation>
     </message>
 </context>
 <context>
@@ -1197,11 +1199,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы только что проиграли в игру</translation>
     </message>
     <message>
         <source>Too bad</source>
-        <translation type="unfinished"></translation>
+        <translation>Очень жаль</translation>
     </message>
     <message>
         <source>General</source>
@@ -1213,7 +1215,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Медиаоверлей</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1225,11 +1227,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячие клавиши приложений</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименование</translation>
     </message>
     <message>
         <source>Language</source>
@@ -1241,19 +1243,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожертвовать</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Компоненты</translation>
     </message>
 </context>
 <context>
@@ -1296,11 +1298,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle Microphone Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключить отключение микрофона</translation>
     </message>
     <message>
         <source>Shortcut to mute/unmute microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетание для отключения/включения микрофона</translation>
     </message>
     <message>
         <source>Set Panel Shortcut</source>
@@ -1308,7 +1310,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Set Microphone Mute Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Задать сочетание отключения микрофона</translation>
     </message>
     <message>
         <source>Press the desired key combination</source>
@@ -1331,181 +1333,181 @@ You can enable it in the Components tab.</source>
     <name>SystemTray</name>
     <message>
         <source>Output: </source>
-        <translation type="unfinished"></translation>
+        <translation>Вывод: </translation>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка...</translation>
     </message>
     <message>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ввод: </translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Получить</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Пресет эквалайзера</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсветка</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Голосовые подсказки</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Поворот для отключения микрофона</translation>
     </message>
     <message>
         <source>Exit</source>
-        <translation type="unfinished">Выход</translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестное устройство</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройство отключено</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
-        <translation type="unfinished">Настройки звука Windows (Старые)</translation>
+        <translation>Настройки звука Windows (классические)</translation>
     </message>
     <message>
         <source>Windows sound settings (Modern)</source>
-        <translation type="unfinished">Настройки звука Windows (Новые)</translation>
+        <translation>Настройки звука Windows (современные)</translation>
     </message>
     <message>
         <source>QontrolPanel settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки QontrolPanel</translation>
     </message>
 </context>
 <context>
     <name>UpdatePane</name>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления и информация</translation>
     </message>
     <message>
         <source>Application Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления приложения</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступна версия %1</translation>
     </message>
     <message>
         <source>Checking...</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверка...</translation>
     </message>
     <message>
         <source>Downloading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка...</translation>
     </message>
     <message>
         <source>Download and Install</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить и установить</translation>
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить обновления</translation>
     </message>
     <message>
         <source>Release notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Примечания к выпуску</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Посмотреть, что нового в версии %1</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать</translation>
     </message>
     <message>
         <source>Auto check for app updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически проверять обновления приложения</translation>
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверять обновления приложения при запуске и каждые 4 часа</translation>
     </message>
     <message>
         <source>Application version</source>
-        <translation type="unfinished">Версия приложения</translation>
+        <translation>Версия приложения</translation>
     </message>
     <message>
         <source>QT version</source>
-        <translation type="unfinished">Версия QT</translation>
+        <translation>Версия Qt</translation>
     </message>
     <message>
         <source>Commit</source>
-        <translation type="unfinished">Фикс</translation>
+        <translation>Коммит</translation>
     </message>
     <message>
         <source>Build date</source>
-        <translation type="unfinished">Дата релиза</translation>
+        <translation>Дата сборки</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Репозиторий GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть на GitHub</translation>
     </message>
     <message>
         <source>Version %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия %1</translation>
     </message>
     <message>
         <source>No release notes available</source>
-        <translation type="unfinished"></translation>
+        <translation>Примечания к выпуску недоступны</translation>
     </message>
 </context>
 <context>
     <name>Updater</name>
     <message>
         <source>Update available: </source>
-        <translation type="unfinished"></translation>
+        <translation>Доступно обновление: </translation>
     </message>
     <message>
         <source>You are using the latest version</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы используете последнюю версию</translation>
     </message>
     <message>
         <source>Update started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновление запущено.</translation>
     </message>
     <message>
         <source>No translation files to download</source>
-        <translation type="unfinished">Нет доступных файлов для загрузки</translation>
+        <translation>Нет файлов перевода для загрузки</translation>
     </message>
     <message>
         <source>All translations downloaded successfully</source>
-        <translation type="unfinished">Загрузка файлов завершена</translation>
+        <translation>Все переводы успешно загружены</translation>
     </message>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
-        <translation type="unfinished">Загружено %1 из %2 файлов перевода</translation>
+        <translation>Загружено %1 из %2 файлов перевода</translation>
     </message>
 </context>
 </TS>
