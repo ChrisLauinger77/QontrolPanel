@@ -1,7 +1,7 @@
 {
   "en": {
     "percentage": 100,
-    "last_updated": "2026-05-26 18:25:35",
+    "last_updated": "2026-05-26 18:36:18",
     "contributor": "ChrisLauinger77"
   },
   "ja": {
@@ -55,8 +55,8 @@
     "contributor": "Andrew Poženel - SloDevTeam"
   },
   "es": {
-    "percentage": 98,
-    "last_updated": "2026-04-14 16:11:20",
-    "contributor": "Christian Lauinger"
+    "percentage": 100,
+    "last_updated": "2026-05-26 20:33:11",
+    "contributor": "GitHub Action"
   }
 }
