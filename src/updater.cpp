@@ -123,6 +123,7 @@ void Updater::checkForUpdates()
         return;
     }
 
+    LOG_INFO("Updater", "Checking for application updates");
     setChecking(true);
 
     // Clear previous release notes
@@ -179,6 +180,7 @@ void Updater::onVersionCheckFinished()
     }
 
     if (m_downloadUrl.isEmpty()) {
+        LOG_WARN("Updater", "Update check completed, but the latest release has no executable asset");
         emit updateFinished(false, "No executable found in latest release");
         return;
     }
@@ -193,8 +195,11 @@ void Updater::onVersionCheckFinished()
     emit latestVersionChanged();
 
     if (m_updateAvailable) {
+        LOG_INFO("Updater",
+                 QString("Application update available: %1").arg(m_latestVersion));
         emit updateFinished(true, tr("Update available: ") + m_latestVersion);
     } else {
+        LOG_INFO("Updater", "Application is using the latest version");
         emit updateFinished(true, tr("You are using the latest version"));
     }
 }
@@ -338,8 +343,7 @@ void Updater::setReleaseNotes(const QString& notes)
 
 void Updater::checkForTranslationUpdates()
 {
-    if (UserSettings::instance()->autoUpdateTranslations()) {
-        m_translationAutoUpdateTimer->stop();
+    if (!UserSettings::instance()->autoUpdateTranslations()) {
         return;
     }
 
@@ -610,8 +614,7 @@ bool Updater::hasTranslationProgressData()
 
 void Updater::checkForAppUpdatesTimer()
 {
-    if (UserSettings::instance()->autoFetchForAppUpdates()) {
-        m_appUpdateCheckTimer->stop();
+    if (!UserSettings::instance()->autoFetchForAppUpdates()) {
         return;
     }
 
@@ -620,7 +623,7 @@ void Updater::checkForAppUpdatesTimer()
 
 void Updater::checkForAppUpdatesAuto()
 {
-    if (UserSettings::instance()->autoFetchForAppUpdates()) {
+    if (!UserSettings::instance()->autoFetchForAppUpdates()) {
         return;
     }
 
