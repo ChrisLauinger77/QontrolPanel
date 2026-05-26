@@ -37,6 +37,7 @@ Read these docs before larger changes:
 - Use Qt models for list data shown in QML.
 - Update `UserSettings` consistently when adding settings: property, getter, setter, signal, member, defaults, load, save, and QML binding.
 - Update translations when adding user-visible strings.
+- Keep log messages in a stable untranslated form; do not pass `LOG_*` or `LogManager` message text through `tr()` or `qsTr()`.
 - Keep HeadsetControl protocol/device work inside `dependencies/headsetcontrol` unless the change is only QontrolPanel orchestration or UI.
 
 ## Build Commands

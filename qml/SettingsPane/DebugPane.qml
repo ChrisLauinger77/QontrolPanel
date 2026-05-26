@@ -14,6 +14,9 @@ ColumnLayout {
     Component.onCompleted: {
         LogBridge.applyFilter(selectedSender);
         updateCategoryList();
+        if (autoScroll) {
+            Qt.callLater(scrollToBottom);
+        }
     }
 
     Connections {
