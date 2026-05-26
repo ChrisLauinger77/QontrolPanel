@@ -1479,27 +1479,27 @@ Puedes activarla en la pestaña Componentes.</translation>
     <name>Updater</name>
     <message>
         <source>Failed to check for updates: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo comprobar si hay actualizaciones: %1</translation>
     </message>
     <message>
         <source>No executable found in latest release</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró ningún ejecutable en la última versión</translation>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede iniciar la descarga</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al descargar: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo guardar el archivo de actualización</translation>
     </message>
     <message>
         <source>Failed to start update executable</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo iniciar el ejecutable de actualización</translation>
     </message>
     <message>
         <source>Update available: %1</source>
