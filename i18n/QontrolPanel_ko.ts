@@ -1198,14 +1198,6 @@ You can enable it in the Components tab.</source>
         <translation>QontrolPanel - 설정</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation>방금 게임에서 졌습니다</translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation>안타깝습니다</translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>일반</translation>
     </message>

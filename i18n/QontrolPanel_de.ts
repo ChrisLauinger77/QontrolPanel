@@ -1198,14 +1198,6 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>QontrolPanel - Einstellungen</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation>Du hast gerade das Spiel verloren</translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation>Schade</translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>

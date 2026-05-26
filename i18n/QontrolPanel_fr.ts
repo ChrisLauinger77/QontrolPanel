@@ -1217,14 +1217,6 @@ You can enable it in the Components tab.</source>
         <translation>ChatMix</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation>Vous venez de perdre au jeu</translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation>Dommage</translation>
-    </message>
-    <message>
         <source>Appearance</source>
         <translation>Apparence</translation>
     </message>

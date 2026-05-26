@@ -1198,14 +1198,6 @@ You can enable it in the Components tab.</source>
         <translation>QontrolPanel - Настройки</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation>Вы только что проиграли в игру</translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation>Очень жаль</translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>Основные</translation>
     </message>

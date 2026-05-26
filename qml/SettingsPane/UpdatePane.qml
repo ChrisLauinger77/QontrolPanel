@@ -103,19 +103,6 @@ ColumnLayout {
                     title: qsTr("Application version")
                     description: ""
 
-                    property int clickCount: 0
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            parent.clickCount++;
-                            if (parent.clickCount >= 5) {
-                                //easterEggDialog.open()
-                                Context.easterEggRequested();
-                                parent.clickCount = 0;
-                            }
-                        }
-                    }
                     additionalControl: Label {
                         text: Updater.getAppVersion()
                         opacity: 0.5

@@ -1197,14 +1197,6 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>QontrolPanel - Nastavitve</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>Splošno</translation>
     </message>

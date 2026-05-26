@@ -4,7 +4,6 @@ import QtQuick
 import ChrisLauinger77.QontrolPanel
 
 QtObject {
-    signal easterEggRequested()
     property string toggleShortcut: getShortcutText(UserSettings.panelShortcutModifiers, UserSettings.panelShortcutKey)
     property string chatMixShortcut: getShortcutText(UserSettings.chatMixShortcutModifiers, UserSettings.chatMixShortcutKey)
     property string micMuteShortcut: getShortcutText(UserSettings.micMuteShortcutModifiers, UserSettings.micMuteShortcutKey)

@@ -1222,14 +1222,6 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>ChatMix</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation>Właśnie przegrałeś mecz</translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation>Szkoda</translation>
-    </message>
-    <message>
         <source>Appearance</source>
         <translation>Wygląd</translation>
     </message>

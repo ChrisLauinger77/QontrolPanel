@@ -1198,14 +1198,6 @@ Puoi abilitarlo nella scheda Componenti.</translation>
         <translation>QontrolPanel - Impostazioni</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>Generale</translation>
     </message>

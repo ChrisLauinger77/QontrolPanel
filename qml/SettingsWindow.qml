@@ -88,40 +88,6 @@ ApplicationWindow {
         anchors.centerIn: parent
     }
 
-    Popup {
-        id: easterEggDialog
-        anchors.centerIn: parent
-        width: mainPopupLyt.implicitWidth + 50
-        height: implicitHeight + 20
-        modal: true
-
-        Connections {
-            target: Context
-            function onEasterEggRequested() {
-                easterEggDialog.open();
-            }
-        }
-
-        ColumnLayout {
-            id: mainPopupLyt
-            spacing: 15
-            anchors.fill: parent
-
-            Label {
-                text: qsTr("You just lost the game")
-                font.bold: true
-                font.pixelSize: 18
-                Layout.alignment: Qt.AlignCenter
-            }
-
-            Button {
-                text: qsTr("Too bad")
-                onClicked: easterEggDialog.close()
-                Layout.alignment: Qt.AlignCenter
-            }
-        }
-    }
-
     RowLayout {
         anchors.fill: parent
         anchors.margins: 15

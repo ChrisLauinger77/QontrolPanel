@@ -1197,14 +1197,6 @@ You can enable it in the Components tab.</source>
         <translation>QontrolPanel - 設定</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation>あなたはゲームに負けました</translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation>残念</translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>一般設定</translation>
     </message>

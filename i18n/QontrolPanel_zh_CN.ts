@@ -1197,14 +1197,6 @@ You can enable it in the Components tab.</source>
         <translation>QontrolPanel - 设置</translation>
     </message>
     <message>
-        <source>You just lost the game</source>
-        <translation>你刚刚输了游戏</translation>
-    </message>
-    <message>
-        <source>Too bad</source>
-        <translation>太可惜了</translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>常规</translation>
     </message>
