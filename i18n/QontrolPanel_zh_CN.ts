@@ -1477,8 +1477,32 @@ You can enable it in the Components tab.</source>
 <context>
     <name>Updater</name>
     <message>
-        <source>Update available: </source>
-        <translation>有更新可用: </translation>
+        <source>Failed to check for updates: %1</source>
+        <translation>检查更新失败：%1</translation>
+    </message>
+    <message>
+        <source>No executable found in latest release</source>
+        <translation>在最新版本中未找到可执行文件</translation>
+    </message>
+    <message>
+        <source>Cannot start download</source>
+        <translation>无法开始下载</translation>
+    </message>
+    <message>
+        <source>Download failed: %1</source>
+        <translation>下载失败：%1</translation>
+    </message>
+    <message>
+        <source>Failed to save update file</source>
+        <translation>无法保存更新文件</translation>
+    </message>
+    <message>
+        <source>Failed to start update executable</source>
+        <translation>无法启动更新程序</translation>
+    </message>
+    <message>
+        <source>Update available: %1</source>
+        <translation>有更新可用: %1</translation>
     </message>
     <message>
         <source>You are using the latest version</source>

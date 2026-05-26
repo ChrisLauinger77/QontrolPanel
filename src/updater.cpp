@@ -148,7 +148,7 @@ void Updater::onVersionCheckFinished()
     if (reply->error() != QNetworkReply::NoError) {
         LOG_CRITICAL("Updater",
                      QString("Update check failed: %1").arg(reply->errorString()));
-        emit updateFinished(false, "Failed to check for updates: " + reply->errorString());
+        emit updateFinished(false, tr("Failed to check for updates: %1").arg(reply->errorString()));
         return;
     }
 
@@ -181,7 +181,7 @@ void Updater::onVersionCheckFinished()
 
     if (m_downloadUrl.isEmpty()) {
         LOG_WARN("Updater", "Update check completed, but the latest release has no executable asset");
-        emit updateFinished(false, "No executable found in latest release");
+        emit updateFinished(false, tr("No executable found in latest release"));
         return;
     }
 
@@ -197,7 +197,7 @@ void Updater::onVersionCheckFinished()
     if (m_updateAvailable) {
         LOG_INFO("Updater",
                  QString("Application update available: %1").arg(m_latestVersion));
-        emit updateFinished(true, tr("Update available: ") + m_latestVersion);
+        emit updateFinished(true, tr("Update available: %1").arg(m_latestVersion));
     } else {
         LOG_INFO("Updater", "Application is using the latest version");
         emit updateFinished(true, tr("You are using the latest version"));
@@ -207,7 +207,7 @@ void Updater::onVersionCheckFinished()
 void Updater::downloadAndInstall()
 {
     if (m_downloadUrl.isEmpty() || m_isDownloading || m_isChecking) {
-        emit updateFinished(false, "Cannot start download");
+        emit updateFinished(false, tr("Cannot start download"));
         return;
     }
 
@@ -239,7 +239,7 @@ void Updater::onDownloadFinished()
     setDownloadProgress(0);
 
     if (reply->error() != QNetworkReply::NoError) {
-        emit updateFinished(false, "Download failed: " + reply->errorString());
+        emit updateFinished(false, tr("Download failed: %1").arg(reply->errorString()));
         return;
     }
 
@@ -249,7 +249,7 @@ void Updater::onDownloadFinished()
 
     QFile file(tempFile);
     if (!file.open(QIODevice::WriteOnly)) {
-        emit updateFinished(false, "Failed to save update file");
+        emit updateFinished(false, tr("Failed to save update file"));
         return;
     }
 
@@ -273,7 +273,7 @@ void Updater::installExecutable(const QString& newExePath)
         emit updateFinished(true, tr("Update started."));
         QApplication::quit();
     } else {
-        emit updateFinished(false, "Failed to start update executable");
+        emit updateFinished(false, tr("Failed to start update executable"));
     }
 }
 

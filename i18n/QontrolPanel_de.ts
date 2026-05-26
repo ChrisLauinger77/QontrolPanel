@@ -1478,8 +1478,32 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
 <context>
     <name>Updater</name>
     <message>
-        <source>Update available: </source>
-        <translation>Update verfügbar: </translation>
+        <source>Failed to check for updates: %1</source>
+        <translation>Die Suche nach Updates ist fehlgeschlagen: %1</translation>
+    </message>
+    <message>
+        <source>No executable found in latest release</source>
+        <translation>In der neuesten Version wurde keine ausführbare Datei gefunden</translation>
+    </message>
+    <message>
+        <source>Cannot start download</source>
+        <translation>Der Download kann nicht gestartet werden</translation>
+    </message>
+    <message>
+        <source>Download failed: %1</source>
+        <translation>Der Download ist fehlgeschlagen: %1</translation>
+    </message>
+    <message>
+        <source>Failed to save update file</source>
+        <translation>Das Speichern der Aktualisierungsdatei ist fehlgeschlagen</translation>
+    </message>
+    <message>
+        <source>Failed to start update executable</source>
+        <translation>Die ausführbare Datei für das Update konnte nicht gestartet werden</translation>
+    </message>
+    <message>
+        <source>Update available: %1</source>
+        <translation>Update verfügbar: %1</translation>
     </message>
     <message>
         <source>You are using the latest version</source>

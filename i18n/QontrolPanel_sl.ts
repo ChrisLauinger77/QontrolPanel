@@ -1477,8 +1477,32 @@ Omogočite ga lahko na zavihku Komponente.</translation>
 <context>
     <name>Updater</name>
     <message>
-        <source>Update available: </source>
-        <translation>Posodobitev je na voljo: </translation>
+        <source>Failed to check for updates: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No executable found in latest release</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to save update file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to start update executable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update available: %1</source>
+        <translation>Posodobitev je na voljo: %1</translation>
     </message>
     <message>
         <source>You are using the latest version</source>

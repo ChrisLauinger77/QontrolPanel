@@ -1481,12 +1481,36 @@ You can enable it in the Components tab.</source>
 <context>
     <name>Updater</name>
     <message>
+        <source>Failed to check for updates: %1</source>
+        <translation>Échec de la vérification des mises à jour : %1</translation>
+    </message>
+    <message>
+        <source>No executable found in latest release</source>
+        <translation>Aucun fichier exécutable trouvé dans la dernière version</translation>
+    </message>
+    <message>
+        <source>Cannot start download</source>
+        <translation>Impossible de démarrer le téléchargement</translation>
+    </message>
+    <message>
+        <source>Download failed: %1</source>
+        <translation>Échec du téléchargement : %1</translation>
+    </message>
+    <message>
+        <source>Failed to save update file</source>
+        <translation>Échec de l&apos;enregistrement du fichier de mise à jour</translation>
+    </message>
+    <message>
+        <source>Failed to start update executable</source>
+        <translation>Échec du lancement de l&apos;exécutable de mise à jour</translation>
+    </message>
+    <message>
         <source>Update started.</source>
         <translation>Mise à jour lancée.</translation>
     </message>
     <message>
-        <source>Update available: </source>
-        <translation>Mise à jour disponible: </translation>
+        <source>Update available: %1</source>
+        <translation>Mise à jour disponible: %1</translation>
     </message>
     <message>
         <source>You are using the latest version</source>
@@ -1494,7 +1518,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>No translation files to download</source>
-        <translation>Aucune mise à jour disponible</translation>
+        <translation>Aucun fichier de traduction à télécharger</translation>
     </message>
     <message>
         <source>All translations downloaded successfully</source>

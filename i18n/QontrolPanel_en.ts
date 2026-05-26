@@ -1477,8 +1477,32 @@ You can enable it in the Components tab.</source>
 <context>
     <name>Updater</name>
     <message>
-        <source>Update available: </source>
-        <translation>Update available: </translation>
+        <source>Failed to check for updates: %1</source>
+        <translation>Failed to check for updates: %1</translation>
+    </message>
+    <message>
+        <source>No executable found in latest release</source>
+        <translation>No executable found in latest release</translation>
+    </message>
+    <message>
+        <source>Cannot start download</source>
+        <translation>Cannot start download</translation>
+    </message>
+    <message>
+        <source>Download failed: %1</source>
+        <translation>Download failed: %1</translation>
+    </message>
+    <message>
+        <source>Failed to save update file</source>
+        <translation>Failed to save update file</translation>
+    </message>
+    <message>
+        <source>Failed to start update executable</source>
+        <translation>Failed to start update executable</translation>
+    </message>
+    <message>
+        <source>Update available: %1</source>
+        <translation>Update available: %1</translation>
     </message>
     <message>
         <source>You are using the latest version</source>

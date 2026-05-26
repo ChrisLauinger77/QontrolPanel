@@ -1478,12 +1478,36 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
 <context>
     <name>Updater</name>
     <message>
+        <source>Failed to check for updates: %1</source>
+        <translation>Nie udało się sprawdzić aktualizacji: %1</translation>
+    </message>
+    <message>
+        <source>No executable found in latest release</source>
+        <translation>Nie znaleziono pliku wykonywalnego w najnowszej wersji</translation>
+    </message>
+    <message>
+        <source>Cannot start download</source>
+        <translation>Nie można rozpocząć pobierania</translation>
+    </message>
+    <message>
+        <source>Download failed: %1</source>
+        <translation>Pobieranie nie powiodło się: %1</translation>
+    </message>
+    <message>
+        <source>Failed to save update file</source>
+        <translation>Nie udało się zapisać pliku aktualizacji</translation>
+    </message>
+    <message>
+        <source>Failed to start update executable</source>
+        <translation>Nie udało się uruchomić pliku wykonywalnego aktualizacji</translation>
+    </message>
+    <message>
         <source>Update started.</source>
         <translation>Aktualizacja uruchomiona.</translation>
     </message>
     <message>
-        <source>Update available: </source>
-        <translation>Dostępna aktualizacja: </translation>
+        <source>Update available: %1</source>
+        <translation>Dostępna aktualizacja: %1</translation>
     </message>
     <message>
         <source>You are using the latest version</source>
