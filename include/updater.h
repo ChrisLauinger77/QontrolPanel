@@ -40,6 +40,7 @@ public:
     Q_INVOKABLE QString getAppVersion() const;
     Q_INVOKABLE QString getQtVersion() const;
     Q_INVOKABLE QString getCommitHash() const;
+    Q_INVOKABLE QString getHeadsetControlCommitHash() const;
     Q_INVOKABLE QString getBuildTimestamp() const;
 
     bool updateAvailable() const { return m_updateAvailable; }

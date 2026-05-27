@@ -864,6 +864,10 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Récupérer</translation>
     </message>
     <message>
+        <source>Commit</source>
+        <translation>Commit</translation>
+    </message>
+    <message>
         <source>GitHub repository</source>
         <translation>Dépôt GitHub</translation>
     </message>

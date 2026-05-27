@@ -854,6 +854,10 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>Abrufen</translation>
     </message>
     <message>
+        <source>Commit</source>
+        <translation>Commit</translation>
+    </message>
+    <message>
         <source>GitHub repository</source>
         <translation>GitHub-Repository</translation>
     </message>

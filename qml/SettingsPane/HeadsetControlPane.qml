@@ -305,6 +305,18 @@ ColumnLayout {
                 Card {
                     visible: UserSettings.headsetcontrolMonitoring
                     Layout.fillWidth: true
+                    title: qsTr("Commit")
+                    description: ""
+
+                    additionalControl: Label {
+                        text: Updater.getHeadsetControlCommitHash()
+                        opacity: 0.5
+                    }
+                }
+
+                Card {
+                    visible: UserSettings.headsetcontrolMonitoring
+                    Layout.fillWidth: true
                     title: qsTr("GitHub repository")
                     description: "https://github.com/Sapd/HeadsetControl"
 

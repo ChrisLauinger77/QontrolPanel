@@ -1,6 +1,8 @@
 name: Update Compiled Translations
 on:
   push:
+    branches:
+      - main
     paths:
       - "i18n/*.ts"
   workflow_dispatch:

@@ -904,6 +904,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Predefiniowane Korektora</translation>
     </message>
     <message>
+        <source>Commit</source>
+        <translation>Zatwierdzenie</translation>
+    </message>
+    <message>
         <source>GitHub repository</source>
         <translation>GitHub repository</translation>
     </message>

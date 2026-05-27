@@ -658,6 +658,11 @@ QString Updater::getCommitHash() const
     return QString(GIT_COMMIT_HASH);
 }
 
+QString Updater::getHeadsetControlCommitHash() const
+{
+    return QString(HEADSETCONTROL_GIT_COMMIT_HASH);
+}
+
 QString Updater::getBuildTimestamp() const
 {
     return formatLocalizedTimestamp(QString(BUILD_TIMESTAMP));
