@@ -1483,27 +1483,27 @@ You can enable it in the Components tab.</source>
     <name>Updater</name>
     <message>
         <source>Failed to check for updates: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>업데이트 확인 실패: %1</translation>
     </message>
     <message>
         <source>No executable found in latest release</source>
-        <translation type="unfinished"></translation>
+        <translation>최신 릴리스에서 실행 파일을 찾을 수 없습니다</translation>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation type="unfinished"></translation>
+        <translation>다운로드를 시작할 수 없습니다</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished">다운로드 실패: %1</translation>
+        <translation>다운로드 실패: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
-        <translation type="unfinished"></translation>
+        <translation>업데이트 파일 저장 실패</translation>
     </message>
     <message>
         <source>Failed to start update executable</source>
-        <translation type="unfinished"></translation>
+        <translation>업데이트 실행 파일 시작 실패</translation>
     </message>
     <message>
         <source>Update available: %1</source>
