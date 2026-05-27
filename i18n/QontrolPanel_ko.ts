@@ -1495,7 +1495,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">다운로드 실패: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
