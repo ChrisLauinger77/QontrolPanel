@@ -106,6 +106,18 @@ else()
     set(GIT_COMMIT_HASH "unknown")
 endif()
 
+if(GIT_FOUND AND EXISTS "${HEADSETCONTROL_SOURCE_DIR}/.git")
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+        WORKING_DIRECTORY ${HEADSETCONTROL_SOURCE_DIR}
+        OUTPUT_VARIABLE HEADSETCONTROL_GIT_COMMIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+    )
+else()
+    set(HEADSETCONTROL_GIT_COMMIT_HASH "unknown")
+endif()
+
 string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%d %H:%M:%S UTC" UTC)
 
 # Generate version header

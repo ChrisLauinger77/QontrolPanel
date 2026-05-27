@@ -910,6 +910,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>가져오기</translation>
     </message>
     <message>
+        <source>Commit</source>
+        <translation>커밋</translation>
+    </message>
+    <message>
         <source>GitHub repository</source>
         <translation>GitHub 저장소</translation>
     </message>

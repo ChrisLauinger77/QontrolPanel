@@ -910,6 +910,10 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation>Obtener</translation>
     </message>
     <message>
+        <source>Commit</source>
+        <translation>Commit</translation>
+    </message>
+    <message>
         <source>GitHub repository</source>
         <translation>Repositorio de GitHub</translation>
     </message>

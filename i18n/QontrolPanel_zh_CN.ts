@@ -853,6 +853,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>获取</translation>
     </message>
     <message>
+        <source>Commit</source>
+        <translation>提交</translation>
+    </message>
+    <message>
         <source>GitHub repository</source>
         <translation>GitHub 仓库</translation>
     </message>

@@ -855,6 +855,10 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Commit</source>
+        <translation type="unfinished">Commit</translation>
+    </message>
+    <message>
         <source>GitHub repository</source>
         <translation type="unfinished"></translation>
     </message>
