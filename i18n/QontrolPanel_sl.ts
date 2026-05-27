@@ -1494,7 +1494,7 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Prenos ni uspel: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
