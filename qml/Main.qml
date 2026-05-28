@@ -181,7 +181,13 @@ ApplicationWindow {
 
     SystemTray {
         id: systemTray
-        onTogglePanelRequested: trayToggleTimer.restart()
+        onTogglePanelRequested: {
+            if (panel.visible && !panel.isAnimatingOut) {
+                panel.hidePanel()
+            } else {
+                trayToggleTimer.restart()
+            }
+        }
         onSettingsWindowRequested: {
             trayToggleTimer.stop()
             settingsWindow.showPreferredPane()
@@ -194,6 +200,7 @@ ApplicationWindow {
         repeat: false
         onTriggered: {
             if (!panel.visible) {
+                HeadsetControlBridge.refreshNow()
                 panel.showPanel()
             }
         }
