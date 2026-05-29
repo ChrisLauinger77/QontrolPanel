@@ -1,6 +1,7 @@
 #include "headsetcontrolmonitor.h"
 #include "logmanager.h"
 #include "usersettings.h"
+#include "version.h"
 
 namespace {
 constexpr int kDisconnectedFetchIntervalMs = 60000;
@@ -31,8 +32,9 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     , m_testProfile(3)
 {
     LOG_INFO("HeadsetControlManager",
-                                    QString("HeadsetControlMonitor initialized - Library version: %1")
-                                        .arg(QString::fromStdString(std::string(headsetcontrol::version()))));
+                                    QString("HeadsetControlMonitor initialized - HeadsetControl commit: %1 (library version: %2)")
+                                        .arg(QString(HEADSETCONTROL_GIT_COMMIT_HASH),
+                                             QString::fromStdString(std::string(headsetcontrol::version()))));
 
     m_fetchTimer->setInterval(m_fetchIntervalMs);
     m_fetchTimer->setSingleShot(true);
