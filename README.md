@@ -49,6 +49,8 @@ winget upgrade ChrisLauinger77.QontrolPanel
 
 ### Scoop
 
+More information about scoop can be found [here](https://scoop.sh/).
+
 #### Install
 
 ```powershell
