@@ -33,16 +33,34 @@ Translators should have a look [here](.github/TRANSLATIONS.md).
 
 ## Installation / Upgrade
 
-#### Winget install
+### Winget
+
+#### Install
 
 ```pwsh
 winget install ChrisLauinger77.QontrolPanel
 ```
 
-#### Winget upgrade
+#### Upgrade
 
 ```pwsh
 winget upgrade ChrisLauinger77.QontrolPanel
+```
+
+### Scoop
+
+#### Install
+
+```powershell
+scoop bucket add chrislauinger77 https://github.com/ChrisLauinger77/scoop-bucket
+scoop install qontrolpanel
+```
+
+#### Update
+
+```powershell
+scoop update
+scoop update qontrolpanel
 ```
 
 ### Manual
