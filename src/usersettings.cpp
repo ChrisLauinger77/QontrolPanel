@@ -70,7 +70,7 @@ void UserSettings::initProperties()
     m_settingsStartupPage = qBound(0, settings.value("settingsStartupPage", 0).toInt(), kMaxSettingsStartupPage);
 
     m_trayIconTheme = settings.value("trayIconTheme", 0).toInt();
-    m_iconStyle = settings.value("iconStyle", 0).toInt();
+    m_iconStyle = settings.value("iconStyle", 1).toInt();
 
     m_autoFetchForAppUpdates = settings.value("autoFetchForAppUpdates", false).toBool();
     m_headsetcontrolMonitoring = settings.value("headsetcontrolMonitoring", true).toBool();
