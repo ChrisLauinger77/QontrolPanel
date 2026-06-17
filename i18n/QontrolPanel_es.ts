@@ -115,6 +115,16 @@
         <translation>Mostrar el valor del nivel de audio en el control deslizante</translation>
     </message>
     <message>
+        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
+        <source>Settings page animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
+        <source>Animate transitions between settings pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>Tema del icono de la bandeja</translation>
     </message>

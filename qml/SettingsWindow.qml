@@ -16,6 +16,8 @@ ApplicationWindow {
     title: qsTr("QontrolPanel - Settings")
 
     readonly property int maxSettingsPageIndex: 11
+    readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
+    readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
 
     function pageComponentForIndex(index) {
         switch (index) {
@@ -215,14 +217,14 @@ ApplicationWindow {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: 150
+                        duration: root.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * -stackView.width
                         to: 0
-                        duration: 300
+                        duration: root.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -234,14 +236,14 @@ ApplicationWindow {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: 150
+                        duration: root.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
                         to: 0
-                        duration: 300
+                        duration: root.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -252,7 +254,7 @@ ApplicationWindow {
                     property: "opacity"
                     from: 1
                     to: 0
-                    duration: 150
+                    duration: root.settingsPageFadeDuration
                     easing.type: Easing.OutQuint
                 }
             }
@@ -262,7 +264,7 @@ ApplicationWindow {
                     property: "opacity"
                     from: 1
                     to: 0
-                    duration: 150
+                    duration: root.settingsPageFadeDuration
                     easing.type: Easing.OutQuint
                 }
             }
@@ -273,14 +275,14 @@ ApplicationWindow {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: 150
+                        duration: root.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
                         to: 0
-                        duration: 300
+                        duration: root.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }

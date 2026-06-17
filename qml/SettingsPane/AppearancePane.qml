@@ -93,6 +93,17 @@ ColumnLayout {
 
             Card {
                 Layout.fillWidth: true
+                title: qsTr("Settings page animations")
+                description: qsTr("Animate transitions between settings pages")
+
+                additionalControl: LabeledSwitch {
+                    checked: UserSettings.settingsAnimationsEnabled
+                    onClicked: UserSettings.settingsAnimationsEnabled = checked
+                }
+            }
+
+            Card {
+                Layout.fillWidth: true
                 title: qsTr("Tray icon theme")
                 description: qsTr("Choose the color of the system tray icon")
                 additionalControl: CustomComboBox {

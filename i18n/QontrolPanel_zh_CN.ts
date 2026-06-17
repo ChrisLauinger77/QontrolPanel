@@ -115,6 +115,16 @@
         <translation>在滑动条显示音量</translation>
     </message>
     <message>
+        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
+        <source>Settings page animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
+        <source>Animate transitions between settings pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>任务栏图标主题</translation>
     </message>
