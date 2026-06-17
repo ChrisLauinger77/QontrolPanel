@@ -1,0 +1,5 @@
+* text eol=crlf
+
+*.png binary
+*.ico binary
+*.wav binary

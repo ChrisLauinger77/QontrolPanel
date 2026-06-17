@@ -1764,43 +1764,13 @@ bool AudioWorker::isSystemSoundsSession(IAudioSessionControl2* sessionControl) c
 
 bool AudioWorker::setSystemSoundsMute(bool mute)
 {
-    IAudioSessionManager2* sessionManager = m_sessionManager;
-    CComPtr<IAudioSessionManager2> tempSessionManager;
-
-    if (!sessionManager) {
-        CComPtr<IMMDeviceEnumerator> enumerator;
-        HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL,
-                                      __uuidof(IMMDeviceEnumerator), (void**)&enumerator);
-        if (FAILED(hr)) {
-            LOG_WARN("AudioManager",
-                     QString("Failed to create device enumerator for system sounds mute, HRESULT: %1")
-                         .arg(QString::number(hr, 16)));
-            return false;
-        }
-
-        CComPtr<IMMDevice> device;
-        hr = enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device);
-        if (FAILED(hr)) {
-            LOG_WARN("AudioManager",
-                     QString("Failed to get default render endpoint for system sounds mute, HRESULT: %1")
-                         .arg(QString::number(hr, 16)));
-            return false;
-        }
-
-        hr = device->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, nullptr,
-                              (void**)&tempSessionManager);
-        if (FAILED(hr)) {
-            LOG_WARN("AudioManager",
-                     QString("Failed to activate session manager for system sounds mute, HRESULT: %1")
-                         .arg(QString::number(hr, 16)));
-            return false;
-        }
-
-        sessionManager = tempSessionManager;
+    if (!ensureValidSessionManager()) {
+        LOG_WARN("AudioManager", "Failed to restore session manager for system sounds mute");
+        return false;
     }
 
     CComPtr<IAudioSessionEnumerator> sessionEnumerator;
-    HRESULT hr = sessionManager->GetSessionEnumerator(&sessionEnumerator);
+    HRESULT hr = m_sessionManager->GetSessionEnumerator(&sessionEnumerator);
     if (FAILED(hr)) {
         LOG_WARN("AudioManager",
                  QString("Failed to enumerate sessions for system sounds mute, HRESULT: %1")
