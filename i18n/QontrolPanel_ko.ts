@@ -231,6 +231,10 @@
         <source>ChatMix Disabled</source>
         <translation>채팅 믹스 사용 안 함</translation>
     </message>
+    <message>
+        <source>ChatMix is not activated</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CommAppsPane</name>

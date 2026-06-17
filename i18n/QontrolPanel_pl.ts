@@ -228,6 +228,10 @@
         <translation>Wyłączono ChatMix</translation>
     </message>
     <message>
+        <source>ChatMix is not activated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Microphone Muted</source>
         <translation>Mikrofon Wyciszony</translation>
     </message>

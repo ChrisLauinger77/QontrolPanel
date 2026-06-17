@@ -232,6 +232,10 @@
         <source>ChatMix Disabled</source>
         <translation>ChatMix ativado</translation>
     </message>
+    <message>
+        <source>ChatMix is not activated</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CommAppsPane</name>

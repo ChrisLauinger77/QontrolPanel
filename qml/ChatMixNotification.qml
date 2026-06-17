@@ -18,6 +18,7 @@ ApplicationWindow {
     property bool isAnimatingOut: false
     property string notificationType: "chatmix" // "chatmix" or "micmute"
     property bool isMuted: false
+    property bool chatMixEffectiveEnabled: false
 
     transientParent: null
 
@@ -26,6 +27,7 @@ ApplicationWindow {
         let measurements = [
             chatMixEnabledMeasure.implicitWidth,
             chatMixDisabledMeasure.implicitWidth,
+            chatMixInactiveMeasure.implicitWidth,
             micMutedMeasure.implicitWidth,
             micUnmutedMeasure.implicitWidth
         ]
@@ -45,10 +47,13 @@ ApplicationWindow {
 
             if (UserSettings.chatMixShortcutNotification) {
                 notificationType = "chatmix"
-                var message = UserSettings.chatMixEnabled ? qsTr("ChatMix Enabled") : qsTr("ChatMix Disabled")
+                chatMixEffectiveEnabled = UserSettings.activateChatmix && UserSettings.chatMixEnabled
+                var message = UserSettings.activateChatmix
+                    ? (UserSettings.chatMixEnabled ? qsTr("ChatMix Enabled") : qsTr("ChatMix Disabled"))
+                    : qsTr("ChatMix is not activated")
                 notificationWindow.showNotification(message)
 
-                if (UserSettings.chatMixEnabled) {
+                if (chatMixEffectiveEnabled) {
                     Utils.playNotificationSound(true)
                 } else {
                     Utils.playNotificationSound(false)
@@ -151,6 +156,13 @@ ApplicationWindow {
     Text {
         id: chatMixDisabledMeasure
         text: qsTr("ChatMix Disabled")
+        font.pixelSize: 14
+        visible: false
+    }
+
+    Text {
+        id: chatMixInactiveMeasure
+        text: qsTr("ChatMix is not activated")
         font.pixelSize: 14
         visible: false
     }
@@ -266,14 +278,14 @@ ApplicationWindow {
                     if (notificationType === "micmute") {
                         return isMuted ? palette.text : palette.accent
                     } else {
-                        return UserSettings.chatMixEnabled ? palette.accent : palette.text
+                        return notificationWindow.chatMixEffectiveEnabled ? palette.accent : palette.text
                     }
                 }
                 opacity: {
                     if (notificationType === "micmute") {
                         return isMuted ? 0.5 : 1.0
                     } else {
-                        return UserSettings.chatMixEnabled ? 1.0 : 0.5
+                        return notificationWindow.chatMixEffectiveEnabled ? 1.0 : 0.5
                     }
                 }
                 Layout.alignment: Qt.AlignVCenter
