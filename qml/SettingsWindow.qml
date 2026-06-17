@@ -16,8 +16,6 @@ ApplicationWindow {
     title: qsTr("QontrolPanel - Settings")
 
     readonly property int maxSettingsPageIndex: 11
-    readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
-    readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
 
     function pageComponentForIndex(index) {
         switch (index) {
@@ -210,6 +208,8 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
             initialItem: generalPaneComponent
+            readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
+            readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
 
             popEnter: Transition {
                 ParallelAnimation {
@@ -217,14 +217,14 @@ ApplicationWindow {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: root.settingsPageFadeDuration
+                        duration: stackView.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * -stackView.width
                         to: 0
-                        duration: root.settingsPageSlideDuration
+                        duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -236,14 +236,14 @@ ApplicationWindow {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: root.settingsPageFadeDuration
+                        duration: stackView.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
                         to: 0
-                        duration: root.settingsPageSlideDuration
+                        duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -254,7 +254,7 @@ ApplicationWindow {
                     property: "opacity"
                     from: 1
                     to: 0
-                    duration: root.settingsPageFadeDuration
+                    duration: stackView.settingsPageFadeDuration
                     easing.type: Easing.OutQuint
                 }
             }
@@ -264,7 +264,7 @@ ApplicationWindow {
                     property: "opacity"
                     from: 1
                     to: 0
-                    duration: root.settingsPageFadeDuration
+                    duration: stackView.settingsPageFadeDuration
                     easing.type: Easing.OutQuint
                 }
             }
@@ -275,14 +275,14 @@ ApplicationWindow {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: root.settingsPageFadeDuration
+                        duration: stackView.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
                         to: 0
-                        duration: root.settingsPageSlideDuration
+                        duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }
