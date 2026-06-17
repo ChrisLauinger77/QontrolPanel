@@ -195,6 +195,7 @@ private:
     int m_inputVolume;
     bool m_outputMuted;
     bool m_inputMuted;
+    std::optional<bool> m_requestedSystemSoundsMute;
     QList<AudioApplication> m_applications;
     QList<AudioDevice> m_devices;
 

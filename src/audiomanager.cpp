@@ -439,6 +439,7 @@ AudioWorker::AudioWorker()
     , m_inputVolume(0)
     , m_outputMuted(false)
     , m_inputMuted(false)
+    , m_requestedSystemSoundsMute(std::nullopt)
     , m_audioLevelTimer(nullptr)
     , m_sessionManagerInvalid(false)
     , m_headsetControlMonitor(nullptr)
@@ -1297,6 +1298,15 @@ void AudioWorker::enumerateApplications()
             }
         }
 
+        if (isSystemSounds && m_requestedSystemSoundsMute.has_value()) {
+            HRESULT setMuteHr = pSimpleAudioVolume->SetMute(*m_requestedSystemSoundsMute, nullptr);
+            if (FAILED(setMuteHr)) {
+                LOG_WARN("AudioManager",
+                         QString("Failed to apply requested system sounds mute during enumeration, HRESULT: %1")
+                             .arg(QString::number(setMuteHr, 16)));
+            }
+        }
+
         BOOL isMuted = FALSE;
         pSimpleAudioVolume->GetMute(&isMuted);
 
@@ -1449,7 +1459,7 @@ void AudioWorker::enumerateApplications()
         systemApp.name = "System sounds";
         systemApp.executableName = "System sounds";
         systemApp.volume = 100; // Default volume
-        systemApp.isMuted = false;
+        systemApp.isMuted = m_requestedSystemSoundsMute.value_or(false);
         systemApp.iconPath = "";
         systemApp.streamIndex = 0;
         systemApp.isSystemSounds = true;
@@ -1679,6 +1689,10 @@ bool AudioWorker::ensureValidSessionManager()
 
 void AudioWorker::onApplicationSessionVolumeChanged(const QString& appId, float volume, bool muted)
 {
+    if (appId == "system_sounds") {
+        m_requestedSystemSoundsMute = muted;
+    }
+
     int volumePercent = static_cast<int>(std::round(volume * 100.0f));
     bool foundApp = false;
     for (int i = 0; i < m_applications.count(); ++i) {
@@ -1740,9 +1754,9 @@ void AudioWorker::setApplicationVolume(const QString& appId, int volume)
 void AudioWorker::setApplicationMute(const QString& appId, bool mute)
 {
     if (appId == "system_sounds") {
-        if (setSystemSoundsMute(mute)) {
-            emit applicationMuteChanged(appId, mute);
-        }
+        m_requestedSystemSoundsMute = mute;
+        setSystemSoundsMute(mute);
+        emit applicationMuteChanged(appId, mute);
         return;
     }
 
