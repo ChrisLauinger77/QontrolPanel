@@ -1,5 +1,21 @@
 * text eol=crlf
 
-*.png binary
-*.ico binary
-*.wav binary
+*.qm binary !eol
+*.png binary !eol
+*.ico binary !eol
+*.wav binary !eol
+*.jpg binary !eol
+*.jpeg binary !eol
+*.gif binary !eol
+*.webp binary !eol
+*.pdf binary !eol
+*.zip binary !eol
+*.7z binary !eol
+*.exe binary !eol
+*.dll binary !eol
+*.lib binary !eol
+*.pdb binary !eol
+*.ttf binary !eol
+*.otf binary !eol
+*.woff binary !eol
+*.woff2 binary !eol
