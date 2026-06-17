@@ -115,6 +115,14 @@
         <translation>スライダー内にオーディオ  レベルの値を表示します。</translation>
     </message>
     <message>
+        <source>Settings page animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animate transitions between settings pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>トレイ アイコン テーマ</translation>
     </message>

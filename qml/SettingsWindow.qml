@@ -208,81 +208,106 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
             initialItem: generalPaneComponent
+            readonly property bool settingsPageTransitionsEnabled: UserSettings.settingsAnimationsEnabled
+            readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
+            readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
 
             popEnter: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 ParallelAnimation {
                     NumberAnimation {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: 150
+                        duration: stackView.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * -stackView.width
                         to: 0
-                        duration: 300
+                        duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }
             }
 
             pushEnter: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 ParallelAnimation {
                     NumberAnimation {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: 150
+                        duration: stackView.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
                         to: 0
-                        duration: 300
+                        duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
                 }
             }
 
             popExit: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 NumberAnimation {
                     property: "opacity"
                     from: 1
                     to: 0
-                    duration: 150
+                    duration: stackView.settingsPageFadeDuration
                     easing.type: Easing.OutQuint
                 }
             }
 
             pushExit: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 NumberAnimation {
                     property: "opacity"
                     from: 1
                     to: 0
-                    duration: 150
+                    duration: stackView.settingsPageFadeDuration
                     easing.type: Easing.OutQuint
                 }
             }
 
             replaceEnter: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 ParallelAnimation {
                     NumberAnimation {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: 150
+                        duration: stackView.settingsPageFadeDuration
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
                         property: "y"
                         from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
                         to: 0
-                        duration: 300
+                        duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
+                }
+            }
+
+            replaceExit: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
+                NumberAnimation {
+                    property: "opacity"
+                    from: 1
+                    to: 0
+                    duration: stackView.settingsPageFadeDuration
+                    easing.type: Easing.OutQuint
                 }
             }
 

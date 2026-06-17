@@ -127,6 +127,14 @@
         <translation>Style de l&apos;icône</translation>
     </message>
     <message>
+        <source>Settings page animations</source>
+        <translation>Animations des pages de paramètres</translation>
+    </message>
+    <message>
+        <source>Animate transitions between settings pages</source>
+        <translation>Animer les transitions entre les pages de paramètres</translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>Thème de l&apos;icône</translation>
     </message>

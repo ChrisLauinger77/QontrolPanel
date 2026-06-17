@@ -123,6 +123,14 @@
         <translation>Styl ikony zasobnika systemowego</translation>
     </message>
     <message>
+        <source>Settings page animations</source>
+        <translation>Animacje stron ustawień</translation>
+    </message>
+    <message>
+        <source>Animate transitions between settings pages</source>
+        <translation>Animuj przejścia między stronami ustawień</translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>Motyw ikony pasku zadań</translation>
     </message>

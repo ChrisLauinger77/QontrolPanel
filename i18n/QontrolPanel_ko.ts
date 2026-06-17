@@ -115,6 +115,14 @@
         <translation>슬라이더로 오디오 레벨 값 표시</translation>
     </message>
     <message>
+        <source>Settings page animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animate transitions between settings pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>트레이 아이콘 테마</translation>
     </message>

@@ -115,6 +115,14 @@
         <translation>Audiopegelwert im Schieberegler anzeigen</translation>
     </message>
     <message>
+        <source>Settings page animations</source>
+        <translation>Animationen auf der Einstellungsseite</translation>
+    </message>
+    <message>
+        <source>Animate transitions between settings pages</source>
+        <translation>Übergänge zwischen den Einstellungsseiten animieren</translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>Tray-Symbol-Design</translation>
     </message>

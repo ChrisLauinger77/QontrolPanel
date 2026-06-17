@@ -115,6 +115,14 @@
         <translation>Mostrar el valor del nivel de audio en el control deslizante</translation>
     </message>
     <message>
+        <source>Settings page animations</source>
+        <translation>Animaciones de las páginas de ajustes</translation>
+    </message>
+    <message>
+        <source>Animate transitions between settings pages</source>
+        <translation>Animar las transiciones entre páginas de ajustes</translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>Tema del icono de la bandeja</translation>
     </message>

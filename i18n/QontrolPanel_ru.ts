@@ -115,6 +115,14 @@
         <translation>Отображение значения уровня громкости в слайдере</translation>
     </message>
     <message>
+        <source>Settings page animations</source>
+        <translation>Анимации страниц настроек</translation>
+    </message>
+    <message>
+        <source>Animate transitions between settings pages</source>
+        <translation>Анимировать переходы между страницами настроек</translation>
+    </message>
+    <message>
         <source>Tray icon theme</source>
         <translation>Тема значка в трее</translation>
     </message>
