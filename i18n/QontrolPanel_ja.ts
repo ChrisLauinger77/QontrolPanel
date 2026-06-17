@@ -243,10 +243,6 @@
         <translation>コミュニケーション アプリ</translation>
     </message>
     <message>
-        <source>Enable ChatMix</source>
-        <translation>ChatMix を有効</translation>
-    </message>
-    <message>
         <source>Control communication apps separately from other applications</source>
         <translation>通信アプリを他のアプリとは別に制御します。</translation>
     </message>
@@ -269,6 +265,14 @@
     <message>
         <source>Add App</source>
         <translation>アプリを追加</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix volume</source>

@@ -233,7 +233,7 @@
     </message>
     <message>
         <source>ChatMix is not activated</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix не активирован</translation>
     </message>
 </context>
 <context>
@@ -241,10 +241,6 @@
     <message>
         <source>Communication Apps</source>
         <translation>Приложения для связи</translation>
-    </message>
-    <message>
-        <source>Enable ChatMix</source>
-        <translation>Разрешить ChatMix</translation>
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
@@ -273,6 +269,14 @@
     <message>
         <source>Activate ChatMix</source>
         <translation>Активировать ChatMix</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation>Показать элементы управления ChatMix</translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation>Использовать громкость ChatMix</translation>
     </message>
     <message>
         <source>ChatMix volume</source>

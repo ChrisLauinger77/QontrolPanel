@@ -243,10 +243,6 @@
         <translation>通讯程序</translation>
     </message>
     <message>
-        <source>Enable ChatMix</source>
-        <translation>启用 ChatMix</translation>
-    </message>
-    <message>
         <source>Control communication apps separately from other applications</source>
         <translation>独立控制通讯程序与其他程序</translation>
     </message>
@@ -273,6 +269,14 @@
     <message>
         <source>Activate ChatMix</source>
         <translation>启用 ChatMix</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix volume</source>

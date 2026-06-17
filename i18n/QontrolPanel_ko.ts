@@ -243,10 +243,6 @@
         <translation>통신 앱</translation>
     </message>
     <message>
-        <source>Enable ChatMix</source>
-        <translation>채팅 믹스 활성화</translation>
-    </message>
-    <message>
         <source>Control communication apps separately from other applications</source>
         <translation>다른 응용 프로그램과 별도로 통신 앱 제어</translation>
     </message>
@@ -269,6 +265,14 @@
     <message>
         <source>Add App</source>
         <translation>앱 추가</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix volume</source>

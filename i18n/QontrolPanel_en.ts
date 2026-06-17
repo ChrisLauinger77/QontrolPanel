@@ -243,10 +243,6 @@
         <translation>Communication Apps</translation>
     </message>
     <message>
-        <source>Enable ChatMix</source>
-        <translation>Enable ChatMix</translation>
-    </message>
-    <message>
         <source>Control communication apps separately from other applications</source>
         <translation>Control communication apps separately from other applications</translation>
     </message>
@@ -269,6 +265,14 @@
     <message>
         <source>Add App</source>
         <translation>Add App</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix volume</source>

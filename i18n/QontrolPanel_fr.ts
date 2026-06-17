@@ -233,7 +233,7 @@
     </message>
     <message>
         <source>ChatMix is not activated</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix n&apos;est pas activé</translation>
     </message>
 </context>
 <context>
@@ -287,6 +287,14 @@
         <translation>Démarrer ChatMix</translation>
     </message>
     <message>
+        <source>Show ChatMix controls</source>
+        <translation>Afficher les commandes ChatMix</translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation>Utiliser le volume de ChatMix</translation>
+    </message>
+    <message>
         <source>ChatMix volume</source>
         <translation>Volume du ChatMix</translation>
     </message>
@@ -313,10 +321,6 @@
     <message>
         <source>Restored volume</source>
         <translation>Volume restauré</translation>
-    </message>
-    <message>
-        <source>Enable ChatMix</source>
-        <translation>Activer ChatMix</translation>
     </message>
     <message>
         <source>Add application names that should be treated as communication apps</source>
