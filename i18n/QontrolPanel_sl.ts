@@ -231,16 +231,16 @@
         <source>ChatMix Disabled</source>
         <translation>ChatMix onemogočen</translation>
     </message>
+    <message>
+        <source>ChatMix is not activated</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CommAppsPane</name>
     <message>
         <source>Communication Apps</source>
         <translation>Komunikacijske aplikacije</translation>
-    </message>
-    <message>
-        <source>Enable ChatMix</source>
-        <translation>Omogoči ChatMix</translation>
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
@@ -265,6 +265,14 @@
     <message>
         <source>Add App</source>
         <translation>Dodaj aplikacijo</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix volume</source>

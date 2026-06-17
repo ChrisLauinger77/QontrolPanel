@@ -231,16 +231,16 @@
         <source>ChatMix Disabled</source>
         <translation>ChatMix disabilitato</translation>
     </message>
+    <message>
+        <source>ChatMix is not activated</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CommAppsPane</name>
     <message>
         <source>Communication Apps</source>
         <translation>App comunicazione</translation>
-    </message>
-    <message>
-        <source>Enable ChatMix</source>
-        <translation>Attiva ChatMix</translation>
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
@@ -265,6 +265,14 @@
     <message>
         <source>Add App</source>
         <translation>Aggiungi app</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix volume</source>

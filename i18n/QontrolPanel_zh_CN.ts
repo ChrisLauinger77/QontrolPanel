@@ -231,16 +231,16 @@
         <source>ChatMix Disabled</source>
         <translation>ChatMix 已禁用</translation>
     </message>
+    <message>
+        <source>ChatMix is not activated</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CommAppsPane</name>
     <message>
         <source>Communication Apps</source>
         <translation>通讯程序</translation>
-    </message>
-    <message>
-        <source>Enable ChatMix</source>
-        <translation>启用 ChatMix</translation>
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
@@ -269,6 +269,14 @@
     <message>
         <source>Activate ChatMix</source>
         <translation>启用 ChatMix</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ChatMix volume</source>

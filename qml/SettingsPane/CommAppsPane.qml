@@ -9,7 +9,7 @@ ColumnLayout {
     id: lyt
     spacing: 3
 
-    signal cancelChatMixActivation()
+    signal cancelChatMixActivation
 
     Label {
         text: qsTr("Communication Apps")
@@ -29,23 +29,24 @@ ColumnLayout {
             Card {
                 width: parent.width
                 title: qsTr("Activate ChatMix")
+                description: qsTr("Show ChatMix controls")
 
                 additionalControl: LabeledSwitch {
                     id: activateChatMixSwitch
                     checked: UserSettings.activateChatmix
                     onClicked: {
                         if (checked) {
-                            chatMixWarningDialog.open()
+                            chatMixWarningDialog.open();
                         } else {
-                            UserSettings.activateChatmix = checked
-                            UserSettings.chatMixEnabled = checked
-                            AudioBridge.restoreOriginalVolumes()
+                            UserSettings.activateChatmix = checked;
+                            UserSettings.chatMixEnabled = checked;
+                            AudioBridge.restoreOriginalVolumes();
                         }
                     }
                     Connections {
                         target: lyt
                         function onCancelChatMixActivation() {
-                            activateChatMixSwitch.checked = false
+                            activateChatMixSwitch.checked = false;
                         }
                     }
                 }
@@ -54,18 +55,18 @@ ColumnLayout {
             Card {
                 show: UserSettings.activateChatmix
                 width: parent.width
-                title: qsTr("Enable ChatMix")
+                title: qsTr("Use ChatMix volume")
                 description: qsTr("Control communication apps separately from other applications")
 
                 additionalControl: LabeledSwitch {
                     checked: UserSettings.chatMixEnabled
                     onClicked: {
                         if (checked) {
-                            UserSettings.chatMixEnabled = checked
-                            AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue)
+                            UserSettings.chatMixEnabled = checked;
+                            AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue);
                         } else {
-                            UserSettings.chatMixEnabled = checked
-                            AudioBridge.restoreOriginalVolumes()
+                            UserSettings.chatMixEnabled = checked;
+                            AudioBridge.restoreOriginalVolumes();
                         }
                     }
                 }
@@ -86,14 +87,14 @@ ColumnLayout {
                     enabled: UserSettings.chatMixEnabled
 
                     onValueChanged: {
-                        UserSettings.chatMixValue = value
+                        UserSettings.chatMixValue = value;
                     }
 
                     onPressedChanged: {
-                        if (pressed) return
-
+                        if (pressed)
+                            return;
                         if (UserSettings.chatMixEnabled) {
-                            AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue)
+                            AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue);
                         }
                     }
                 }
@@ -114,7 +115,7 @@ ColumnLayout {
                     Layout.fillWidth: true
 
                     onValueChanged: {
-                        UserSettings.chatmixRestoreVolume = value
+                        UserSettings.chatmixRestoreVolume = value;
                     }
                 }
             }
@@ -134,8 +135,8 @@ ColumnLayout {
             Repeater {
                 model: AudioBridge.commAppsList
                 Card {
-                    show: UserSettings.activateChatmix
                     id: appCard
+                    show: UserSettings.activateChatmix
                     required property var model
                     width: parent.width
                     title: model.name
@@ -146,7 +147,7 @@ ColumnLayout {
                     additionalControl: Button {
                         text: qsTr("Remove")
                         onClicked: {
-                            AudioBridge.removeCommApp(appCard.model.name)
+                            AudioBridge.removeCommApp(appCard.model.name);
                         }
                     }
                 }
@@ -186,8 +187,8 @@ ColumnLayout {
                 Button {
                     text: qsTr("Cancel")
                     onClicked: {
-                        lyt.cancelChatMixActivation()
-                        chatMixWarningDialog.close()
+                        lyt.cancelChatMixActivation();
+                        chatMixWarningDialog.close();
                     }
                     Layout.fillWidth: true
                 }
@@ -197,10 +198,10 @@ ColumnLayout {
                     highlighted: true
                     Layout.fillWidth: true
                     onClicked: {
-                        UserSettings.activateChatmix = true
-                        UserSettings.chatMixEnabled = true
-                        AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue)
-                        chatMixWarningDialog.close()
+                        UserSettings.activateChatmix = true;
+                        UserSettings.chatMixEnabled = true;
+                        AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue);
+                        chatMixWarningDialog.close();
                     }
                 }
             }
@@ -242,9 +243,9 @@ ColumnLayout {
                     Layout.fillWidth: true
                     highlighted: true
                     onClicked: {
-                        AudioBridge.addCommApp(executableField.text)
-                        executableField.text = ""
-                        addAppDialog.close()
+                        AudioBridge.addCommApp(executableField.text);
+                        executableField.text = "";
+                        addAppDialog.close();
                     }
                 }
             }

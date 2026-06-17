@@ -231,16 +231,16 @@
         <source>ChatMix Disabled</source>
         <translation>ChatMix deaktiviert</translation>
     </message>
+    <message>
+        <source>ChatMix is not activated</source>
+        <translation>ChatMix ist nicht aktiviert</translation>
+    </message>
 </context>
 <context>
     <name>CommAppsPane</name>
     <message>
         <source>Communication Apps</source>
         <translation>Kommunikationsanwendungen</translation>
-    </message>
-    <message>
-        <source>Enable ChatMix</source>
-        <translation>ChatMix aktivieren</translation>
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
@@ -265,6 +265,14 @@
     <message>
         <source>Add App</source>
         <translation>App hinzufügen</translation>
+    </message>
+    <message>
+        <source>Show ChatMix controls</source>
+        <translation>ChatMix-Steuerelemente anzeigen</translation>
+    </message>
+    <message>
+        <source>Use ChatMix volume</source>
+        <translation>ChatMix-Lautstärke verwenden</translation>
     </message>
     <message>
         <source>ChatMix volume</source>
