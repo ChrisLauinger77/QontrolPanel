@@ -208,10 +208,13 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
             initialItem: generalPaneComponent
+            readonly property bool settingsPageTransitionsEnabled: UserSettings.settingsAnimationsEnabled
             readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
             readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
 
             popEnter: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 ParallelAnimation {
                     NumberAnimation {
                         property: "opacity"
@@ -231,6 +234,8 @@ ApplicationWindow {
             }
 
             pushEnter: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 ParallelAnimation {
                     NumberAnimation {
                         property: "opacity"
@@ -250,6 +255,8 @@ ApplicationWindow {
             }
 
             popExit: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 NumberAnimation {
                     property: "opacity"
                     from: 1
@@ -260,6 +267,8 @@ ApplicationWindow {
             }
 
             pushExit: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 NumberAnimation {
                     property: "opacity"
                     from: 1
@@ -270,6 +279,8 @@ ApplicationWindow {
             }
 
             replaceEnter: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
                 ParallelAnimation {
                     NumberAnimation {
                         property: "opacity"
@@ -285,6 +296,18 @@ ApplicationWindow {
                         duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
                     }
+                }
+            }
+
+            replaceExit: Transition {
+                enabled: stackView.settingsPageTransitionsEnabled
+
+                NumberAnimation {
+                    property: "opacity"
+                    from: 1
+                    to: 0
+                    duration: stackView.settingsPageFadeDuration
+                    easing.type: Easing.OutQuint
                 }
             }
 
