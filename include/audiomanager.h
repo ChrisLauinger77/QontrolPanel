@@ -205,6 +205,8 @@ private:
     void updateCurrentVolumes();
     void setVolumeForDevice(EDataFlow dataFlow, int volume);
     void setMuteForDevice(EDataFlow dataFlow, bool mute);
+    bool isSystemSoundsSession(IAudioSessionControl2* sessionControl) const;
+    bool setSystemSoundsMute(bool mute);
 
     AudioDevice createAudioDeviceFromInterface(IMMDevice* device, EDataFlow dataFlow);
     QString getDeviceProperty(IMMDevice* device, const PROPERTYKEY& key);
