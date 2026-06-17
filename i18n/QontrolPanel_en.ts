@@ -115,12 +115,10 @@
         <translation>Display audio level value in slider</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
         <source>Settings page animations</source>
         <translation>Settings page animations</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
         <source>Animate transitions between settings pages</source>
         <translation>Animate transitions between settings pages</translation>
     </message>

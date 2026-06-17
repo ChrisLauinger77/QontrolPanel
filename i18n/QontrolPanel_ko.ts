@@ -115,12 +115,10 @@
         <translation>슬라이더로 오디오 레벨 값 표시</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
         <source>Settings page animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
         <source>Animate transitions between settings pages</source>
         <translation type="unfinished"></translation>
     </message>

@@ -115,14 +115,12 @@
         <translation>Audiopegelwert im Schieberegler anzeigen</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Animationen auf der Einstellungsseite</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Übergänge zwischen den Einstellungsseiten animieren</translation>
     </message>
     <message>
         <source>Tray icon theme</source>

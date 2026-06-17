@@ -123,14 +123,12 @@
         <translation>Styl ikony zasobnika systemowego</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Animacje stron ustawień</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Animuj przejścia między stronami ustawień</translation>
     </message>
     <message>
         <source>Tray icon theme</source>

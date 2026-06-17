@@ -115,12 +115,10 @@
         <translation>Prikaz vrednosti glasnosti v drsniku</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
         <source>Settings page animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
         <source>Animate transitions between settings pages</source>
         <translation type="unfinished"></translation>
     </message>

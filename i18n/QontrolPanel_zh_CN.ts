@@ -115,14 +115,12 @@
         <translation>在滑动条显示音量</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>设置页面动画</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>为设置页面之间的切换添加动画</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
@@ -243,7 +241,7 @@
     </message>
     <message>
         <source>ChatMix is not activated</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix 未启用</translation>
     </message>
 </context>
 <context>
@@ -282,11 +280,11 @@
     </message>
     <message>
         <source>Show ChatMix controls</source>
-        <translation type="unfinished"></translation>
+        <translation>显示 ChatMix 控件</translation>
     </message>
     <message>
         <source>Use ChatMix volume</source>
-        <translation type="unfinished"></translation>
+        <translation>使用 ChatMix 音量</translation>
     </message>
     <message>
         <source>ChatMix volume</source>

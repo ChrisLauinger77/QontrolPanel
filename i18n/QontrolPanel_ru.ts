@@ -115,14 +115,12 @@
         <translation>Отображение значения уровня громкости в слайдере</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="96"/>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Анимации страниц настроек</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPane/AppearancePane.qml" line="97"/>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Анимировать переходы между страницами настроек</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
