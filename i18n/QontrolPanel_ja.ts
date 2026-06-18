@@ -116,11 +116,11 @@
     </message>
     <message>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>設定ページのアニメーション</translation>
     </message>
     <message>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>設定ページの遷移アニメーションを設定します。</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
@@ -241,7 +241,7 @@
     </message>
     <message>
         <source>ChatMix is not activated</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix は有効になっていません</translation>
     </message>
 </context>
 <context>
@@ -252,7 +252,7 @@
     </message>
     <message>
         <source>Control communication apps separately from other applications</source>
-        <translation>通信アプリを他のアプリとは別に制御します。</translation>
+        <translation>通信アプリを他のアプリとは別にコントロールします。</translation>
     </message>
     <message>
         <source>Restored volume</source>
@@ -276,11 +276,11 @@
     </message>
     <message>
         <source>Show ChatMix controls</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix のコントロールを表示します。</translation>
     </message>
     <message>
         <source>Use ChatMix volume</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix の音量を使用します。</translation>
     </message>
     <message>
         <source>ChatMix volume</source>
@@ -776,7 +776,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
-        <translation>外部ディスプレイに明るさのコマンドを送信する頻度を制御します。</translation>
+        <translation>外部ディスプレイに明るさのコマンドを送信する頻度をコントロールします。</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>
@@ -1360,7 +1360,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished">取得</translation>
+        <translation>取得</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
@@ -1392,7 +1392,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>デバイスは切断されています</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1498,27 +1498,27 @@ You can enable it in the Components tab.</source>
     <name>Updater</name>
     <message>
         <source>Failed to check for updates: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>更新の確認に失敗しました: %1</translation>
     </message>
     <message>
         <source>No executable found in latest release</source>
-        <translation type="unfinished"></translation>
+        <translation>最新のリリースで実行ファイルが見つかりませんでした</translation>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロードを開始できません</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished">ダウンロードに失敗しました: %1</translation>
+        <translation>ダウンロードに失敗しました: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
-        <translation type="unfinished"></translation>
+        <translation>更新ファイルの保存に失敗しました</translation>
     </message>
     <message>
         <source>Failed to start update executable</source>
-        <translation type="unfinished"></translation>
+        <translation>更新の実行ファイルの起動に失敗しました</translation>
     </message>
     <message>
         <source>Update available: %1</source>
