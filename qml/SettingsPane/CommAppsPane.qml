@@ -79,23 +79,33 @@ ColumnLayout {
                 description: qsTr("The volume to set for non communication applications when ChatMix is enabled")
                 enabled: UserSettings.chatMixEnabled
 
-                additionalControl: NFSlider {
-                    value: UserSettings.chatMixValue
-                    from: 0
-                    to: 100
-                    Layout.fillWidth: true
-                    enabled: UserSettings.chatMixEnabled
+                additionalControl: RowLayout {
+                    spacing: 12
 
-                    onValueChanged: {
-                        UserSettings.chatMixValue = value;
+                    NFSlider {
+                        id: chatMixVolumeSlider
+                        value: UserSettings.chatMixValue
+                        from: 0
+                        to: 100
+                        Layout.preferredWidth: 180
+                        enabled: UserSettings.chatMixEnabled
+
+                        onValueChanged: {
+                            UserSettings.chatMixValue = value;
+                        }
+
+                        onPressedChanged: {
+                            if (pressed)
+                                return;
+                            if (UserSettings.chatMixEnabled) {
+                                AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue);
+                            }
+                        }
                     }
 
-                    onPressedChanged: {
-                        if (pressed)
-                            return;
-                        if (UserSettings.chatMixEnabled) {
-                            AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue);
-                        }
+                    Label {
+                        text: Math.round(chatMixVolumeSlider.value).toString()
+                        opacity: 0.7
                     }
                 }
             }
@@ -107,15 +117,24 @@ ColumnLayout {
                 description: qsTr("The volume to set for applications when ChatMix is disabled")
                 enabled: UserSettings.chatMixEnabled
 
-                additionalControl: NFSlider {
-                    id: chatMixSlider
-                    value: UserSettings.chatmixRestoreVolume
-                    from: 0
-                    to: 100
-                    Layout.fillWidth: true
+                additionalControl: RowLayout {
+                    spacing: 12
 
-                    onValueChanged: {
-                        UserSettings.chatmixRestoreVolume = value;
+                    NFSlider {
+                        id: chatMixRestoreVolumeSlider
+                        value: UserSettings.chatmixRestoreVolume
+                        from: 0
+                        to: 100
+                        Layout.preferredWidth: 180
+
+                        onValueChanged: {
+                            UserSettings.chatmixRestoreVolume = value;
+                        }
+                    }
+
+                    Label {
+                        text: Math.round(chatMixRestoreVolumeSlider.value).toString()
+                        opacity: 0.7
                     }
                 }
             }
