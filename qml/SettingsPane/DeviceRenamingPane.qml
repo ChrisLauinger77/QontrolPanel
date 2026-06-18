@@ -73,6 +73,7 @@ ColumnLayout {
                 Card {
                     id: inDeviceCard
                     Layout.fillWidth: true
+                    visible: viewSelector.currentIndex === 0
                     required property var model
                     title: model.name || ""
 
