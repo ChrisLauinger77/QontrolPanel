@@ -195,6 +195,7 @@ private:
     int m_inputVolume;
     bool m_outputMuted;
     bool m_inputMuted;
+    std::optional<bool> m_requestedSystemSoundsMute;
     QList<AudioApplication> m_applications;
     QList<AudioDevice> m_devices;
 
@@ -205,6 +206,8 @@ private:
     void updateCurrentVolumes();
     void setVolumeForDevice(EDataFlow dataFlow, int volume);
     void setMuteForDevice(EDataFlow dataFlow, bool mute);
+    bool isSystemSoundsSession(IAudioSessionControl2* sessionControl) const;
+    bool setSystemSoundsMute(bool mute);
 
     AudioDevice createAudioDeviceFromInterface(IMMDevice* device, EDataFlow dataFlow);
     QString getDeviceProperty(IMMDevice* device, const PROPERTYKEY& key);

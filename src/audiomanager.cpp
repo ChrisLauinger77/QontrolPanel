@@ -439,6 +439,7 @@ AudioWorker::AudioWorker()
     , m_inputVolume(0)
     , m_outputMuted(false)
     , m_inputMuted(false)
+    , m_requestedSystemSoundsMute(std::nullopt)
     , m_audioLevelTimer(nullptr)
     , m_sessionManagerInvalid(false)
     , m_headsetControlMonitor(nullptr)
@@ -1269,8 +1270,7 @@ void AudioWorker::enumerateApplications()
         CoTaskMemFree(pwszDisplayName);
 
         // Check if session is active - but make exception for system sounds
-        bool isSystemSounds = (sessionDisplayName == "@%SystemRoot%\\System32\\AudioSrv.Dll,-202" ||
-                               processId == 0);
+        bool isSystemSounds = isSystemSoundsSession(sessionControl2);
 
         if (!isSystemSounds && processId == GetCurrentProcessId()) {
             sessionControl->Release();
@@ -1295,6 +1295,15 @@ void AudioWorker::enumerateApplications()
             hr = sessionControl->QueryInterface(__uuidof(IAudioMeterInformation), (void**)&pMeterInfo);
             if (FAILED(hr)) {
                 LOG_WARN("AudioManager", QString("Failed to get meter info for session %1").arg(i));
+            }
+        }
+
+        if (isSystemSounds && m_requestedSystemSoundsMute.has_value()) {
+            HRESULT setMuteHr = pSimpleAudioVolume->SetMute(*m_requestedSystemSoundsMute, nullptr);
+            if (FAILED(setMuteHr)) {
+                LOG_WARN("AudioManager",
+                         QString("Failed to apply requested system sounds mute during enumeration, HRESULT: %1")
+                             .arg(QString::number(setMuteHr, 16)));
             }
         }
 
@@ -1450,7 +1459,7 @@ void AudioWorker::enumerateApplications()
         systemApp.name = "System sounds";
         systemApp.executableName = "System sounds";
         systemApp.volume = 100; // Default volume
-        systemApp.isMuted = false;
+        systemApp.isMuted = m_requestedSystemSoundsMute.value_or(false);
         systemApp.iconPath = "";
         systemApp.streamIndex = 0;
         systemApp.isSystemSounds = true;
@@ -1680,6 +1689,10 @@ bool AudioWorker::ensureValidSessionManager()
 
 void AudioWorker::onApplicationSessionVolumeChanged(const QString& appId, float volume, bool muted)
 {
+    if (appId == "system_sounds") {
+        m_requestedSystemSoundsMute = muted;
+    }
+
     int volumePercent = static_cast<int>(std::round(volume * 100.0f));
     bool foundApp = false;
     for (int i = 0; i < m_applications.count(); ++i) {
@@ -1740,10 +1753,83 @@ void AudioWorker::setApplicationVolume(const QString& appId, int volume)
 
 void AudioWorker::setApplicationMute(const QString& appId, bool mute)
 {
+    if (appId == "system_sounds") {
+        m_requestedSystemSoundsMute = mute;
+        setSystemSoundsMute(mute);
+        emit applicationMuteChanged(appId, mute);
+        return;
+    }
+
     auto it = m_sessionVolumeControls.find(appId);
     if (it != m_sessionVolumeControls.end()) {
         it.value()->SetMute(mute, nullptr);
     }
+}
+
+bool AudioWorker::isSystemSoundsSession(IAudioSessionControl2* sessionControl) const
+{
+    if (!sessionControl) {
+        return false;
+    }
+
+    HRESULT hr = sessionControl->IsSystemSoundsSession();
+    return hr == S_OK;
+}
+
+bool AudioWorker::setSystemSoundsMute(bool mute)
+{
+    if (!ensureValidSessionManager()) {
+        LOG_WARN("AudioManager", "Failed to restore session manager for system sounds mute");
+        return false;
+    }
+
+    CComPtr<IAudioSessionEnumerator> sessionEnumerator;
+    HRESULT hr = m_sessionManager->GetSessionEnumerator(&sessionEnumerator);
+    if (FAILED(hr)) {
+        LOG_WARN("AudioManager",
+                 QString("Failed to enumerate sessions for system sounds mute, HRESULT: %1")
+                     .arg(QString::number(hr, 16)));
+        return false;
+    }
+
+    int sessionCount = 0;
+    sessionEnumerator->GetCount(&sessionCount);
+
+    for (int i = 0; i < sessionCount; ++i) {
+        CComPtr<IAudioSessionControl> sessionControl;
+        hr = sessionEnumerator->GetSession(i, &sessionControl);
+        if (FAILED(hr) || !sessionControl) {
+            continue;
+        }
+
+        CComPtr<IAudioSessionControl2> sessionControl2;
+        hr = sessionControl->QueryInterface(__uuidof(IAudioSessionControl2), (void**)&sessionControl2);
+        if (FAILED(hr) || !isSystemSoundsSession(sessionControl2)) {
+            continue;
+        }
+
+        CComPtr<ISimpleAudioVolume> volumeControl;
+        hr = sessionControl->QueryInterface(__uuidof(ISimpleAudioVolume), (void**)&volumeControl);
+        if (FAILED(hr)) {
+            LOG_WARN("AudioManager",
+                     QString("Failed to query system sounds volume control, HRESULT: %1")
+                         .arg(QString::number(hr, 16)));
+            return false;
+        }
+
+        hr = volumeControl->SetMute(mute, nullptr);
+        if (FAILED(hr)) {
+            LOG_WARN("AudioManager",
+                     QString("Failed to set system sounds mute, HRESULT: %1")
+                         .arg(QString::number(hr, 16)));
+            return false;
+        }
+
+        return true;
+    }
+
+    LOG_WARN("AudioManager", "System sounds session not found while applying mute");
+    return false;
 }
 
 void AudioWorker::setDefaultDevice(const QString& deviceId, bool isInput, bool forCommunications)
