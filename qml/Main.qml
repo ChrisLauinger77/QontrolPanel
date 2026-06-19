@@ -705,7 +705,7 @@ ApplicationWindow {
                     anchors.top: mediaLayout.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: 42
+                    height: 30
                     visible: mediaLayout.visible
                 }
 
