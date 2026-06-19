@@ -377,6 +377,7 @@ ApplicationWindow {
 
                 panel.height = Math.min(newHeight, panel.maximumPanelHeight())
                 positionPanelAtTarget()
+                alignContentToPanelEdge()
 
                 Qt.callLater(panel.startAnimation)
             })
@@ -424,6 +425,19 @@ ApplicationWindow {
 
         panel.x = Math.max(minX, Math.min(targetX, maxX))
         panel.y = Math.max(minY, Math.min(targetY, maxY))
+    }
+
+    function alignContentToPanelEdge() {
+        if (!contentFlickable) {
+            return
+        }
+
+        if (panel.taskbarPos === "top") {
+            contentFlickable.contentY = 0
+            return
+        }
+
+        contentFlickable.contentY = Math.max(0, contentFlickable.contentHeight - contentFlickable.height)
     }
 
     function setInitialTransform() {
@@ -668,21 +682,6 @@ ApplicationWindow {
                 Layout.preferredWidth: 360
 
                 Rectangle {
-                    anchors.fill: mainLayout
-                    anchors.margins: -15
-                    color: Constants.panelColor
-                    radius: 12
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#00000000"
-                        radius: 12
-                        border.width: 1
-                        border.color: "#E3E3E3"
-                        opacity: 0.15
-                    }
-                }
-
-                Rectangle {
                     id: mediaLayoutBackground
                     anchors.fill: mediaLayout
                     anchors.margins: -15
@@ -760,11 +759,34 @@ ApplicationWindow {
                     contentHeight: mainLayout.y + mainLayout.implicitHeight + 15
                     boundsBehavior: Flickable.StopAtBounds
                     interactive: contentHeight > height
+                    property real contentTopPadding: {
+                        const minimumTopPadding = mediaLayout.visible ? 0 : 15
+                        if (panel.taskbarPos === "top") {
+                            return minimumTopPadding
+                        }
+
+                        return Math.max(minimumTopPadding, height - mainLayout.implicitHeight - 15)
+                    }
+
+                    Rectangle {
+                        anchors.fill: mainLayout
+                        anchors.margins: -15
+                        color: Constants.panelColor
+                        radius: 12
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "#00000000"
+                            radius: 12
+                            border.width: 1
+                            border.color: "#E3E3E3"
+                            opacity: 0.15
+                        }
+                    }
 
                     ColumnLayout {
                         id: mainLayout
                         x: 15
-                        y: mediaLayout.visible ? 0 : 15
+                        y: contentFlickable.contentTopPadding
                         width: contentFlickable.width - 30
                         spacing: 10
                         opacity: 0
