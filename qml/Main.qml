@@ -305,7 +305,7 @@ ApplicationWindow {
         panel.visible = true
         panel.requestActivate()
 
-        positionPanelAtTarget()
+        positionPanelAtTarget(true)
         setInitialTransform()
 
         Qt.callLater(function() {
@@ -317,8 +317,10 @@ ApplicationWindow {
         })
     }
 
-    function positionPanelAtTarget() {
-        refreshTargetScreenGeometry()
+    function positionPanelAtTarget(refreshGeometry) {
+        if (refreshGeometry) {
+            refreshTargetScreenGeometry()
+        }
 
         const screenX = targetScreenGeometry.x
         const screenY = targetScreenGeometry.y
