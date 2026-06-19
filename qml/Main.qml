@@ -41,23 +41,6 @@ ApplicationWindow {
             default: return "bottom";
         }
     }
-    property real listCompensationOffset: maxDeviceListSpace - currentUsedListSpace
-    property real maxDeviceListSpace: {
-        let outputSpace = outputDevicesRect.expandedNeededHeight || 0
-        let inputSpace = inputDevicesRect.expandedNeededHeight || 0
-
-        return outputSpace + inputSpace
-    }
-    property real currentUsedListSpace: {
-        let usedSpace = 0
-        if (outputDevicesRect.expanded) {
-            usedSpace += outputDevicesRect.expandedNeededHeight || 0
-        }
-        if (inputDevicesRect.expanded) {
-            usedSpace += inputDevicesRect.expandedNeededHeight || 0
-        }
-        return usedSpace
-    }
     property var targetScreenGeometry: ({ x: 0, y: 0, width: Utils.getAvailableDesktopWidth(), height: Utils.getAvailableDesktopHeight() })
 
     function refreshTargetScreenGeometry() {
@@ -227,15 +210,6 @@ ApplicationWindow {
 
     MediaOverlay {}
 
-    MouseArea {
-        height: panel.maxDeviceListSpace - panel.currentUsedListSpace
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: UserSettings.panelPosition === 0 ? parent.bottom : undefined
-        anchors.top: UserSettings.panelPosition === 0 ? undefined : parent.top
-        onClicked: panel.hidePanel()
-    }
-
     Timer {
         id: contentOpacityTimer
         interval: 160
@@ -285,20 +259,6 @@ ApplicationWindow {
         id: contentTransform
         property real x: 0
         property real y: 0
-    }
-
-    Translate {
-        id: listCompensationTransform
-        x: 0
-        y: (panel.isAnimatingIn || panel.isAnimatingOut) ? 0 : -panel.listCompensationOffset
-
-        Behavior on y {
-            enabled: !panel.isAnimatingIn && !panel.isAnimatingOut
-            NumberAnimation {
-                duration: 150
-                easing.type: Easing.OutQuad
-            }
-        }
     }
 
     function togglePanel() {
@@ -734,7 +694,7 @@ ApplicationWindow {
                     ColumnLayout {
                         id: mainLayout
                         x: 15
-                        y: mediaLayout.visible ? 0 : 15
+                        y: 15
                         width: contentFlickable.width - 30
                         spacing: 10
                         opacity: 0
