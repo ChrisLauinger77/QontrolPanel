@@ -60,6 +60,7 @@ ApplicationWindow {
     function preferredPanelHeight() {
         let newHeight = contentFlickable.contentHeight
         if (mediaLayout.visible) {
+            newHeight += mediaLayout.anchors.topMargin
             newHeight += mediaLayout.implicitHeight
             newHeight += spacer.height
         }
@@ -328,23 +329,23 @@ ApplicationWindow {
         const screenHeight = targetScreenGeometry.height
 
         let targetX = screenX + screenWidth - panel.width
-        let targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
+        let targetY = screenY + screenHeight - panel.height
 
         switch (panel.taskbarPos) {
         case "top":
             targetX = screenX + screenWidth - panel.width
-            targetY = screenY + UserSettings.taskbarOffset
+            targetY = screenY
             break
         case "bottom":
             targetX = screenX + screenWidth - panel.width
-            targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
+            targetY = screenY + screenHeight - panel.height
             break
         case "left":
-            targetX = screenX + UserSettings.taskbarOffset
+            targetX = screenX
             targetY = screenY + screenHeight - panel.height
             break
         case "right":
-            targetX = screenX + screenWidth - panel.width - UserSettings.taskbarOffset
+            targetX = screenX + screenWidth - panel.width
             targetY = screenY + screenHeight - panel.height
             break
         }
