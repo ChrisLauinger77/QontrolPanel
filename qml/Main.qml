@@ -76,6 +76,21 @@ ApplicationWindow {
         }
         return usedSpace
     }
+    property var targetScreenGeometry: ({ x: 0, y: 0, width: Utils.getAvailableDesktopWidth(), height: Utils.getAvailableDesktopHeight() })
+
+    function refreshTargetScreenGeometry() {
+        const geometry = Utils.getCursorScreenAvailableGeometry()
+        targetScreenGeometry = {
+            x: geometry.x,
+            y: geometry.y,
+            width: geometry.width,
+            height: geometry.height
+        }
+    }
+
+    function maximumPanelHeight() {
+        return Math.max(1, targetScreenGeometry.height)
+    }
 
     onVisibleChanged: {
         if (!visible) {
@@ -360,7 +375,8 @@ ApplicationWindow {
                 newHeight += appListView
                 newHeight += UserSettings.yAxisMargin
 
-                panel.height = newHeight
+                panel.height = Math.min(newHeight, panel.maximumPanelHeight())
+                positionPanelAtTarget()
 
                 Qt.callLater(panel.startAnimation)
             })
@@ -368,11 +384,16 @@ ApplicationWindow {
     }
 
     function positionPanelAtTarget() {
-        const screenGeometry = Utils.getCursorScreenAvailableGeometry()
-        const screenX = screenGeometry.x
-        const screenY = screenGeometry.y
-        const screenWidth = screenGeometry.width
-        const screenHeight = screenGeometry.height
+        refreshTargetScreenGeometry()
+
+        const screenX = targetScreenGeometry.x
+        const screenY = targetScreenGeometry.y
+        const screenWidth = targetScreenGeometry.width
+        const screenHeight = targetScreenGeometry.height
+
+        if (panel.height > screenHeight) {
+            panel.height = screenHeight
+        }
 
         let targetX = screenX + screenWidth - panel.width
         let targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
@@ -397,9 +418,9 @@ ApplicationWindow {
         }
 
         const minX = screenX
-        const maxX = screenX + screenWidth - panel.width
+        const maxX = Math.max(minX, screenX + screenWidth - panel.width)
         const minY = screenY
-        const maxY = screenY + screenHeight - panel.height
+        const maxY = Math.max(minY, screenY + screenHeight - panel.height)
 
         panel.x = Math.max(minX, Math.min(targetX, maxX))
         panel.y = Math.max(minY, Math.min(targetY, maxY))
@@ -656,6 +677,7 @@ ApplicationWindow {
 
             Item {
                 id: contentContainer
+                clip: true
                 Layout.row: 1
                 Layout.column: 1
                 Layout.fillHeight: true
