@@ -28,25 +28,7 @@ ApplicationWindow {
 
         return baseWidth
     }
-    height: {
-        let baseMargins = 30
-        let newHeight = mainLayout.implicitHeight + baseMargins
-        if (mediaLayout.visible) {
-            newHeight += mediaLayout.implicitHeight
-            newHeight += spacer.height
-        }
-        newHeight += panel.maxDeviceListSpace
-        if (panel.taskbarPos === "top") {
-            newHeight += UserSettings.yAxisMargin
-        }
-        if (panel.taskbarPos === "bottom") {
-            newHeight += UserSettings.yAxisMargin
-        } else if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
-            newHeight += UserSettings.yAxisMargin
-        }
-
-        return newHeight
-    }
+    height: Math.min(preferredPanelHeight(), maximumPanelHeight())
 
     property bool isAnimatingIn: false
     property bool isAnimatingOut: false
@@ -59,22 +41,32 @@ ApplicationWindow {
             default: return "bottom";
         }
     }
-    property real listCompensationOffset: maxDeviceListSpace - currentUsedListSpace
-    property real maxDeviceListSpace: {
-        let outputSpace = outputDevicesRect.expandedNeededHeight || 0
-        let inputSpace = inputDevicesRect.expandedNeededHeight || 0
+    property var targetScreenGeometry: ({ x: 0, y: 0, width: Utils.getAvailableDesktopWidth(), height: Utils.getAvailableDesktopHeight() })
 
-        return outputSpace + inputSpace
+    function refreshTargetScreenGeometry() {
+        const geometry = Utils.getCursorScreenAvailableGeometry()
+        targetScreenGeometry = {
+            x: geometry.x,
+            y: geometry.y,
+            width: geometry.width,
+            height: geometry.height
+        }
     }
-    property real currentUsedListSpace: {
-        let usedSpace = 0
-        if (outputDevicesRect.expanded) {
-            usedSpace += outputDevicesRect.expandedNeededHeight || 0
+
+    function maximumPanelHeight() {
+        return Math.max(1, targetScreenGeometry.height)
+    }
+
+    function preferredPanelHeight() {
+        let newHeight = contentFlickable.contentHeight
+        if (mediaLayout.visible) {
+            newHeight += mediaLayout.anchors.topMargin
+            newHeight += mediaLayout.implicitHeight
+            newHeight += spacer.height
         }
-        if (inputDevicesRect.expanded) {
-            usedSpace += inputDevicesRect.expandedNeededHeight || 0
-        }
-        return usedSpace
+        newHeight += UserSettings.yAxisMargin
+
+        return newHeight
     }
 
     onVisibleChanged: {
@@ -219,15 +211,6 @@ ApplicationWindow {
 
     MediaOverlay {}
 
-    MouseArea {
-        height: panel.maxDeviceListSpace - panel.currentUsedListSpace
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: UserSettings.panelPosition === 0 ? parent.bottom : undefined
-        anchors.top: UserSettings.panelPosition === 0 ? undefined : parent.top
-        onClicked: panel.hidePanel()
-    }
-
     Timer {
         id: contentOpacityTimer
         interval: 160
@@ -243,7 +226,7 @@ ApplicationWindow {
     }
 
     onHeightChanged: {
-        if (isAnimatingIn && !isAnimatingOut) {
+        if (visible && !isAnimatingOut) {
             positionPanelAtTarget()
         }
     }
@@ -277,20 +260,6 @@ ApplicationWindow {
         id: contentTransform
         property real x: 0
         property real y: 0
-    }
-
-    Translate {
-        id: listCompensationTransform
-        x: 0
-        y: (panel.isAnimatingIn || panel.isAnimatingOut) ? 0 : -panel.listCompensationOffset
-
-        Behavior on y {
-            enabled: !panel.isAnimatingIn && !panel.isAnimatingOut
-            NumberAnimation {
-                duration: 150
-                easing.type: Easing.OutQuad
-            }
-        }
     }
 
     function togglePanel() {
@@ -337,69 +306,54 @@ ApplicationWindow {
         panel.visible = true
         panel.requestActivate()
 
-        positionPanelAtTarget()
+        positionPanelAtTarget(true)
         setInitialTransform()
 
         Qt.callLater(function() {
             Qt.callLater(function() {
-                let newHeight = mainLayout.implicitHeight + 30
-                if (mediaLayout.visible) {
-                    newHeight += mediaLayout.implicitHeight
-                }
-                if (spacer.visible) {
-                    newHeight += spacer.height
-                }
-                newHeight += panel.maxDeviceListSpace
-                let appListView = 0
-                for (let i = 0; i < appRepeater.count; ++i) {
-                    let item = appRepeater.itemAt(i)
-                    if (item && item.hasOwnProperty('applicationListHeight')) {
-                        appListView += item.applicationListHeight || 0
-                    }
-                }
-                newHeight += appListView
-                newHeight += UserSettings.yAxisMargin
-
-                panel.height = newHeight
+                positionPanelAtTarget()
 
                 Qt.callLater(panel.startAnimation)
             })
         })
     }
 
-    function positionPanelAtTarget() {
-        const screenGeometry = panel.screen ? panel.screen.availableGeometry : null
-        const screenX = screenGeometry ? screenGeometry.x : 0
-        const screenY = screenGeometry ? screenGeometry.y : 0
-        const screenWidth = screenGeometry ? screenGeometry.width : Utils.getAvailableDesktopWidth()
-        const screenHeight = screenGeometry ? screenGeometry.height : Utils.getAvailableDesktopHeight()
+    function positionPanelAtTarget(refreshGeometry) {
+        if (refreshGeometry) {
+            refreshTargetScreenGeometry()
+        }
+
+        const screenX = targetScreenGeometry.x
+        const screenY = targetScreenGeometry.y
+        const screenWidth = targetScreenGeometry.width
+        const screenHeight = targetScreenGeometry.height
 
         let targetX = screenX + screenWidth - panel.width
-        let targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
+        let targetY = screenY + screenHeight - panel.height
 
         switch (panel.taskbarPos) {
         case "top":
             targetX = screenX + screenWidth - panel.width
-            targetY = screenY + UserSettings.taskbarOffset
+            targetY = screenY
             break
         case "bottom":
             targetX = screenX + screenWidth - panel.width
-            targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
+            targetY = screenY + screenHeight - panel.height
             break
         case "left":
-            targetX = screenX + UserSettings.taskbarOffset
+            targetX = screenX
             targetY = screenY + screenHeight - panel.height
             break
         case "right":
-            targetX = screenX + screenWidth - panel.width - UserSettings.taskbarOffset
+            targetX = screenX + screenWidth - panel.width
             targetY = screenY + screenHeight - panel.height
             break
         }
 
         const minX = screenX
-        const maxX = screenX + screenWidth - panel.width
+        const maxX = Math.max(minX, screenX + screenWidth - panel.width)
         const minY = screenY
-        const maxY = screenY + screenHeight - panel.height
+        const maxY = Math.max(minY, screenY + screenHeight - panel.height)
 
         panel.x = Math.max(minX, Math.min(targetX, maxX))
         panel.y = Math.max(minY, Math.min(targetY, maxY))
@@ -607,23 +561,7 @@ ApplicationWindow {
             return baseWidth
         }
 
-        height: {
-            let baseMargins = 30
-            let newHeight = mainLayout.implicitHeight + baseMargins
-            if (mediaLayout.visible) {
-                newHeight += mediaLayout.implicitHeight
-                newHeight += spacer.height
-            }
-            if (panel.taskbarPos === "top") {
-                newHeight += UserSettings.yAxisMargin
-            }
-            if (panel.taskbarPos === "bottom") {
-                newHeight += UserSettings.yAxisMargin
-            } else if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
-                newHeight += UserSettings.yAxisMargin
-            }
-            return newHeight
-        }
+        height: panel.height
 
         GridLayout {
             id: mainGrid
@@ -656,25 +594,11 @@ ApplicationWindow {
 
             Item {
                 id: contentContainer
+                clip: true
                 Layout.row: 1
                 Layout.column: 1
                 Layout.fillHeight: true
                 Layout.preferredWidth: 360
-
-                Rectangle {
-                    anchors.fill: mainLayout
-                    anchors.margins: -15
-                    color: Constants.panelColor
-                    radius: 12
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#00000000"
-                        radius: 12
-                        border.width: 1
-                        border.color: "#E3E3E3"
-                        opacity: 0.15
-                    }
-                }
 
                 Rectangle {
                     id: mediaLayoutBackground
@@ -739,29 +663,52 @@ ApplicationWindow {
                     anchors.top: mediaLayout.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: 42
+                    height: 24
                     visible: mediaLayout.visible
                 }
 
-                ColumnLayout {
-                    id: mainLayout
+                Flickable {
+                    id: contentFlickable
                     anchors.top: mediaLayout.visible ? spacer.bottom : parent.top
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.leftMargin: 15
-                    anchors.rightMargin: 15
-                    anchors.bottomMargin: 15
-                    anchors.topMargin: mediaLayout.visible ? 0 : 15
-                    spacing: 10
-                    opacity: 0
+                    clip: true
+                    contentWidth: width
+                    property real visualBottomInset: 15 - Math.min(0, panelFooter.Layout.bottomMargin)
+                    contentHeight: mainLayout.y + mainLayout.implicitHeight + visualBottomInset
+                    boundsBehavior: Flickable.StopAtBounds
+                    interactive: contentHeight > height
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 400
-                            easing.type: Easing.OutQuad
+                    Rectangle {
+                        anchors.fill: mainLayout
+                        anchors.margins: -15
+                        color: Constants.panelColor
+                        radius: 12
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "#00000000"
+                            radius: 12
+                            border.width: 1
+                            border.color: "#E3E3E3"
+                            opacity: 0.15
                         }
                     }
+
+                    ColumnLayout {
+                        id: mainLayout
+                        x: 15
+                        y: 15
+                        width: contentFlickable.width - 30
+                        spacing: 10
+                        opacity: 0
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 400
+                                easing.type: Easing.OutQuad
+                            }
+                        }
 
                     ColumnLayout {
                         id: deviceLayout
@@ -1236,24 +1183,25 @@ ApplicationWindow {
                         }
                     }
 
-                    PanelFooter {
-                        id: panelFooter
-                        Layout.fillWidth: true
-                        Layout.fillHeight: false
-                        Layout.preferredHeight: 50
-                        Layout.leftMargin: -14
-                        Layout.rightMargin: -14
-                        Layout.bottomMargin: -14
-                        onHidePanel: panel.hidePanel()
-                        onShowSettingsWindow: settingsWindow.showPreferredPane()
-                        onShowUpdatePane: settingsWindow.showUpdatePane()
-                        onShowPowerConfirmationWindow: function(action) {
-                            powerConfirmationWindow.setAction(action)
-                            powerConfirmationWindow.show()
-                        }
-                        onShowHeadsetcontrolPane: {
-                            panel.hidePanel()
-                            settingsWindow.showHeadsetcontrolPane()
+                        PanelFooter {
+                            id: panelFooter
+                            Layout.fillWidth: true
+                            Layout.fillHeight: false
+                            Layout.preferredHeight: 50
+                            Layout.leftMargin: -14
+                            Layout.rightMargin: -14
+                            Layout.bottomMargin: -14
+                            onHidePanel: panel.hidePanel()
+                            onShowSettingsWindow: settingsWindow.showPreferredPane()
+                            onShowUpdatePane: settingsWindow.showUpdatePane()
+                            onShowPowerConfirmationWindow: function(action) {
+                                powerConfirmationWindow.setAction(action)
+                                powerConfirmationWindow.show()
+                            }
+                            onShowHeadsetcontrolPane: {
+                                panel.hidePanel()
+                                settingsWindow.showHeadsetcontrolPane()
+                            }
                         }
                     }
                 }

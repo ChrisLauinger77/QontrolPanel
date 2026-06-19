@@ -3,6 +3,8 @@
 #include <QStyleHints>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QCursor>
+#include <QRect>
 #include <QFile>
 #include <Windows.h>
 
@@ -71,6 +73,50 @@ int Utils::getAvailableDesktopHeight() const
         return QGuiApplication::primaryScreen()->availableGeometry().height();
     }
     return 1080;
+}
+
+QVariantMap Utils::getCursorScreenAvailableGeometry() const
+{
+    QScreen* screen = QGuiApplication::screenAt(QCursor::pos());
+    if (!screen) {
+        screen = QGuiApplication::primaryScreen();
+    }
+
+    QRect geometry = screen ? screen->availableGeometry() : QRect(0, 0, 1920, 1080);
+
+#ifdef Q_OS_WIN
+    POINT cursorPosition = {};
+    const HMONITOR monitor = GetCursorPos(&cursorPosition)
+            ? MonitorFromPoint(cursorPosition, MONITOR_DEFAULTTONEAREST)
+            : nullptr;
+    MONITORINFO monitorInfo = {};
+    monitorInfo.cbSize = sizeof(MONITORINFO);
+
+    if (monitor && GetMonitorInfo(monitor, &monitorInfo) && screen) {
+        const QRect screenGeometry = screen->geometry();
+        const RECT& monitorRect = monitorInfo.rcMonitor;
+        const RECT& workRect = monitorInfo.rcWork;
+        const int monitorWidth = monitorRect.right - monitorRect.left;
+        const int monitorHeight = monitorRect.bottom - monitorRect.top;
+
+        if (monitorWidth > 0 && monitorHeight > 0) {
+            const qreal scaleX = static_cast<qreal>(screenGeometry.width()) / monitorWidth;
+            const qreal scaleY = static_cast<qreal>(screenGeometry.height()) / monitorHeight;
+
+            geometry = QRect(qRound(screenGeometry.x() + (workRect.left - monitorRect.left) * scaleX),
+                             qRound(screenGeometry.y() + (workRect.top - monitorRect.top) * scaleY),
+                             qRound((workRect.right - workRect.left) * scaleX),
+                             qRound((workRect.bottom - workRect.top) * scaleY));
+        }
+    }
+#endif
+
+    return {
+        { "x", geometry.x() },
+        { "y", geometry.y() },
+        { "width", geometry.width() },
+        { "height", geometry.height() }
+    };
 }
 
 void Utils::playFeedbackSound()

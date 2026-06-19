@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QQmlEngine>
+#include <QVariantMap>
 
 class Utils : public QObject
 {
@@ -20,6 +21,7 @@ public:
     Q_INVOKABLE void openModernSoundSettings();
     Q_INVOKABLE int getAvailableDesktopWidth() const;
     Q_INVOKABLE int getAvailableDesktopHeight() const;
+    Q_INVOKABLE QVariantMap getCursorScreenAvailableGeometry() const;
     Q_INVOKABLE void playFeedbackSound();
     Q_INVOKABLE void playNotificationSound(bool enabled);
     Q_INVOKABLE void setStyle(int style);
