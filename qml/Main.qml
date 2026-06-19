@@ -58,7 +58,7 @@ ApplicationWindow {
     }
 
     function preferredPanelHeight() {
-        let newHeight = mainLayout.implicitHeight + mainLayout.y + 15
+        let newHeight = mainLayout.implicitHeight + mainLayout.y + 18
         if (mediaLayout.visible) {
             newHeight += mediaLayout.implicitHeight
             newHeight += spacer.height
