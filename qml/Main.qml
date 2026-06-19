@@ -368,11 +368,11 @@ ApplicationWindow {
     }
 
     function positionPanelAtTarget() {
-        const screenGeometry = panel.screen ? panel.screen.availableGeometry : null
-        const screenX = screenGeometry ? screenGeometry.x : 0
-        const screenY = screenGeometry ? screenGeometry.y : 0
-        const screenWidth = screenGeometry ? screenGeometry.width : Utils.getAvailableDesktopWidth()
-        const screenHeight = screenGeometry ? screenGeometry.height : Utils.getAvailableDesktopHeight()
+        const screenGeometry = Utils.getCursorScreenAvailableGeometry()
+        const screenX = screenGeometry.x
+        const screenY = screenGeometry.y
+        const screenWidth = screenGeometry.width
+        const screenHeight = screenGeometry.height
 
         let targetX = screenX + screenWidth - panel.width
         let targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset

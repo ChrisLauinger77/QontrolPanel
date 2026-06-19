@@ -3,6 +3,8 @@
 #include <QStyleHints>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QCursor>
+#include <QRect>
 #include <QFile>
 #include <Windows.h>
 
@@ -71,6 +73,37 @@ int Utils::getAvailableDesktopHeight() const
         return QGuiApplication::primaryScreen()->availableGeometry().height();
     }
     return 1080;
+}
+
+QVariantMap Utils::getCursorScreenAvailableGeometry() const
+{
+    QScreen* screen = QGuiApplication::screenAt(QCursor::pos());
+    if (!screen) {
+        screen = QGuiApplication::primaryScreen();
+    }
+
+    QRect geometry = screen ? screen->availableGeometry() : QRect(0, 0, 1920, 1080);
+
+#ifdef Q_OS_WIN
+    const POINT cursorPosition = { QCursor::pos().x(), QCursor::pos().y() };
+    const HMONITOR monitor = MonitorFromPoint(cursorPosition, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO monitorInfo = {};
+    monitorInfo.cbSize = sizeof(MONITORINFO);
+
+    if (monitor && GetMonitorInfo(monitor, &monitorInfo)) {
+        geometry = QRect(monitorInfo.rcWork.left,
+                         monitorInfo.rcWork.top,
+                         monitorInfo.rcWork.right - monitorInfo.rcWork.left,
+                         monitorInfo.rcWork.bottom - monitorInfo.rcWork.top);
+    }
+#endif
+
+    return {
+        { "x", geometry.x() },
+        { "y", geometry.y() },
+        { "width", geometry.width() },
+        { "height", geometry.height() }
+    };
 }
 
 void Utils::playFeedbackSound()
