@@ -90,11 +90,22 @@ QVariantMap Utils::getCursorScreenAvailableGeometry() const
     MONITORINFO monitorInfo = {};
     monitorInfo.cbSize = sizeof(MONITORINFO);
 
-    if (monitor && GetMonitorInfo(monitor, &monitorInfo)) {
-        geometry = QRect(monitorInfo.rcWork.left,
-                         monitorInfo.rcWork.top,
-                         monitorInfo.rcWork.right - monitorInfo.rcWork.left,
-                         monitorInfo.rcWork.bottom - monitorInfo.rcWork.top);
+    if (monitor && GetMonitorInfo(monitor, &monitorInfo) && screen) {
+        const QRect screenGeometry = screen->geometry();
+        const RECT& monitorRect = monitorInfo.rcMonitor;
+        const RECT& workRect = monitorInfo.rcWork;
+        const int monitorWidth = monitorRect.right - monitorRect.left;
+        const int monitorHeight = monitorRect.bottom - monitorRect.top;
+
+        if (monitorWidth > 0 && monitorHeight > 0) {
+            const qreal scaleX = static_cast<qreal>(screenGeometry.width()) / monitorWidth;
+            const qreal scaleY = static_cast<qreal>(screenGeometry.height()) / monitorHeight;
+
+            geometry = QRect(qRound(screenGeometry.x() + (workRect.left - monitorRect.left) * scaleX),
+                             qRound(screenGeometry.y() + (workRect.top - monitorRect.top) * scaleY),
+                             qRound((workRect.right - workRect.left) * scaleX),
+                             qRound((workRect.bottom - workRect.top) * scaleY));
+        }
     }
 #endif
 

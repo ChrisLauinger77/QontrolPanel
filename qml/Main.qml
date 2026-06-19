@@ -628,23 +628,7 @@ ApplicationWindow {
             return baseWidth
         }
 
-        height: {
-            let baseMargins = 30
-            let newHeight = mainLayout.implicitHeight + baseMargins
-            if (mediaLayout.visible) {
-                newHeight += mediaLayout.implicitHeight
-                newHeight += spacer.height
-            }
-            if (panel.taskbarPos === "top") {
-                newHeight += UserSettings.yAxisMargin
-            }
-            if (panel.taskbarPos === "bottom") {
-                newHeight += UserSettings.yAxisMargin
-            } else if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
-                newHeight += UserSettings.yAxisMargin
-            }
-            return newHeight
-        }
+        height: panel.height
 
         GridLayout {
             id: mainGrid
@@ -765,25 +749,32 @@ ApplicationWindow {
                     visible: mediaLayout.visible
                 }
 
-                ColumnLayout {
-                    id: mainLayout
+                Flickable {
+                    id: contentFlickable
                     anchors.top: mediaLayout.visible ? spacer.bottom : parent.top
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.leftMargin: 15
-                    anchors.rightMargin: 15
-                    anchors.bottomMargin: 15
-                    anchors.topMargin: mediaLayout.visible ? 0 : 15
-                    spacing: 10
-                    opacity: 0
+                    clip: true
+                    contentWidth: width
+                    contentHeight: mainLayout.y + mainLayout.implicitHeight + 15
+                    boundsBehavior: Flickable.StopAtBounds
+                    interactive: contentHeight > height
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 400
-                            easing.type: Easing.OutQuad
+                    ColumnLayout {
+                        id: mainLayout
+                        x: 15
+                        y: mediaLayout.visible ? 0 : 15
+                        width: contentFlickable.width - 30
+                        spacing: 10
+                        opacity: 0
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 400
+                                easing.type: Easing.OutQuad
+                            }
                         }
-                    }
 
                     ColumnLayout {
                         id: deviceLayout
@@ -1258,24 +1249,25 @@ ApplicationWindow {
                         }
                     }
 
-                    PanelFooter {
-                        id: panelFooter
-                        Layout.fillWidth: true
-                        Layout.fillHeight: false
-                        Layout.preferredHeight: 50
-                        Layout.leftMargin: -14
-                        Layout.rightMargin: -14
-                        Layout.bottomMargin: -14
-                        onHidePanel: panel.hidePanel()
-                        onShowSettingsWindow: settingsWindow.showPreferredPane()
-                        onShowUpdatePane: settingsWindow.showUpdatePane()
-                        onShowPowerConfirmationWindow: function(action) {
-                            powerConfirmationWindow.setAction(action)
-                            powerConfirmationWindow.show()
-                        }
-                        onShowHeadsetcontrolPane: {
-                            panel.hidePanel()
-                            settingsWindow.showHeadsetcontrolPane()
+                        PanelFooter {
+                            id: panelFooter
+                            Layout.fillWidth: true
+                            Layout.fillHeight: false
+                            Layout.preferredHeight: 50
+                            Layout.leftMargin: -14
+                            Layout.rightMargin: -14
+                            Layout.bottomMargin: -14
+                            onHidePanel: panel.hidePanel()
+                            onShowSettingsWindow: settingsWindow.showPreferredPane()
+                            onShowUpdatePane: settingsWindow.showUpdatePane()
+                            onShowPowerConfirmationWindow: function(action) {
+                                powerConfirmationWindow.setAction(action)
+                                powerConfirmationWindow.show()
+                            }
+                            onShowHeadsetcontrolPane: {
+                                panel.hidePanel()
+                                settingsWindow.showHeadsetcontrolPane()
+                            }
                         }
                     }
                 }
