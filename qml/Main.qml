@@ -251,7 +251,7 @@ ApplicationWindow {
     }
 
     onHeightChanged: {
-        if (isAnimatingIn && !isAnimatingOut) {
+        if (visible && !isAnimatingOut) {
             positionPanelAtTarget()
         }
     }
@@ -350,7 +350,6 @@ ApplicationWindow {
 
         Qt.callLater(function() {
             Qt.callLater(function() {
-                panel.height = Math.min(panel.preferredPanelHeight(), panel.maximumPanelHeight())
                 positionPanelAtTarget()
 
                 Qt.callLater(panel.startAnimation)
@@ -365,10 +364,6 @@ ApplicationWindow {
         const screenY = targetScreenGeometry.y
         const screenWidth = targetScreenGeometry.width
         const screenHeight = targetScreenGeometry.height
-
-        if (panel.height > screenHeight) {
-            panel.height = screenHeight
-        }
 
         let targetX = screenX + screenWidth - panel.width
         let targetY = screenY + screenHeight - panel.height - UserSettings.taskbarOffset
@@ -705,7 +700,7 @@ ApplicationWindow {
                     anchors.top: mediaLayout.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: 30
+                    height: 24
                     visible: mediaLayout.visible
                 }
 
