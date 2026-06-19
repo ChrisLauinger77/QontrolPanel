@@ -58,7 +58,7 @@ ApplicationWindow {
     }
 
     function preferredPanelHeight() {
-        let newHeight = mainLayout.implicitHeight + mainLayout.y + 18
+        let newHeight = contentFlickable.contentHeight
         if (mediaLayout.visible) {
             newHeight += mediaLayout.implicitHeight
             newHeight += spacer.height
