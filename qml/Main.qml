@@ -28,25 +28,7 @@ ApplicationWindow {
 
         return baseWidth
     }
-    height: {
-        let baseMargins = 30
-        let newHeight = mainLayout.implicitHeight + baseMargins
-        if (mediaLayout.visible) {
-            newHeight += mediaLayout.implicitHeight
-            newHeight += spacer.height
-        }
-        newHeight += panel.maxDeviceListSpace
-        if (panel.taskbarPos === "top") {
-            newHeight += UserSettings.yAxisMargin
-        }
-        if (panel.taskbarPos === "bottom") {
-            newHeight += UserSettings.yAxisMargin
-        } else if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
-            newHeight += UserSettings.yAxisMargin
-        }
-
-        return newHeight
-    }
+    height: Math.min(preferredPanelHeight(), maximumPanelHeight())
 
     property bool isAnimatingIn: false
     property bool isAnimatingOut: false
@@ -90,6 +72,17 @@ ApplicationWindow {
 
     function maximumPanelHeight() {
         return Math.max(1, targetScreenGeometry.height)
+    }
+
+    function preferredPanelHeight() {
+        let newHeight = mainLayout.implicitHeight + 30
+        if (mediaLayout.visible) {
+            newHeight += mediaLayout.implicitHeight
+            newHeight += spacer.height
+        }
+        newHeight += UserSettings.yAxisMargin
+
+        return newHeight
     }
 
     onVisibleChanged: {
@@ -357,27 +350,8 @@ ApplicationWindow {
 
         Qt.callLater(function() {
             Qt.callLater(function() {
-                let newHeight = mainLayout.implicitHeight + 30
-                if (mediaLayout.visible) {
-                    newHeight += mediaLayout.implicitHeight
-                }
-                if (spacer.visible) {
-                    newHeight += spacer.height
-                }
-                newHeight += panel.maxDeviceListSpace
-                let appListView = 0
-                for (let i = 0; i < appRepeater.count; ++i) {
-                    let item = appRepeater.itemAt(i)
-                    if (item && item.hasOwnProperty('applicationListHeight')) {
-                        appListView += item.applicationListHeight || 0
-                    }
-                }
-                newHeight += appListView
-                newHeight += UserSettings.yAxisMargin
-
-                panel.height = Math.min(newHeight, panel.maximumPanelHeight())
+                panel.height = Math.min(panel.preferredPanelHeight(), panel.maximumPanelHeight())
                 positionPanelAtTarget()
-                alignContentToPanelEdge()
 
                 Qt.callLater(panel.startAnimation)
             })
@@ -425,19 +399,6 @@ ApplicationWindow {
 
         panel.x = Math.max(minX, Math.min(targetX, maxX))
         panel.y = Math.max(minY, Math.min(targetY, maxY))
-    }
-
-    function alignContentToPanelEdge() {
-        if (!contentFlickable) {
-            return
-        }
-
-        if (panel.taskbarPos === "top") {
-            contentFlickable.contentY = 0
-            return
-        }
-
-        contentFlickable.contentY = Math.max(0, contentFlickable.contentHeight - contentFlickable.height)
     }
 
     function setInitialTransform() {
@@ -759,14 +720,6 @@ ApplicationWindow {
                     contentHeight: mainLayout.y + mainLayout.implicitHeight + 15
                     boundsBehavior: Flickable.StopAtBounds
                     interactive: contentHeight > height
-                    property real contentTopPadding: {
-                        const minimumTopPadding = mediaLayout.visible ? 0 : 15
-                        if (mediaLayout.visible || panel.taskbarPos === "top") {
-                            return minimumTopPadding
-                        }
-
-                        return Math.max(minimumTopPadding, height - mainLayout.implicitHeight - 15)
-                    }
 
                     Rectangle {
                         anchors.fill: mainLayout
@@ -786,7 +739,7 @@ ApplicationWindow {
                     ColumnLayout {
                         id: mainLayout
                         x: 15
-                        y: contentFlickable.contentTopPadding
+                        y: mediaLayout.visible ? 0 : 15
                         width: contentFlickable.width - 30
                         spacing: 10
                         opacity: 0
