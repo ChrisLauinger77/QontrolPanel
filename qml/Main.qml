@@ -761,7 +761,7 @@ ApplicationWindow {
                     interactive: contentHeight > height
                     property real contentTopPadding: {
                         const minimumTopPadding = mediaLayout.visible ? 0 : 15
-                        if (panel.taskbarPos === "top") {
+                        if (mediaLayout.visible || panel.taskbarPos === "top") {
                             return minimumTopPadding
                         }
 
