@@ -85,8 +85,10 @@ QVariantMap Utils::getCursorScreenAvailableGeometry() const
     QRect geometry = screen ? screen->availableGeometry() : QRect(0, 0, 1920, 1080);
 
 #ifdef Q_OS_WIN
-    const POINT cursorPosition = { QCursor::pos().x(), QCursor::pos().y() };
-    const HMONITOR monitor = MonitorFromPoint(cursorPosition, MONITOR_DEFAULTTONEAREST);
+    POINT cursorPosition = {};
+    const HMONITOR monitor = GetCursorPos(&cursorPosition)
+            ? MonitorFromPoint(cursorPosition, MONITOR_DEFAULTTONEAREST)
+            : nullptr;
     MONITORINFO monitorInfo = {};
     monitorInfo.cbSize = sizeof(MONITORINFO);
 
