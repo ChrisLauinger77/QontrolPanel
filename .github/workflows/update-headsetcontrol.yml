@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
@@ -78,7 +78,7 @@ jobs:
       - name: Check whether version is already released or tagged
         if: steps.submodule.outputs.needs_update == 'true'
         id: release_state
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

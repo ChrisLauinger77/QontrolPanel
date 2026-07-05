@@ -33,10 +33,10 @@ env:
   VCPKG_ROOT: "C:/vcpkg"
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || github.ref }}
           submodules: recursive
