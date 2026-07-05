@@ -33,7 +33,7 @@ env:
   VCPKG_ROOT: "C:/vcpkg"
 jobs:
   build:
-    runs-on: windows-2025
+    runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
