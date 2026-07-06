@@ -117,6 +117,8 @@ jobs:
         with:
           version: ${{ env.QT_VERSION }}
           arch: "win64_msvc2022_64"
+          # aqtinstall 3.3.0 cannot resolve Qt 6.11+ Windows repositories.
+          aqtsource: "git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b"
           add-tools-to-path: true
           cache: true
       - name: Generate and Build with CMake
