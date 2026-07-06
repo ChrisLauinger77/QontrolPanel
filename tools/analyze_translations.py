@@ -4,7 +4,6 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 import sys
 import subprocess
-from datetime import datetime
 import io
 
 # Ensure UTF-8 output on Windows
@@ -309,15 +308,16 @@ def main():
 
         # Special case for English - always 100%
         if language_code.lower() in ['en', 'english', 'en_us', 'en_gb']:
-            # English is the source language - use current date and original author
-            current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # English is the source language. Use its commit date so rerunning
+            # the generator without source changes produces identical output.
+            source_date = commit_date or last_updated
             translation_progress[language_code] = {
                 'percentage': 100,
-                'last_updated': current_date,
+                'last_updated': source_date,
                 'contributor': 'ChrisLauinger77'
             }
             print(f"  {language_code}: 100% (English - source language)", flush=True)
-            print(f"    Last updated: {current_date}", flush=True)
+            print(f"    Last updated: {source_date}", flush=True)
             print(f"    Contributor: ChrisLauinger77", flush=True)
             continue
 
