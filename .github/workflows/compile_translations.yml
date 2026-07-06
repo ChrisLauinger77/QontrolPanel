@@ -12,7 +12,7 @@ permissions:
   pull-requests: write
 
 env:
-  QT_VERSION: "6.10.1"
+  QT_VERSION: "6.11.1"
   COMPILED_TRANSLATIONS_DIR: "i18n_compiled"
 
 jobs:

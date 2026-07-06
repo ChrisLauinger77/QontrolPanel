@@ -1,3 +1,5 @@
 {
-  "extends": ["github>ChrisLauinger77/ChrisLauinger77//renovate-config/default"]
+  "extends": [
+    "github>ChrisLauinger77/ChrisLauinger77//renovate-config/qontrolpanel"
+  ]
 }
