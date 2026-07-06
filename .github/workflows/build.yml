@@ -33,7 +33,7 @@ env:
   VCPKG_ROOT: "C:/vcpkg"
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -59,10 +59,14 @@ jobs:
 
           "project=$($match.Groups['project'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "version=$($match.Groups['version'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-      - name: Set up Visual Studio shell
-        uses: egor-tensin/vs-shell@v2
-        with:
-          arch: x64
+      - name: Show runner and Visual Studio versions
+        shell: pwsh
+        run: |
+          Write-Host "Image OS: $env:ImageOS"
+          Write-Host "Image version: $env:ImageVersion"
+          & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
+            -latest -products * -format json
+          cmake --version
       - name: Setup vcpkg
         shell: pwsh
         run: |
@@ -79,7 +83,9 @@ jobs:
       - name: Install dependencies with vcpkg
         shell: pwsh
         run: |
-          C:/vcpkg/vcpkg install hidapi:x64-windows getopt-win32:x64-windows
+          C:/vcpkg/vcpkg version
+          C:/vcpkg/vcpkg install hidapi:x64-windows getopt-win32:x64-windows `
+            --overlay-triplets="$env:GITHUB_WORKSPACE/cmake/triplets"
       - name: Install Qt
         id: qt
         uses: jurplel/install-qt-action@v4
@@ -91,11 +97,16 @@ jobs:
       - name: Generate and Build with CMake
         shell: pwsh
         run: |
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
-          cmake --build . --config Release
-          cmake --install . --config Release
+          cmake -S . -B build `
+            -G "Visual Studio 18 2026" `
+            -T v143 `
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
+            -DVCPKG_OVERLAY_TRIPLETS="$env:GITHUB_WORKSPACE/cmake/triplets" `
+            -DVCPKG_TARGET_TRIPLET=x64-windows
+          Select-String -Path build/CMakeCache.txt `
+            -Pattern 'CMAKE_GENERATOR:|CMAKE_GENERATOR_TOOLSET:|CMAKE_CXX_COMPILER:|VCPKG_TARGET_TRIPLET:'
+          cmake --build build --config Release
+          cmake --install build --config Release
       - name: Remove obsolete entries from changed TS files
         id: translation_updates
         shell: pwsh
