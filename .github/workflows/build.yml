@@ -67,6 +67,31 @@ jobs:
           & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
             -latest -products * -format json
           cmake --version
+      - name: Install ATL for the v143 toolset
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsPath = & $vswhere -latest -products * -property installationPath
+          $installer = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\setup.exe"
+          $arguments = @(
+            "modify"
+            "--installPath", "`"$vsPath`""
+            "--add", "Microsoft.VisualStudio.Component.VC.14.44.17.14.ATL"
+            "--quiet"
+            "--norestart"
+            "--nocache"
+          )
+          $process = Start-Process -FilePath $installer -ArgumentList $arguments -Wait -PassThru
+          if ($process.ExitCode -notin @(0, 3010)) {
+            throw "Visual Studio Installer failed with exit code $($process.ExitCode)"
+          }
+
+          $atlHeader = Get-ChildItem "$vsPath/VC/Tools/MSVC/14.44.*/atlmfc/include/atlbase.h" |
+            Select-Object -First 1
+          if (-not $atlHeader) {
+            throw "ATL header for the v143 toolset was not installed"
+          }
+          Write-Host "ATL header: $($atlHeader.FullName)"
       - name: Setup vcpkg
         shell: pwsh
         run: |
@@ -101,7 +126,6 @@ jobs:
             -G "Visual Studio 18 2026" `
             -T v143 `
             -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
-            -DVCPKG_OVERLAY_TRIPLETS="$env:GITHUB_WORKSPACE/cmake/triplets" `
             -DVCPKG_TARGET_TRIPLET=x64-windows
           Select-String -Path build/CMakeCache.txt `
             -Pattern 'CMAKE_GENERATOR:|CMAKE_GENERATOR_TOOLSET:|CMAKE_CXX_COMPILER:|VCPKG_TARGET_TRIPLET:'

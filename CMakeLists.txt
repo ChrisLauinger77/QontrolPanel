@@ -38,7 +38,7 @@ add_subdirectory("${HEADSETCONTROL_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}/hea
 
 if(MSVC AND TARGET headsetcontrol_lib)
     set_target_properties(headsetcontrol_lib PROPERTIES
-        MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
     )
 endif()
 
