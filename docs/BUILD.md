@@ -1,12 +1,12 @@
 # Build Guide
 
-QontrolPanel is a Windows desktop application built with Qt 6, CMake, MSVC 2022, vcpkg, hidapi, and a vendored HeadsetControl library.
+QontrolPanel is a Windows desktop application built with Qt 6, CMake, MSVC, vcpkg, hidapi, and a vendored HeadsetControl library.
 
 ## Requirements
 
 - Windows 10 or newer.
 - Git for Windows.
-- Visual Studio 2022 with the `Desktop development with C++` workload.
+- Visual Studio 2022 with the `Desktop development with C++` workload and ATL for the v143 toolset.
 - CMake 3.30 or newer.
 - Ninja or the Visual Studio CMake generator.
 - Qt 6.9 or newer for MSVC 2022 64-bit.
@@ -15,7 +15,7 @@ QontrolPanel is a Windows desktop application built with Qt 6, CMake, MSVC 2022,
   - `hidapi:x64-windows`
   - `getopt-win32:x64-windows` for the vendored HeadsetControl build.
 
-The CI workflow currently uses Qt `6.10.1` on `windows-2022`.
+The CI workflow uses Qt `6.10.1` on the `windows-2025-vs2026` runner. Visual Studio 2026 hosts the build, while its MSVC 2022-compatible `v143` toolset matches the supported Qt binary kit.
 
 ## Clone
 
@@ -146,7 +146,7 @@ The main build workflow:
 1. Checks out the repository with submodules.
 2. Updates the HeadsetControl submodule to the latest upstream master for the workflow run.
 3. Extracts the app version from `CMakeLists.txt`.
-4. Sets up MSVC and vcpkg.
+4. Selects the Visual Studio 2026 generator, installs ATL for the MSVC `v143` compatibility toolset, and sets up vcpkg with the same toolset.
 5. Installs Qt.
 6. Configures, builds, and installs Release.
 7. Cleans changed translation files.

@@ -127,7 +127,7 @@ QML should call C++ through bridge methods and properties rather than duplicatin
 
 ## Build and Deployment
 
-The app targets Windows with MSVC 2022 and Qt 6. The CMake build:
+The app targets Windows with Qt 6 and the MSVC `v143` toolset. CI hosts that toolset on Visual Studio 2026. The CMake build:
 
 - requires CMake 3.30 or newer;
 - defaults to the vcpkg toolchain at `c:/vcpkg/scripts/buildsystems/vcpkg.cmake`;
