@@ -7,12 +7,14 @@ on:
         required: false
 
 permissions:
-  actions: write
+  actions: read
   contents: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.cmake_version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -73,17 +75,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Trigger WinGet publish workflow
-        uses: actions/github-script@v9
+  publish-winget:
+    name: Publish to WinGet
+    needs: release
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Publish to WinGet
+        uses: vedantmgoyal9/winget-releaser@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'winget-publish.yml',
-              ref: context.ref.replace('refs/heads/', ''),
-              inputs: {
-                release_tag: '${{ steps.cmake_version.outputs.version }}'
-              }
-            });
+          identifier: ChrisLauinger77.QontrolPanel
+          release-tag: ${{ needs.release.outputs.version }}
+          installers-regex: 'QontrolPanel_Installer\.exe$'
+          token: ${{ secrets.WINGET_TOKEN }}
