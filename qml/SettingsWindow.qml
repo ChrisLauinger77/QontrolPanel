@@ -211,6 +211,7 @@ ApplicationWindow {
             readonly property bool settingsPageTransitionsEnabled: UserSettings.settingsAnimationsEnabled
             readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
             readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
+            readonly property real settingsPageSlideDistance: Math.min(32, stackView.width * 0.3)
 
             popEnter: Transition {
                 enabled: stackView.settingsPageTransitionsEnabled
@@ -224,8 +225,8 @@ ApplicationWindow {
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
-                        property: "y"
-                        from: (stackView.mirrored ? -0.3 : 0.3) * -stackView.width
+                        property: "x"
+                        from: (stackView.mirrored ? 1 : -1) * stackView.settingsPageSlideDistance
                         to: 0
                         duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
@@ -245,8 +246,8 @@ ApplicationWindow {
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
-                        property: "y"
-                        from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
+                        property: "x"
+                        from: (stackView.mirrored ? -1 : 1) * stackView.settingsPageSlideDistance
                         to: 0
                         duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
@@ -290,8 +291,8 @@ ApplicationWindow {
                         easing.type: Easing.InQuint
                     }
                     NumberAnimation {
-                        property: "y"
-                        from: (stackView.mirrored ? -0.3 : 0.3) * stackView.width
+                        property: "x"
+                        from: (stackView.mirrored ? -1 : 1) * stackView.settingsPageSlideDistance
                         to: 0
                         duration: stackView.settingsPageSlideDuration
                         easing.type: Easing.OutCubic
@@ -302,12 +303,21 @@ ApplicationWindow {
             replaceExit: Transition {
                 enabled: stackView.settingsPageTransitionsEnabled
 
-                NumberAnimation {
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: stackView.settingsPageFadeDuration
-                    easing.type: Easing.OutQuint
+                ParallelAnimation {
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 1
+                        to: 0
+                        duration: stackView.settingsPageFadeDuration
+                        easing.type: Easing.OutQuint
+                    }
+                    NumberAnimation {
+                        property: "x"
+                        from: 0
+                        to: (stackView.mirrored ? 1 : -1) * stackView.settingsPageSlideDistance
+                        duration: stackView.settingsPageSlideDuration
+                        easing.type: Easing.InCubic
+                    }
                 }
             }
 
