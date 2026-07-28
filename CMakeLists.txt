@@ -243,6 +243,7 @@ target_link_libraries(QontrolPanel PRIVATE
     Dxva2
     Wbemuuid
     Version
+    Shell32
 )
 
 target_compile_definitions(QontrolPanel PRIVATE

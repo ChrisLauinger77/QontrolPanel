@@ -30,8 +30,8 @@ PanelEngine::PanelEngine(QWidget *parent)
     }
 
     instance = this;
-    initializeQMLEngine();
     setupLocalServer();
+    initializeQMLEngine();
 
     if (LanguageBridge::instance()) {
         connect(LanguageBridge::instance(), &LanguageBridge::languageChanged,
