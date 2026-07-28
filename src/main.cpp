@@ -21,6 +21,12 @@ constexpr auto kServerStartupTimeoutMs = 5000;
 constexpr auto kServerRetryIntervalMs = 50;
 constexpr auto kServerConnectionTimeoutMs = 250;
 
+enum class InstanceWaitResult {
+    ActivatedExistingInstance,
+    AcquiredInstanceLock,
+    TimedOut
+};
+
 bool tryConnectToExistingInstance(int timeoutMs = 1000)
 {
     QLocalSocket socket;
@@ -36,20 +42,28 @@ bool tryConnectToExistingInstance(int timeoutMs = 1000)
     return false;
 }
 
-bool waitForExistingInstance()
+InstanceWaitResult waitForExistingInstance(QLockFile& instanceLock)
 {
     QElapsedTimer timer;
     timer.start();
 
     do {
         if (tryConnectToExistingInstance(kServerConnectionTimeoutMs)) {
-            return true;
+            return InstanceWaitResult::ActivatedExistingInstance;
+        }
+
+        if (instanceLock.tryLock(0)) {
+            return InstanceWaitResult::AcquiredInstanceLock;
         }
 
         QThread::msleep(kServerRetryIntervalMs);
     } while (timer.elapsed() < kServerStartupTimeoutMs);
 
-    return false;
+    if (instanceLock.tryLock(0)) {
+        return InstanceWaitResult::AcquiredInstanceLock;
+    }
+
+    return InstanceWaitResult::TimedOut;
 }
 
 }
@@ -80,12 +94,18 @@ int main(int argc, char *argv[])
     QLockFile instanceLock(QDir(QDir::tempPath()).filePath("QontrolPanel.instance.lock"));
     if (!instanceLock.tryLock(100)) {
         // The primary process may still be starting and not listening yet.
-        if (waitForExistingInstance()) {
+        const auto waitResult = waitForExistingInstance(instanceLock);
+        if (waitResult == InstanceWaitResult::ActivatedExistingInstance) {
             LOG_INFO("LocalServer", "Another instance finished starting");
-        } else {
-            LOG_WARN("LocalServer", "Timed out waiting for the existing instance");
+            return 0;
         }
-        return 0;
+
+        if (waitResult == InstanceWaitResult::TimedOut) {
+            LOG_WARN("LocalServer", "Timed out waiting for the existing instance");
+            return 0;
+        }
+
+        LOG_INFO("LocalServer", "Previous instance exited while relaunching");
     }
 
     PanelEngine w;
