@@ -47,8 +47,16 @@ jobs:
         run: |
           git submodule sync --recursive
           git submodule update --init --recursive --remote --checkout
+          $headsetControlIsShallow = git -C dependencies/headsetcontrol rev-parse --is-shallow-repository
+          if ($headsetControlIsShallow -eq "true") {
+              git -C dependencies/headsetcontrol fetch --unshallow --tags
+          } else {
+              git -C dependencies/headsetcontrol fetch --tags
+          }
           $headsetControlCommit = git -C dependencies/headsetcontrol rev-parse HEAD
+          $headsetControlVersion = git -C dependencies/headsetcontrol describe --tags --dirty=-modified
           Write-Host "HeadsetControl submodule updated to $headsetControlCommit"
+          Write-Host "HeadsetControl version: $headsetControlVersion"
       - name: Get version from CMake
         id: cmake_version
         shell: pwsh
