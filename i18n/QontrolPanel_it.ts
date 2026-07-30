@@ -870,8 +870,8 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation type="unfinished">Commit</translation>
+        <source>Version</source>
+        <translation type="unfinished">Versione</translation>
     </message>
     <message>
         <source>GitHub repository</source>

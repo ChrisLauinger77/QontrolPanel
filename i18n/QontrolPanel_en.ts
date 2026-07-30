@@ -926,8 +926,8 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation type="unfinished">Commit</translation>
+        <source>Version</source>
+        <translation type="unfinished">Version</translation>
     </message>
     <message>
         <source>GitHub repository</source>

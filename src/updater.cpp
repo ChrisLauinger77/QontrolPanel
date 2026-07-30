@@ -13,6 +13,8 @@
 #include <QTimeZone>
 #include <QUrl>
 #include <QDebug>
+#include <headsetcontrol.hpp>
+#include <string>
 #include "version.h"
 #include "logmanager.h"
 #include "languages.h"
@@ -661,6 +663,11 @@ QString Updater::getCommitHash() const
 QString Updater::getHeadsetControlCommitHash() const
 {
     return QString(HEADSETCONTROL_GIT_COMMIT_HASH);
+}
+
+QString Updater::getHeadsetControlVersion() const
+{
+    return QString::fromStdString(std::string(headsetcontrol::version()));
 }
 
 QString Updater::getBuildTimestamp() const
