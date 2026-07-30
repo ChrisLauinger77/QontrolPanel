@@ -305,11 +305,11 @@ ColumnLayout {
                 Card {
                     visible: UserSettings.headsetcontrolMonitoring
                     Layout.fillWidth: true
-                    title: qsTr("Commit")
+                    title: qsTr("Version")
                     description: ""
 
                     additionalControl: Label {
-                        text: Updater.getHeadsetControlCommitHash()
+                        text: Updater.getHeadsetControlVersion()
                         opacity: 0.5
                     }
                 }

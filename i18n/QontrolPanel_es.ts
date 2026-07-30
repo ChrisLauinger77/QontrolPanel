@@ -926,8 +926,8 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation>Obtener</translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation>Commit</translation>
+        <source>Version</source>
+        <translation>Versión</translation>
     </message>
     <message>
         <source>GitHub repository</source>

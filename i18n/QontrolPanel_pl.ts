@@ -920,8 +920,8 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Predefiniowane Korektora</translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation>Zatwierdzenie</translation>
+        <source>Version</source>
+        <translation>Wersja</translation>
     </message>
     <message>
         <source>GitHub repository</source>

@@ -880,8 +880,8 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Récupérer</translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation>Commit</translation>
+        <source>Version</source>
+        <translation>Version</translation>
     </message>
     <message>
         <source>GitHub repository</source>

@@ -870,8 +870,8 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>取得</translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation>コミット</translation>
+        <source>Version</source>
+        <translation>バージョン</translation>
     </message>
     <message>
         <source>GitHub repository</source>

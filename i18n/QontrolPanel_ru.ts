@@ -870,8 +870,8 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>Получить</translation>
     </message>
     <message>
-        <source>Commit</source>
-        <translation>Коммит</translation>
+        <source>Version</source>
+        <translation>Версия</translation>
     </message>
     <message>
         <source>GitHub repository</source>
