@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.FluentWinUI3
+import QtQuick.Controls.impl
 import ChrisLauinger77.QontrolPanel
 
 ColumnLayout {
@@ -16,9 +17,44 @@ ColumnLayout {
     }
 
     ColumnLayout {
+        Layout.fillWidth: true
+
         RowLayout {
             id: infosLyt
+            Layout.fillWidth: true
+            spacing: 10
+
+            Rectangle {
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 64
+                Layout.alignment: Qt.AlignVCenter
+                color: "#2a2a2a"
+                radius: 3
+
+                Image {
+                    anchors.fill: parent
+                    anchors.margins: 2
+                    source: MediaSessionBridge.mediaArt || ""
+                    fillMode: Image.PreserveAspectCrop
+                    visible: MediaSessionBridge.mediaArt !== ""
+                    smooth: true
+                }
+
+                IconImage {
+                    anchors.centerIn: parent
+                    source: "qrc:/icons/music.svg"
+                    sourceSize.width: 24
+                    sourceSize.height: 24
+                    color: palette.text
+                    opacity: 0.3
+                    visible: MediaSessionBridge.mediaArt === ""
+                }
+            }
+
             ColumnLayout {
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
+
                 Label {
                     text: MediaSessionBridge.mediaTitle || ""
                     font.pixelSize: 14
@@ -34,14 +70,6 @@ ColumnLayout {
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
-            }
-            Image {
-                Layout.preferredWidth: 64
-                Layout.preferredHeight: 64
-                Layout.alignment: Qt.AlignVCenter
-                source: MediaSessionBridge.mediaArt || ""
-                fillMode: Image.PreserveAspectCrop
-                visible: MediaSessionBridge.mediaArt !== ""
             }
         }
 
