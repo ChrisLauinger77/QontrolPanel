@@ -1,7 +1,6 @@
 #include "headsetcontrolmonitor.h"
 #include "logmanager.h"
 #include "usersettings.h"
-#include "version.h"
 
 namespace
 {
@@ -13,9 +12,8 @@ HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent)
     : QObject(parent), m_fetchTimer(new QTimer(this)), m_isMonitoring(false), m_fetchIntervalMs(30000), m_hasSidetoneCapability(false), m_hasLightsCapability(false), m_hasRotateToMuteCapability(false), m_hasChatMixCapability(false), m_hasVoicePromptsCapability(false), m_hasEqualizerPresetsCapability(false), m_hasInactiveTimeCapability(false), m_deviceName(""), m_batteryStatus("BATTERY_UNAVAILABLE"), m_batteryLevel(-1), m_chatMix(-1), m_anyDeviceFound(false), m_isFetching(false), m_activeHeadsetIndex(-1), m_activeHeadsetSettingsKey(""), m_testModeEnabled(false), m_testProfile(3)
 {
     LOG_INFO("HeadsetControlManager",
-             QString("HeadsetControlMonitor initialized - HeadsetControl commit: %1 (library version: %2)")
-                 .arg(QString(HEADSETCONTROL_GIT_COMMIT_HASH),
-                      QString::fromStdString(std::string(headsetcontrol::version()))));
+             QString("HeadsetControlMonitor initialized - HeadsetControl library version: %1")
+                 .arg(QString::fromStdString(std::string(headsetcontrol::version()))));
 
     m_fetchTimer->setInterval(m_fetchIntervalMs);
     m_fetchTimer->setSingleShot(true);
