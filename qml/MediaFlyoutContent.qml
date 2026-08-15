@@ -28,7 +28,7 @@ ColumnLayout {
                 Layout.preferredWidth: 64
                 Layout.preferredHeight: 64
                 Layout.alignment: Qt.AlignVCenter
-                color: "#2a2a2a"
+                color: Constants.cardColor
                 radius: 3
 
                 Image {
