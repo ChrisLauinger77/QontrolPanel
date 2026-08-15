@@ -40,7 +40,6 @@ public:
     Q_INVOKABLE QString getAppVersion() const;
     Q_INVOKABLE QString getQtVersion() const;
     Q_INVOKABLE QString getCommitHash() const;
-    Q_INVOKABLE QString getHeadsetControlCommitHash() const;
     Q_INVOKABLE QString getHeadsetControlVersion() const;
     Q_INVOKABLE QString getBuildTimestamp() const;
 
