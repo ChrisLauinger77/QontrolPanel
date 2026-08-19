@@ -28,7 +28,7 @@ VersionInfoVersion={#AppVersion}
 
 AppCopyright=(c) {#CurrentYear} {#AppPublisher}
 
-UninstallDisplayName={#AppName} {#AppVersion}
+UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\bin\{#AppExeName}
 AppPublisher={#AppPublisher}
 
