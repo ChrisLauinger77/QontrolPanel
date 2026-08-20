@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
-        <translation>Assegna tasti scelta rapida globali per controllo volume di specfiche applicazioni</translation>
+        <translation>Assegna tasti scelta rapida globali per controllo volume di specifiche applicazioni</translation>
     </message>
     <message>
         <source>Add</source>
@@ -21,11 +21,11 @@
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Up %1 Down %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Step: %1)</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -116,11 +116,11 @@
     </message>
     <message>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Animazioni pagina Impostazioni</translation>
     </message>
     <message>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Anima le transizioni tra le pagine delle impostazioni</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
@@ -241,7 +241,7 @@
     </message>
     <message>
         <source>ChatMix is not activated</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix non è attivato</translation>
     </message>
 </context>
 <context>
@@ -276,11 +276,11 @@
     </message>
     <message>
         <source>Show ChatMix controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizza controlli ChatMix</translation>
     </message>
     <message>
         <source>Use ChatMix volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa controlli ChatMix</translation>
     </message>
     <message>
         <source>ChatMix volume</source>
@@ -449,110 +449,110 @@
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Su</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Giù</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">A sinistra</translation>
+        <translation>A sinistra</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">A destra</translation>
+        <translation>A destra</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Invio</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Canc</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Ins</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>Fine</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>PagSu</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>PagGiù</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Sconosciuto</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Maiusc</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
     <name>DebugPane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutti</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione registro QontrolPanel</translation>
     </message>
     <message>
         <source>Console output</source>
-        <translation type="unfinished">Output console</translation>
+        <translation>Output console</translation>
     </message>
     <message>
         <source>Filter by:</source>
-        <translation type="unfinished">Filtra per:</translation>
+        <translation>Filtra per:</translation>
     </message>
     <message>
         <source>Auto-scroll</source>
-        <translation type="unfinished">Scorrimento automatico</translation>
+        <translation>Scorrimento automatico</translation>
     </message>
     <message>
         <source>Copy All</source>
-        <translation type="unfinished">Copia tutto</translation>
+        <translation>Copia tutto</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Azzera</translation>
+        <translation>Azzera</translation>
     </message>
 </context>
 <context>
@@ -855,31 +855,31 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilo equalizzatore</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposta il profilo equalizzatore per le cuffie</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>La frequenza con cui viene verificato lo stato dalle cuffie. Valori inferiori potrebbero aumentare l&apos;uso della batteria.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verifica</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">Versione</translation>
+        <translation>Versione</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Repository GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizza in GitHub</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
@@ -998,7 +998,7 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Lingua interfaccia</translation>
+        <translation>Lingua interfaccia</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -1053,7 +1053,7 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Sconosciuto</translation>
     </message>
 </context>
 <context>
@@ -1251,7 +1251,7 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Dona</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
@@ -1349,7 +1349,7 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Caricamento...</translation>
     </message>
     <message>
         <source>Input: </source>
@@ -1357,27 +1357,27 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">Controllo cuffie</translation>
+        <translation>Controllo cuffie</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verifica</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilo equalizzatore</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished">Luci</translation>
+        <translation>Luci</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished">Comandi vocali</translation>
+        <translation>Comandi vocali</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished">Ruota per audio off</translation>
+        <translation>Ruota per audio off</translation>
     </message>
     <message>
         <source>Exit</source>
@@ -1385,15 +1385,15 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo sconosciuto</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo disconnesso</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1416,110 +1416,110 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     <name>UpdatePane</name>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiornamenti e informazioni</translation>
     </message>
     <message>
         <source>Application Updates</source>
-        <translation type="unfinished">Aggiornamento applicazione</translation>
+        <translation>Aggiornamento applicazione</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
-        <translation type="unfinished">Disponibile versione %1</translation>
+        <translation>Disponibile versione %1</translation>
     </message>
     <message>
         <source>Checking...</source>
-        <translation type="unfinished">Controllo...</translation>
+        <translation>Controllo...</translation>
     </message>
     <message>
         <source>Downloading...</source>
-        <translation type="unfinished">Download...</translation>
+        <translation>Download...</translation>
     </message>
     <message>
         <source>Download and Install</source>
-        <translation type="unfinished">Download ed installazione</translation>
+        <translation>Download ed installazione</translation>
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation type="unfinished">Controlla aggiornamenti</translation>
+        <translation>Controlla aggiornamenti</translation>
     </message>
     <message>
         <source>Release notes</source>
-        <translation type="unfinished">Note rilascio</translation>
+        <translation>Note rilascio</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
-        <translation type="unfinished">Visualizza novità versione %1</translation>
+        <translation>Visualizza novità versione %1</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">Visualizza</translation>
+        <translation>Visualizza</translation>
     </message>
     <message>
         <source>Auto check for app updates</source>
-        <translation type="unfinished">Controlla automaticamente aggiornamenti app</translation>
+        <translation>Controlla automaticamente aggiornamenti app</translation>
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation type="unfinished">Controlla aggiornamenti app all&apos;avvio ed ogni 4 ore</translation>
+        <translation>Controlla aggiornamenti app all&apos;avvio ed ogni 4 ore</translation>
     </message>
     <message>
         <source>Application version</source>
-        <translation type="unfinished">Versione applicazione</translation>
+        <translation>Versione applicazione</translation>
     </message>
     <message>
         <source>QT version</source>
-        <translation type="unfinished">Versione QT</translation>
+        <translation>Versione QT</translation>
     </message>
     <message>
         <source>Commit</source>
-        <translation type="unfinished">Commit</translation>
+        <translation>Commit</translation>
     </message>
     <message>
         <source>Build date</source>
-        <translation type="unfinished">Data build</translation>
+        <translation>Data build</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Repository GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizza in GitHub</translation>
     </message>
     <message>
         <source>Version %1</source>
-        <translation type="unfinished">Versione %1</translation>
+        <translation>Versione %1</translation>
     </message>
     <message>
         <source>No release notes available</source>
-        <translation type="unfinished">Nessuna nota rilascio disponibile</translation>
+        <translation>Nessuna nota rilascio disponibile</translation>
     </message>
 </context>
 <context>
     <name>Updater</name>
     <message>
         <source>Failed to check for updates: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile verificare la disponibilità di aggiornamenti: %1</translation>
     </message>
     <message>
         <source>No executable found in latest release</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun eseguibile trovato nella versione più recente</translation>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile avviare il download</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished">Download fallito: %1</translation>
+        <translation>Download fallito: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile salvare il file dell&apos;aggiornamento</translation>
     </message>
     <message>
         <source>Failed to start update executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile avviare l&apos;eseguibile dell&apos;aggiornamento</translation>
     </message>
     <message>
         <source>Update available: %1</source>
@@ -1527,7 +1527,7 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     </message>
     <message>
         <source>You are using the latest version</source>
-        <translation>La versione del programma è aggiornata.&lt;br&gt;Non sono disdponibili aggiornamentiodel programma.</translation>
+        <translation>Questa versione del programma è aggiornata.&lt;br&gt;Non sono disponibili aggiornamenti del programma.</translation>
     </message>
     <message>
         <source>Update started.</source>
