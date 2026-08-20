@@ -1,12 +1,12 @@
 # QontrolPanel
 
-[![Github Latest Releases](https://img.shields.io/github/downloads/ChrisLauinger77/QontrolPanel/latest/total)]()
-[![Version](https://img.shields.io/github/v/release/ChrisLauinger77/qontrolpanel)]()
-[![Github All Releases](https://img.shields.io/github/downloads/ChrisLauinger77/qontrolpanel/total.svg)]()
-[![license](https://img.shields.io/github/license/ChrisLauinger77/qontrolpanel)]()
+[![Github Latest Releases](https://img.shields.io/github/downloads/ChrisLauinger77/QontrolPanel/latest/total)](<>)
+[![Version](https://img.shields.io/github/v/release/ChrisLauinger77/qontrolpanel)](<>)
+[![Github All Releases](https://img.shields.io/github/downloads/ChrisLauinger77/qontrolpanel/total.svg)](<>)
+[![license](https://img.shields.io/github/license/ChrisLauinger77/qontrolpanel)](<>)
 
 QontrolPanel is an enhanced audio panel for Windows.  
-It provide output and input volume / device / mute control as well as application volume mixer.
+It provide output and input volume / device / mute control as well as application volume mixer and [headsetcontrol integration](https://github.com/Sapd/HeadsetControl).
 
 ![image](.assets/screenshot.png)
 
