@@ -4,6 +4,8 @@
 #include <QQmlEngine>
 #include <QtQml/qqmlregistration.h>
 
+#include <memory>
+
 class WindowsBackdrop : public QObject
 {
     Q_OBJECT
@@ -21,5 +23,8 @@ public:
     Q_INVOKABLE void removeBackdrop(QObject* windowObject);
 
 private:
+    struct Impl;
+
     static WindowsBackdrop* m_instance;
+    std::unique_ptr<Impl> m_impl;
 };

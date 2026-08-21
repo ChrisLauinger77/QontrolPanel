@@ -6,7 +6,11 @@ import ChrisLauinger77.QontrolPanel
 
 Rectangle {
     id: footer
-    color: Constants.footerColor
+    property bool nativeBackdropActive: false
+
+    color: nativeBackdropActive
+        ? (Constants.darkMode ? "#3D000000" : "#3DFFFFFF")
+        : Constants.footerColor
     bottomLeftRadius: 12
     bottomRightRadius: 12
 

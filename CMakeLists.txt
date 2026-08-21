@@ -276,6 +276,7 @@ if(WIN32)
     else()
         message(WARNING "hidapi.dll not found - you may need to copy it manually")
     endif()
+
 endif()
 
 qt_generate_deploy_qml_app_script(

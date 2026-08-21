@@ -19,7 +19,7 @@ ApplicationWindow {
     property alias contentOpacity: mediaContent.opacity
     signal hideRequested()
 
-    Component.onCompleted: updateNativeBackdrop()
+    Component.onCompleted: Qt.callLater(updateNativeBackdrop)
 
     onClosing: function(close) {
         if (visible) {

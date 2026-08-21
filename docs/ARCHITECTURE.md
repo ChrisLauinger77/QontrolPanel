@@ -125,6 +125,12 @@ Most UI is organized as:
 
 QML should call C++ through bridge methods and properties rather than duplicating native logic.
 
+### Windows Acrylic Surfaces
+
+`WindowsBackdrop` owns the native material lifecycle for the main controls panel, its separate media card, `MediaOverlay`, and `ChatMixNotification`. It dynamically enables Windows' acrylic window accent policy on each exact-size Qt window, with a theme-aware translucent luminosity color that keeps the live desktop hue visible behind these non-activating tray surfaces. The material is reapplied when a window becomes visible or the system color scheme changes.
+
+The acrylic path is dispatcher-free and does not require the Windows App Runtime. This avoids coupling Qt's window lifecycle to CoreMessaging. If the compatibility API is unavailable, `WindowsBackdrop` uses the documented DWM transient system backdrop instead.
+
 ## Build and Deployment
 
 The app targets Windows with Qt 6 and the MSVC `v143` toolset. CI hosts that toolset on Visual Studio 2026. The CMake build:

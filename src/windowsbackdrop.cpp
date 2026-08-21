@@ -3,11 +3,15 @@
 #include "logmanager.h"
 
 #include <QGuiApplication>
+#include <QPointer>
 #include <QStyleHints>
 #include <QWindow>
 
 #include <windows.h>
 #include <dwmapi.h>
+
+#include <memory>
+#include <unordered_map>
 
 namespace {
 constexpr char LogCategory[] = "WindowsBackdrop";
@@ -22,17 +26,200 @@ QWindow* windowFromObject(QObject* windowObject)
 {
     return qobject_cast<QWindow*>(windowObject);
 }
+
+bool usesDarkTheme()
+{
+    return QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
 }
+
+struct AccentPolicy
+{
+    DWORD state;
+    DWORD flags;
+    DWORD gradientColor;
+    DWORD animationId;
+};
+
+struct CompositionAttributeData
+{
+    DWORD attribute;
+    void* data;
+    SIZE_T dataSize;
+};
+
+using SetWindowCompositionAttributeFunction =
+    BOOL(WINAPI*)(HWND, const CompositionAttributeData*);
+
+bool applyWindowAcrylic(HWND hwnd, bool enabled)
+{
+    // This compatibility API has no import library or public structure
+    // declarations. Resolve it dynamically so unsupported systems retain the
+    // documented DWM transient-backdrop fallback.
+    static const auto setWindowCompositionAttribute =
+        reinterpret_cast<SetWindowCompositionAttributeFunction>(GetProcAddress(
+            GetModuleHandleW(L"user32.dll"),
+            "SetWindowCompositionAttribute"));
+    if (!setWindowCompositionAttribute) {
+        return false;
+    }
+
+    constexpr DWORD accentDisabled = 0;
+    constexpr DWORD accentEnableAcrylicBlurBehind = 4;
+    constexpr DWORD accentPolicyAttribute = 19;
+    constexpr DWORD useGradientColor = 2;
+    // AABBGGRR: retain a luminosity layer while allowing the live desktop hue
+    // behind the popup to remain visible.
+    constexpr DWORD darkAcrylicGradient = 0x99202020;
+    constexpr DWORD lightAcrylicGradient = 0x99F3F3F3;
+
+    AccentPolicy policy{
+        enabled ? accentEnableAcrylicBlurBehind : accentDisabled,
+        enabled ? useGradientColor : 0,
+        enabled ? (usesDarkTheme() ? darkAcrylicGradient : lightAcrylicGradient) : 0,
+        0,
+    };
+    const CompositionAttributeData attributeData{
+        accentPolicyAttribute,
+        &policy,
+        sizeof(policy),
+    };
+    return setWindowCompositionAttribute(hwnd, &attributeData) != FALSE;
+}
+
+bool applyDwmFallback(HWND hwnd)
+{
+    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
+    const HRESULT result = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_SYSTEMBACKDROP_TYPE,
+        &backdropType,
+        sizeof(backdropType));
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to apply fallback transient backdrop: %1")
+                     .arg(formatHresult(result)));
+        return false;
+    }
+    return true;
+}
+
+void applyCommonDwmAttributes(HWND hwnd)
+{
+    const BOOL useDarkMode = usesDarkTheme();
+    const HRESULT darkModeResult = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_USE_IMMERSIVE_DARK_MODE,
+        &useDarkMode,
+        sizeof(useDarkMode));
+    if (FAILED(darkModeResult)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to update immersive dark mode: %1")
+                     .arg(formatHresult(darkModeResult)));
+    }
+
+    const DWM_WINDOW_CORNER_PREFERENCE cornerPreference = DWMWCP_ROUND;
+    const HRESULT cornerResult = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_WINDOW_CORNER_PREFERENCE,
+        &cornerPreference,
+        sizeof(cornerPreference));
+    if (FAILED(cornerResult)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to apply rounded window corners: %1")
+                     .arg(formatHresult(cornerResult)));
+    }
+}
+
+bool applyMaterial(QWindow* window)
+{
+    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
+    if (!hwnd) {
+        return false;
+    }
+
+    applyCommonDwmAttributes(hwnd);
+    if (applyWindowAcrylic(hwnd, true)) {
+        return true;
+    }
+    return applyDwmFallback(hwnd);
+}
+
+void clearMaterial(QWindow* window)
+{
+    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
+    if (!hwnd) {
+        return;
+    }
+
+    applyWindowAcrylic(hwnd, false);
+    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
+    const HRESULT result = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_SYSTEMBACKDROP_TYPE,
+        &backdropType,
+        sizeof(backdropType));
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to remove system backdrop: %1")
+                     .arg(formatHresult(result)));
+    }
+}
+}
+
+struct WindowsBackdrop::Impl
+{
+    struct TrackedWindow
+    {
+        QPointer<QWindow> window;
+        QMetaObject::Connection visibleConnection;
+        QMetaObject::Connection destroyedConnection;
+    };
+
+    std::unordered_map<QWindow*, std::unique_ptr<TrackedWindow>> windows;
+    QMetaObject::Connection themeConnection;
+
+    void remove(QWindow* window, bool resetMaterial)
+    {
+        auto iterator = windows.find(window);
+        if (iterator == windows.end()) {
+            return;
+        }
+
+        QObject::disconnect(iterator->second->visibleConnection);
+        QObject::disconnect(iterator->second->destroyedConnection);
+        if (resetMaterial && iterator->second->window) {
+            clearMaterial(iterator->second->window);
+        }
+        windows.erase(iterator);
+    }
+};
 
 WindowsBackdrop* WindowsBackdrop::m_instance = nullptr;
 
 WindowsBackdrop::WindowsBackdrop(QObject* parent)
     : QObject(parent)
+    , m_impl(std::make_unique<Impl>())
 {
+    m_impl->themeConnection = connect(
+        QGuiApplication::styleHints(),
+        &QStyleHints::colorSchemeChanged,
+        this,
+        [this]() {
+            for (const auto& [window, trackedWindow] : m_impl->windows) {
+                Q_UNUSED(window)
+                if (trackedWindow->window) {
+                    applyMaterial(trackedWindow->window);
+                }
+            }
+        });
 }
 
 WindowsBackdrop::~WindowsBackdrop()
 {
+    QObject::disconnect(m_impl->themeConnection);
+    while (!m_impl->windows.empty()) {
+        m_impl->remove(m_impl->windows.begin()->first, true);
+    }
     if (m_instance == this) {
         m_instance = nullptr;
     }
@@ -61,50 +248,33 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
         LOG_WARN(LogCategory, "Cannot apply backdrop: object is not a window");
         return false;
     }
-
-    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    if (!hwnd) {
-        LOG_WARN(LogCategory, "Cannot apply backdrop: native window handle is unavailable");
+    if (!applyMaterial(window)) {
+        LOG_WARN(LogCategory, "Cannot apply backdrop: native material is unavailable");
         return false;
     }
-
-    const BOOL useDarkMode = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
-    const HRESULT darkModeResult = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_USE_IMMERSIVE_DARK_MODE,
-        &useDarkMode,
-        sizeof(useDarkMode));
-    if (FAILED(darkModeResult)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to update immersive dark mode: %1")
-                     .arg(formatHresult(darkModeResult)));
+    if (m_impl->windows.contains(window)) {
+        return true;
     }
 
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
-    const HRESULT backdropResult = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_SYSTEMBACKDROP_TYPE,
-        &backdropType,
-        sizeof(backdropType));
-    if (FAILED(backdropResult)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to apply transient system backdrop: %1")
-                     .arg(formatHresult(backdropResult)));
-        return false;
-    }
+    auto trackedWindow = std::make_unique<Impl::TrackedWindow>();
+    trackedWindow->window = window;
+    trackedWindow->visibleConnection = connect(
+        window,
+        &QWindow::visibleChanged,
+        this,
+        [window](bool visible) {
+            if (visible) {
+                applyMaterial(window);
+            }
+        });
+    trackedWindow->destroyedConnection = connect(
+        window,
+        &QObject::destroyed,
+        this,
+        [this, window]() { m_impl->remove(window, false); });
+    m_impl->windows.emplace(window, std::move(trackedWindow));
 
-    const DWM_WINDOW_CORNER_PREFERENCE cornerPreference = DWMWCP_ROUND;
-    const HRESULT cornerResult = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_WINDOW_CORNER_PREFERENCE,
-        &cornerPreference,
-        sizeof(cornerPreference));
-    if (FAILED(cornerResult)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to apply rounded window corners: %1")
-                     .arg(formatHresult(cornerResult)));
-    }
-
+    LOG_INFO(LogCategory, "Applied dispatcher-free Windows acrylic material");
     return true;
 }
 
@@ -114,21 +284,5 @@ void WindowsBackdrop::removeBackdrop(QObject* windowObject)
     if (!window) {
         return;
     }
-
-    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    if (!hwnd) {
-        return;
-    }
-
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
-    const HRESULT result = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_SYSTEMBACKDROP_TYPE,
-        &backdropType,
-        sizeof(backdropType));
-    if (FAILED(result)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to remove system backdrop: %1")
-                     .arg(formatHresult(result)));
-    }
+    m_impl->remove(window, true);
 }
