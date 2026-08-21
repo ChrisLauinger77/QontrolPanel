@@ -21,6 +21,13 @@ ApplicationWindow {
 
     Component.onCompleted: updateNativeBackdrop()
 
+    onClosing: function(close) {
+        if (visible) {
+            close.accepted = false
+            hideRequested()
+        }
+    }
+
     function updateNativeBackdrop() {
         nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(mediaPanelWindow)
     }

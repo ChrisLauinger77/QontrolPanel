@@ -77,6 +77,13 @@ ApplicationWindow {
         }
     }
 
+    onClosing: function(close) {
+        if (visible) {
+            close.accepted = false
+            hidePanel()
+        }
+    }
+
     Component.onCompleted: {
         Utils.setStyle(UserSettings.panelStyle)
         updateNativeBackdrop()
