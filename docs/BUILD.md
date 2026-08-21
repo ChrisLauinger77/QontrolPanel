@@ -97,7 +97,7 @@ cmake --install build --config Release
 
 The install step copies the executable, Qt runtime dependencies, QML dependencies, translations, `hidapi.dll` when CMake can find it in the vcpkg installation, and the Windows App SDK bootstrap DLL.
 
-QontrolPanel uses the framework-dependent Windows App SDK 2.4 runtime. The release installer installs the matching runtime automatically. For a manually deployed build or ZIP artifact, install the Microsoft x64 Windows App Runtime 2.4 before launching the app. If the runtime is unavailable, QontrolPanel continues with the less configurable DWM backdrop fallback.
+QontrolPanel uses the framework-dependent Windows App SDK 2.4 runtime. The release installer checks the current user's registered runtime packages and downloads Microsoft's matching x64 runtime installer only when the complete runtime is missing. This requires internet access when installing on a machine without Windows App Runtime 2.4. For a manually deployed build or ZIP artifact, install the Microsoft x64 Windows App Runtime 2.4 to enable native App SDK acrylic. If the runtime is unavailable, QontrolPanel continues with the less configurable DWM backdrop fallback.
 
 By default, this project sets:
 
@@ -168,6 +168,6 @@ The main build workflow:
 6. Configures, builds, and installs Release.
 7. Cleans changed translation files.
 8. Uploads a ZIP artifact.
-9. Downloads the Windows App Runtime redistributable and builds an Inno Setup installer that installs it.
+9. Builds an Inno Setup web installer that downloads Windows App Runtime 2.4 only when it is not already installed.
 
 Local builds should usually use the checked-out submodule revision unless you are intentionally validating an upstream HeadsetControl update.
