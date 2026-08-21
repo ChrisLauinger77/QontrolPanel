@@ -687,7 +687,7 @@ ApplicationWindow {
                     anchors.right: parent.right
                     clip: true
                     contentWidth: width
-                    property real visualBottomInset: 15 - Math.min(0, panelFooter.Layout.bottomMargin)
+                    property real visualBottomInset: -Math.min(0, panelFooter.Layout.bottomMargin)
                     contentHeight: mainLayout.y + mainLayout.implicitHeight + visualBottomInset
                     boundsBehavior: Flickable.StopAtBounds
                     interactive: contentHeight > height
