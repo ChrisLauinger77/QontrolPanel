@@ -8,7 +8,9 @@ Rectangle {
     id: footer
     property bool nativeBackdropActive: false
 
-    color: nativeBackdropActive ? "transparent" : Constants.footerColor
+    color: nativeBackdropActive
+        ? (Constants.darkMode ? "#3D000000" : "#3DFFFFFF")
+        : Constants.footerColor
     bottomLeftRadius: 12
     bottomRightRadius: 12
 

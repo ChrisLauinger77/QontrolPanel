@@ -19,6 +19,7 @@
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/Microsoft.UI.Interop.h>
 #include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.UI.h>
 #include <winrt/Windows.UI.Composition.Desktop.h>
 #include <winrt/Windows.UI.Composition.h>
 
@@ -54,6 +55,16 @@ winrt::Microsoft::UI::Composition::SystemBackdrops::SystemBackdropTheme currentT
     default:
         return Theme::Default;
     }
+}
+
+bool usesDarkTheme()
+{
+    return QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
+}
+
+winrt::Windows::UI::Color color(BYTE red, BYTE green, BYTE blue)
+{
+    return winrt::Windows::UI::Color{255, red, green, blue};
 }
 
 bool applyDwmFallback(HWND hwnd)
@@ -160,6 +171,19 @@ struct WindowsBackdrop::Impl
         // Windows uses the live acrylic recipe rather than inactive fallback grey.
         backdrop.configuration.IsInputActive(true);
         backdrop.configuration.Theme(currentTheme());
+
+        // Keep the tint transparent so the hue comes from the wallpaper/window
+        // behind the flyout. These values follow Microsoft's PowerToys thin
+        // acrylic recipe; the slightly stronger dark luminosity layer preserves
+        // text contrast without replacing the sampled backdrop with neutral grey.
+        if (backdrop.controller) {
+            const bool dark = usesDarkTheme();
+            const auto neutralColor = dark ? color(32, 32, 32) : color(243, 243, 243);
+            backdrop.controller.TintColor(neutralColor);
+            backdrop.controller.TintOpacity(0.0f);
+            backdrop.controller.LuminosityOpacity(dark ? 0.91f : 0.85f);
+            backdrop.controller.FallbackColor(neutralColor);
+        }
     }
 
     void updateAllConfigurations()
@@ -335,7 +359,6 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
         backdrop->target = target;
         backdrop->configuration = Impl::BackdropConfiguration();
         backdrop->controller = Impl::AcrylicController();
-        backdrop->controller.ResetProperties();
         backdrop->controller.Kind(
             winrt::Microsoft::UI::Composition::SystemBackdrops::DesktopAcrylicKind::Thin);
         m_impl->updateConfiguration(*backdrop);
@@ -346,6 +369,9 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
             LOG_WARN(LogCategory, "DesktopAcrylicController rejected the native window target");
             return applyDwmFallback(hwnd);
         }
+        LOG_INFO(LogCategory,
+                 QString("Desktop acrylic attached with state %1")
+                     .arg(static_cast<int>(backdrop->controller.State())));
 
         backdrop->visibleConnection = connect(
             window,
