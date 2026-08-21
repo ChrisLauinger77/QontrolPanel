@@ -202,6 +202,7 @@ if(WIN32)
     )
     target_link_libraries(QontrolPanel PRIVATE
         "${WINDOWS_APP_SDK_FOUNDATION_DIR}/lib/native/x64/Microsoft.WindowsAppRuntime.Bootstrap.lib"
+        CoreMessaging
     )
     add_custom_command(TARGET QontrolPanel POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E copy_if_different
