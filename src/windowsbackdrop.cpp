@@ -8,11 +8,12 @@
 #include <QStyleHints>
 #include <QWindow>
 
+#include <windows.h>
+#include <dwmapi.h>
+
 #include <MddBootstrap.h>
 #include <WindowsAppSDK-VersionInfo.h>
 #include <Windows.UI.Composition.Interop.h>
-#include <dwmapi.h>
-#include <windows.h>
 
 #include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
 #include <winrt/Microsoft.UI.Dispatching.h>
