@@ -33,7 +33,7 @@ jobs:
           "version=$($match.Groups['version'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Download Windows artifact
-        uses: dawidd6/action-download-artifact@v23
+        uses: dawidd6/action-download-artifact@v24
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
@@ -43,7 +43,7 @@ jobs:
           if_no_artifact_found: fail
 
       - name: Download Windows Installer
-        uses: dawidd6/action-download-artifact@v23
+        uses: dawidd6/action-download-artifact@v24
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
