@@ -131,6 +131,8 @@ QML should call C++ through bridge methods and properties rather than duplicatin
 
 The acrylic path is dispatcher-free and does not require the Windows App Runtime. This avoids coupling Qt's window lifecycle to CoreMessaging. If the compatibility API is unavailable, `WindowsBackdrop` uses the documented DWM transient system backdrop instead.
 
+The settings window uses the documented DWM main-window backdrop instead of the transient acrylic path. This gives the long-lived, activatable window Windows' Mica treatment, including the system-managed wallpaper tint while active and neutral appearance while inactive. Its setting cards use translucent layer fills so they remain distinct without hiding the material. If the main-window backdrop is unavailable, `WindowsBackdrop` falls back to the dispatcher-free acrylic material.
+
 ## Build and Deployment
 
 The app targets Windows with Qt 6 and the MSVC `v143` toolset. CI hosts that toolset on Visual Studio 2026. The CMake build:

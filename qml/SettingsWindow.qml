@@ -14,8 +14,24 @@ ApplicationWindow {
     visible: false
     transientParent: null
     title: qsTr("QontrolPanel - Settings")
+    color: nativeBackdropActive ? "transparent" : Constants.panelColor
 
     readonly property int maxSettingsPageIndex: 11
+    property bool nativeBackdropActive: false
+
+    Component.onCompleted: Qt.callLater(updateNativeBackdrop)
+
+    function updateNativeBackdrop() {
+        nativeBackdropActive = WindowsBackdrop.applyMainWindowBackdrop(root)
+    }
+
+    Connections {
+        target: Qt.application.styleHints
+
+        function onColorSchemeChanged() {
+            root.updateNativeBackdrop()
+        }
+    }
 
     function pageComponentForIndex(index) {
         switch (index) {

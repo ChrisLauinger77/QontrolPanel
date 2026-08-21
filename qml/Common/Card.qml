@@ -15,12 +15,16 @@ Rectangle {
     property int iconHeight: 24
     property color iconColor
     property bool imageMode: false
+    readonly property color materialColor: Qt.rgba(Constants.cardColor.r,
+                                                   Constants.cardColor.g,
+                                                   Constants.cardColor.b,
+                                                   0.72)
 
     // Use a custom property instead of visible
     property bool show: true
 
     implicitHeight: 70
-    color: Constants.cardColor
+    color: materialColor
     radius: 5
 
     // Animate opacity and transform
@@ -73,7 +77,7 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
         border.width: 1
-        color: Constants.cardColor
+        color: card.materialColor
         border.color: Constants.cardBorderColor
         opacity: 1
         radius: 5
