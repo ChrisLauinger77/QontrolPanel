@@ -16,9 +16,9 @@
 #include <Windows.UI.Composition.Interop.h>
 
 #include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
-#include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/Microsoft.UI.Interop.h>
 #include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.System.h>
 #include <winrt/Windows.UI.h>
 #include <winrt/Windows.UI.Composition.Desktop.h>
 #include <winrt/Windows.UI.Composition.h>
@@ -132,7 +132,7 @@ struct WindowsBackdrop::Impl
         QMetaObject::Connection destroyedConnection;
     };
 
-    winrt::Microsoft::UI::Dispatching::DispatcherQueueController dispatcherController{nullptr};
+    winrt::Windows::System::DispatcherQueue dispatcherQueue{nullptr};
     winrt::Windows::UI::Composition::Compositor compositor{nullptr};
     std::unordered_map<QWindow*, std::unique_ptr<WindowBackdrop>> backdrops;
     QMetaObject::Connection themeConnection;
@@ -144,9 +144,14 @@ struct WindowsBackdrop::Impl
         }
 
         try {
-            if (!winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread()) {
-                dispatcherController =
-                    winrt::Microsoft::UI::Dispatching::DispatcherQueueController::CreateOnCurrentThread();
+            if (!dispatcherQueue) {
+                dispatcherQueue =
+                    winrt::Windows::System::DispatcherQueue::GetForCurrentThread();
+            }
+            if (!dispatcherQueue) {
+                LOG_WARN(LogCategory,
+                         "No Windows.System DispatcherQueue is available on the Qt UI thread");
+                return false;
             }
             if (!compositor) {
                 compositor = winrt::Windows::UI::Composition::Compositor();
@@ -230,16 +235,8 @@ WindowsBackdrop::~WindowsBackdrop()
         m_impl->remove(m_impl->backdrops.begin()->first);
     }
     m_impl->compositor = nullptr;
-    if (m_impl->dispatcherController) {
-        try {
-            m_impl->dispatcherController.ShutdownQueue();
-        } catch (const winrt::hresult_error& error) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to shut down the composition dispatcher queue: %1")
-                         .arg(formatHresult(error.code())));
-        }
-        m_impl->dispatcherController = nullptr;
-    }
+    // The Qt UI thread owns this queue; QontrolPanel must not shut it down.
+    m_impl->dispatcherQueue = nullptr;
 
     if (m_instance == this) {
         m_instance = nullptr;
