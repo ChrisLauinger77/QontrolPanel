@@ -148,11 +148,12 @@ begin
     Exit;
 
   try
-    RuntimeInstaller := DownloadTemporaryFile(
+    DownloadTemporaryFile(
       '{#WindowsAppRuntimeURL}',
       '{#WindowsAppRuntimeFile}',
       '{#WindowsAppRuntimeSHA256}',
       nil);
+    RuntimeInstaller := ExpandConstant('{tmp}\{#WindowsAppRuntimeFile}');
 
     if (not Exec(RuntimeInstaller, '--quiet', '', SW_HIDE,
       ewWaitUntilTerminated, ResultCode)) or (ResultCode <> 0) then
