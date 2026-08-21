@@ -9,6 +9,7 @@
 #include <QWindow>
 
 #include <windows.h>
+#include <dispatcherqueue.h>
 #include <dwmapi.h>
 
 #include <MddBootstrap.h>
@@ -16,9 +17,9 @@
 #include <Windows.UI.Composition.Interop.h>
 
 #include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
-#include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/Microsoft.UI.Interop.h>
 #include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.System.h>
 #include <winrt/Windows.UI.Composition.Desktop.h>
 #include <winrt/Windows.UI.Composition.h>
 
@@ -121,7 +122,7 @@ struct WindowsBackdrop::Impl
         QMetaObject::Connection destroyedConnection;
     };
 
-    winrt::Microsoft::UI::Dispatching::DispatcherQueueController dispatcherController{nullptr};
+    winrt::Windows::System::DispatcherQueueController dispatcherController{nullptr};
     winrt::Windows::UI::Composition::Compositor compositor{nullptr};
     std::unordered_map<QWindow*, std::unique_ptr<WindowBackdrop>> backdrops;
     QMetaObject::Connection themeConnection;
@@ -133,9 +134,18 @@ struct WindowsBackdrop::Impl
         }
 
         try {
-            if (!winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread()) {
-                dispatcherController =
-                    winrt::Microsoft::UI::Dispatching::DispatcherQueueController::CreateOnCurrentThread();
+            if (!winrt::Windows::System::DispatcherQueue::GetForCurrentThread()) {
+                const DispatcherQueueOptions options{
+                    sizeof(DispatcherQueueOptions),
+                    DQTYPE_THREAD_CURRENT,
+                    DQTAT_COM_NONE,
+                };
+                ABI::Windows::System::IDispatcherQueueController* controller = nullptr;
+                winrt::check_hresult(CreateDispatcherQueueController(options, &controller));
+                dispatcherController = {
+                    controller,
+                    winrt::take_ownership_from_abi,
+                };
             }
             if (!compositor) {
                 compositor = winrt::Windows::UI::Composition::Compositor();
@@ -155,10 +165,10 @@ struct WindowsBackdrop::Impl
             return;
         }
 
-        // Tray surfaces often intentionally avoid activation. Treat every visible
-        // QontrolPanel surface as input-active so Windows keeps the live acrylic
-        // recipe instead of switching notifications and overlays to inactive grey.
-        backdrop.configuration.IsInputActive(backdrop.window->isVisible());
+        // These tray surfaces intentionally avoid activation. Always report them
+        // as input-active, including during controller creation while hidden, so
+        // Windows uses the live acrylic recipe rather than inactive fallback grey.
+        backdrop.configuration.IsInputActive(true);
         backdrop.configuration.Theme(currentTheme());
     }
 
@@ -208,7 +218,7 @@ WindowsBackdrop::~WindowsBackdrop()
     m_impl->compositor = nullptr;
     if (m_impl->dispatcherController) {
         try {
-            m_impl->dispatcherController.ShutdownQueue();
+            m_impl->dispatcherController.ShutdownQueueAsync();
         } catch (const winrt::hresult_error& error) {
             LOG_WARN(LogCategory,
                      QString("Failed to shut down the composition dispatcher queue: %1")

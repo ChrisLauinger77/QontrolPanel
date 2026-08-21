@@ -127,7 +127,7 @@ QML should call C++ through bridge methods and properties rather than duplicatin
 
 ### Windows Acrylic Surfaces
 
-`WindowsBackdrop` owns the native material lifecycle for the main controls panel, its separate media card, `MediaOverlay`, and `ChatMixNotification`. Each exact-size Qt window receives its own Windows App SDK `DesktopAcrylicController`, composition target, and `SystemBackdropConfiguration`. The controller uses the Windows thin-acrylic variant, follows the current light/dark theme, and treats visible tray surfaces as input-active because overlays and notifications intentionally do not always activate like normal application windows.
+`WindowsBackdrop` owns the native material lifecycle for the main controls panel, its separate media card, `MediaOverlay`, and `ChatMixNotification`. Each exact-size Qt window receives its own Windows App SDK `DesktopAcrylicController`, composition target, and `SystemBackdropConfiguration`. The controller uses the Windows thin-acrylic variant, follows the current light/dark theme, and keeps these tray surfaces input-active from controller creation onward because overlays and notifications intentionally do not activate like normal application windows. A Windows system dispatcher queue on the UI thread services the backdrop controllers.
 
 The process bootstraps the framework-dependent Windows App Runtime before Qt creates the windows. CMake restores the Windows App SDK components through `packages.config`, generates the required C++/WinRT projections, links and deploys the bootstrap DLL, and the Inno Setup installer installs the matching Windows App Runtime. If runtime initialization or acrylic support is unavailable, `WindowsBackdrop` retains the lower-level DWM transient-backdrop fallback.
 
