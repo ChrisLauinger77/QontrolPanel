@@ -161,7 +161,13 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     applyCommonDwmAttributes(hwnd);
 
     if (kind == BackdropKind::MainWindow) {
-        return applyWindowAcrylic(hwnd, window->isActive());
+        if (window->isActive()) {
+            return applyWindowAcrylic(hwnd, true);
+        }
+
+        const bool acrylicAvailable = applyWindowAcrylic(hwnd, true);
+        applyWindowAcrylic(hwnd, false);
+        return acrylicAvailable;
     }
 
     if (applyWindowAcrylic(hwnd, true)) {
@@ -188,7 +194,6 @@ struct WindowsBackdrop::Impl
     {
         QPointer<QWindow> window;
         BackdropKind kind = BackdropKind::Transient;
-        QMetaObject::Connection activeConnection;
         QMetaObject::Connection visibleConnection;
         QMetaObject::Connection destroyedConnection;
     };
@@ -203,7 +208,6 @@ struct WindowsBackdrop::Impl
             return;
         }
 
-        QObject::disconnect(iterator->second->activeConnection);
         QObject::disconnect(iterator->second->visibleConnection);
         QObject::disconnect(iterator->second->destroyedConnection);
         if (resetMaterial && iterator->second->window) {
@@ -296,17 +300,6 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
     auto trackedWindow = std::make_unique<Impl::TrackedWindow>();
     trackedWindow->window = window;
     trackedWindow->kind = kind;
-    trackedWindow->activeConnection = connect(
-        window,
-        &QWindow::activeChanged,
-        this,
-        [this, window]() {
-            const auto trackedWindow = m_impl->windows.find(window);
-            if (trackedWindow != m_impl->windows.end()
-                && trackedWindow->second->kind == BackdropKind::MainWindow) {
-                applyMaterial(window, trackedWindow->second->kind);
-            }
-        });
     trackedWindow->visibleConnection = connect(
         window,
         &QWindow::visibleChanged,

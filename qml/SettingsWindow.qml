@@ -20,6 +20,7 @@ ApplicationWindow {
     property bool nativeBackdropActive: false
 
     Component.onCompleted: Qt.callLater(updateNativeBackdrop)
+    onActiveChanged: updateNativeBackdrop()
 
     function updateNativeBackdrop() {
         nativeBackdropActive = WindowsBackdrop.applyMainWindowBackdrop(root)

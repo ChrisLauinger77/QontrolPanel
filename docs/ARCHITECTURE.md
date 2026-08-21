@@ -131,7 +131,7 @@ QML should call C++ through bridge methods and properties rather than duplicatin
 
 The acrylic path is dispatcher-free and does not require the Windows App Runtime. This avoids coupling Qt's window lifecycle to CoreMessaging. If the compatibility API is unavailable, `WindowsBackdrop` uses the documented DWM transient system backdrop instead.
 
-The settings window uses the same dispatcher-free native acrylic mechanism with activation-aware presentation. While focused, the material retains the live desktop hue; while unfocused, QML paints the neutral panel surface used by Windows for inactive settings windows. Its setting cards use a single translucent layer fill so they remain distinct without hiding the material. If native acrylic is unavailable, the window stays on its opaque panel-color fallback.
+The settings window uses the same dispatcher-free native acrylic mechanism with activation-aware presentation. While focused, the material retains the live desktop hue; while unfocused, QML paints the neutral panel surface used by Windows for inactive settings windows. Activation changes recheck the native result so an enable-time failure retains the opaque fallback. Its setting cards use a single translucent layer fill so they remain distinct without hiding the material.
 
 ## Build and Deployment
 
