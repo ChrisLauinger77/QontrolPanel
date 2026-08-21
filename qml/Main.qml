@@ -32,9 +32,6 @@ ApplicationWindow {
 
     property bool isAnimatingIn: false
     property bool isAnimatingOut: false
-    property bool nativeBackdropActive: false
-    property real restingX: 0
-    property real restingY: 0
     property string taskbarPos: {
         switch (UserSettings.panelPosition) {
             case 0: return "top";
@@ -92,19 +89,6 @@ ApplicationWindow {
 
     Component.onCompleted: {
         Utils.setStyle(UserSettings.panelStyle)
-        updateNativeBackdrop()
-    }
-
-    function updateNativeBackdrop() {
-        nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(panel)
-    }
-
-    Connections {
-        target: Qt.application.styleHints
-
-        function onColorSchemeChanged() {
-            panel.updateNativeBackdrop()
-        }
     }
 
     PowerConfirmationWindow {
@@ -243,13 +227,13 @@ ApplicationWindow {
 
     onHeightChanged: {
         if (visible && !isAnimatingOut) {
-            repositionPanelAtTarget()
+            positionPanelAtTarget()
         }
     }
 
     PropertyAnimation {
         id: showAnimation
-        target: panel
+        target: contentTransform
         duration: 300
         easing.type: Easing.OutCubic
         onStarted: {
@@ -263,26 +247,19 @@ ApplicationWindow {
 
     PropertyAnimation {
         id: hideAnimation
-        target: panel
+        target: contentTransform
         duration: 300
         easing.type: Easing.InCubic
         onFinished: {
             panel.visible = false
             panel.isAnimatingOut = false
-            panel.x = panel.restingX
-            panel.y = panel.restingY
         }
     }
 
-    function showAnimationProgress() {
-        const currentPosition = showAnimation.property === "x" ? panel.x : panel.y
-        const totalDistance = Math.abs(showAnimation.to - showAnimation.from)
-        if (totalDistance <= 0) {
-            return 1
-        }
-
-        return Math.max(0, Math.min(1,
-                                    1 - Math.abs(showAnimation.to - currentPosition) / totalDistance))
+    Translate {
+        id: contentTransform
+        property real x: 0
+        property real y: 0
     }
 
     function togglePanel() {
@@ -295,7 +272,19 @@ ApplicationWindow {
             isAnimatingIn = false
             closeAllMenusAndCollapse()
 
-            const adjustedDuration = Math.max(50, Math.round(showAnimationProgress() * 300))
+            // Calculate progress and adjust hide animation duration
+            let progress = 0
+            if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
+                let initialOffset = Math.abs(showAnimation.from)
+                let currentOffset = Math.abs(contentTransform.x)
+                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
+            } else {
+                let initialOffset = Math.abs(showAnimation.from)
+                let currentOffset = Math.abs(contentTransform.y)
+                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
+            }
+
+            let adjustedDuration = Math.max(50, Math.round(progress * 300))
             hideAnimation.duration = adjustedDuration
             startHideAnimation()
             return
@@ -318,12 +307,11 @@ ApplicationWindow {
         panel.requestActivate()
 
         positionPanelAtTarget(true)
-        setInitialWindowPosition()
+        setInitialTransform()
 
         Qt.callLater(function() {
             Qt.callLater(function() {
                 positionPanelAtTarget()
-                setInitialWindowPosition()
 
                 Qt.callLater(panel.startAnimation)
             })
@@ -367,60 +355,31 @@ ApplicationWindow {
         const minY = screenY
         const maxY = Math.max(minY, screenY + screenHeight - panel.height)
 
-        restingX = Math.max(minX, Math.min(targetX, maxX))
-        restingY = Math.max(minY, Math.min(targetY, maxY))
-        panel.x = restingX
-        panel.y = restingY
+        panel.x = Math.max(minX, Math.min(targetX, maxX))
+        panel.y = Math.max(minY, Math.min(targetY, maxY))
     }
 
-    function repositionPanelAtTarget() {
-        const wasAnimatingIn = showAnimation.running
-        const currentX = panel.x
-        const currentY = panel.y
-
-        if (wasAnimatingIn) {
-            showAnimation.stop()
-        }
-
-        positionPanelAtTarget()
-
-        if (!wasAnimatingIn) {
-            return
-        }
-
-        if (animationProperty() === "x") {
-            panel.x = currentX
-            panel.y = restingY
-        } else {
-            panel.x = restingX
-            panel.y = currentY
-        }
-        startAnimation()
-    }
-
-    function animationProperty() {
-        return panel.taskbarPos === "left" || panel.taskbarPos === "right" ? "x" : "y"
-    }
-
-    function setInitialWindowPosition() {
-        panel.x = restingX
-        panel.y = restingY
-
+    function setInitialTransform() {
         switch (panel.taskbarPos) {
         case "top":
-            panel.y = restingY - panel.height
+            contentTransform.y = -cont.height
+            contentTransform.x = 0
             break
         case "bottom":
-            panel.y = restingY + panel.height
+            contentTransform.y = cont.height
+            contentTransform.x = 0
             break
         case "left":
-            panel.x = restingX - panel.width
+            contentTransform.x = -cont.width
+            contentTransform.y = 0
             break
         case "right":
-            panel.x = restingX + panel.width
+            contentTransform.x = cont.width
+            contentTransform.y = 0
             break
         default:
-            panel.y = restingY + panel.height
+            contentTransform.y = cont.height
+            contentTransform.x = 0
             break
         }
     }
@@ -428,9 +387,9 @@ ApplicationWindow {
     function startAnimation() {
         if (!isAnimatingIn) return
 
-        showAnimation.property = animationProperty()
-        showAnimation.from = showAnimation.property === "x" ? panel.x : panel.y
-        showAnimation.to = showAnimation.property === "x" ? restingX : restingY
+        showAnimation.properties = panel.taskbarPos === "left" || panel.taskbarPos === "right" ? "x" : "y"
+        showAnimation.from = panel.taskbarPos === "left" || panel.taskbarPos === "right" ? contentTransform.x : contentTransform.y
+        showAnimation.to = 0
         showAnimation.start()
     }
 
@@ -443,7 +402,19 @@ ApplicationWindow {
             showAnimation.stop()
             isAnimatingIn = false
 
-            const adjustedDuration = Math.max(50, Math.round(showAnimationProgress() * 300))
+            // Calculate progress and adjust hide animation duration
+            let progress = 0
+            if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
+                let initialOffset = Math.abs(showAnimation.from)
+                let currentOffset = Math.abs(contentTransform.x)
+                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
+            } else {
+                let initialOffset = Math.abs(showAnimation.from)
+                let currentOffset = Math.abs(contentTransform.y)
+                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
+            }
+
+            let adjustedDuration = Math.max(50, Math.round(progress * 300))
             hideAnimation.duration = adjustedDuration
         } else {
             hideAnimation.duration = 300
@@ -497,29 +468,29 @@ ApplicationWindow {
 
         switch (panel.taskbarPos) {
         case "top":
-            hideAnimation.property = "y"
-            hideAnimation.from = panel.y
-            hideAnimation.to = restingY - height
+            hideAnimation.properties = "y"
+            hideAnimation.from = contentTransform.y
+            hideAnimation.to = -height
             break
         case "bottom":
-            hideAnimation.property = "y"
-            hideAnimation.from = panel.y
-            hideAnimation.to = restingY + height
+            hideAnimation.properties = "y"
+            hideAnimation.from = contentTransform.y
+            hideAnimation.to = height
             break
         case "left":
-            hideAnimation.property = "x"
-            hideAnimation.from = panel.x
-            hideAnimation.to = restingX - width
+            hideAnimation.properties = "x"
+            hideAnimation.from = contentTransform.x
+            hideAnimation.to = -width
             break
         case "right":
-            hideAnimation.property = "x"
-            hideAnimation.from = panel.x
-            hideAnimation.to = restingX + width
+            hideAnimation.properties = "x"
+            hideAnimation.from = contentTransform.x
+            hideAnimation.to = width
             break
         default:
-            hideAnimation.property = "y"
-            hideAnimation.from = panel.y
-            hideAnimation.to = restingY + height
+            hideAnimation.properties = "y"
+            hideAnimation.from = contentTransform.y
+            hideAnimation.to = height
             break
         }
 
@@ -570,6 +541,11 @@ ApplicationWindow {
         anchors.top: UserSettings.panelPosition === 0 ? parent.top : undefined
         anchors.right: parent.right
         anchors.left: parent.left
+        transform: Translate {
+            x: contentTransform.x
+            y: contentTransform.y
+        }
+
         width: {
             let baseWidth = 360 + 30
             if (panel.taskbarPos === "left") {
@@ -628,7 +604,7 @@ ApplicationWindow {
                     id: mediaLayoutBackground
                     anchors.fill: mediaLayout
                     anchors.margins: -15
-                    color: panel.nativeBackdropActive ? "transparent" : Constants.panelColor
+                    color: Constants.panelColor
                     visible: mediaLayout.visible
                     radius: 12
                     opacity: 0
@@ -707,7 +683,7 @@ ApplicationWindow {
                     Rectangle {
                         anchors.fill: mainLayout
                         anchors.margins: -15
-                        color: panel.nativeBackdropActive ? "transparent" : Constants.panelColor
+                        color: Constants.panelColor
                         radius: 12
                         Rectangle {
                             anchors.fill: parent
