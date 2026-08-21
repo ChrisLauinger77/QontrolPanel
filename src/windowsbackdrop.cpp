@@ -4,6 +4,7 @@
 
 #include <QGuiApplication>
 #include <QPointer>
+#include <QSettings>
 #include <QStyleHints>
 #include <QWindow>
 
@@ -36,6 +37,25 @@ QWindow* windowFromObject(QObject* windowObject)
 bool usesDarkTheme()
 {
     return QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
+}
+
+bool transparencyEffectsEnabled()
+{
+    BOOL compositionEnabled = FALSE;
+    if (FAILED(DwmIsCompositionEnabled(&compositionEnabled)) || !compositionEnabled) {
+        return false;
+    }
+
+    QSettings personalizeSettings(
+        QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"),
+        QSettings::NativeFormat);
+    if (personalizeSettings.value(QStringLiteral("EnableTransparency"), 1).toInt() == 0) {
+        return false;
+    }
+
+    DWORD colorizationColor = 0;
+    BOOL opaqueBlend = FALSE;
+    return FAILED(DwmGetColorizationColor(&colorizationColor, &opaqueBlend)) || !opaqueBlend;
 }
 
 struct AccentPolicy
@@ -109,6 +129,19 @@ bool applyDwmFallback(HWND hwnd)
     return true;
 }
 
+bool extendFrameIntoClientArea(HWND hwnd, bool enabled)
+{
+    const MARGINS margins = enabled ? MARGINS{-1, -1, -1, -1} : MARGINS{};
+    const HRESULT result = DwmExtendFrameIntoClientArea(hwnd, &margins);
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to update client-area frame extension: %1")
+                     .arg(formatHresult(result)));
+        return false;
+    }
+    return true;
+}
+
 void clearDwmBackdrop(HWND hwnd)
 {
     const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
@@ -161,12 +194,25 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     applyCommonDwmAttributes(hwnd);
 
     if (kind == BackdropKind::MainWindow) {
+        if (!transparencyEffectsEnabled() || !extendFrameIntoClientArea(hwnd, true)) {
+            applyWindowAcrylic(hwnd, false);
+            extendFrameIntoClientArea(hwnd, false);
+            return false;
+        }
+
         if (window->isActive()) {
-            return applyWindowAcrylic(hwnd, true);
+            const bool acrylicApplied = applyWindowAcrylic(hwnd, true);
+            if (!acrylicApplied) {
+                extendFrameIntoClientArea(hwnd, false);
+            }
+            return acrylicApplied;
         }
 
         const bool acrylicAvailable = applyWindowAcrylic(hwnd, true);
         applyWindowAcrylic(hwnd, false);
+        if (!acrylicAvailable) {
+            extendFrameIntoClientArea(hwnd, false);
+        }
         return acrylicAvailable;
     }
 
@@ -184,6 +230,7 @@ void clearMaterial(QWindow* window)
     }
 
     applyWindowAcrylic(hwnd, false);
+    extendFrameIntoClientArea(hwnd, false);
     clearDwmBackdrop(hwnd);
 }
 }
