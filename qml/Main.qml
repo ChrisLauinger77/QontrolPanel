@@ -234,6 +234,7 @@ ApplicationWindow {
 
     MainMediaWindow {
         id: mediaPanelWindow
+        transientParent: panel
 
         onAvailableChanged: panel.handleMediaAvailabilityChanged()
         onHideRequested: panel.hidePanel()
