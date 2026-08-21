@@ -24,11 +24,8 @@
 #include <winrt/Windows.UI.Composition.Desktop.h>
 #include <winrt/Windows.UI.Composition.h>
 
-#include <future>
 #include <memory>
-#include <type_traits>
 #include <unordered_map>
-#include <utility>
 
 namespace {
 constexpr char LogCategory[] = "WindowsBackdrop";
@@ -142,39 +139,6 @@ struct WindowsBackdrop::Impl
     std::unordered_map<QWindow*, std::unique_ptr<WindowBackdrop>> backdrops;
     QMetaObject::Connection themeConnection;
 
-    template<typename Function>
-    auto invokeOnCompositionThread(Function&& function)
-        -> std::invoke_result_t<std::decay_t<Function>>
-    {
-        using Task = std::decay_t<Function>;
-        using Result = std::invoke_result_t<Task>;
-
-        auto task = std::make_shared<Task>(std::forward<Function>(function));
-        auto promise = std::make_shared<std::promise<Result>>();
-        auto future = promise->get_future();
-        const bool queued = dispatcherQueue.TryEnqueue([task, promise]() {
-            try {
-                if constexpr (std::is_void_v<Result>) {
-                    (*task)();
-                    promise->set_value();
-                } else {
-                    promise->set_value((*task)());
-                }
-            } catch (...) {
-                promise->set_exception(std::current_exception());
-            }
-        });
-        if (!queued) {
-            throw winrt::hresult_error(E_FAIL, L"Composition dispatcher rejected work");
-        }
-
-        if constexpr (std::is_void_v<Result>) {
-            future.get();
-        } else {
-            return future.get();
-        }
-    }
-
     bool ensureCompositionInfrastructure()
     {
         if (!runtimeInitialized || !AcrylicController::IsSupported()) {
@@ -183,10 +147,13 @@ struct WindowsBackdrop::Impl
 
         try {
             if (!dispatcherQueue) {
+                // Qt owns and pumps this HWND thread. Windows composition must
+                // use a DispatcherQueue on the same thread as the compositor
+                // and DesktopWindowTarget; COM is already initialized here.
                 const DispatcherQueueOptions options{
                     sizeof(DispatcherQueueOptions),
-                    DQTYPE_THREAD_DEDICATED,
-                    DQTAT_COM_STA,
+                    DQTYPE_THREAD_CURRENT,
+                    DQTAT_COM_NONE,
                 };
                 ABI::Windows::System::IDispatcherQueueController* controller = nullptr;
                 winrt::check_hresult(CreateDispatcherQueueController(options, &controller));
@@ -195,12 +162,10 @@ struct WindowsBackdrop::Impl
                     winrt::take_ownership_from_abi,
                 };
                 dispatcherQueue = dispatcherController.DispatcherQueue();
-                LOG_INFO(LogCategory, "Created dedicated Windows.System composition dispatcher");
+                LOG_INFO(LogCategory, "Created Windows.System composition dispatcher on Qt UI thread");
             }
             if (!compositor) {
-                invokeOnCompositionThread([this]() {
-                    compositor = winrt::Windows::UI::Composition::Compositor();
-                });
+                compositor = winrt::Windows::UI::Composition::Compositor();
             }
             return true;
         } catch (const winrt::hresult_error& error) {
@@ -219,23 +184,21 @@ struct WindowsBackdrop::Impl
 
         const auto theme = currentTheme();
         const bool dark = usesDarkTheme();
-        invokeOnCompositionThread([&backdrop, theme, dark]() {
-            if (!backdrop.configuration) {
-                return;
-            }
+        if (!backdrop.configuration) {
+            return;
+        }
 
-            // These tray surfaces intentionally avoid activation. Always report
-            // them as input-active so Windows keeps the live acrylic recipe.
-            backdrop.configuration.IsInputActive(true);
-            backdrop.configuration.Theme(theme);
+        // These tray surfaces intentionally avoid activation. Always report
+        // them as input-active so Windows keeps the live acrylic recipe.
+        backdrop.configuration.IsInputActive(true);
+        backdrop.configuration.Theme(theme);
 
-            // Keep the tint transparent so the backdrop supplies the hue.
-            const auto neutralColor = dark ? color(32, 32, 32) : color(243, 243, 243);
-            backdrop.controller.TintColor(neutralColor);
-            backdrop.controller.TintOpacity(0.0f);
-            backdrop.controller.LuminosityOpacity(dark ? 0.91f : 0.85f);
-            backdrop.controller.FallbackColor(neutralColor);
-        });
+        // Keep the tint transparent so the backdrop supplies the hue.
+        const auto neutralColor = dark ? color(32, 32, 32) : color(243, 243, 243);
+        backdrop.controller.TintColor(neutralColor);
+        backdrop.controller.TintOpacity(0.0f);
+        backdrop.controller.LuminosityOpacity(dark ? 0.91f : 0.85f);
+        backdrop.controller.FallbackColor(neutralColor);
     }
 
     void updateAllConfigurations()
@@ -255,15 +218,9 @@ struct WindowsBackdrop::Impl
 
         QObject::disconnect(iterator->second->visibleConnection);
         QObject::disconnect(iterator->second->destroyedConnection);
-        WindowBackdrop* backdrop = iterator->second.get();
-        invokeOnCompositionThread([backdrop]() {
-            if (backdrop->controller) {
-                backdrop->controller.Close();
-            }
-            backdrop->controller = nullptr;
-            backdrop->configuration = nullptr;
-            backdrop->target = nullptr;
-        });
+        if (iterator->second->controller) {
+            iterator->second->controller.Close();
+        }
         backdrops.erase(iterator);
     }
 };
@@ -287,22 +244,19 @@ WindowsBackdrop::~WindowsBackdrop()
     while (!m_impl->backdrops.empty()) {
         m_impl->remove(m_impl->backdrops.begin()->first);
     }
-    if (m_impl->dispatcherQueue) {
-        try {
-            m_impl->invokeOnCompositionThread([this]() {
-                m_impl->compositor = nullptr;
-            });
-        } catch (const winrt::hresult_error& error) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to release the composition thread: %1")
-                         .arg(formatHresult(error.code())));
-        }
-    }
+    m_impl->compositor = nullptr;
+    m_impl->dispatcherQueue = nullptr;
     if (m_impl->dispatcherController) {
         try {
             const auto shutdown = m_impl->dispatcherController.ShutdownQueueAsync();
             while (shutdown.Status() == winrt::Windows::Foundation::AsyncStatus::Started) {
-                Sleep(1);
+                MSG message;
+                if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
+                    TranslateMessage(&message);
+                    DispatchMessage(&message);
+                } else {
+                    MsgWaitForMultipleObjects(0, nullptr, FALSE, 10, QS_ALLINPUT);
+                }
             }
             shutdown.GetResults();
         } catch (const winrt::hresult_error& error) {
@@ -312,7 +266,6 @@ WindowsBackdrop::~WindowsBackdrop()
         }
         m_impl->dispatcherController = nullptr;
     }
-    m_impl->dispatcherQueue = nullptr;
 
     if (m_instance == this) {
         m_instance = nullptr;
@@ -420,51 +373,37 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
 
         auto backdrop = std::make_unique<Impl::WindowBackdrop>();
         backdrop->window = window;
-        Impl::WindowBackdrop* backdropData = backdrop.get();
         const auto theme = currentTheme();
         const bool dark = usesDarkTheme();
-        const int state = m_impl->invokeOnCompositionThread(
-            [this, backdropData, hwnd, theme, dark]() -> int {
-                auto compositorInterop = m_impl->compositor.as<
-                    ABI::Windows::UI::Composition::Desktop::ICompositorDesktopInterop>();
-                Impl::DesktopWindowTarget target{nullptr};
-                winrt::check_hresult(compositorInterop->CreateDesktopWindowTarget(
-                    hwnd,
-                    true,
-                    reinterpret_cast<
-                        ABI::Windows::UI::Composition::Desktop::IDesktopWindowTarget**>(
-                        winrt::put_abi(target))));
+        auto compositorInterop = m_impl->compositor.as<
+            ABI::Windows::UI::Composition::Desktop::ICompositorDesktopInterop>();
+        winrt::check_hresult(compositorInterop->CreateDesktopWindowTarget(
+            hwnd,
+            true,
+            reinterpret_cast<ABI::Windows::UI::Composition::Desktop::IDesktopWindowTarget**>(
+                winrt::put_abi(backdrop->target))));
 
-                auto configuration = Impl::BackdropConfiguration();
-                configuration.IsInputActive(true);
-                configuration.Theme(theme);
+        backdrop->configuration = Impl::BackdropConfiguration();
+        backdrop->configuration.IsInputActive(true);
+        backdrop->configuration.Theme(theme);
 
-                auto controller = Impl::AcrylicController();
-                controller.Kind(
-                    winrt::Microsoft::UI::Composition::SystemBackdrops::DesktopAcrylicKind::Thin);
-                const auto neutralColor =
-                    dark ? color(32, 32, 32) : color(243, 243, 243);
-                controller.TintColor(neutralColor);
-                controller.TintOpacity(0.0f);
-                controller.LuminosityOpacity(dark ? 0.91f : 0.85f);
-                controller.FallbackColor(neutralColor);
-                controller.SetSystemBackdropConfiguration(configuration);
+        backdrop->controller = Impl::AcrylicController();
+        backdrop->controller.Kind(
+            winrt::Microsoft::UI::Composition::SystemBackdrops::DesktopAcrylicKind::Thin);
+        const auto neutralColor = dark ? color(32, 32, 32) : color(243, 243, 243);
+        backdrop->controller.TintColor(neutralColor);
+        backdrop->controller.TintOpacity(0.0f);
+        backdrop->controller.LuminosityOpacity(dark ? 0.91f : 0.85f);
+        backdrop->controller.FallbackColor(neutralColor);
+        backdrop->controller.SetSystemBackdropConfiguration(backdrop->configuration);
 
-                const auto windowId = winrt::Microsoft::UI::GetWindowIdFromWindow(hwnd);
-                if (!controller.SetTarget(windowId, target)) {
-                    controller.Close();
-                    return -1;
-                }
-
-                backdropData->target = target;
-                backdropData->configuration = configuration;
-                backdropData->controller = controller;
-                return static_cast<int>(controller.State());
-            });
-        if (state < 0) {
+        const auto windowId = winrt::Microsoft::UI::GetWindowIdFromWindow(hwnd);
+        if (!backdrop->controller.SetTarget(windowId, backdrop->target)) {
+            backdrop->controller.Close();
             LOG_WARN(LogCategory, "DesktopAcrylicController rejected the native window target");
             return applyDwmFallback(hwnd);
         }
+        const int state = static_cast<int>(backdrop->controller.State());
         LOG_INFO(LogCategory,
                  QString("Desktop acrylic attached with state %1")
                      .arg(state));

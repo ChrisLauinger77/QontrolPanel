@@ -89,14 +89,16 @@ int main(int argc, char *argv[])
     SetCurrentProcessExplicitAppUserModelID(L"ChrisLauinger77.QontrolPanel");
 #endif
 
-    const WindowsAppRuntimeGuard windowsAppRuntime;
-
     QLoggingCategory::setFilterRules(
         "qt.multimedia.*=false\n"
         "qt.qpa.mime*=false"
         );
 
     QApplication a(argc, argv);
+    // Keep the Windows App SDK and its dispatcher alive only while Qt's COM
+    // integration is alive. Destruction runs in reverse order, so this guard
+    // shuts the backdrop down before QApplication tears the platform down.
+    const WindowsAppRuntimeGuard windowsAppRuntime;
     a.setQuitOnLastWindowClosed(false);
     a.setOrganizationName("ChrisLauinger77");
     a.setApplicationName("QontrolPanel");
