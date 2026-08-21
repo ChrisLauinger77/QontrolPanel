@@ -25,11 +25,13 @@ private slots:
 private:
     QQmlApplicationEngine* engine;
     QWindow* panelWindow;
+    QWindow* mediaPanelWindow;
 
     void initializeQMLEngine();
     void destroyQMLEngine();
     void showPanel();
     void hidePanel();
+    bool isPanelWindow(HWND windowHandle) const;
 
     // Focus monitoring using Windows Event Hook
     void startFocusMonitoring();

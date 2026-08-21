@@ -30,7 +30,7 @@ The first process creates `PanelEngine`, which:
 - loads the `ChrisLauinger77.QontrolPanel` QML module and `Main.qml`;
 - registers a tray icon image provider;
 - listens for single-instance messages through `QLocalServer`;
-- installs a Windows foreground-window event hook while the panel is visible so the panel can hide when focus moves elsewhere.
+- installs a Windows foreground-window event hook while the panel is visible so the panel can hide when focus moves outside its grouped native surfaces.
 
 The UI is QML-first. Native behavior enters QML through C++ classes marked with `QML_ELEMENT` and, for app-wide state, `QML_SINGLETON`.
 
@@ -38,7 +38,7 @@ The UI is QML-first. Native behavior enters QML through C++ classes marked with 
 
 ### Panel and Application Lifecycle
 
-- `PanelEngine` owns the QML engine and top-level panel window.
+- `PanelEngine` owns the QML engine and coordinates the main controls and media panel windows as one focus group.
 - `SystemTray.qml` and related tray icon support expose the app as a tray utility.
 - `StartupShortcutBridge` manages startup shortcut behavior.
 - `LanguageBridge` applies the selected Qt translation and asks the QML engine to retranslate.
@@ -118,7 +118,7 @@ qt_add_qml_module(QontrolPanel
 
 Most UI is organized as:
 
-- top-level surfaces: `Main.qml`, `SettingsWindow.qml`, `MediaOverlay.qml`, `PowerMenu.qml`;
+- top-level surfaces: `Main.qml`, `MainMediaWindow.qml`, `SettingsWindow.qml`, `MediaOverlay.qml`, `PowerMenu.qml`;
 - settings panes under `qml/SettingsPane/`;
 - shared controls under `qml/Common/`;
 - QML singletons under `qml/Singletons/`.

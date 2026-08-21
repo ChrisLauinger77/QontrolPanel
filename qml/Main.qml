@@ -13,25 +13,19 @@ ApplicationWindow {
     visible: false
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
     color: "#00000000"
-    width: {
-        let baseWidth = 360
-        if (panel.taskbarPos === "left") {
-            baseWidth += UserSettings.xAxisMargin
-        }
-        if (panel.taskbarPos === "top" || panel.taskbarPos === "bottom" || panel.taskbarPos === "right") {
-            if (panel.taskbarPos === "right") {
-                baseWidth += UserSettings.xAxisMargin
-            } else {
-                baseWidth += UserSettings.xAxisMargin
-            }
-        }
-
-        return baseWidth
-    }
-    height: Math.min(preferredPanelHeight(), maximumPanelHeight())
+    width: 360
+    height: Math.max(1, Math.min(preferredPanelHeight(), maximumPanelHeight()))
 
     property bool isAnimatingIn: false
     property bool isAnimatingOut: false
+    property bool nativeBackdropActive: false
+    property real restingX: 0
+    property real restingY: 0
+    property real mediaRestingX: 0
+    property real mediaRestingY: 0
+    property alias mediaSurfaceWindow: mediaPanelWindow
+    // Preserve the original 24px spacer after the media content's 15px outer inset.
+    readonly property real panelGap: 9
     property string taskbarPos: {
         switch (UserSettings.panelPosition) {
             case 0: return "top";
@@ -54,19 +48,15 @@ ApplicationWindow {
     }
 
     function maximumPanelHeight() {
-        return Math.max(1, targetScreenGeometry.height)
+        let reservedHeight = UserSettings.yAxisMargin
+        if (mediaPanelWindow.available) {
+            reservedHeight += mediaPanelWindow.height + panelGap
+        }
+        return Math.max(1, targetScreenGeometry.height - reservedHeight)
     }
 
     function preferredPanelHeight() {
-        let newHeight = contentFlickable.contentHeight
-        if (mediaLayout.visible) {
-            newHeight += mediaLayout.anchors.topMargin
-            newHeight += mediaLayout.implicitHeight
-            newHeight += spacer.height
-        }
-        newHeight += UserSettings.yAxisMargin
-
-        return newHeight
+        return contentFlickable.contentHeight
     }
 
     onVisibleChanged: {
@@ -89,6 +79,19 @@ ApplicationWindow {
 
     Component.onCompleted: {
         Utils.setStyle(UserSettings.panelStyle)
+        updateNativeBackdrop()
+    }
+
+    function updateNativeBackdrop() {
+        nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(panel)
+    }
+
+    Connections {
+        target: Qt.application.styleHints
+
+        function onColorSchemeChanged() {
+            panel.updateNativeBackdrop()
+        }
     }
 
     PowerConfirmationWindow {
@@ -109,6 +112,24 @@ ApplicationWindow {
 
     Connections {
         target: UserSettings
+        function onPanelPositionChanged() {
+            if (panel.visible) {
+                panel.repositionWindows()
+            }
+        }
+
+        function onXAxisMarginChanged() {
+            if (panel.visible) {
+                panel.repositionWindows()
+            }
+        }
+
+        function onYAxisMarginChanged() {
+            if (panel.visible) {
+                panel.repositionWindows()
+            }
+        }
+
         function onEnableMediaSessionManagerChanged() {
             if (UserSettings.enableMediaSessionManager) {
                 MediaSessionBridge.startMediaMonitoring()
@@ -211,6 +232,13 @@ ApplicationWindow {
 
     MediaOverlay {}
 
+    MainMediaWindow {
+        id: mediaPanelWindow
+
+        onAvailableChanged: panel.handleMediaAvailabilityChanged()
+        onHideRequested: panel.hidePanel()
+    }
+
     Timer {
         id: contentOpacityTimer
         interval: 160
@@ -222,20 +250,32 @@ ApplicationWindow {
         id: flyoutOpacityTimer
         interval: 160
         repeat: false
-        onTriggered: mediaLayout.opacity = 1
+        onTriggered: mediaPanelWindow.contentOpacity = 1
     }
 
     onHeightChanged: {
-        if (visible && !isAnimatingOut) {
-            positionPanelAtTarget()
+        if (visible) {
+            repositionWindows()
         }
     }
 
-    PropertyAnimation {
+    ParallelAnimation {
         id: showAnimation
-        target: contentTransform
-        duration: 300
-        easing.type: Easing.OutCubic
+
+        PropertyAnimation {
+            id: mainShowAnimation
+            target: panel
+            duration: 300
+            easing.type: Easing.OutCubic
+        }
+
+        PropertyAnimation {
+            id: mediaShowAnimation
+            target: mediaPanelWindow
+            duration: 300
+            easing.type: Easing.OutCubic
+        }
+
         onStarted: {
             contentOpacityTimer.start()
             flyoutOpacityTimer.start()
@@ -245,21 +285,44 @@ ApplicationWindow {
         }
     }
 
-    PropertyAnimation {
+    ParallelAnimation {
         id: hideAnimation
-        target: contentTransform
-        duration: 300
-        easing.type: Easing.InCubic
+
+        PropertyAnimation {
+            id: mainHideAnimation
+            target: panel
+            duration: 300
+            easing.type: Easing.InCubic
+        }
+
+        PropertyAnimation {
+            id: mediaHideAnimation
+            target: mediaPanelWindow
+            duration: 300
+            easing.type: Easing.InCubic
+        }
+
         onFinished: {
             panel.visible = false
+            mediaPanelWindow.visible = false
             panel.isAnimatingOut = false
+            panel.resetWindowPositions()
         }
     }
 
-    Translate {
-        id: contentTransform
-        property real x: 0
-        property real y: 0
+    function animationProperty() {
+        return panel.taskbarPos === "left" || panel.taskbarPos === "right" ? "x" : "y"
+    }
+
+    function showAnimationProgress() {
+        const currentPosition = mainShowAnimation.property === "x" ? panel.x : panel.y
+        const totalDistance = Math.abs(mainShowAnimation.to - mainShowAnimation.from)
+        if (totalDistance <= 0) {
+            return 1
+        }
+
+        return Math.max(0, Math.min(1,
+                                    1 - Math.abs(mainShowAnimation.to - currentPosition) / totalDistance))
     }
 
     function togglePanel() {
@@ -272,20 +335,8 @@ ApplicationWindow {
             isAnimatingIn = false
             closeAllMenusAndCollapse()
 
-            // Calculate progress and adjust hide animation duration
-            let progress = 0
-            if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
-                let initialOffset = Math.abs(showAnimation.from)
-                let currentOffset = Math.abs(contentTransform.x)
-                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
-            } else {
-                let initialOffset = Math.abs(showAnimation.from)
-                let currentOffset = Math.abs(contentTransform.y)
-                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
-            }
-
-            let adjustedDuration = Math.max(50, Math.round(progress * 300))
-            hideAnimation.duration = adjustedDuration
+            const adjustedDuration = Math.max(50, Math.round(showAnimationProgress() * 300))
+            setHideDuration(adjustedDuration)
             startHideAnimation()
             return
         }
@@ -303,22 +354,24 @@ ApplicationWindow {
         }
 
         isAnimatingIn = true
+        positionWindowsAtTarget(true)
+        setInitialWindowPositions()
+
+        mediaPanelWindow.visible = mediaPanelWindow.available
         panel.visible = true
         panel.requestActivate()
 
-        positionPanelAtTarget(true)
-        setInitialTransform()
-
         Qt.callLater(function() {
             Qt.callLater(function() {
-                positionPanelAtTarget()
+                positionWindowsAtTarget()
+                setInitialWindowPositions()
 
                 Qt.callLater(panel.startAnimation)
             })
         })
     }
 
-    function positionPanelAtTarget(refreshGeometry) {
+    function positionWindowsAtTarget(refreshGeometry) {
         if (refreshGeometry) {
             refreshTargetScreenGeometry()
         }
@@ -328,58 +381,100 @@ ApplicationWindow {
         const screenWidth = targetScreenGeometry.width
         const screenHeight = targetScreenGeometry.height
 
-        let targetX = screenX + screenWidth - panel.width
-        let targetY = screenY + screenHeight - panel.height
+        const marginX = UserSettings.xAxisMargin
+        const marginY = UserSettings.yAxisMargin
 
-        switch (panel.taskbarPos) {
-        case "top":
-            targetX = screenX + screenWidth - panel.width
-            targetY = screenY
-            break
-        case "bottom":
-            targetX = screenX + screenWidth - panel.width
-            targetY = screenY + screenHeight - panel.height
-            break
-        case "left":
-            targetX = screenX
-            targetY = screenY + screenHeight - panel.height
-            break
-        case "right":
-            targetX = screenX + screenWidth - panel.width
-            targetY = screenY + screenHeight - panel.height
-            break
-        }
+        const targetX = panel.taskbarPos === "left"
+                ? screenX + marginX
+                : screenX + screenWidth - panel.width - marginX
+        restingX = Math.max(screenX,
+                            Math.min(targetX, screenX + screenWidth - panel.width))
+        restingY = panel.taskbarPos === "top"
+                ? screenY + marginY
+                  + (mediaPanelWindow.available ? mediaPanelWindow.height + panelGap : 0)
+                : screenY + screenHeight - panel.height - marginY
 
-        const minX = screenX
-        const maxX = Math.max(minX, screenX + screenWidth - panel.width)
-        const minY = screenY
-        const maxY = Math.max(minY, screenY + screenHeight - panel.height)
+        mediaRestingX = restingX
+        mediaRestingY = panel.taskbarPos === "top"
+                ? screenY + marginY
+                : restingY - mediaPanelWindow.height - panelGap
 
-        panel.x = Math.max(minX, Math.min(targetX, maxX))
-        panel.y = Math.max(minY, Math.min(targetY, maxY))
+        resetWindowPositions()
     }
 
-    function setInitialTransform() {
+    function resetWindowPositions() {
+        panel.x = restingX
+        panel.y = restingY
+        mediaPanelWindow.x = mediaRestingX
+        mediaPanelWindow.y = mediaRestingY
+    }
+
+    function repositionWindows() {
+        const wasAnimatingIn = showAnimation.running
+        const wasAnimatingOut = hideAnimation.running
+        const currentPanelX = panel.x
+        const currentPanelY = panel.y
+        const currentMediaX = mediaPanelWindow.x
+        const currentMediaY = mediaPanelWindow.y
+
+        if (wasAnimatingIn) {
+            showAnimation.stop()
+        } else if (wasAnimatingOut) {
+            hideAnimation.stop()
+        }
+
+        positionWindowsAtTarget()
+
+        if (!wasAnimatingIn && !wasAnimatingOut) {
+            return
+        }
+
+        if (animationProperty() === "x") {
+            panel.x = currentPanelX
+            panel.y = restingY
+            mediaPanelWindow.x = currentMediaX
+            mediaPanelWindow.y = mediaRestingY
+        } else {
+            panel.x = restingX
+            panel.y = currentPanelY
+            mediaPanelWindow.x = mediaRestingX
+            mediaPanelWindow.y = currentMediaY
+        }
+
+        if (wasAnimatingIn) {
+            startAnimation()
+        } else {
+            configureHideAnimation()
+            hideAnimation.start()
+        }
+    }
+
+    function setInitialWindowPositions() {
+        resetWindowPositions()
+        const verticalDistance = panel.height
+                + (mediaPanelWindow.available ? mediaPanelWindow.height + panelGap : 0)
+        const horizontalDistance = panel.width + UserSettings.xAxisMargin
+
         switch (panel.taskbarPos) {
         case "top":
-            contentTransform.y = -cont.height
-            contentTransform.x = 0
+            panel.y -= verticalDistance
+            mediaPanelWindow.y -= verticalDistance
             break
         case "bottom":
-            contentTransform.y = cont.height
-            contentTransform.x = 0
+            panel.y += verticalDistance
+            mediaPanelWindow.y += verticalDistance
             break
         case "left":
-            contentTransform.x = -cont.width
-            contentTransform.y = 0
+            panel.x -= horizontalDistance
+            mediaPanelWindow.x -= horizontalDistance
             break
         case "right":
-            contentTransform.x = cont.width
-            contentTransform.y = 0
+            panel.x += horizontalDistance
+            mediaPanelWindow.x += horizontalDistance
             break
         default:
-            contentTransform.y = cont.height
-            contentTransform.x = 0
+            panel.y += verticalDistance
+            mediaPanelWindow.y += verticalDistance
             break
         }
     }
@@ -387,9 +482,13 @@ ApplicationWindow {
     function startAnimation() {
         if (!isAnimatingIn) return
 
-        showAnimation.properties = panel.taskbarPos === "left" || panel.taskbarPos === "right" ? "x" : "y"
-        showAnimation.from = panel.taskbarPos === "left" || panel.taskbarPos === "right" ? contentTransform.x : contentTransform.y
-        showAnimation.to = 0
+        const propertyName = animationProperty()
+        mainShowAnimation.property = propertyName
+        mainShowAnimation.from = propertyName === "x" ? panel.x : panel.y
+        mainShowAnimation.to = propertyName === "x" ? restingX : restingY
+        mediaShowAnimation.property = propertyName
+        mediaShowAnimation.from = propertyName === "x" ? mediaPanelWindow.x : mediaPanelWindow.y
+        mediaShowAnimation.to = propertyName === "x" ? mediaRestingX : mediaRestingY
         showAnimation.start()
     }
 
@@ -402,22 +501,10 @@ ApplicationWindow {
             showAnimation.stop()
             isAnimatingIn = false
 
-            // Calculate progress and adjust hide animation duration
-            let progress = 0
-            if (panel.taskbarPos === "left" || panel.taskbarPos === "right") {
-                let initialOffset = Math.abs(showAnimation.from)
-                let currentOffset = Math.abs(contentTransform.x)
-                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
-            } else {
-                let initialOffset = Math.abs(showAnimation.from)
-                let currentOffset = Math.abs(contentTransform.y)
-                progress = initialOffset > 0 ? (initialOffset - currentOffset) / initialOffset : 1
-            }
-
-            let adjustedDuration = Math.max(50, Math.round(progress * 300))
-            hideAnimation.duration = adjustedDuration
+            const adjustedDuration = Math.max(50, Math.round(showAnimationProgress() * 300))
+            setHideDuration(adjustedDuration)
         } else {
-            hideAnimation.duration = 300
+            setHideDuration(300)
         }
 
         closeAllMenusAndCollapse()
@@ -465,36 +552,58 @@ ApplicationWindow {
 
     function startHideAnimation() {
         isAnimatingOut = true
+        configureHideAnimation()
+        hideAnimation.start()
+    }
+
+    function setHideDuration(duration) {
+        mainHideAnimation.duration = duration
+        mediaHideAnimation.duration = duration
+    }
+
+    function configureHideAnimation() {
+        const propertyName = animationProperty()
+        const verticalDistance = panel.height
+                + (mediaPanelWindow.available ? mediaPanelWindow.height + panelGap : 0)
+        const horizontalDistance = panel.width + UserSettings.xAxisMargin
+
+        mainHideAnimation.property = propertyName
+        mainHideAnimation.from = propertyName === "x" ? panel.x : panel.y
+        mediaHideAnimation.property = propertyName
+        mediaHideAnimation.from = propertyName === "x" ? mediaPanelWindow.x : mediaPanelWindow.y
 
         switch (panel.taskbarPos) {
         case "top":
-            hideAnimation.properties = "y"
-            hideAnimation.from = contentTransform.y
-            hideAnimation.to = -height
+            mainHideAnimation.to = restingY - verticalDistance
+            mediaHideAnimation.to = mediaRestingY - verticalDistance
             break
         case "bottom":
-            hideAnimation.properties = "y"
-            hideAnimation.from = contentTransform.y
-            hideAnimation.to = height
+            mainHideAnimation.to = restingY + verticalDistance
+            mediaHideAnimation.to = mediaRestingY + verticalDistance
             break
         case "left":
-            hideAnimation.properties = "x"
-            hideAnimation.from = contentTransform.x
-            hideAnimation.to = -width
+            mainHideAnimation.to = restingX - horizontalDistance
+            mediaHideAnimation.to = mediaRestingX - horizontalDistance
             break
         case "right":
-            hideAnimation.properties = "x"
-            hideAnimation.from = contentTransform.x
-            hideAnimation.to = width
+            mainHideAnimation.to = restingX + horizontalDistance
+            mediaHideAnimation.to = mediaRestingX + horizontalDistance
             break
         default:
-            hideAnimation.properties = "y"
-            hideAnimation.from = contentTransform.y
-            hideAnimation.to = height
+            mainHideAnimation.to = restingY + verticalDistance
+            mediaHideAnimation.to = mediaRestingY + verticalDistance
             break
         }
+    }
 
-        hideAnimation.start()
+    function handleMediaAvailabilityChanged() {
+        if (!visible) {
+            mediaPanelWindow.visible = false
+            return
+        }
+
+        mediaPanelWindow.visible = mediaPanelWindow.available
+        repositionWindows()
     }
 
     function shouldShowSeparator(currentLayoutIndex) {
@@ -541,135 +650,28 @@ ApplicationWindow {
         anchors.top: UserSettings.panelPosition === 0 ? parent.top : undefined
         anchors.right: parent.right
         anchors.left: parent.left
-        transform: Translate {
-            x: contentTransform.x
-            y: contentTransform.y
-        }
-
-        width: {
-            let baseWidth = 360 + 30
-            if (panel.taskbarPos === "left") {
-                baseWidth += UserSettings.xAxisMargin + UserSettings.taskbarOffset
-            }
-            if (panel.taskbarPos === "top" || panel.taskbarPos === "bottom" || panel.taskbarPos === "right") {
-                if (panel.taskbarPos === "right") {
-                    baseWidth += UserSettings.xAxisMargin + UserSettings.taskbarOffset
-                } else {
-                    baseWidth += UserSettings.xAxisMargin
-                }
-            }
-            return baseWidth
-        }
 
         height: panel.height
 
         GridLayout {
             id: mainGrid
             anchors.fill: parent
-            columns: 3
-            rows: 3
+            columns: 1
+            rows: 1
             columnSpacing: 0
             rowSpacing: 0
-
-            PanelSpacer {
-                id: topSpacer
-                Layout.row: 0
-                Layout.column: 0
-                Layout.columnSpan: 3
-                Layout.fillWidth: true
-                Layout.preferredHeight: (panel.taskbarPos === "top") ? UserSettings.yAxisMargin : 0
-                visible: panel.taskbarPos === "top"
-                onClicked: panel.hidePanel()
-            }
-
-            PanelSpacer {
-                id: leftSpacer
-                Layout.row: 1
-                Layout.column: 0
-                Layout.fillHeight: true
-                Layout.preferredWidth: (panel.taskbarPos === "left") ? UserSettings.xAxisMargin : 0
-                visible: panel.taskbarPos === "left"
-                onClicked: panel.hidePanel()
-            }
 
             Item {
                 id: contentContainer
                 clip: true
-                Layout.row: 1
-                Layout.column: 1
+                Layout.row: 0
+                Layout.column: 0
                 Layout.fillHeight: true
                 Layout.preferredWidth: 360
 
-                Rectangle {
-                    id: mediaLayoutBackground
-                    anchors.fill: mediaLayout
-                    anchors.margins: -15
-                    color: Constants.panelColor
-                    visible: mediaLayout.visible
-                    radius: 12
-                    opacity: 0
-                    onVisibleChanged: {
-                        if (visible) {
-                            fadeInAnimation.start()
-                        } else {
-                            fadeOutAnimation.start()
-                        }
-                    }
-
-                    PropertyAnimation {
-                        id: fadeInAnimation
-                        target: mediaLayoutBackground
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: 400
-                        easing.type: Easing.OutQuad
-                    }
-
-                    PropertyAnimation {
-                        id: fadeOutAnimation
-                        target: mediaLayoutBackground
-                        property: "opacity"
-                        from: 1
-                        to: 0
-                        duration: 400
-                        easing.type: Easing.OutQuad
-                    }
-
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#00000000"
-                        radius: 12
-                        border.width: 1
-                        border.color: "#E3E3E3"
-                        opacity: 0.2
-                    }
-                }
-
-                MediaFlyoutContent {
-                    id: mediaLayout
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.topMargin: 15
-                    anchors.leftMargin: 15
-                    anchors.rightMargin: 15
-                    anchors.bottomMargin: 0
-                    visible: UserSettings.enableMediaSessionManager && (MediaSessionBridge.mediaTitle !== "")
-                }
-
-                Item {
-                    id: spacer
-                    anchors.top: mediaLayout.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: 24
-                    visible: mediaLayout.visible
-                }
-
                 Flickable {
                     id: contentFlickable
-                    anchors.top: mediaLayout.visible ? spacer.bottom : parent.top
+                    anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -683,7 +685,7 @@ ApplicationWindow {
                     Rectangle {
                         anchors.fill: mainLayout
                         anchors.margins: -15
-                        color: Constants.panelColor
+                        color: panel.nativeBackdropActive ? "transparent" : Constants.panelColor
                         radius: 12
                         Rectangle {
                             anchors.fill: parent
@@ -1207,38 +1209,6 @@ ApplicationWindow {
                 }
             }
 
-            PanelSpacer {
-                id: rightSpacer
-                Layout.row: 1
-                Layout.column: 2
-                Layout.fillHeight: true
-                Layout.preferredWidth: {
-                    if (panel.taskbarPos === "top" || panel.taskbarPos === "bottom" || panel.taskbarPos === "right") {
-                        return UserSettings.xAxisMargin
-                    } else {
-                        return 0
-                    }
-                }
-                visible: panel.taskbarPos === "top" || panel.taskbarPos === "bottom" || panel.taskbarPos === "right"
-                onClicked: panel.hidePanel()
-            }
-
-            PanelSpacer {
-                id: bottomSpacer
-                Layout.row: 2
-                Layout.column: 0
-                Layout.columnSpan: 3
-                Layout.fillWidth: true
-                Layout.preferredHeight: {
-                    if (panel.taskbarPos === "bottom" || panel.taskbarPos === "left" || panel.taskbarPos === "right") {
-                        return UserSettings.yAxisMargin
-                    } else {
-                        return 0
-                    }
-                }
-                visible: panel.taskbarPos === "bottom" || panel.taskbarPos === "left" || panel.taskbarPos === "right"
-                onClicked: panel.hidePanel()
-            }
         }
     }
 

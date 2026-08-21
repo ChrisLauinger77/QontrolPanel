@@ -11,6 +11,7 @@
 #include <QQmlContext>
 #include <QTimer>
 #include <QFontMetrics>
+#include <QVariant>
 #include <Windows.h>
 #include <QProcess>
 
@@ -21,6 +22,7 @@ PanelEngine::PanelEngine(QWidget *parent)
     : QWidget(parent)
     , engine(nullptr)
     , panelWindow(nullptr)
+    , mediaPanelWindow(nullptr)
     , localServer(nullptr)
 {
     UserSettings::instance();
@@ -63,6 +65,11 @@ void PanelEngine::initializeQMLEngine()
     if (!engine->rootObjects().isEmpty()) {
         panelWindow = qobject_cast<QWindow*>(engine->rootObjects().constFirst());
         if (panelWindow) {
+            QObject* mediaWindowObject = panelWindow->property("mediaSurfaceWindow").value<QObject*>();
+            mediaPanelWindow = qobject_cast<QWindow*>(mediaWindowObject);
+            if (!mediaPanelWindow) {
+                qWarning() << "Main media panel window was not found";
+            }
             connect(panelWindow, &QWindow::visibleChanged,
                     this, &PanelEngine::onPanelVisibilityChanged);
         }
@@ -87,6 +94,17 @@ void PanelEngine::destroyQMLEngine()
         engine = nullptr;
     }
     panelWindow = nullptr;
+    mediaPanelWindow = nullptr;
+}
+
+bool PanelEngine::isPanelWindow(HWND windowHandle) const
+{
+    if (panelWindow && windowHandle == reinterpret_cast<HWND>(panelWindow->winId())) {
+        return true;
+    }
+
+    return mediaPanelWindow
+        && windowHandle == reinterpret_cast<HWND>(mediaPanelWindow->winId());
 }
 
 void PanelEngine::startFocusMonitoring()
@@ -120,9 +138,7 @@ void CALLBACK PanelEngine::WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event
     Q_UNUSED(dwmsEventTime)
 
     if (event == EVENT_SYSTEM_FOREGROUND && instance && instance->panelWindow && instance->isPanelVisible) {
-        HWND panelWindow = (HWND)instance->panelWindow->winId();
-
-        if (hwnd != panelWindow) {
+        if (!instance->isPanelWindow(hwnd)) {
             instance->stopFocusMonitoring();
             QMetaObject::invokeMethod(instance->panelWindow, "hidePanel");
         }

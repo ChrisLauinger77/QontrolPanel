@@ -159,6 +159,7 @@ set(QML_FILES
     qml/SettingsWindow.qml
 
     qml/MediaFlyoutContent.qml
+    qml/MainMediaWindow.qml
     qml/IntroWindow.qml
     qml/DonatePopup.qml
     qml/ConfirmPowerActionDialog.qml
