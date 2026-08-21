@@ -19,6 +19,7 @@ ApplicationWindow {
     property string notificationType: "chatmix" // "chatmix" or "micmute"
     property bool isMuted: false
     property bool chatMixEffectiveEnabled: false
+    property bool nativeBackdropActive: false
 
     transientParent: null
 
@@ -37,6 +38,19 @@ ApplicationWindow {
 
     Component.onCompleted: {
         positionWindow()
+        updateNativeBackdrop()
+    }
+
+    function updateNativeBackdrop() {
+        nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(notificationWindow)
+    }
+
+    Connections {
+        target: Qt.application.styleHints
+
+        function onColorSchemeChanged() {
+            notificationWindow.updateNativeBackdrop()
+        }
     }
 
     Connections {
@@ -240,7 +254,7 @@ ApplicationWindow {
     Rectangle {
         id: notificationRect
         anchors.fill: parent
-        color: Constants.panelColor
+        color: notificationWindow.nativeBackdropActive ? "transparent" : Constants.panelColor
         radius: 5
         opacity: 0
 

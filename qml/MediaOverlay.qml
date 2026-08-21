@@ -18,6 +18,7 @@ ApplicationWindow {
     property string previousTitle: ""
     property string previousArtist: ""
     property bool hasReceivedFirstUpdate: false
+    property bool nativeBackdropActive: false
 
     transientParent: null
 
@@ -36,6 +37,19 @@ ApplicationWindow {
 
     Component.onCompleted: {
         positionWindow()
+        updateNativeBackdrop()
+    }
+
+    function updateNativeBackdrop() {
+        nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(mediaOverlayWindow)
+    }
+
+    Connections {
+        target: Qt.application.styleHints
+
+        function onColorSchemeChanged() {
+            mediaOverlayWindow.updateNativeBackdrop()
+        }
     }
 
     Connections {
@@ -315,7 +329,7 @@ ApplicationWindow {
     Rectangle {
         id: overlayRect
         anchors.fill: parent
-        color: Constants.panelColor
+        color: mediaOverlayWindow.nativeBackdropActive ? "transparent" : Constants.panelColor
         radius: 5
         opacity: 0
 
