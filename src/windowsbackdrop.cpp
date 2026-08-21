@@ -2,36 +2,19 @@
 
 #include "logmanager.h"
 
-#include <QDebug>
 #include <QGuiApplication>
 #include <QPointer>
 #include <QStyleHints>
 #include <QWindow>
 
 #include <windows.h>
-#include <dispatcherqueue.h>
 #include <dwmapi.h>
-
-#include <MddBootstrap.h>
-#include <WindowsAppSDK-VersionInfo.h>
-#include <Windows.UI.Composition.Interop.h>
-
-#include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
-#include <winrt/Microsoft.UI.Interop.h>
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.System.h>
-#include <winrt/Windows.UI.h>
-#include <winrt/Windows.UI.Composition.Desktop.h>
-#include <winrt/Windows.UI.Composition.h>
 
 #include <memory>
 #include <unordered_map>
 
 namespace {
 constexpr char LogCategory[] = "WindowsBackdrop";
-
-bool runtimeInitialized = false;
-bool apartmentInitialized = false;
 
 QString formatHresult(HRESULT result)
 {
@@ -44,28 +27,63 @@ QWindow* windowFromObject(QObject* windowObject)
     return qobject_cast<QWindow*>(windowObject);
 }
 
-winrt::Microsoft::UI::Composition::SystemBackdrops::SystemBackdropTheme currentTheme()
-{
-    using Theme = winrt::Microsoft::UI::Composition::SystemBackdrops::SystemBackdropTheme;
-
-    switch (QGuiApplication::styleHints()->colorScheme()) {
-    case Qt::ColorScheme::Dark:
-        return Theme::Dark;
-    case Qt::ColorScheme::Light:
-        return Theme::Light;
-    default:
-        return Theme::Default;
-    }
-}
-
 bool usesDarkTheme()
 {
     return QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
 }
 
-winrt::Windows::UI::Color color(BYTE red, BYTE green, BYTE blue)
+struct AccentPolicy
 {
-    return winrt::Windows::UI::Color{255, red, green, blue};
+    DWORD state;
+    DWORD flags;
+    DWORD gradientColor;
+    DWORD animationId;
+};
+
+struct CompositionAttributeData
+{
+    DWORD attribute;
+    void* data;
+    SIZE_T dataSize;
+};
+
+using SetWindowCompositionAttributeFunction =
+    BOOL(WINAPI*)(HWND, const CompositionAttributeData*);
+
+bool applyWindowAcrylic(HWND hwnd, bool enabled)
+{
+    // This compatibility API has no import library or public structure
+    // declarations. Resolve it dynamically so unsupported systems retain the
+    // documented DWM transient-backdrop fallback.
+    static const auto setWindowCompositionAttribute =
+        reinterpret_cast<SetWindowCompositionAttributeFunction>(GetProcAddress(
+            GetModuleHandleW(L"user32.dll"),
+            "SetWindowCompositionAttribute"));
+    if (!setWindowCompositionAttribute) {
+        return false;
+    }
+
+    constexpr DWORD accentDisabled = 0;
+    constexpr DWORD accentEnableAcrylicBlurBehind = 4;
+    constexpr DWORD accentPolicyAttribute = 19;
+    constexpr DWORD useGradientColor = 2;
+    // AABBGGRR: retain a luminosity layer while allowing the live desktop hue
+    // behind the popup to remain visible.
+    constexpr DWORD darkAcrylicGradient = 0x99202020;
+    constexpr DWORD lightAcrylicGradient = 0x99F3F3F3;
+
+    AccentPolicy policy{
+        enabled ? accentEnableAcrylicBlurBehind : accentDisabled,
+        enabled ? useGradientColor : 0,
+        enabled ? (usesDarkTheme() ? darkAcrylicGradient : lightAcrylicGradient) : 0,
+        0,
+    };
+    const CompositionAttributeData attributeData{
+        accentPolicyAttribute,
+        &policy,
+        sizeof(policy),
+    };
+    return setWindowCompositionAttribute(hwnd, &attributeData) != FALSE;
 }
 
 bool applyDwmFallback(HWND hwnd)
@@ -82,13 +100,12 @@ bool applyDwmFallback(HWND hwnd)
                      .arg(formatHresult(result)));
         return false;
     }
-
     return true;
 }
 
 void applyCommonDwmAttributes(HWND hwnd)
 {
-    const BOOL useDarkMode = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
+    const BOOL useDarkMode = usesDarkTheme();
     const HRESULT darkModeResult = DwmSetWindowAttribute(
         hwnd,
         DWMWA_USE_IMMERSIVE_DARK_MODE,
@@ -112,116 +129,68 @@ void applyCommonDwmAttributes(HWND hwnd)
                      .arg(formatHresult(cornerResult)));
     }
 }
+
+bool applyMaterial(QWindow* window)
+{
+    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
+    if (!hwnd) {
+        return false;
+    }
+
+    applyCommonDwmAttributes(hwnd);
+    if (applyWindowAcrylic(hwnd, true)) {
+        return true;
+    }
+    return applyDwmFallback(hwnd);
+}
+
+void clearMaterial(QWindow* window)
+{
+    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
+    if (!hwnd) {
+        return;
+    }
+
+    applyWindowAcrylic(hwnd, false);
+    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
+    const HRESULT result = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_SYSTEMBACKDROP_TYPE,
+        &backdropType,
+        sizeof(backdropType));
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to remove system backdrop: %1")
+                     .arg(formatHresult(result)));
+    }
+}
 }
 
 struct WindowsBackdrop::Impl
 {
-    using AcrylicController =
-        winrt::Microsoft::UI::Composition::SystemBackdrops::DesktopAcrylicController;
-    using BackdropConfiguration =
-        winrt::Microsoft::UI::Composition::SystemBackdrops::SystemBackdropConfiguration;
-    using DesktopWindowTarget =
-        winrt::Windows::UI::Composition::Desktop::DesktopWindowTarget;
-
-    struct WindowBackdrop
+    struct TrackedWindow
     {
         QPointer<QWindow> window;
-        DesktopWindowTarget target{nullptr};
-        AcrylicController controller{nullptr};
-        BackdropConfiguration configuration{nullptr};
         QMetaObject::Connection visibleConnection;
         QMetaObject::Connection destroyedConnection;
     };
 
-    winrt::Windows::System::DispatcherQueue dispatcherQueue{nullptr};
-    winrt::Windows::System::DispatcherQueueController dispatcherController{nullptr};
-    winrt::Windows::UI::Composition::Compositor compositor{nullptr};
-    std::unordered_map<QWindow*, std::unique_ptr<WindowBackdrop>> backdrops;
+    std::unordered_map<QWindow*, std::unique_ptr<TrackedWindow>> windows;
     QMetaObject::Connection themeConnection;
 
-    bool ensureCompositionInfrastructure()
+    void remove(QWindow* window, bool resetMaterial)
     {
-        if (!runtimeInitialized || !AcrylicController::IsSupported()) {
-            return false;
-        }
-
-        try {
-            if (!dispatcherQueue) {
-                // Qt owns and pumps this HWND thread. Windows composition must
-                // use a DispatcherQueue on the same thread as the compositor
-                // and DesktopWindowTarget; COM is already initialized here.
-                const DispatcherQueueOptions options{
-                    sizeof(DispatcherQueueOptions),
-                    DQTYPE_THREAD_CURRENT,
-                    DQTAT_COM_NONE,
-                };
-                ABI::Windows::System::IDispatcherQueueController* controller = nullptr;
-                winrt::check_hresult(CreateDispatcherQueueController(options, &controller));
-                dispatcherController = {
-                    controller,
-                    winrt::take_ownership_from_abi,
-                };
-                dispatcherQueue = dispatcherController.DispatcherQueue();
-                LOG_INFO(LogCategory, "Created Windows.System composition dispatcher on Qt UI thread");
-            }
-            if (!compositor) {
-                compositor = winrt::Windows::UI::Composition::Compositor();
-            }
-            return true;
-        } catch (const winrt::hresult_error& error) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to initialize Windows App SDK composition: %1")
-                         .arg(formatHresult(error.code())));
-            return false;
-        }
-    }
-
-    void updateConfiguration(WindowBackdrop& backdrop)
-    {
-        if (!backdrop.window) {
-            return;
-        }
-
-        const auto theme = currentTheme();
-        const bool dark = usesDarkTheme();
-        if (!backdrop.configuration) {
-            return;
-        }
-
-        // These tray surfaces intentionally avoid activation. Always report
-        // them as input-active so Windows keeps the live acrylic recipe.
-        backdrop.configuration.IsInputActive(true);
-        backdrop.configuration.Theme(theme);
-
-        // Keep the tint transparent so the backdrop supplies the hue.
-        const auto neutralColor = dark ? color(32, 32, 32) : color(243, 243, 243);
-        backdrop.controller.TintColor(neutralColor);
-        backdrop.controller.TintOpacity(0.0f);
-        backdrop.controller.LuminosityOpacity(dark ? 0.91f : 0.85f);
-        backdrop.controller.FallbackColor(neutralColor);
-    }
-
-    void updateAllConfigurations()
-    {
-        for (const auto& [window, backdrop] : backdrops) {
-            Q_UNUSED(window)
-            updateConfiguration(*backdrop);
-        }
-    }
-
-    void remove(QWindow* window)
-    {
-        auto iterator = backdrops.find(window);
-        if (iterator == backdrops.end()) {
+        auto iterator = windows.find(window);
+        if (iterator == windows.end()) {
             return;
         }
 
         QObject::disconnect(iterator->second->visibleConnection);
         QObject::disconnect(iterator->second->destroyedConnection);
-        if (iterator->second->controller) {
-            iterator->second->controller.Close();
+        if (resetMaterial && iterator->second->window) {
+            clearMaterial(iterator->second->window);
         }
-        backdrops.erase(iterator);
+        windows.erase(iterator);
     }
 };
 
@@ -235,89 +204,24 @@ WindowsBackdrop::WindowsBackdrop(QObject* parent)
         QGuiApplication::styleHints(),
         &QStyleHints::colorSchemeChanged,
         this,
-        [this]() { m_impl->updateAllConfigurations(); });
+        [this]() {
+            for (const auto& [window, trackedWindow] : m_impl->windows) {
+                Q_UNUSED(window)
+                if (trackedWindow->window) {
+                    applyMaterial(trackedWindow->window);
+                }
+            }
+        });
 }
 
 WindowsBackdrop::~WindowsBackdrop()
 {
     QObject::disconnect(m_impl->themeConnection);
-    while (!m_impl->backdrops.empty()) {
-        m_impl->remove(m_impl->backdrops.begin()->first);
+    while (!m_impl->windows.empty()) {
+        m_impl->remove(m_impl->windows.begin()->first, true);
     }
-    m_impl->compositor = nullptr;
-    m_impl->dispatcherQueue = nullptr;
-    if (m_impl->dispatcherController) {
-        try {
-            const auto shutdown = m_impl->dispatcherController.ShutdownQueueAsync();
-            while (shutdown.Status() == winrt::Windows::Foundation::AsyncStatus::Started) {
-                MSG message;
-                if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
-                    TranslateMessage(&message);
-                    DispatchMessage(&message);
-                } else {
-                    MsgWaitForMultipleObjects(0, nullptr, FALSE, 10, QS_ALLINPUT);
-                }
-            }
-            shutdown.GetResults();
-        } catch (const winrt::hresult_error& error) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to shut down the composition dispatcher queue: %1")
-                         .arg(formatHresult(error.code())));
-        }
-        m_impl->dispatcherController = nullptr;
-    }
-
     if (m_instance == this) {
         m_instance = nullptr;
-    }
-}
-
-bool WindowsBackdrop::initializeRuntime()
-{
-    if (runtimeInitialized) {
-        return true;
-    }
-
-    const PACKAGE_VERSION minimumVersion{};
-    const HRESULT bootstrapResult = MddBootstrapInitialize(
-        WINDOWSAPPSDK_RELEASE_MAJORMINOR,
-        WINDOWSAPPSDK_RELEASE_VERSION_TAG_W,
-        minimumVersion);
-    if (FAILED(bootstrapResult)) {
-        qWarning().noquote()
-            << QString("Windows App SDK runtime initialization failed: %1")
-                   .arg(formatHresult(bootstrapResult));
-        return false;
-    }
-
-    try {
-        winrt::init_apartment(winrt::apartment_type::single_threaded);
-        apartmentInitialized = true;
-    } catch (const winrt::hresult_error& error) {
-        qWarning().noquote()
-            << QString("Windows Runtime apartment initialization failed: %1")
-                   .arg(formatHresult(error.code()));
-        MddBootstrapShutdown();
-        return false;
-    }
-
-    runtimeInitialized = true;
-    return true;
-}
-
-void WindowsBackdrop::shutdownRuntime()
-{
-    if (m_instance) {
-        delete m_instance;
-    }
-
-    if (apartmentInitialized) {
-        winrt::uninit_apartment();
-        apartmentInitialized = false;
-    }
-    if (runtimeInitialized) {
-        MddBootstrapShutdown();
-        runtimeInitialized = false;
     }
 }
 
@@ -344,94 +248,34 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
         LOG_WARN(LogCategory, "Cannot apply backdrop: object is not a window");
         return false;
     }
-
-    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    if (!hwnd) {
-        LOG_WARN(LogCategory, "Cannot apply backdrop: native window handle is unavailable");
+    if (!applyMaterial(window)) {
+        LOG_WARN(LogCategory, "Cannot apply backdrop: native material is unavailable");
         return false;
     }
-
-    applyCommonDwmAttributes(hwnd);
-
-    if (const auto existing = m_impl->backdrops.find(window);
-        existing != m_impl->backdrops.end()) {
-        m_impl->updateConfiguration(*existing->second);
+    if (m_impl->windows.contains(window)) {
         return true;
     }
 
-    if (!m_impl->ensureCompositionInfrastructure()) {
-        return applyDwmFallback(hwnd);
-    }
+    auto trackedWindow = std::make_unique<Impl::TrackedWindow>();
+    trackedWindow->window = window;
+    trackedWindow->visibleConnection = connect(
+        window,
+        &QWindow::visibleChanged,
+        this,
+        [window](bool visible) {
+            if (visible) {
+                applyMaterial(window);
+            }
+        });
+    trackedWindow->destroyedConnection = connect(
+        window,
+        &QObject::destroyed,
+        this,
+        [this, window]() { m_impl->remove(window, false); });
+    m_impl->windows.emplace(window, std::move(trackedWindow));
 
-    try {
-        const BOOL useHostBackdropBrush = TRUE;
-        winrt::check_hresult(DwmSetWindowAttribute(
-            hwnd,
-            DWMWA_USE_HOSTBACKDROPBRUSH,
-            &useHostBackdropBrush,
-            sizeof(useHostBackdropBrush)));
-
-        auto backdrop = std::make_unique<Impl::WindowBackdrop>();
-        backdrop->window = window;
-        const auto theme = currentTheme();
-        const bool dark = usesDarkTheme();
-        auto compositorInterop = m_impl->compositor.as<
-            ABI::Windows::UI::Composition::Desktop::ICompositorDesktopInterop>();
-        winrt::check_hresult(compositorInterop->CreateDesktopWindowTarget(
-            hwnd,
-            true,
-            reinterpret_cast<ABI::Windows::UI::Composition::Desktop::IDesktopWindowTarget**>(
-                winrt::put_abi(backdrop->target))));
-
-        backdrop->configuration = Impl::BackdropConfiguration();
-        backdrop->configuration.IsInputActive(true);
-        backdrop->configuration.Theme(theme);
-
-        backdrop->controller = Impl::AcrylicController();
-        backdrop->controller.Kind(
-            winrt::Microsoft::UI::Composition::SystemBackdrops::DesktopAcrylicKind::Thin);
-        const auto neutralColor = dark ? color(32, 32, 32) : color(243, 243, 243);
-        backdrop->controller.TintColor(neutralColor);
-        backdrop->controller.TintOpacity(0.0f);
-        backdrop->controller.LuminosityOpacity(dark ? 0.91f : 0.85f);
-        backdrop->controller.FallbackColor(neutralColor);
-        backdrop->controller.SetSystemBackdropConfiguration(backdrop->configuration);
-
-        const auto windowId = winrt::Microsoft::UI::GetWindowIdFromWindow(hwnd);
-        if (!backdrop->controller.SetTarget(windowId, backdrop->target)) {
-            backdrop->controller.Close();
-            LOG_WARN(LogCategory, "DesktopAcrylicController rejected the native window target");
-            return applyDwmFallback(hwnd);
-        }
-        const int state = static_cast<int>(backdrop->controller.State());
-        LOG_INFO(LogCategory,
-                 QString("Desktop acrylic attached with state %1")
-                     .arg(state));
-
-        backdrop->visibleConnection = connect(
-            window,
-            &QWindow::visibleChanged,
-            this,
-            [this, window]() {
-                const auto iterator = m_impl->backdrops.find(window);
-                if (iterator != m_impl->backdrops.end()) {
-                    m_impl->updateConfiguration(*iterator->second);
-                }
-            });
-        backdrop->destroyedConnection = connect(
-            window,
-            &QObject::destroyed,
-            this,
-            [this, window]() { m_impl->remove(window); });
-
-        m_impl->backdrops.emplace(window, std::move(backdrop));
-        return true;
-    } catch (const winrt::hresult_error& error) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to apply DesktopAcrylicController: %1")
-                     .arg(formatHresult(error.code())));
-        return applyDwmFallback(hwnd);
-    }
+    LOG_INFO(LogCategory, "Applied dispatcher-free Windows acrylic material");
+    return true;
 }
 
 void WindowsBackdrop::removeBackdrop(QObject* windowObject)
@@ -440,30 +284,5 @@ void WindowsBackdrop::removeBackdrop(QObject* windowObject)
     if (!window) {
         return;
     }
-
-    m_impl->remove(window);
-
-    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    if (!hwnd) {
-        return;
-    }
-
-    const BOOL useHostBackdropBrush = FALSE;
-    DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_USE_HOSTBACKDROPBRUSH,
-        &useHostBackdropBrush,
-        sizeof(useHostBackdropBrush));
-
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
-    const HRESULT result = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_SYSTEMBACKDROP_TYPE,
-        &backdropType,
-        sizeof(backdropType));
-    if (FAILED(result)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to remove system backdrop: %1")
-                     .arg(formatHresult(result)));
-    }
+    m_impl->remove(window, true);
 }

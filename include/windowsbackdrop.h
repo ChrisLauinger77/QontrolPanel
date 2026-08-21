@@ -19,9 +19,6 @@ public:
     static WindowsBackdrop* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
     static WindowsBackdrop* instance();
 
-    static bool initializeRuntime();
-    static void shutdownRuntime();
-
     Q_INVOKABLE bool applyTransientBackdrop(QObject* windowObject);
     Q_INVOKABLE void removeBackdrop(QObject* windowObject);
 

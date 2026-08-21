@@ -127,9 +127,9 @@ QML should call C++ through bridge methods and properties rather than duplicatin
 
 ### Windows Acrylic Surfaces
 
-`WindowsBackdrop` owns the native material lifecycle for the main controls panel, its separate media card, `MediaOverlay`, and `ChatMixNotification`. After the Qt event loop starts, it creates a `Windows.System.DispatcherQueue` on Qt's UI thread so the dispatcher, compositor, composition target, and HWND share the thread required by Windows composition. Qt's native message loop pumps the dispatcher. Each exact-size Qt window receives its own Windows App SDK `DesktopAcrylicController`, composition target, and `SystemBackdropConfiguration`. The controller uses the Windows thin-acrylic variant with a transparent tint so the backdrop hue comes from the wallpaper or window behind it. Its neutral luminosity and fallback colors follow the current light/dark theme, and it keeps these tray surfaces input-active from controller creation onward because overlays and notifications intentionally do not activate like normal application windows.
+`WindowsBackdrop` owns the native material lifecycle for the main controls panel, its separate media card, `MediaOverlay`, and `ChatMixNotification`. It dynamically enables Windows' acrylic window accent policy on each exact-size Qt window, with a theme-aware translucent luminosity color that keeps the live desktop hue visible behind these non-activating tray surfaces. The material is reapplied when a window becomes visible or the system color scheme changes.
 
-The process bootstraps the framework-dependent Windows App Runtime after `QApplication` initializes Qt's platform and COM integration, but before Qt creates the application windows. The backdrop and dispatcher are shut down before `QApplication` tears that integration down. CMake restores the Windows App SDK components through `packages.config`, generates the required C++/WinRT projections, links and deploys the bootstrap DLL, and the Inno Setup installer installs the matching Windows App Runtime. If runtime initialization or acrylic support is unavailable, `WindowsBackdrop` retains the lower-level DWM transient-backdrop fallback.
+The acrylic path is dispatcher-free and does not require the Windows App Runtime. This avoids coupling Qt's window lifecycle to CoreMessaging. If the compatibility API is unavailable, `WindowsBackdrop` uses the documented DWM transient system backdrop instead.
 
 ## Build and Deployment
 
@@ -140,7 +140,6 @@ The app targets Windows with Qt 6 and the MSVC `v143` toolset. CI hosts that too
 - uses C++20;
 - requires Qt Core, Gui, Qml, Quick, Widgets, LinguistTools, and Network;
 - requires `hidapi` through vcpkg;
-- requires the Windows App SDK packages declared in `packages.config` through NuGet;
 - builds HeadsetControl from the vendored source tree;
 - generates version, language, and Windows resource metadata;
 - compiles Qt resources and translations;

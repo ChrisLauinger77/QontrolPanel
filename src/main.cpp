@@ -1,6 +1,5 @@
 #include "panelengine.h"
 #include "logmanager.h"
-#include "windowsbackdrop.h"
 #include <QApplication>
 #include <QDir>
 #include <QElapsedTimer>
@@ -21,20 +20,6 @@ constexpr auto kLocalServerName = "QontrolPanel";
 constexpr auto kServerStartupTimeoutMs = 5000;
 constexpr auto kServerRetryIntervalMs = 50;
 constexpr auto kServerConnectionTimeoutMs = 250;
-
-class WindowsAppRuntimeGuard
-{
-public:
-    WindowsAppRuntimeGuard()
-    {
-        WindowsBackdrop::initializeRuntime();
-    }
-
-    ~WindowsAppRuntimeGuard()
-    {
-        WindowsBackdrop::shutdownRuntime();
-    }
-};
 
 enum class InstanceWaitResult {
     ActivatedExistingInstance,
@@ -95,10 +80,6 @@ int main(int argc, char *argv[])
         );
 
     QApplication a(argc, argv);
-    // Keep the Windows App SDK and its dispatcher alive only while Qt's COM
-    // integration is alive. Destruction runs in reverse order, so this guard
-    // shuts the backdrop down before QApplication tears the platform down.
-    const WindowsAppRuntimeGuard windowsAppRuntime;
     a.setQuitOnLastWindowClosed(false);
     a.setOrganizationName("ChrisLauinger77");
     a.setApplicationName("QontrolPanel");
