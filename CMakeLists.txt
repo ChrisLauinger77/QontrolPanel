@@ -163,12 +163,27 @@ if(WIN32)
         "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.Runtime.2.4.0")
     set(WINDOWS_APP_SDK_BOOTSTRAP_DLL
         "${WINDOWS_APP_SDK_FOUNDATION_DIR}/runtimes/win-x64/native/Microsoft.WindowsAppRuntime.Bootstrap.dll")
+    set(CPPWINRT_HINTS)
+    if(DEFINED ENV{WindowsSdkVerBinPath})
+        list(APPEND CPPWINRT_HINTS
+            "$ENV{WindowsSdkVerBinPath}"
+            "$ENV{WindowsSdkVerBinPath}/x64")
+    endif()
+    if(DEFINED ENV{WindowsSdkBinPath})
+        list(APPEND CPPWINRT_HINTS "$ENV{WindowsSdkBinPath}/x64")
+        if(DEFINED ENV{WindowsSDKVersion})
+            list(APPEND CPPWINRT_HINTS
+                "$ENV{WindowsSdkBinPath}/$ENV{WindowsSDKVersion}"
+                "$ENV{WindowsSdkBinPath}/$ENV{WindowsSDKVersion}/x64")
+        endif()
+    endif()
+    if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
+        list(APPEND CPPWINRT_HINTS
+            "C:/Program Files (x86)/Windows Kits/10/bin/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}/x64")
+    endif()
     find_program(CPPWINRT_EXECUTABLE
         NAMES cppwinrt.exe
-        HINTS "$ENV{WindowsSdkBinPath}/x64"
-        PATHS
-            "C:/Program Files (x86)/Windows Kits/10/bin/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}/x64"
-        NO_DEFAULT_PATH
+        HINTS ${CPPWINRT_HINTS}
         REQUIRED
     )
 
