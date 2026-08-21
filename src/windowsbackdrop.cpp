@@ -9,6 +9,7 @@
 #include <QWindow>
 
 #include <windows.h>
+#include <dispatcherqueue.h>
 #include <dwmapi.h>
 
 #include <MddBootstrap.h>
@@ -133,6 +134,7 @@ struct WindowsBackdrop::Impl
     };
 
     winrt::Windows::System::DispatcherQueue dispatcherQueue{nullptr};
+    winrt::Windows::System::DispatcherQueueController dispatcherController{nullptr};
     winrt::Windows::UI::Composition::Compositor compositor{nullptr};
     std::unordered_map<QWindow*, std::unique_ptr<WindowBackdrop>> backdrops;
     QMetaObject::Connection themeConnection;
@@ -149,9 +151,19 @@ struct WindowsBackdrop::Impl
                     winrt::Windows::System::DispatcherQueue::GetForCurrentThread();
             }
             if (!dispatcherQueue) {
-                LOG_WARN(LogCategory,
-                         "No Windows.System DispatcherQueue is available on the Qt UI thread");
-                return false;
+                const DispatcherQueueOptions options{
+                    sizeof(DispatcherQueueOptions),
+                    DQTYPE_THREAD_CURRENT,
+                    DQTAT_COM_NONE,
+                };
+                ABI::Windows::System::IDispatcherQueueController* controller = nullptr;
+                winrt::check_hresult(CreateDispatcherQueueController(options, &controller));
+                dispatcherController = {
+                    controller,
+                    winrt::take_ownership_from_abi,
+                };
+                dispatcherQueue = dispatcherController.DispatcherQueue();
+                LOG_INFO(LogCategory, "Created Windows.System DispatcherQueue on the Qt UI thread");
             }
             if (!compositor) {
                 compositor = winrt::Windows::UI::Composition::Compositor();
@@ -235,8 +247,27 @@ WindowsBackdrop::~WindowsBackdrop()
         m_impl->remove(m_impl->backdrops.begin()->first);
     }
     m_impl->compositor = nullptr;
-    // The Qt UI thread owns this queue; QontrolPanel must not shut it down.
     m_impl->dispatcherQueue = nullptr;
+    if (m_impl->dispatcherController) {
+        try {
+            const auto shutdown = m_impl->dispatcherController.ShutdownQueueAsync();
+            while (shutdown.Status() == winrt::Windows::Foundation::AsyncStatus::Started) {
+                MSG message;
+                if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
+                    TranslateMessage(&message);
+                    DispatchMessage(&message);
+                } else {
+                    MsgWaitForMultipleObjects(0, nullptr, FALSE, 10, QS_ALLINPUT);
+                }
+            }
+            shutdown.GetResults();
+        } catch (const winrt::hresult_error& error) {
+            LOG_WARN(LogCategory,
+                     QString("Failed to shut down the composition dispatcher queue: %1")
+                         .arg(formatHresult(error.code())));
+        }
+        m_impl->dispatcherController = nullptr;
+    }
 
     if (m_instance == this) {
         m_instance = nullptr;

@@ -86,7 +86,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         Utils.setStyle(UserSettings.panelStyle)
-        updateNativeBackdrop()
+        Qt.callLater(updateNativeBackdrop)
     }
 
     function updateNativeBackdrop() {

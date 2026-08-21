@@ -39,7 +39,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         positionWindow()
-        updateNativeBackdrop()
+        Qt.callLater(updateNativeBackdrop)
     }
 
     function updateNativeBackdrop() {
