@@ -8,6 +8,12 @@ Dialog {
     width: 380
     focus: true
     title: qsTr("Found this app useful?")
+
+    SystemPalette {
+        id: activeSystemPalette
+        colorGroup: SystemPalette.Active
+    }
+
     Label {
         anchors.fill: parent
         text: qsTr("This app is made with care by an independent developer and is not financed by ad revenue.\nIf you'd like to support my work, any contribution would be greatly appreciated!")
@@ -22,6 +28,11 @@ Dialog {
             icon.width: 16
             icon.height: 16
             highlighted: true
+            palette.accent: activeSystemPalette.highlight
+            palette.button: activeSystemPalette.highlight
+            palette.highlight: activeSystemPalette.highlight
+            palette.buttonText: activeSystemPalette.highlightedText
+            palette.highlightedText: activeSystemPalette.highlightedText
             DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
             onClicked: {
                 Qt.openUrlExternally("https://github.com/sponsors/ChrisLauinger77")

@@ -4,6 +4,7 @@
 
 #include <QGuiApplication>
 #include <QPointer>
+#include <QSettings>
 #include <QStyleHints>
 #include <QWindow>
 
@@ -15,6 +16,12 @@
 
 namespace {
 constexpr char LogCategory[] = "WindowsBackdrop";
+
+enum class BackdropKind
+{
+    Transient,
+    MainWindow,
+};
 
 QString formatHresult(HRESULT result)
 {
@@ -30,6 +37,25 @@ QWindow* windowFromObject(QObject* windowObject)
 bool usesDarkTheme()
 {
     return QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
+}
+
+bool transparencyEffectsEnabled()
+{
+    BOOL compositionEnabled = FALSE;
+    if (FAILED(DwmIsCompositionEnabled(&compositionEnabled)) || !compositionEnabled) {
+        return false;
+    }
+
+    QSettings personalizeSettings(
+        QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"),
+        QSettings::NativeFormat);
+    if (personalizeSettings.value(QStringLiteral("EnableTransparency"), 1).toInt() == 0) {
+        return false;
+    }
+
+    DWORD colorizationColor = 0;
+    BOOL opaqueBlend = FALSE;
+    return FAILED(DwmGetColorizationColor(&colorizationColor, &opaqueBlend)) || !opaqueBlend;
 }
 
 struct AccentPolicy
@@ -103,6 +129,34 @@ bool applyDwmFallback(HWND hwnd)
     return true;
 }
 
+bool extendFrameIntoClientArea(HWND hwnd, bool enabled)
+{
+    const MARGINS margins = enabled ? MARGINS{-1, -1, -1, -1} : MARGINS{};
+    const HRESULT result = DwmExtendFrameIntoClientArea(hwnd, &margins);
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to update client-area frame extension: %1")
+                     .arg(formatHresult(result)));
+        return false;
+    }
+    return true;
+}
+
+void clearDwmBackdrop(HWND hwnd)
+{
+    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
+    const HRESULT result = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_SYSTEMBACKDROP_TYPE,
+        &backdropType,
+        sizeof(backdropType));
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to remove system backdrop: %1")
+                     .arg(formatHresult(result)));
+    }
+}
+
 void applyCommonDwmAttributes(HWND hwnd)
 {
     const BOOL useDarkMode = usesDarkTheme();
@@ -130,7 +184,7 @@ void applyCommonDwmAttributes(HWND hwnd)
     }
 }
 
-bool applyMaterial(QWindow* window)
+bool applyMaterial(QWindow* window, BackdropKind kind)
 {
     const HWND hwnd = reinterpret_cast<HWND>(window->winId());
     if (!hwnd) {
@@ -138,6 +192,30 @@ bool applyMaterial(QWindow* window)
     }
 
     applyCommonDwmAttributes(hwnd);
+
+    if (kind == BackdropKind::MainWindow) {
+        if (!transparencyEffectsEnabled() || !extendFrameIntoClientArea(hwnd, true)) {
+            applyWindowAcrylic(hwnd, false);
+            extendFrameIntoClientArea(hwnd, false);
+            return false;
+        }
+
+        if (window->isActive()) {
+            const bool acrylicApplied = applyWindowAcrylic(hwnd, true);
+            if (!acrylicApplied) {
+                extendFrameIntoClientArea(hwnd, false);
+            }
+            return acrylicApplied;
+        }
+
+        const bool acrylicAvailable = applyWindowAcrylic(hwnd, true);
+        applyWindowAcrylic(hwnd, false);
+        if (!acrylicAvailable) {
+            extendFrameIntoClientArea(hwnd, false);
+        }
+        return acrylicAvailable;
+    }
+
     if (applyWindowAcrylic(hwnd, true)) {
         return true;
     }
@@ -152,17 +230,8 @@ void clearMaterial(QWindow* window)
     }
 
     applyWindowAcrylic(hwnd, false);
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
-    const HRESULT result = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_SYSTEMBACKDROP_TYPE,
-        &backdropType,
-        sizeof(backdropType));
-    if (FAILED(result)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to remove system backdrop: %1")
-                     .arg(formatHresult(result)));
-    }
+    extendFrameIntoClientArea(hwnd, false);
+    clearDwmBackdrop(hwnd);
 }
 }
 
@@ -171,6 +240,7 @@ struct WindowsBackdrop::Impl
     struct TrackedWindow
     {
         QPointer<QWindow> window;
+        BackdropKind kind = BackdropKind::Transient;
         QMetaObject::Connection visibleConnection;
         QMetaObject::Connection destroyedConnection;
     };
@@ -208,7 +278,7 @@ WindowsBackdrop::WindowsBackdrop(QObject* parent)
             for (const auto& [window, trackedWindow] : m_impl->windows) {
                 Q_UNUSED(window)
                 if (trackedWindow->window) {
-                    applyMaterial(trackedWindow->window);
+                    applyMaterial(trackedWindow->window, trackedWindow->kind);
                 }
             }
         });
@@ -243,28 +313,50 @@ WindowsBackdrop* WindowsBackdrop::instance()
 
 bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
 {
+    return applyBackdrop(windowObject, false);
+}
+
+bool WindowsBackdrop::applyMainWindowBackdrop(QObject* windowObject)
+{
+    return applyBackdrop(windowObject, true);
+}
+
+bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
+{
+    const BackdropKind kind =
+        mainWindow ? BackdropKind::MainWindow : BackdropKind::Transient;
     QWindow* window = windowFromObject(windowObject);
     if (!window) {
         LOG_WARN(LogCategory, "Cannot apply backdrop: object is not a window");
         return false;
     }
-    if (!applyMaterial(window)) {
+    const auto existingWindow = m_impl->windows.find(window);
+    if (existingWindow != m_impl->windows.end()
+        && existingWindow->second->kind != kind) {
+        clearMaterial(window);
+    }
+    if (!applyMaterial(window, kind)) {
         LOG_WARN(LogCategory, "Cannot apply backdrop: native material is unavailable");
         return false;
     }
-    if (m_impl->windows.contains(window)) {
+    if (existingWindow != m_impl->windows.end()) {
+        existingWindow->second->kind = kind;
         return true;
     }
 
     auto trackedWindow = std::make_unique<Impl::TrackedWindow>();
     trackedWindow->window = window;
+    trackedWindow->kind = kind;
     trackedWindow->visibleConnection = connect(
         window,
         &QWindow::visibleChanged,
         this,
-        [window](bool visible) {
+        [this, window](bool visible) {
             if (visible) {
-                applyMaterial(window);
+                const auto trackedWindow = m_impl->windows.find(window);
+                if (trackedWindow != m_impl->windows.end()) {
+                    applyMaterial(window, trackedWindow->second->kind);
+                }
             }
         });
     trackedWindow->destroyedConnection = connect(
@@ -274,7 +366,10 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
         [this, window]() { m_impl->remove(window, false); });
     m_impl->windows.emplace(window, std::move(trackedWindow));
 
-    LOG_INFO(LogCategory, "Applied dispatcher-free Windows acrylic material");
+    LOG_INFO(LogCategory,
+             kind == BackdropKind::MainWindow
+                 ? "Applied activation-aware Windows acrylic material"
+                 : "Applied dispatcher-free Windows acrylic material");
     return true;
 }
 
