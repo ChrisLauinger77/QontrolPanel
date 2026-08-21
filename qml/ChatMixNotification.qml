@@ -109,7 +109,8 @@ ApplicationWindow {
             notificationWindow.isAnimatingIn = true
             if (notificationWindow.nativeBackdropActive) {
                 notificationRect.opacity = 1
-            } else {
+            } else if (!contentOpacityAnimation.running && notificationRect.opacity < 1) {
+                contentOpacityAnimation.from = notificationRect.opacity
                 contentOpacityAnimation.start()
             }
         }
@@ -127,7 +128,9 @@ ApplicationWindow {
         easing.type: Easing.OutQuad
         onStarted: {
             notificationWindow.isAnimatingOut = true
-            if (!notificationWindow.nativeBackdropActive) {
+            if (!notificationWindow.nativeBackdropActive
+                    && !hideOpacityAnimation.running && notificationRect.opacity > 0) {
+                hideOpacityAnimation.from = notificationRect.opacity
                 hideOpacityAnimation.start()
             }
         }
