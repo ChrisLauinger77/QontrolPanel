@@ -201,7 +201,6 @@ if(WIN32)
     )
     target_link_libraries(QontrolPanel PRIVATE
         "${WINDOWS_APP_SDK_FOUNDATION_DIR}/lib/native/x64/Microsoft.WindowsAppRuntime.Bootstrap.lib"
-        "${WINDOWS_APP_SDK_INTERACTIVE_DIR}/lib/native/x64/Microsoft.UI.Dispatching.lib"
     )
 endif()
 
