@@ -161,6 +161,8 @@ if(WIN32)
         "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.InteractiveExperiences.2.1.6")
     set(WINDOWS_APP_SDK_RUNTIME_DIR
         "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.Runtime.2.4.0")
+    set(WINDOWS_APP_SDK_BOOTSTRAP_DLL
+        "${WINDOWS_APP_SDK_FOUNDATION_DIR}/runtimes/win-x64/native/Microsoft.WindowsAppRuntime.Bootstrap.dll")
     find_program(CPPWINRT_EXECUTABLE
         NAMES cppwinrt.exe
         HINTS "$ENV{WindowsSdkBinPath}/x64"
@@ -200,6 +202,13 @@ if(WIN32)
     )
     target_link_libraries(QontrolPanel PRIVATE
         "${WINDOWS_APP_SDK_FOUNDATION_DIR}/lib/native/x64/Microsoft.WindowsAppRuntime.Bootstrap.lib"
+    )
+    add_custom_command(TARGET QontrolPanel POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+            "${WINDOWS_APP_SDK_BOOTSTRAP_DLL}"
+            "$<TARGET_FILE_DIR:QontrolPanel>"
+        COMMENT "Copying Windows App Runtime bootstrap DLL beside QontrolPanel"
+        VERBATIM
     )
 endif()
 
@@ -329,7 +338,7 @@ if(WIN32)
     endif()
 
     install(FILES
-        "${WINDOWS_APP_SDK_FOUNDATION_DIR}/runtimes/win-x64/native/Microsoft.WindowsAppRuntime.Bootstrap.dll"
+        "${WINDOWS_APP_SDK_BOOTSTRAP_DLL}"
         DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 endif()
