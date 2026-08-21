@@ -125,6 +125,12 @@ Most UI is organized as:
 
 QML should call C++ through bridge methods and properties rather than duplicating native logic.
 
+### Windows Acrylic Surfaces
+
+`WindowsBackdrop` owns the native material lifecycle for the main controls panel, its separate media card, `MediaOverlay`, and `ChatMixNotification`. Each exact-size Qt window receives its own Windows App SDK `DesktopAcrylicController`, composition target, and `SystemBackdropConfiguration`. The controller uses the Windows thin-acrylic variant, follows the current light/dark theme, and treats visible tray surfaces as input-active because overlays and notifications intentionally do not always activate like normal application windows.
+
+The process bootstraps the framework-dependent Windows App Runtime before Qt creates the windows. CMake restores the Windows App SDK components through `packages.config`, generates the required C++/WinRT projections, links and deploys the bootstrap DLL, and the Inno Setup installer installs the matching Windows App Runtime. If runtime initialization or acrylic support is unavailable, `WindowsBackdrop` retains the lower-level DWM transient-backdrop fallback.
+
 ## Build and Deployment
 
 The app targets Windows with Qt 6 and the MSVC `v143` toolset. CI hosts that toolset on Visual Studio 2026. The CMake build:
@@ -134,6 +140,7 @@ The app targets Windows with Qt 6 and the MSVC `v143` toolset. CI hosts that too
 - uses C++20;
 - requires Qt Core, Gui, Qml, Quick, Widgets, LinguistTools, and Network;
 - requires `hidapi` through vcpkg;
+- requires the Windows App SDK packages declared in `packages.config` through NuGet;
 - builds HeadsetControl from the vendored source tree;
 - generates version, language, and Windows resource metadata;
 - compiles Qt resources and translations;

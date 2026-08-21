@@ -6,7 +6,9 @@ import ChrisLauinger77.QontrolPanel
 
 Rectangle {
     id: footer
-    color: Constants.footerColor
+    property bool nativeBackdropActive: false
+
+    color: nativeBackdropActive ? "transparent" : Constants.footerColor
     bottomLeftRadius: 12
     bottomRightRadius: 12
 

@@ -152,6 +152,59 @@ qt_add_executable(QontrolPanel WIN32
     "${CMAKE_CURRENT_BINARY_DIR}/windows_metadata.rc"
 )
 
+if(WIN32)
+    set(WINDOWS_APP_SDK_PACKAGES_DIR "${CMAKE_BINARY_DIR}/packages"
+        CACHE PATH "Directory populated by nuget restore packages.config")
+    set(WINDOWS_APP_SDK_FOUNDATION_DIR
+        "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.Foundation.2.3.9")
+    set(WINDOWS_APP_SDK_INTERACTIVE_DIR
+        "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.InteractiveExperiences.2.1.6")
+    set(WINDOWS_APP_SDK_RUNTIME_DIR
+        "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.Runtime.2.4.0")
+    set(CPPWINRT_PACKAGE_DIR
+        "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.Windows.CppWinRT.2.0.250303.1")
+
+    find_program(CPPWINRT_EXECUTABLE
+        NAMES cppwinrt.exe
+        PATHS "${CPPWINRT_PACKAGE_DIR}/bin"
+        NO_DEFAULT_PATH
+        REQUIRED
+    )
+
+    set(WINDOWS_APP_SDK_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/windows-app-sdk-generated")
+    set(WINDOWS_APP_SDK_GENERATED_HEADER
+        "${WINDOWS_APP_SDK_GENERATED_DIR}/winrt/Microsoft.UI.Composition.SystemBackdrops.h")
+    set(WINDOWS_APP_SDK_METADATA_DIR
+        "${WINDOWS_APP_SDK_INTERACTIVE_DIR}/metadata/10.0.17763.0")
+
+    add_custom_command(
+        OUTPUT "${WINDOWS_APP_SDK_GENERATED_HEADER}"
+        COMMAND "${CPPWINRT_EXECUTABLE}"
+            -input "${WINDOWS_APP_SDK_METADATA_DIR}"
+            -reference sdk
+            -output "${WINDOWS_APP_SDK_GENERATED_DIR}"
+        DEPENDS
+            "${WINDOWS_APP_SDK_METADATA_DIR}/Microsoft.UI.winmd"
+            "${WINDOWS_APP_SDK_METADATA_DIR}/Microsoft.Foundation.winmd"
+        COMMENT "Generating Windows App SDK C++/WinRT projections"
+        VERBATIM
+    )
+    add_custom_target(windows_app_sdk_projections
+        DEPENDS "${WINDOWS_APP_SDK_GENERATED_HEADER}")
+    add_dependencies(QontrolPanel windows_app_sdk_projections)
+
+    target_include_directories(QontrolPanel PRIVATE
+        "${WINDOWS_APP_SDK_FOUNDATION_DIR}/include"
+        "${WINDOWS_APP_SDK_INTERACTIVE_DIR}/include"
+        "${WINDOWS_APP_SDK_RUNTIME_DIR}/include"
+        "${WINDOWS_APP_SDK_GENERATED_DIR}"
+    )
+    target_link_libraries(QontrolPanel PRIVATE
+        "${WINDOWS_APP_SDK_FOUNDATION_DIR}/lib/native/x64/Microsoft.WindowsAppRuntime.Bootstrap.lib"
+        "${WINDOWS_APP_SDK_INTERACTIVE_DIR}/lib/native/x64/Microsoft.UI.Dispatching.lib"
+    )
+endif()
+
 set(QML_FILES
     qml/Main.qml
     qml/PowerMenu.qml
@@ -276,6 +329,11 @@ if(WIN32)
     else()
         message(WARNING "hidapi.dll not found - you may need to copy it manually")
     endif()
+
+    install(FILES
+        "${WINDOWS_APP_SDK_FOUNDATION_DIR}/runtimes/win-x64/native/Microsoft.WindowsAppRuntime.Bootstrap.dll"
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
 endif()
 
 qt_generate_deploy_qml_app_script(

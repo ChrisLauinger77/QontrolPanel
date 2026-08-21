@@ -16,6 +16,9 @@
 #define VCRedistURL "https://aka.ms/vs/17/release/vc_redist.x64.exe"
 #define VCRedistFile "vc_redist.x64.exe"
 
+; Windows App Runtime
+#define WindowsAppRuntimeFile "windowsappruntimeinstall-x64.exe"
+
 [Setup]
 AppId={{8A9C6942-5CA3-4A02-B701-E7B4E862D635}}
 AppName={#AppName}
@@ -72,6 +75,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "{#AppSourceDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\build\{#VCRedistFile}"; DestDir: "{tmp}"; Flags: deleteafterinstall
+Source: "..\build\{#WindowsAppRuntimeFile}"; DestDir: "{tmp}"; Flags: deleteafterinstall
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\bin\{#AppExeName}"; IconFilename: "{app}\bin\{#AppExeName}"; AppUserModelID: "ChrisLauinger77.QontrolPanel"
@@ -80,6 +84,7 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\bin\{#AppExeName}"; Tasks: de
 
 [Run]
 Filename: "{tmp}\{#VCRedistFile}"; Parameters: "/quiet /norestart"; StatusMsg: "Installing Microsoft Visual C++ Redistributable..."; Check: VCRedistNeedsInstall
+Filename: "{tmp}\{#WindowsAppRuntimeFile}"; Parameters: "--quiet"; StatusMsg: "Installing Microsoft Windows App Runtime..."; Flags: waituntilterminated
 Filename: "{app}\bin\{#AppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(AppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [Code]

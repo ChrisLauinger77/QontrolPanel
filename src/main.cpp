@@ -1,5 +1,6 @@
 #include "panelengine.h"
 #include "logmanager.h"
+#include "windowsbackdrop.h"
 #include <QApplication>
 #include <QDir>
 #include <QElapsedTimer>
@@ -20,6 +21,20 @@ constexpr auto kLocalServerName = "QontrolPanel";
 constexpr auto kServerStartupTimeoutMs = 5000;
 constexpr auto kServerRetryIntervalMs = 50;
 constexpr auto kServerConnectionTimeoutMs = 250;
+
+class WindowsAppRuntimeGuard
+{
+public:
+    WindowsAppRuntimeGuard()
+    {
+        WindowsBackdrop::initializeRuntime();
+    }
+
+    ~WindowsAppRuntimeGuard()
+    {
+        WindowsBackdrop::shutdownRuntime();
+    }
+};
 
 enum class InstanceWaitResult {
     ActivatedExistingInstance,
@@ -73,6 +88,8 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN
     SetCurrentProcessExplicitAppUserModelID(L"ChrisLauinger77.QontrolPanel");
 #endif
+
+    const WindowsAppRuntimeGuard windowsAppRuntime;
 
     QLoggingCategory::setFilterRules(
         "qt.multimedia.*=false\n"

@@ -8,6 +8,7 @@ QontrolPanel is a Windows desktop application built with Qt 6, CMake, MSVC, vcpk
 - Git for Windows.
 - Visual Studio 2022 with the `Desktop development with C++` workload and ATL for the v143 toolset.
 - CMake 3.30 or newer.
+- NuGet CLI (included with Visual Studio) for restoring Windows App SDK components.
 - Ninja or the Visual Studio CMake generator.
 - Qt 6.9 or newer for MSVC 2022 64-bit.
 - vcpkg installed at `C:\vcpkg` or passed explicitly through `CMAKE_TOOLCHAIN_FILE`.
@@ -49,6 +50,12 @@ Install native packages:
 C:\vcpkg\vcpkg install hidapi:x64-windows getopt-win32:x64-windows
 ```
 
+Restore the Windows App SDK and C++/WinRT packages:
+
+```pwsh
+nuget restore packages.config -PackagesDirectory build/packages -NonInteractive
+```
+
 Install Qt with the online installer. Select the MSVC 2022 64-bit kit for a stable Qt 6 release. Keep Qt Creator, CMake, and Ninja enabled.
 
 ## Configure
@@ -88,7 +95,9 @@ If running manually, close any already-running QontrolPanel instance first. The 
 cmake --install build --config Release
 ```
 
-The install step copies the executable, Qt runtime dependencies, QML dependencies, translations, and `hidapi.dll` when CMake can find it in the vcpkg installation.
+The install step copies the executable, Qt runtime dependencies, QML dependencies, translations, `hidapi.dll` when CMake can find it in the vcpkg installation, and the Windows App SDK bootstrap DLL.
+
+QontrolPanel uses the framework-dependent Windows App SDK 2.4 runtime. The release installer installs the matching runtime automatically. For a manually deployed build or ZIP artifact, install the Microsoft x64 Windows App Runtime 2.4 before launching the app. If the runtime is unavailable, QontrolPanel continues with the less configurable DWM backdrop fallback.
 
 By default, this project sets:
 
@@ -131,6 +140,14 @@ cmake -S . -B build `
   -DCMAKE_PREFIX_PATH=C:/Qt/6.11.2/msvc2022_64
 ```
 
+### Windows App SDK package not found
+
+Restore `packages.config` into the build directory before configuring:
+
+```pwsh
+nuget restore packages.config -PackagesDirectory build/packages -NonInteractive
+```
+
 ### The app starts but immediately exits
 
 Another QontrolPanel instance is probably running. Close the tray app or kill the existing process before launching the development build.
@@ -147,10 +164,10 @@ The main build workflow:
 2. Updates the HeadsetControl submodule to the latest upstream master for the workflow run.
 3. Extracts the app version from `CMakeLists.txt`.
 4. Selects the Visual Studio 2026 generator, installs ATL for the MSVC `v143` compatibility toolset, and sets up vcpkg with the same toolset.
-5. Installs Qt.
+5. Restores the Windows App SDK packages and installs Qt.
 6. Configures, builds, and installs Release.
 7. Cleans changed translation files.
 8. Uploads a ZIP artifact.
-9. Builds an Inno Setup installer.
+9. Downloads the Windows App Runtime redistributable and builds an Inno Setup installer that installs it.
 
 Local builds should usually use the checked-out submodule revision unless you are intentionally validating an upstream HeadsetControl update.

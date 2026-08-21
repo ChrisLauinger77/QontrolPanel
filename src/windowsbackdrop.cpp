@@ -2,15 +2,32 @@
 
 #include "logmanager.h"
 
+#include <QDebug>
 #include <QGuiApplication>
+#include <QPointer>
 #include <QStyleHints>
 #include <QWindow>
 
-#include <windows.h>
+#include <MddBootstrap.h>
+#include <WindowsAppSDK-VersionInfo.h>
+#include <Windows.UI.Composition.Interop.h>
 #include <dwmapi.h>
+#include <windows.h>
+
+#include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
+#include <winrt/Microsoft.UI.Dispatching.h>
+#include <winrt/Microsoft.UI.Interop.h>
+#include <winrt/Windows.UI.Composition.Desktop.h>
+#include <winrt/Windows.UI.Composition.h>
+
+#include <memory>
+#include <unordered_map>
 
 namespace {
 constexpr char LogCategory[] = "WindowsBackdrop";
+
+bool runtimeInitialized = false;
+bool apartmentInitialized = false;
 
 QString formatHresult(HRESULT result)
 {
@@ -22,19 +39,233 @@ QWindow* windowFromObject(QObject* windowObject)
 {
     return qobject_cast<QWindow*>(windowObject);
 }
+
+winrt::Microsoft::UI::Composition::SystemBackdrops::SystemBackdropTheme currentTheme()
+{
+    using Theme = winrt::Microsoft::UI::Composition::SystemBackdrops::SystemBackdropTheme;
+
+    switch (QGuiApplication::styleHints()->colorScheme()) {
+    case Qt::ColorScheme::Dark:
+        return Theme::Dark;
+    case Qt::ColorScheme::Light:
+        return Theme::Light;
+    default:
+        return Theme::Default;
+    }
 }
+
+bool applyDwmFallback(HWND hwnd)
+{
+    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
+    const HRESULT result = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_SYSTEMBACKDROP_TYPE,
+        &backdropType,
+        sizeof(backdropType));
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to apply fallback transient backdrop: %1")
+                     .arg(formatHresult(result)));
+        return false;
+    }
+
+    return true;
+}
+
+void applyCommonDwmAttributes(HWND hwnd)
+{
+    const BOOL useDarkMode = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
+    const HRESULT darkModeResult = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_USE_IMMERSIVE_DARK_MODE,
+        &useDarkMode,
+        sizeof(useDarkMode));
+    if (FAILED(darkModeResult)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to update immersive dark mode: %1")
+                     .arg(formatHresult(darkModeResult)));
+    }
+
+    const DWM_WINDOW_CORNER_PREFERENCE cornerPreference = DWMWCP_ROUND;
+    const HRESULT cornerResult = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_WINDOW_CORNER_PREFERENCE,
+        &cornerPreference,
+        sizeof(cornerPreference));
+    if (FAILED(cornerResult)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to apply rounded window corners: %1")
+                     .arg(formatHresult(cornerResult)));
+    }
+}
+}
+
+struct WindowsBackdrop::Impl
+{
+    using AcrylicController =
+        winrt::Microsoft::UI::Composition::SystemBackdrops::DesktopAcrylicController;
+    using BackdropConfiguration =
+        winrt::Microsoft::UI::Composition::SystemBackdrops::SystemBackdropConfiguration;
+    using DesktopWindowTarget =
+        winrt::Windows::UI::Composition::Desktop::DesktopWindowTarget;
+
+    struct WindowBackdrop
+    {
+        QPointer<QWindow> window;
+        DesktopWindowTarget target{nullptr};
+        AcrylicController controller{nullptr};
+        BackdropConfiguration configuration{nullptr};
+        QMetaObject::Connection visibleConnection;
+        QMetaObject::Connection destroyedConnection;
+    };
+
+    winrt::Microsoft::UI::Dispatching::DispatcherQueueController dispatcherController{nullptr};
+    winrt::Windows::UI::Composition::Compositor compositor{nullptr};
+    std::unordered_map<QWindow*, std::unique_ptr<WindowBackdrop>> backdrops;
+    QMetaObject::Connection themeConnection;
+
+    bool ensureCompositionInfrastructure()
+    {
+        if (!runtimeInitialized || !AcrylicController::IsSupported()) {
+            return false;
+        }
+
+        try {
+            if (!winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread()) {
+                dispatcherController =
+                    winrt::Microsoft::UI::Dispatching::DispatcherQueueController::CreateOnCurrentThread();
+            }
+            if (!compositor) {
+                compositor = winrt::Windows::UI::Composition::Compositor();
+            }
+            return true;
+        } catch (const winrt::hresult_error& error) {
+            LOG_WARN(LogCategory,
+                     QString("Failed to initialize Windows App SDK composition: %1")
+                         .arg(formatHresult(error.code())));
+            return false;
+        }
+    }
+
+    void updateConfiguration(WindowBackdrop& backdrop)
+    {
+        if (!backdrop.configuration || !backdrop.window) {
+            return;
+        }
+
+        // Tray surfaces often intentionally avoid activation. Treat every visible
+        // QontrolPanel surface as input-active so Windows keeps the live acrylic
+        // recipe instead of switching notifications and overlays to inactive grey.
+        backdrop.configuration.IsInputActive(backdrop.window->isVisible());
+        backdrop.configuration.Theme(currentTheme());
+    }
+
+    void updateAllConfigurations()
+    {
+        for (const auto& [window, backdrop] : backdrops) {
+            Q_UNUSED(window)
+            updateConfiguration(*backdrop);
+        }
+    }
+
+    void remove(QWindow* window)
+    {
+        auto iterator = backdrops.find(window);
+        if (iterator == backdrops.end()) {
+            return;
+        }
+
+        QObject::disconnect(iterator->second->visibleConnection);
+        QObject::disconnect(iterator->second->destroyedConnection);
+        if (iterator->second->controller) {
+            iterator->second->controller.Close();
+        }
+        backdrops.erase(iterator);
+    }
+};
 
 WindowsBackdrop* WindowsBackdrop::m_instance = nullptr;
 
 WindowsBackdrop::WindowsBackdrop(QObject* parent)
     : QObject(parent)
+    , m_impl(std::make_unique<Impl>())
 {
+    m_impl->themeConnection = connect(
+        QGuiApplication::styleHints(),
+        &QStyleHints::colorSchemeChanged,
+        this,
+        [this]() { m_impl->updateAllConfigurations(); });
 }
 
 WindowsBackdrop::~WindowsBackdrop()
 {
+    QObject::disconnect(m_impl->themeConnection);
+    while (!m_impl->backdrops.empty()) {
+        m_impl->remove(m_impl->backdrops.begin()->first);
+    }
+    m_impl->compositor = nullptr;
+    if (m_impl->dispatcherController) {
+        try {
+            m_impl->dispatcherController.ShutdownQueue();
+        } catch (const winrt::hresult_error& error) {
+            LOG_WARN(LogCategory,
+                     QString("Failed to shut down the composition dispatcher queue: %1")
+                         .arg(formatHresult(error.code())));
+        }
+        m_impl->dispatcherController = nullptr;
+    }
+
     if (m_instance == this) {
         m_instance = nullptr;
+    }
+}
+
+bool WindowsBackdrop::initializeRuntime()
+{
+    if (runtimeInitialized) {
+        return true;
+    }
+
+    const PACKAGE_VERSION minimumVersion{};
+    const HRESULT bootstrapResult = MddBootstrapInitialize(
+        WINDOWSAPPSDK_RELEASE_MAJORMINOR,
+        WINDOWSAPPSDK_RELEASE_VERSION_TAG_W,
+        minimumVersion);
+    if (FAILED(bootstrapResult)) {
+        qWarning().noquote()
+            << QString("Windows App SDK runtime initialization failed: %1")
+                   .arg(formatHresult(bootstrapResult));
+        return false;
+    }
+
+    try {
+        winrt::init_apartment(winrt::apartment_type::single_threaded);
+        apartmentInitialized = true;
+    } catch (const winrt::hresult_error& error) {
+        qWarning().noquote()
+            << QString("Windows Runtime apartment initialization failed: %1")
+                   .arg(formatHresult(error.code()));
+        MddBootstrapShutdown();
+        return false;
+    }
+
+    runtimeInitialized = true;
+    return true;
+}
+
+void WindowsBackdrop::shutdownRuntime()
+{
+    if (m_instance) {
+        delete m_instance;
+    }
+
+    if (apartmentInitialized) {
+        winrt::uninit_apartment();
+        apartmentInitialized = false;
+    }
+    if (runtimeInitialized) {
+        MddBootstrapShutdown();
+        runtimeInitialized = false;
     }
 }
 
@@ -68,44 +299,76 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
         return false;
     }
 
-    const BOOL useDarkMode = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
-    const HRESULT darkModeResult = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_USE_IMMERSIVE_DARK_MODE,
-        &useDarkMode,
-        sizeof(useDarkMode));
-    if (FAILED(darkModeResult)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to update immersive dark mode: %1")
-                     .arg(formatHresult(darkModeResult)));
+    applyCommonDwmAttributes(hwnd);
+
+    if (const auto existing = m_impl->backdrops.find(window);
+        existing != m_impl->backdrops.end()) {
+        m_impl->updateConfiguration(*existing->second);
+        return true;
     }
 
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
-    const HRESULT backdropResult = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_SYSTEMBACKDROP_TYPE,
-        &backdropType,
-        sizeof(backdropType));
-    if (FAILED(backdropResult)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to apply transient system backdrop: %1")
-                     .arg(formatHresult(backdropResult)));
-        return false;
+    if (!m_impl->ensureCompositionInfrastructure()) {
+        return applyDwmFallback(hwnd);
     }
 
-    const DWM_WINDOW_CORNER_PREFERENCE cornerPreference = DWMWCP_ROUND;
-    const HRESULT cornerResult = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_WINDOW_CORNER_PREFERENCE,
-        &cornerPreference,
-        sizeof(cornerPreference));
-    if (FAILED(cornerResult)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to apply rounded window corners: %1")
-                     .arg(formatHresult(cornerResult)));
-    }
+    try {
+        const BOOL useHostBackdropBrush = TRUE;
+        winrt::check_hresult(DwmSetWindowAttribute(
+            hwnd,
+            DWMWA_USE_HOSTBACKDROPBRUSH,
+            &useHostBackdropBrush,
+            sizeof(useHostBackdropBrush)));
 
-    return true;
+        auto compositorInterop =
+            m_impl->compositor.as<ABI::Windows::UI::Composition::Desktop::ICompositorDesktopInterop>();
+        Impl::DesktopWindowTarget target{nullptr};
+        winrt::check_hresult(compositorInterop->CreateDesktopWindowTarget(
+            hwnd,
+            true,
+            reinterpret_cast<ABI::Windows::UI::Composition::Desktop::IDesktopWindowTarget**>(
+                winrt::put_abi(target))));
+
+        auto backdrop = std::make_unique<Impl::WindowBackdrop>();
+        backdrop->window = window;
+        backdrop->target = target;
+        backdrop->configuration = Impl::BackdropConfiguration();
+        backdrop->controller = Impl::AcrylicController();
+        backdrop->controller.ResetProperties();
+        backdrop->controller.Kind(
+            winrt::Microsoft::UI::Composition::SystemBackdrops::DesktopAcrylicKind::Thin);
+        m_impl->updateConfiguration(*backdrop);
+        backdrop->controller.SetSystemBackdropConfiguration(backdrop->configuration);
+
+        const auto windowId = winrt::Microsoft::UI::GetWindowIdFromWindow(hwnd);
+        if (!backdrop->controller.SetTarget(windowId, target)) {
+            LOG_WARN(LogCategory, "DesktopAcrylicController rejected the native window target");
+            return applyDwmFallback(hwnd);
+        }
+
+        backdrop->visibleConnection = connect(
+            window,
+            &QWindow::visibleChanged,
+            this,
+            [this, window]() {
+                const auto iterator = m_impl->backdrops.find(window);
+                if (iterator != m_impl->backdrops.end()) {
+                    m_impl->updateConfiguration(*iterator->second);
+                }
+            });
+        backdrop->destroyedConnection = connect(
+            window,
+            &QObject::destroyed,
+            this,
+            [this, window]() { m_impl->remove(window); });
+
+        m_impl->backdrops.emplace(window, std::move(backdrop));
+        return true;
+    } catch (const winrt::hresult_error& error) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to apply DesktopAcrylicController: %1")
+                     .arg(formatHresult(error.code())));
+        return applyDwmFallback(hwnd);
+    }
 }
 
 void WindowsBackdrop::removeBackdrop(QObject* windowObject)
@@ -115,10 +378,19 @@ void WindowsBackdrop::removeBackdrop(QObject* windowObject)
         return;
     }
 
+    m_impl->remove(window);
+
     const HWND hwnd = reinterpret_cast<HWND>(window->winId());
     if (!hwnd) {
         return;
     }
+
+    const BOOL useHostBackdropBrush = FALSE;
+    DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_USE_HOSTBACKDROPBRUSH,
+        &useHostBackdropBrush,
+        sizeof(useHostBackdropBrush));
 
     const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
     const HRESULT result = DwmSetWindowAttribute(

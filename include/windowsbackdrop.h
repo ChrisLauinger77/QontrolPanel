@@ -4,6 +4,8 @@
 #include <QQmlEngine>
 #include <QtQml/qqmlregistration.h>
 
+#include <memory>
+
 class WindowsBackdrop : public QObject
 {
     Q_OBJECT
@@ -17,9 +19,15 @@ public:
     static WindowsBackdrop* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
     static WindowsBackdrop* instance();
 
+    static bool initializeRuntime();
+    static void shutdownRuntime();
+
     Q_INVOKABLE bool applyTransientBackdrop(QObject* windowObject);
     Q_INVOKABLE void removeBackdrop(QObject* windowObject);
 
 private:
+    struct Impl;
+
     static WindowsBackdrop* m_instance;
+    std::unique_ptr<Impl> m_impl;
 };

@@ -1197,6 +1197,7 @@ ApplicationWindow {
 
                         PanelFooter {
                             id: panelFooter
+                            nativeBackdropActive: panel.nativeBackdropActive
                             Layout.fillWidth: true
                             Layout.fillHeight: false
                             Layout.preferredHeight: 50
