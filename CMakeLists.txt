@@ -200,7 +200,6 @@ if(WIN32)
     )
     target_link_libraries(QontrolPanel PRIVATE
         "${WINDOWS_APP_SDK_FOUNDATION_DIR}/lib/native/x64/Microsoft.WindowsAppRuntime.Bootstrap.lib"
-        CoreMessaging
     )
 endif()
 

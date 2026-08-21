@@ -9,7 +9,6 @@
 #include <QWindow>
 
 #include <windows.h>
-#include <dispatcherqueue.h>
 #include <dwmapi.h>
 
 #include <MddBootstrap.h>
@@ -17,9 +16,9 @@
 #include <Windows.UI.Composition.Interop.h>
 
 #include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
+#include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/Microsoft.UI.Interop.h>
 #include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.System.h>
 #include <winrt/Windows.UI.Composition.Desktop.h>
 #include <winrt/Windows.UI.Composition.h>
 
@@ -122,7 +121,7 @@ struct WindowsBackdrop::Impl
         QMetaObject::Connection destroyedConnection;
     };
 
-    winrt::Windows::System::DispatcherQueueController dispatcherController{nullptr};
+    winrt::Microsoft::UI::Dispatching::DispatcherQueueController dispatcherController{nullptr};
     winrt::Windows::UI::Composition::Compositor compositor{nullptr};
     std::unordered_map<QWindow*, std::unique_ptr<WindowBackdrop>> backdrops;
     QMetaObject::Connection themeConnection;
@@ -134,18 +133,9 @@ struct WindowsBackdrop::Impl
         }
 
         try {
-            if (!winrt::Windows::System::DispatcherQueue::GetForCurrentThread()) {
-                const DispatcherQueueOptions options{
-                    sizeof(DispatcherQueueOptions),
-                    DQTYPE_THREAD_CURRENT,
-                    DQTAT_COM_NONE,
-                };
-                ABI::Windows::System::IDispatcherQueueController* controller = nullptr;
-                winrt::check_hresult(CreateDispatcherQueueController(options, &controller));
-                dispatcherController = {
-                    controller,
-                    winrt::take_ownership_from_abi,
-                };
+            if (!winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread()) {
+                dispatcherController =
+                    winrt::Microsoft::UI::Dispatching::DispatcherQueueController::CreateOnCurrentThread();
             }
             if (!compositor) {
                 compositor = winrt::Windows::UI::Composition::Compositor();
@@ -218,7 +208,7 @@ WindowsBackdrop::~WindowsBackdrop()
     m_impl->compositor = nullptr;
     if (m_impl->dispatcherController) {
         try {
-            m_impl->dispatcherController.ShutdownQueueAsync();
+            m_impl->dispatcherController.ShutdownQueue();
         } catch (const winrt::hresult_error& error) {
             LOG_WARN(LogCategory,
                      QString("Failed to shut down the composition dispatcher queue: %1")
