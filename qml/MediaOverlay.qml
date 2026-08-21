@@ -58,13 +58,13 @@ ApplicationWindow {
         target: UserSettings
 
         function onMediaOverlayPositionChanged() {
-            positionWindow()
+            repositionWindow()
         }
 
         function onMediaOverlaySizeChanged() {
             width = calculateWidth()
             height = calculateHeight()
-            positionWindow()
+            repositionWindow()
         }
     }
 
@@ -112,7 +112,8 @@ ApplicationWindow {
             mediaOverlayWindow.isAnimatingIn = true
             if (mediaOverlayWindow.nativeBackdropActive) {
                 overlayRect.opacity = 1
-            } else {
+            } else if (!contentOpacityAnimation.running && overlayRect.opacity < 1) {
+                contentOpacityAnimation.from = overlayRect.opacity
                 contentOpacityAnimation.start()
             }
         }
@@ -129,7 +130,9 @@ ApplicationWindow {
         easing.type: Easing.OutQuad
         onStarted: {
             mediaOverlayWindow.isAnimatingOut = true
-            if (!mediaOverlayWindow.nativeBackdropActive) {
+            if (!mediaOverlayWindow.nativeBackdropActive
+                    && !hideOpacityAnimation.running && overlayRect.opacity > 0) {
+                hideOpacityAnimation.from = overlayRect.opacity
                 hideOpacityAnimation.start()
             }
         }
@@ -249,6 +252,40 @@ ApplicationWindow {
 
         restingX = x
         restingY = y
+    }
+
+    function repositionWindow() {
+        const wasAnimatingIn = isAnimatingIn
+        const wasAnimatingOut = isAnimatingOut
+        const currentX = x
+        const currentY = y
+
+        if (wasAnimatingIn) {
+            showAnimation.stop()
+        } else if (wasAnimatingOut) {
+            hideAnimation.stop()
+        }
+
+        positionWindow()
+
+        if (!wasAnimatingIn && !wasAnimatingOut) {
+            return
+        }
+
+        if (getAnimationProperty() === "x") {
+            x = currentX
+            y = restingY
+        } else {
+            x = restingX
+            y = currentY
+        }
+
+        if (wasAnimatingIn) {
+            animateFrom(x, y)
+        } else {
+            animateToHide()
+            hideAnimation.start()
+        }
     }
 
     function setInitialWindowPosition() {
