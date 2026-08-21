@@ -461,6 +461,7 @@ ApplicationWindow {
         resetWindowPositions()
         const verticalDistance = panel.height
                 + (mediaPanelWindow.available ? mediaPanelWindow.height + panelGap : 0)
+                + UserSettings.yAxisMargin
         const horizontalDistance = panel.width + UserSettings.xAxisMargin
 
         switch (panel.taskbarPos) {
@@ -573,6 +574,7 @@ ApplicationWindow {
         const propertyName = animationProperty()
         const verticalDistance = panel.height
                 + (mediaPanelWindow.available ? mediaPanelWindow.height + panelGap : 0)
+                + UserSettings.yAxisMargin
         const horizontalDistance = panel.width + UserSettings.xAxisMargin
 
         mainHideAnimation.property = propertyName
