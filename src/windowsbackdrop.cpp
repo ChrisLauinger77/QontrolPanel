@@ -109,23 +109,6 @@ bool applyDwmFallback(HWND hwnd)
     return true;
 }
 
-bool applyDwmMainWindowBackdrop(HWND hwnd)
-{
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_MAINWINDOW;
-    const HRESULT result = DwmSetWindowAttribute(
-        hwnd,
-        DWMWA_SYSTEMBACKDROP_TYPE,
-        &backdropType,
-        sizeof(backdropType));
-    if (FAILED(result)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to apply main-window backdrop: %1")
-                     .arg(formatHresult(result)));
-        return false;
-    }
-    return true;
-}
-
 void clearDwmBackdrop(HWND hwnd)
 {
     const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
@@ -178,11 +161,7 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     applyCommonDwmAttributes(hwnd);
 
     if (kind == BackdropKind::MainWindow) {
-        applyWindowAcrylic(hwnd, false);
-        if (applyDwmMainWindowBackdrop(hwnd)) {
-            return true;
-        }
-        return applyWindowAcrylic(hwnd, true);
+        return applyWindowAcrylic(hwnd, window->isActive());
     }
 
     if (applyWindowAcrylic(hwnd, true)) {
@@ -209,6 +188,7 @@ struct WindowsBackdrop::Impl
     {
         QPointer<QWindow> window;
         BackdropKind kind = BackdropKind::Transient;
+        QMetaObject::Connection activeConnection;
         QMetaObject::Connection visibleConnection;
         QMetaObject::Connection destroyedConnection;
     };
@@ -223,6 +203,7 @@ struct WindowsBackdrop::Impl
             return;
         }
 
+        QObject::disconnect(iterator->second->activeConnection);
         QObject::disconnect(iterator->second->visibleConnection);
         QObject::disconnect(iterator->second->destroyedConnection);
         if (resetMaterial && iterator->second->window) {
@@ -315,6 +296,17 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
     auto trackedWindow = std::make_unique<Impl::TrackedWindow>();
     trackedWindow->window = window;
     trackedWindow->kind = kind;
+    trackedWindow->activeConnection = connect(
+        window,
+        &QWindow::activeChanged,
+        this,
+        [this, window]() {
+            const auto trackedWindow = m_impl->windows.find(window);
+            if (trackedWindow != m_impl->windows.end()
+                && trackedWindow->second->kind == BackdropKind::MainWindow) {
+                applyMaterial(window, trackedWindow->second->kind);
+            }
+        });
     trackedWindow->visibleConnection = connect(
         window,
         &QWindow::visibleChanged,
@@ -336,7 +328,7 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
 
     LOG_INFO(LogCategory,
              kind == BackdropKind::MainWindow
-                 ? "Applied Windows main-window backdrop material"
+                 ? "Applied activation-aware Windows acrylic material"
                  : "Applied dispatcher-free Windows acrylic material");
     return true;
 }

@@ -14,7 +14,7 @@ ApplicationWindow {
     visible: false
     transientParent: null
     title: qsTr("QontrolPanel - Settings")
-    color: nativeBackdropActive ? "transparent" : Constants.panelColor
+    color: nativeBackdropActive && active ? "transparent" : Constants.panelColor
 
     readonly property int maxSettingsPageIndex: 11
     property bool nativeBackdropActive: false
