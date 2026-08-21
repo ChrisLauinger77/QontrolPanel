@@ -18,6 +18,9 @@ ApplicationWindow {
     property string previousTitle: ""
     property string previousArtist: ""
     property bool hasReceivedFirstUpdate: false
+    property bool nativeBackdropActive: false
+    property real restingX: 0
+    property real restingY: 0
 
     transientParent: null
 
@@ -36,19 +39,32 @@ ApplicationWindow {
 
     Component.onCompleted: {
         positionWindow()
+        updateNativeBackdrop()
+    }
+
+    function updateNativeBackdrop() {
+        nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(mediaOverlayWindow)
+    }
+
+    Connections {
+        target: Qt.application.styleHints
+
+        function onColorSchemeChanged() {
+            mediaOverlayWindow.updateNativeBackdrop()
+        }
     }
 
     Connections {
         target: UserSettings
 
         function onMediaOverlayPositionChanged() {
-            positionWindow()
+            repositionWindow()
         }
 
         function onMediaOverlaySizeChanged() {
             width = calculateWidth()
             height = calculateHeight()
-            positionWindow()
+            repositionWindow()
         }
     }
 
@@ -89,12 +105,17 @@ ApplicationWindow {
 
     PropertyAnimation {
         id: showAnimation
-        target: contentTransform
+        target: mediaOverlayWindow
         duration: 300
         easing.type: Easing.OutQuad
         onStarted: {
             mediaOverlayWindow.isAnimatingIn = true
-            contentOpacityAnimation.start()
+            if (mediaOverlayWindow.nativeBackdropActive) {
+                overlayRect.opacity = 1
+            } else if (!contentOpacityAnimation.running && overlayRect.opacity < 1) {
+                contentOpacityAnimation.from = overlayRect.opacity
+                contentOpacityAnimation.start()
+            }
         }
         onFinished: {
             mediaOverlayWindow.isAnimatingIn = false
@@ -104,17 +125,21 @@ ApplicationWindow {
 
     PropertyAnimation {
         id: hideAnimation
-        target: contentTransform
+        target: mediaOverlayWindow
         duration: 250
         easing.type: Easing.OutQuad
         onStarted: {
             mediaOverlayWindow.isAnimatingOut = true
-            hideOpacityAnimation.start()
+            if (!mediaOverlayWindow.nativeBackdropActive
+                    && !hideOpacityAnimation.running && overlayRect.opacity > 0) {
+                hideOpacityAnimation.from = overlayRect.opacity
+                hideOpacityAnimation.start()
+            }
         }
         onFinished: {
             mediaOverlayWindow.visible = false
             mediaOverlayWindow.isAnimatingOut = false
-            resetTransform()
+            resetWindowPosition()
         }
     }
 
@@ -138,34 +163,29 @@ ApplicationWindow {
         to: 0
     }
 
-    Translate {
-        id: contentTransform
-        x: 0
-        y: 0
-    }
-
     function showOverlay() {
-        if (visible || isAnimatingIn) {
+        if ((visible && !isAnimatingOut) || isAnimatingIn) {
             autoHideTimer.restart()
             return
         }
 
-        positionWindow()
-
         if (isAnimatingOut) {
+            const currentX = x
+            const currentY = y
             hideAnimation.stop()
             hideOpacityAnimation.stop()
             isAnimatingOut = false
 
-            animateFrom(contentTransform.x, contentTransform.y)
+            animateFrom(currentX, currentY)
             return
         }
 
-        setInitialTransform()
-        overlayRect.opacity = 0
+        positionWindow()
+        setInitialWindowPosition()
+        overlayRect.opacity = nativeBackdropActive ? 1 : 0
 
         visible = true
-        animateFrom(contentTransform.x, contentTransform.y)
+        animateFrom(x, y)
     }
 
     function hideOverlay() {
@@ -229,45 +249,80 @@ ApplicationWindow {
             y = taskbarOffset + margin
             break
         }
+
+        restingX = x
+        restingY = y
     }
 
-    function setInitialTransform() {
-        // Set initial transform based on position
+    function repositionWindow() {
+        const wasAnimatingIn = isAnimatingIn
+        const wasAnimatingOut = isAnimatingOut
+        const currentX = x
+        const currentY = y
+
+        if (wasAnimatingIn) {
+            showAnimation.stop()
+        } else if (wasAnimatingOut) {
+            hideAnimation.stop()
+        }
+
+        positionWindow()
+
+        if (!wasAnimatingIn && !wasAnimatingOut) {
+            return
+        }
+
+        if (getAnimationProperty() === "x") {
+            x = currentX
+            y = restingY
+        } else {
+            x = restingX
+            y = currentY
+        }
+
+        if (wasAnimatingIn) {
+            animateFrom(x, y)
+        } else {
+            animateToHide()
+            hideAnimation.start()
+        }
+    }
+
+    function setInitialWindowPosition() {
+        x = restingX
+        y = restingY
+
         switch (UserSettings.mediaOverlayPosition) {
         case 0: // top-left
         case 1: // top-center
         case 2: // top-right
-            contentTransform.x = 0
-            contentTransform.y = -height
+            y = restingY - height
             break
         case 3: // left
-            contentTransform.x = -width
-            contentTransform.y = 0
+            x = restingX - width
             break
         case 4: // right
-            contentTransform.x = width
-            contentTransform.y = 0
+            x = restingX + width
             break
         case 5: // bottom-left
         case 6: // bottom-center
         case 7: // bottom-right
-            contentTransform.x = 0
-            contentTransform.y = height
+            y = restingY + height
             break
         }
     }
 
     function animateFrom(fromX, fromY) {
         showAnimation.property = getAnimationProperty()
-        showAnimation.from = getAnimationFrom()
-        showAnimation.to = 0
+        showAnimation.from = showAnimation.property === "x" ? fromX : fromY
+        showAnimation.to = showAnimation.property === "x" ? restingX : restingY
         showAnimation.start()
     }
 
     function animateToHide() {
         hideAnimation.property = getAnimationProperty()
-        hideAnimation.from = 0
-        hideAnimation.to = getAnimationTo()
+        hideAnimation.from = hideAnimation.property === "x" ? x : y
+        hideAnimation.to = getAnimationTarget()
     }
 
     function getAnimationProperty() {
@@ -286,43 +341,35 @@ ApplicationWindow {
         return "y"
     }
 
-    function getAnimationFrom() {
+    function getAnimationTarget() {
         switch (UserSettings.mediaOverlayPosition) {
         case 0: // top-left
         case 1: // top-center
         case 2: // top-right
-            return -height
+            return restingY - height
         case 3: // left
-            return -width
+            return restingX - width
         case 4: // right
-            return width
+            return restingX + width
         case 5: // bottom-left
         case 6: // bottom-center
         case 7: // bottom-right
-            return height
+            return restingY + height
         }
-        return -height
+        return restingY - height
     }
 
-    function getAnimationTo() {
-        return getAnimationFrom()
-    }
-
-    function resetTransform() {
-        setInitialTransform()
+    function resetWindowPosition() {
+        x = restingX
+        y = restingY
     }
 
     Rectangle {
         id: overlayRect
         anchors.fill: parent
-        color: Constants.panelColor
+        color: mediaOverlayWindow.nativeBackdropActive ? "transparent" : Constants.panelColor
         radius: 5
         opacity: 0
-
-        transform: Translate {
-            x: contentTransform.x
-            y: contentTransform.y
-        }
 
         Rectangle {
             anchors.fill: parent

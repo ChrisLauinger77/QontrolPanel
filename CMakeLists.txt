@@ -66,6 +66,7 @@ set(SOURCES
     src/languagebridge.cpp
     src/keyboardshortcutmanager.cpp
     src/trayiconprovider.cpp
+    src/windowsbackdrop.cpp
 )
 
 set(HEADERS
@@ -90,6 +91,7 @@ set(HEADERS
     include/languagebridge.h
     include/keyboardshortcutmanager.h
     include/trayiconprovider.h
+    include/windowsbackdrop.h
 )
 
 # Get git commit hash
@@ -232,6 +234,7 @@ target_link_libraries(QontrolPanel PRIVATE
     Wbemuuid
     Version
     Shell32
+    Dwmapi
 )
 
 target_compile_definitions(QontrolPanel PRIVATE

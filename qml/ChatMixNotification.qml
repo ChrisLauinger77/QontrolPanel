@@ -19,6 +19,8 @@ ApplicationWindow {
     property string notificationType: "chatmix" // "chatmix" or "micmute"
     property bool isMuted: false
     property bool chatMixEffectiveEnabled: false
+    property bool nativeBackdropActive: false
+    property real restingY: 0
 
     transientParent: null
 
@@ -37,6 +39,19 @@ ApplicationWindow {
 
     Component.onCompleted: {
         positionWindow()
+        updateNativeBackdrop()
+    }
+
+    function updateNativeBackdrop() {
+        nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(notificationWindow)
+    }
+
+    Connections {
+        target: Qt.application.styleHints
+
+        function onColorSchemeChanged() {
+            notificationWindow.updateNativeBackdrop()
+        }
     }
 
     Connections {
@@ -86,13 +101,18 @@ ApplicationWindow {
 
     PropertyAnimation {
         id: showAnimation
-        target: contentTransform
+        target: notificationWindow
         property: "y"
         duration: 300
         easing.type: Easing.OutQuad
         onStarted: {
             notificationWindow.isAnimatingIn = true
-            contentOpacityAnimation.start()
+            if (notificationWindow.nativeBackdropActive) {
+                notificationRect.opacity = 1
+            } else if (!contentOpacityAnimation.running && notificationRect.opacity < 1) {
+                contentOpacityAnimation.from = notificationRect.opacity
+                contentOpacityAnimation.start()
+            }
         }
         onFinished: {
             notificationWindow.isAnimatingIn = false
@@ -102,20 +122,22 @@ ApplicationWindow {
 
     PropertyAnimation {
         id: hideAnimation
-        target: contentTransform
+        target: notificationWindow
         property: "y"
         duration: 250
         easing.type: Easing.OutQuad
-        from: 0
-        to: -notificationWindow.height
         onStarted: {
             notificationWindow.isAnimatingOut = true
-            hideOpacityAnimation.start()
+            if (!notificationWindow.nativeBackdropActive
+                    && !hideOpacityAnimation.running && notificationRect.opacity > 0) {
+                hideOpacityAnimation.from = notificationRect.opacity
+                hideOpacityAnimation.start()
+            }
         }
         onFinished: {
             notificationWindow.visible = false
             notificationWindow.isAnimatingOut = false
-            contentTransform.y = -notificationWindow.height
+            notificationWindow.y = notificationWindow.restingY
         }
     }
 
@@ -137,12 +159,6 @@ ApplicationWindow {
         easing.type: Easing.InQuad
         from: 1
         to: 0
-    }
-
-    Translate {
-        id: contentTransform
-        x: 0
-        y: -notificationWindow.height
     }
 
     // Hidden measurement texts for all possible messages
@@ -182,34 +198,34 @@ ApplicationWindow {
     }
 
     function showNotification(text) {
-        if (visible || isAnimatingIn) {
+        if ((visible && !isAnimatingOut) || isAnimatingIn) {
             message = text
             autoHideTimer.restart()
             return
         }
 
         message = text
-        positionWindow()
-
         if (isAnimatingOut) {
+            const currentY = y
             hideAnimation.stop()
             hideOpacityAnimation.stop()
             isAnimatingOut = false
 
-            showAnimation.from = contentTransform.y
-            showAnimation.to = 0
+            showAnimation.from = currentY
+            showAnimation.to = restingY
 
-            let progress = Math.abs(contentTransform.y) / notificationWindow.height
+            let progress = Math.abs(currentY - restingY) / notificationWindow.height
             showAnimation.duration = Math.max(150, 300 * progress)
             showAnimation.start()
             return
         }
 
-        contentTransform.y = -notificationWindow.height
-        notificationRect.opacity = 0
+        positionWindow()
+        y = restingY - height
+        notificationRect.opacity = nativeBackdropActive ? 1 : 0
 
-        showAnimation.from = -notificationWindow.height
-        showAnimation.to = 0
+        showAnimation.from = y
+        showAnimation.to = restingY
         showAnimation.duration = 300
 
         visible = true
@@ -228,6 +244,8 @@ ApplicationWindow {
         }
 
         autoHideTimer.stop()
+        hideAnimation.from = y
+        hideAnimation.to = restingY - height
         hideAnimation.start()
     }
 
@@ -235,19 +253,15 @@ ApplicationWindow {
         const screenWidth = Utils.getAvailableDesktopWidth()
         x = (screenWidth - width) / 2
         y = UserSettings.panelPosition === 0 ? 60 : 12
+        restingY = y
     }
 
     Rectangle {
         id: notificationRect
         anchors.fill: parent
-        color: Constants.panelColor
+        color: notificationWindow.nativeBackdropActive ? "transparent" : Constants.panelColor
         radius: 5
         opacity: 0
-
-        transform: Translate {
-            x: contentTransform.x
-            y: contentTransform.y
-        }
 
         Rectangle {
             anchors.fill: parent
