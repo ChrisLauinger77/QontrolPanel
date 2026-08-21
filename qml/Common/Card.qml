@@ -24,7 +24,7 @@ Rectangle {
     property bool show: true
 
     implicitHeight: 70
-    color: materialColor
+    color: "transparent"
     radius: 5
 
     // Animate opacity and transform
