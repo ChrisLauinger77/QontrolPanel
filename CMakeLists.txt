@@ -161,12 +161,11 @@ if(WIN32)
         "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.InteractiveExperiences.2.1.6")
     set(WINDOWS_APP_SDK_RUNTIME_DIR
         "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.WindowsAppSDK.Runtime.2.4.0")
-    set(CPPWINRT_PACKAGE_DIR
-        "${WINDOWS_APP_SDK_PACKAGES_DIR}/Microsoft.Windows.CppWinRT.2.0.250303.1")
-
     find_program(CPPWINRT_EXECUTABLE
         NAMES cppwinrt.exe
-        PATHS "${CPPWINRT_PACKAGE_DIR}/bin"
+        HINTS "$ENV{WindowsSdkBinPath}/x64"
+        PATHS
+            "C:/Program Files (x86)/Windows Kits/10/bin/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}/x64"
         NO_DEFAULT_PATH
         REQUIRED
     )
