@@ -120,9 +120,8 @@ bool applyWindowAcrylic(HWND hwnd, bool enabled)
     return setWindowCompositionAttribute(hwnd, &attributeData) != FALSE;
 }
 
-bool applyDwmTransientBackdrop(HWND hwnd)
+bool applyDwmBackdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType)
 {
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
     const HRESULT result = DwmSetWindowAttribute(
         hwnd,
         DWMWA_SYSTEMBACKDROP_TYPE,
@@ -130,7 +129,7 @@ bool applyDwmTransientBackdrop(HWND hwnd)
         sizeof(backdropType));
     if (FAILED(result)) {
         LOG_WARN(LogCategory,
-                 QString("Failed to apply transient backdrop: %1")
+                 QString("Failed to apply system backdrop: %1")
                      .arg(formatHresult(result)));
         return false;
     }
@@ -195,13 +194,13 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
             return false;
         }
         applyWindowAcrylic(hwnd, false);
-        return applyDwmTransientBackdrop(hwnd);
+        return applyDwmBackdrop(hwnd, DWMSBT_MAINWINDOW);
     }
 
     if (applyWindowAcrylic(hwnd, true)) {
         return true;
     }
-    return applyDwmTransientBackdrop(hwnd);
+    return applyDwmBackdrop(hwnd, DWMSBT_TRANSIENTWINDOW);
 }
 
 void clearMaterial(QWindow* window)
@@ -349,7 +348,7 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
 
     LOG_INFO(LogCategory,
              kind == BackdropKind::MainWindow
-                 ? "Applied activation-aware Windows acrylic material"
+                 ? "Applied activation-aware Windows Mica material"
                  : "Applied dispatcher-free Windows acrylic material");
     return true;
 }
