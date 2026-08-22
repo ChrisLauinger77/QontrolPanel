@@ -41,6 +41,17 @@ bool usesDarkTheme()
 
 bool transparencyEffectsEnabled()
 {
+    HIGHCONTRASTW highContrast{sizeof(HIGHCONTRASTW)};
+    const BOOL highContrastStateAvailable = SystemParametersInfoW(
+        SPI_GETHIGHCONTRAST,
+        sizeof(HIGHCONTRASTW),
+        &highContrast,
+        0);
+    if (!highContrastStateAvailable
+        || (highContrast.dwFlags & HCF_HIGHCONTRASTON) != 0) {
+        return false;
+    }
+
     BOOL compositionEnabled = FALSE;
     if (FAILED(DwmIsCompositionEnabled(&compositionEnabled)) || !compositionEnabled) {
         return false;
@@ -52,10 +63,7 @@ bool transparencyEffectsEnabled()
     if (personalizeSettings.value(QStringLiteral("EnableTransparency"), 1).toInt() == 0) {
         return false;
     }
-
-    DWORD colorizationColor = 0;
-    BOOL opaqueBlend = FALSE;
-    return FAILED(DwmGetColorizationColor(&colorizationColor, &opaqueBlend)) || !opaqueBlend;
+    return true;
 }
 
 struct AccentPolicy
@@ -112,9 +120,8 @@ bool applyWindowAcrylic(HWND hwnd, bool enabled)
     return setWindowCompositionAttribute(hwnd, &attributeData) != FALSE;
 }
 
-bool applyDwmFallback(HWND hwnd)
+bool applyDwmBackdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType)
 {
-    const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
     const HRESULT result = DwmSetWindowAttribute(
         hwnd,
         DWMWA_SYSTEMBACKDROP_TYPE,
@@ -122,20 +129,7 @@ bool applyDwmFallback(HWND hwnd)
         sizeof(backdropType));
     if (FAILED(result)) {
         LOG_WARN(LogCategory,
-                 QString("Failed to apply fallback transient backdrop: %1")
-                     .arg(formatHresult(result)));
-        return false;
-    }
-    return true;
-}
-
-bool extendFrameIntoClientArea(HWND hwnd, bool enabled)
-{
-    const MARGINS margins = enabled ? MARGINS{-1, -1, -1, -1} : MARGINS{};
-    const HRESULT result = DwmExtendFrameIntoClientArea(hwnd, &margins);
-    if (FAILED(result)) {
-        LOG_WARN(LogCategory,
-                 QString("Failed to update client-area frame extension: %1")
+                 QString("Failed to apply system backdrop: %1")
                      .arg(formatHresult(result)));
         return false;
     }
@@ -194,32 +188,19 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     applyCommonDwmAttributes(hwnd);
 
     if (kind == BackdropKind::MainWindow) {
-        if (!transparencyEffectsEnabled() || !extendFrameIntoClientArea(hwnd, true)) {
+        if (!transparencyEffectsEnabled()) {
             applyWindowAcrylic(hwnd, false);
-            extendFrameIntoClientArea(hwnd, false);
+            clearDwmBackdrop(hwnd);
             return false;
         }
-
-        if (window->isActive()) {
-            const bool acrylicApplied = applyWindowAcrylic(hwnd, true);
-            if (!acrylicApplied) {
-                extendFrameIntoClientArea(hwnd, false);
-            }
-            return acrylicApplied;
-        }
-
-        const bool acrylicAvailable = applyWindowAcrylic(hwnd, true);
         applyWindowAcrylic(hwnd, false);
-        if (!acrylicAvailable) {
-            extendFrameIntoClientArea(hwnd, false);
-        }
-        return acrylicAvailable;
+        return applyDwmBackdrop(hwnd, DWMSBT_MAINWINDOW);
     }
 
     if (applyWindowAcrylic(hwnd, true)) {
         return true;
     }
-    return applyDwmFallback(hwnd);
+    return applyDwmBackdrop(hwnd, DWMSBT_TRANSIENTWINDOW);
 }
 
 void clearMaterial(QWindow* window)
@@ -230,7 +211,6 @@ void clearMaterial(QWindow* window)
     }
 
     applyWindowAcrylic(hwnd, false);
-    extendFrameIntoClientArea(hwnd, false);
     clearDwmBackdrop(hwnd);
 }
 }
@@ -368,7 +348,7 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
 
     LOG_INFO(LogCategory,
              kind == BackdropKind::MainWindow
-                 ? "Applied activation-aware Windows acrylic material"
+                 ? "Applied activation-aware Windows Mica material"
                  : "Applied dispatcher-free Windows acrylic material");
     return true;
 }
