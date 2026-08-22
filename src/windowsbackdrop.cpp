@@ -52,10 +52,7 @@ bool transparencyEffectsEnabled()
     if (personalizeSettings.value(QStringLiteral("EnableTransparency"), 1).toInt() == 0) {
         return false;
     }
-
-    DWORD colorizationColor = 0;
-    BOOL opaqueBlend = FALSE;
-    return FAILED(DwmGetColorizationColor(&colorizationColor, &opaqueBlend)) || !opaqueBlend;
+    return true;
 }
 
 struct AccentPolicy
