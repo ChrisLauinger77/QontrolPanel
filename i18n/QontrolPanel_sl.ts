@@ -21,11 +21,11 @@
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Gor %1  Dol %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Korak: %1)</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -116,11 +116,11 @@
     </message>
     <message>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Animacije strani z nastavitvami</translation>
     </message>
     <message>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Animiraj prehode med stranmi z nastavitvami</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
@@ -241,7 +241,7 @@
     </message>
     <message>
         <source>ChatMix is not activated</source>
-        <translation type="unfinished"></translation>
+        <translation>ChatMix ni aktiviran</translation>
     </message>
 </context>
 <context>
@@ -276,11 +276,11 @@
     </message>
     <message>
         <source>Show ChatMix controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži kontrolnike ChatMixa</translation>
     </message>
     <message>
         <source>Use ChatMix volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Uporabi glasnost ChatMixa</translation>
     </message>
     <message>
         <source>ChatMix volume</source>
@@ -449,110 +449,110 @@
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Gor</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Dol</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Levo</translation>
+        <translation>Levo</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Desno</translation>
+        <translation>Desno</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Preslednica</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Vnašalka</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Premikalka</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Ubežnica</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Vračalka</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Brisalka</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrivalka</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Domov</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Up</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Down</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Neznano</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Krmilka</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Dvigalka</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Izmenjalka</translation>
     </message>
 </context>
 <context>
     <name>DebugPane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Vse</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz dnevnika QontrolPanel</translation>
     </message>
     <message>
         <source>Console output</source>
-        <translation type="unfinished">Izhod konzole</translation>
+        <translation>Izhod konzole</translation>
     </message>
     <message>
         <source>Filter by:</source>
-        <translation type="unfinished">Filtriraj po:</translation>
+        <translation>Filtriraj po:</translation>
     </message>
     <message>
         <source>Auto-scroll</source>
-        <translation type="unfinished">Samodejno pomikanje</translation>
+        <translation>Samodejno pomikanje</translation>
     </message>
     <message>
         <source>Copy All</source>
-        <translation type="unfinished">Kopiraj vse</translation>
+        <translation>Kopiraj vse</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Počisti</translation>
+        <translation>Počisti</translation>
     </message>
 </context>
 <context>
@@ -854,31 +854,31 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Prednastavitev izenačevalnika</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavite prednastavitev izenačevalnika za slušalke</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kako pogosto se pridobi stanje iz slušalk. Nižje vrednosti lahko povečajo porabo baterije.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridobi</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">Različica</translation>
+        <translation>Različica</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Repozitorij GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogled na GitHubu</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
@@ -997,7 +997,7 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Jezik</translation>
+        <translation>Jezik</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -1052,7 +1052,7 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Neznano</translation>
     </message>
 </context>
 <context>
@@ -1250,7 +1250,7 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Doniraj</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
@@ -1348,7 +1348,7 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nalaganje...</translation>
     </message>
     <message>
         <source>Input: </source>
@@ -1356,27 +1356,27 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">Nadzor slušalk</translation>
+        <translation>Nadzor slušalk</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridobi</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Prednastavitev izenačevalnika</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished">Luči</translation>
+        <translation>Luči</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished">Glasovni pozivi</translation>
+        <translation>Glasovni pozivi</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished">Zavrtite za izklop zvoka</translation>
+        <translation>Zavrtite za izklop zvoka</translation>
     </message>
     <message>
         <source>Exit</source>
@@ -1384,15 +1384,15 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Neznana naprava</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Naprava je odklopljena</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -1415,110 +1415,110 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <name>UpdatePane</name>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Posodobitve in informacije</translation>
     </message>
     <message>
         <source>Application Updates</source>
-        <translation type="unfinished">Posodobitve aplikacije</translation>
+        <translation>Posodobitve aplikacije</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
-        <translation type="unfinished">Različica %1 je na voljo</translation>
+        <translation>Različica %1 je na voljo</translation>
     </message>
     <message>
         <source>Checking...</source>
-        <translation type="unfinished">Preverjanje ...</translation>
+        <translation>Preverjanje ...</translation>
     </message>
     <message>
         <source>Downloading...</source>
-        <translation type="unfinished">Prenos ...</translation>
+        <translation>Prenos ...</translation>
     </message>
     <message>
         <source>Download and Install</source>
-        <translation type="unfinished">Prenesi in namesti</translation>
+        <translation>Prenesi in namesti</translation>
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation type="unfinished">Preveri posodobitve</translation>
+        <translation>Preveri posodobitve</translation>
     </message>
     <message>
         <source>Release notes</source>
-        <translation type="unfinished">Opombe k izdaji</translation>
+        <translation>Opombe k izdaji</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
-        <translation type="unfinished">Oglejte si novosti v različici %1</translation>
+        <translation>Oglejte si novosti v različici %1</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">Prikaži</translation>
+        <translation>Prikaži</translation>
     </message>
     <message>
         <source>Auto check for app updates</source>
-        <translation type="unfinished">Samodejno preverjanje posodobitev aplikacij</translation>
+        <translation>Samodejno preverjanje posodobitev aplikacij</translation>
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation type="unfinished">Preveri posodobitve aplikacije ob zagonu in nato vsake 4 ure</translation>
+        <translation>Preveri posodobitve aplikacije ob zagonu in nato vsake 4 ure</translation>
     </message>
     <message>
         <source>Application version</source>
-        <translation type="unfinished">Različica aplikacije</translation>
+        <translation>Različica aplikacije</translation>
     </message>
     <message>
         <source>QT version</source>
-        <translation type="unfinished">Različica QT</translation>
+        <translation>Različica QT</translation>
     </message>
     <message>
         <source>Commit</source>
-        <translation type="unfinished">Commit</translation>
+        <translation>Commit</translation>
     </message>
     <message>
         <source>Build date</source>
-        <translation type="unfinished">Datum gradnje</translation>
+        <translation>Datum gradnje</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Repozitorij GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogled na GitHubu</translation>
     </message>
     <message>
         <source>Version %1</source>
-        <translation type="unfinished">Različica %1</translation>
+        <translation>Različica %1</translation>
     </message>
     <message>
         <source>No release notes available</source>
-        <translation type="unfinished">Ni opomb ob izdaji</translation>
+        <translation>Ni opomb ob izdaji</translation>
     </message>
 </context>
 <context>
     <name>Updater</name>
     <message>
         <source>Failed to check for updates: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Preverjanje posodobitev ni uspelo: %1</translation>
     </message>
     <message>
         <source>No executable found in latest release</source>
-        <translation type="unfinished"></translation>
+        <translation>V najnovejši izdaji ni bilo mogoče najti izvedljive datoteke</translation>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation type="unfinished"></translation>
+        <translation>Prenosa ni mogoče začeti</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished">Prenos ni uspel: %1</translation>
+        <translation>Prenos ni uspel: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
-        <translation type="unfinished"></translation>
+        <translation>Shranjevanje datoteke s posodobitvijo ni uspelo</translation>
     </message>
     <message>
         <source>Failed to start update executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Zagon izvedljive datoteke za posodobitev ni uspel</translation>
     </message>
     <message>
         <source>Update available: %1</source>
