@@ -13,12 +13,11 @@ ApplicationWindow {
     minimumWidth: 1100
     visible: false
     transientParent: null
-    flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
     title: qsTr("QontrolPanel - Settings")
     color: "transparent"
 
     background: Rectangle {
-        color: root.nativeBackdropActive && root.active ? "transparent" : Constants.panelColor
+        color: Constants.panelColor
     }
 
     readonly property int maxSettingsPageIndex: 11
