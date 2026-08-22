@@ -13,6 +13,7 @@ ApplicationWindow {
     minimumWidth: 1100
     visible: false
     transientParent: null
+    flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
     title: qsTr("QontrolPanel - Settings")
     color: "transparent"
 
