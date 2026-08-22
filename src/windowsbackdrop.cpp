@@ -41,6 +41,17 @@ bool usesDarkTheme()
 
 bool transparencyEffectsEnabled()
 {
+    HIGHCONTRASTW highContrast{sizeof(HIGHCONTRASTW)};
+    const BOOL highContrastStateAvailable = SystemParametersInfoW(
+        SPI_GETHIGHCONTRAST,
+        sizeof(HIGHCONTRASTW),
+        &highContrast,
+        0);
+    if (!highContrastStateAvailable
+        || (highContrast.dwFlags & HCF_HIGHCONTRASTON) != 0) {
+        return false;
+    }
+
     BOOL compositionEnabled = FALSE;
     if (FAILED(DwmIsCompositionEnabled(&compositionEnabled)) || !compositionEnabled) {
         return false;
