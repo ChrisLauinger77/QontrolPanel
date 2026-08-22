@@ -136,6 +136,23 @@ bool applyDwmBackdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType)
     return true;
 }
 
+bool setRedirectionBitmapAlpha(HWND hwnd, bool enabled)
+{
+    const BOOL useAlpha = enabled;
+    const HRESULT result = DwmSetWindowAttribute(
+        hwnd,
+        DWMWA_REDIRECTIONBITMAP_ALPHA,
+        &useAlpha,
+        sizeof(useAlpha));
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to update client-area alpha composition: %1")
+                     .arg(formatHresult(result)));
+        return false;
+    }
+    return true;
+}
+
 void clearDwmBackdrop(HWND hwnd)
 {
     const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
@@ -191,10 +208,20 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
         if (!transparencyEffectsEnabled()) {
             applyWindowAcrylic(hwnd, false);
             clearDwmBackdrop(hwnd);
+            setRedirectionBitmapAlpha(hwnd, false);
+            return false;
+        }
+        if (!setRedirectionBitmapAlpha(hwnd, true)) {
+            applyWindowAcrylic(hwnd, false);
+            clearDwmBackdrop(hwnd);
             return false;
         }
         applyWindowAcrylic(hwnd, false);
-        return applyDwmBackdrop(hwnd, DWMSBT_MAINWINDOW);
+        if (applyDwmBackdrop(hwnd, DWMSBT_MAINWINDOW)) {
+            return true;
+        }
+        setRedirectionBitmapAlpha(hwnd, false);
+        return false;
     }
 
     if (applyWindowAcrylic(hwnd, true)) {
@@ -203,7 +230,7 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     return applyDwmBackdrop(hwnd, DWMSBT_TRANSIENTWINDOW);
 }
 
-void clearMaterial(QWindow* window)
+void clearMaterial(QWindow* window, BackdropKind kind)
 {
     const HWND hwnd = reinterpret_cast<HWND>(window->winId());
     if (!hwnd) {
@@ -212,6 +239,9 @@ void clearMaterial(QWindow* window)
 
     applyWindowAcrylic(hwnd, false);
     clearDwmBackdrop(hwnd);
+    if (kind == BackdropKind::MainWindow) {
+        setRedirectionBitmapAlpha(hwnd, false);
+    }
 }
 }
 
@@ -238,7 +268,7 @@ struct WindowsBackdrop::Impl
         QObject::disconnect(iterator->second->visibleConnection);
         QObject::disconnect(iterator->second->destroyedConnection);
         if (resetMaterial && iterator->second->window) {
-            clearMaterial(iterator->second->window);
+            clearMaterial(iterator->second->window, iterator->second->kind);
         }
         windows.erase(iterator);
     }
@@ -313,7 +343,7 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
     const auto existingWindow = m_impl->windows.find(window);
     if (existingWindow != m_impl->windows.end()
         && existingWindow->second->kind != kind) {
-        clearMaterial(window);
+        clearMaterial(window, existingWindow->second->kind);
     }
     if (!applyMaterial(window, kind)) {
         LOG_WARN(LogCategory, "Cannot apply backdrop: native material is unavailable");

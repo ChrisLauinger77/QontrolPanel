@@ -17,7 +17,7 @@ ApplicationWindow {
     color: "transparent"
 
     background: Rectangle {
-        color: Constants.panelColor
+        color: root.nativeBackdropActive && root.active ? "transparent" : Constants.panelColor
     }
 
     readonly property int maxSettingsPageIndex: 11
