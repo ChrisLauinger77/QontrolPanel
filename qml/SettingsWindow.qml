@@ -1,8 +1,5 @@
-pragma ComponentBehavior: Bound
-
-import QtQuick.Controls.FluentWinUI3
-import QtQuick.Layouts
 import QtQuick
+import QtQuick.Controls.FluentWinUI3
 import ChrisLauinger77.QontrolPanel
 
 ApplicationWindow {
@@ -13,21 +10,22 @@ ApplicationWindow {
     minimumWidth: 1100
     visible: false
     transientParent: null
+    flags: Qt.Window | Qt.FramelessWindowHint
     title: qsTr("QontrolPanel - Settings")
     color: "transparent"
 
-    background: Rectangle {
-        color: Constants.panelColor
-    }
-
-    readonly property int maxSettingsPageIndex: 11
     property bool nativeBackdropActive: false
+
+    background: Rectangle {
+        color: root.nativeBackdropActive ? "transparent" : Constants.panelColor
+    }
 
     Component.onCompleted: Qt.callLater(updateNativeBackdrop)
     onActiveChanged: updateNativeBackdrop()
-
-    function updateNativeBackdrop() {
-        nativeBackdropActive = WindowsBackdrop.applyMainWindowBackdrop(root)
+    onVisibleChanged: {
+        if (visible) {
+            Qt.callLater(updateNativeBackdrop)
+        }
     }
 
     Connections {
@@ -38,368 +36,62 @@ ApplicationWindow {
         }
     }
 
-    function pageComponentForIndex(index) {
-        switch (index) {
-        case 0:
-            return generalPaneComponent;
-        case 1:
-            return componentsPaneComponent;
-        case 2:
-            return appearancePaneComponent;
-        case 3:
-            return mediaOverlayPaneComponent;
-        case 4:
-            return commAppsPaneComponent;
-        case 5:
-            return shortcutsPaneComponent;
-        case 6:
-            return appHotkeysPaneComponent;
-        case 7:
-            return headsetControlPaneComponent;
-        case 8:
-            return deviceRenamingPaneComponent;
-        case 9:
-            return languagePaneComponent;
-        case 10:
-            return updatePaneComponent;
-        case 11:
-            return debugPaneComponent;
-        default:
-            return generalPaneComponent;
-        }
+    function updateNativeBackdrop() {
+        nativeBackdropActive = WindowsBackdrop.applyMainWindowBackdrop(root)
     }
 
-    function openPage(index, forceOpen) {
-        const safeIndex = Math.max(0, Math.min(index, maxSettingsPageIndex));
-        const component = pageComponentForIndex(safeIndex);
-        const shouldNavigate = forceOpen || sidebarList.currentIndex !== safeIndex || !stackView.currentItem;
-
-        sidebarList.currentIndex = safeIndex;
-
-        if (!shouldNavigate) {
-            return;
-        }
-
-        if (stackView.depth === 0) {
-            stackView.push(component);
-        } else {
-            stackView.replace(component);
-        }
+    function showPrototype() {
+        show()
+        raise()
+        requestActivate()
+        Qt.callLater(updateNativeBackdrop)
     }
 
     function showPreferredPane() {
-        show();
-        openPage(UserSettings.settingsStartupPage, true);
+        showPrototype()
     }
 
     function showUpdatePane() {
-        show();
-        openPage(10, true);
+        showPrototype()
     }
 
     function showHeadsetcontrolPane() {
-        show();
-        openPage(7, true);
+        showPrototype()
     }
 
-    property int rowHeight: 35
-
-    DonatePopup {
-        id: donatePopup
+    Rectangle {
         anchors.centerIn: parent
-    }
+        width: 520
+        height: 260
+        radius: 10
+        color: Constants.darkMode ? Qt.rgba(0.16, 0.16, 0.16, 0.72)
+                                  : Qt.rgba(1.0, 1.0, 1.0, 0.72)
+        border.color: Constants.darkMode ? Qt.rgba(1.0, 1.0, 1.0, 0.08)
+                                         : Qt.rgba(0.0, 0.0, 0.0, 0.08)
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.margins: 15
-        spacing: 15
+        Column {
+            anchors.centerIn: parent
+            spacing: 16
 
-        Item {
-            Layout.preferredWidth: 200
-            Layout.preferredHeight: 35
-            Layout.fillHeight: true
-
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-
-                ListView {
-                    id: sidebarList
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    interactive: false
-                    model: [
-                        {
-                            text: qsTr("General"),
-                            icon: "qrc:/icons/general.svg"
-                        },
-                        {
-                            text: qsTr("Components"),
-                            icon: "qrc:/icons/component.svg"
-                        },
-                        {
-                            text: qsTr("Appearance"),
-                            icon: "qrc:/icons/wand.svg"
-                        },
-                        {
-                            text: qsTr("Media Overlay"),
-                            icon: "qrc:/icons/music.svg"
-                        },
-                        {
-                            text: qsTr("ChatMix"),
-                            icon: "qrc:/icons/chatmix.svg"
-                        },
-                        {
-                            text: qsTr("Shortcuts"),
-                            icon: "qrc:/icons/keyboard.svg"
-                        },
-                        {
-                            text: qsTr("App Hotkeys"),
-                            icon: "qrc:/icons/panel_volume_66.svg"
-                        },
-                        {
-                            text: qsTr("HeadsetControl"),
-                            icon: "qrc:/icons/headsetcontrol.svg"
-                        },
-                        {
-                            text: qsTr("Renaming"),
-                            icon: "qrc:/icons/rename.svg"
-                        },
-                        {
-                            text: qsTr("Language"),
-                            icon: "qrc:/icons/language.svg"
-                        },
-                        {
-                            text: qsTr("Updates"),
-                            icon: "qrc:/icons/update.svg"
-                        },
-                        {
-                            text: qsTr("Debug"),
-                            icon: "qrc:/icons/chip.svg"
-                        }
-                    ]
-                    currentIndex: 0
-
-                    Connections {
-                        target: UserSettings
-
-                        function onLanguageIndexChanged() {
-                            Qt.callLater(function () {
-                                root.openPage(9, true);
-                            });
-                        }
-                    }
-
-                    delegate: ItemDelegate {
-                        id: del
-                        width: sidebarList.width
-                        height: 43
-                        spacing: 10
-                        required property var modelData
-                        required property int index
-
-                        highlighted: ListView.isCurrentItem
-                        icon.source: del.modelData.icon
-                        text: del.modelData.text
-                        icon.width: 18
-                        icon.height: 18
-                        opacity: text === qsTr("Debug") && !ListView.isCurrentItem ? 0.5 : 1
-                        onClicked: {
-                            root.openPage(index, false);
-                        }
-                    }
-                }
-
-                ItemDelegate {
-                    text: qsTr("Donate")
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 43
-                    spacing: 10
-                    icon.color: "#f05670"
-                    icon.source: "qrc:/icons/donate.svg"
-                    icon.width: 18
-                    icon.height: 18
-                    onClicked: donatePopup.open()
-                }
-            }
-        }
-
-        StackView {
-            id: stackView
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            initialItem: generalPaneComponent
-            readonly property bool settingsPageTransitionsEnabled: UserSettings.settingsAnimationsEnabled
-            readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
-            readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
-            readonly property real settingsPageSlideDistance: Math.min(32, stackView.width * 0.3)
-
-            popEnter: Transition {
-                enabled: stackView.settingsPageTransitionsEnabled
-
-                ParallelAnimation {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: stackView.settingsPageFadeDuration
-                        easing.type: Easing.InQuint
-                    }
-                    NumberAnimation {
-                        property: "x"
-                        from: (stackView.mirrored ? 1 : -1) * stackView.settingsPageSlideDistance
-                        to: 0
-                        duration: stackView.settingsPageSlideDuration
-                        easing.type: Easing.OutCubic
-                    }
-                }
+            Label {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: qsTr("Frameless Settings Mica proof")
+                font.pixelSize: 24
+                font.weight: Font.DemiBold
             }
 
-            pushEnter: Transition {
-                enabled: stackView.settingsPageTransitionsEnabled
-
-                ParallelAnimation {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: stackView.settingsPageFadeDuration
-                        easing.type: Easing.InQuint
-                    }
-                    NumberAnimation {
-                        property: "x"
-                        from: (stackView.mirrored ? -1 : 1) * stackView.settingsPageSlideDistance
-                        to: 0
-                        duration: stackView.settingsPageSlideDuration
-                        easing.type: Easing.OutCubic
-                    }
-                }
+            Label {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: root.nativeBackdropActive
+                      ? qsTr("Windows accepted the Mica backdrop request")
+                      : qsTr("Opaque fallback is active")
+                opacity: 0.8
             }
 
-            popExit: Transition {
-                enabled: stackView.settingsPageTransitionsEnabled
-
-                NumberAnimation {
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: stackView.settingsPageFadeDuration
-                    easing.type: Easing.OutQuint
-                }
-            }
-
-            pushExit: Transition {
-                enabled: stackView.settingsPageTransitionsEnabled
-
-                NumberAnimation {
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: stackView.settingsPageFadeDuration
-                    easing.type: Easing.OutQuint
-                }
-            }
-
-            replaceEnter: Transition {
-                enabled: stackView.settingsPageTransitionsEnabled
-
-                ParallelAnimation {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: stackView.settingsPageFadeDuration
-                        easing.type: Easing.InQuint
-                    }
-                    NumberAnimation {
-                        property: "x"
-                        from: (stackView.mirrored ? -1 : 1) * stackView.settingsPageSlideDistance
-                        to: 0
-                        duration: stackView.settingsPageSlideDuration
-                        easing.type: Easing.OutCubic
-                    }
-                }
-            }
-
-            replaceExit: Transition {
-                enabled: stackView.settingsPageTransitionsEnabled
-
-                ParallelAnimation {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 1
-                        to: 0
-                        duration: stackView.settingsPageFadeDuration
-                        easing.type: Easing.OutQuint
-                    }
-                    NumberAnimation {
-                        property: "x"
-                        from: 0
-                        to: (stackView.mirrored ? 1 : -1) * stackView.settingsPageSlideDistance
-                        duration: stackView.settingsPageSlideDuration
-                        easing.type: Easing.InCubic
-                    }
-                }
-            }
-
-            Component {
-                id: generalPaneComponent
-                GeneralPane {}
-            }
-
-            Component {
-                id: componentsPaneComponent
-                ComponentsPane {}
-            }
-
-            Component {
-                id: languagePaneComponent
-                LanguagePane {}
-            }
-
-            Component {
-                id: commAppsPaneComponent
-                CommAppsPane {}
-            }
-
-            Component {
-                id: shortcutsPaneComponent
-                ShortcutsPane {}
-            }
-
-            Component {
-                id: appHotkeysPaneComponent
-                AppHotkeysPane {}
-            }
-
-            Component {
-                id: appearancePaneComponent
-                AppearancePane {}
-            }
-
-            Component {
-                id: mediaOverlayPaneComponent
-                MediaOverlayPane {}
-            }
-
-            Component {
-                id: headsetControlPaneComponent
-                HeadsetControlPane {}
-            }
-
-            Component {
-                id: deviceRenamingPaneComponent
-                DeviceRenamingPane {}
-            }
-
-            Component {
-                id: updatePaneComponent
-                UpdatePane {}
-            }
-
-            Component {
-                id: debugPaneComponent
-                DebugPane {}
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: qsTr("Close")
+                onClicked: root.close()
             }
         }
     }
