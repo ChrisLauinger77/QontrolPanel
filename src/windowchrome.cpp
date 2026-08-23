@@ -340,6 +340,30 @@ bool WindowChrome::nativeEventFilter(
     case WM_NCLBUTTONDOWN:
         if (msg->wParam == HTMAXBUTTON) {
             setMaximizeButtonPressed(true);
+            if (trackedWindow.window->visibility() == QWindow::Maximized) {
+                trackedWindow.window->showNormal();
+            } else {
+                trackedWindow.window->showMaximized();
+            }
+            setMaximizeButtonPressed(false);
+            *result = 0;
+            return true;
+        }
+        if (msg->wParam == HTCAPTION) {
+            trackedWindow.window->startSystemMove();
+            *result = 0;
+            return true;
+        }
+        return false;
+    case WM_NCLBUTTONDBLCLK:
+        if (msg->wParam == HTCAPTION) {
+            if (trackedWindow.window->visibility() == QWindow::Maximized) {
+                trackedWindow.window->showNormal();
+            } else {
+                trackedWindow.window->showMaximized();
+            }
+            *result = 0;
+            return true;
         }
         return false;
     case WM_NCLBUTTONUP:
