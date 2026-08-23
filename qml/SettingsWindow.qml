@@ -10,7 +10,7 @@ ApplicationWindow {
     height: 617
     minimumHeight: 500
     width: 1100
-    minimumWidth: 500
+    minimumWidth: 1100
     visible: false
     transientParent: null
     flags: Qt.Window | Qt.FramelessWindowHint
@@ -27,6 +27,12 @@ ApplicationWindow {
     }
 
     Component.onCompleted: Qt.callLater(initializeNativeWindow)
+    onClosing: function(close) {
+        if (visible) {
+            close.accepted = false
+            hide()
+        }
+    }
     onActiveChanged: updateNativeBackdrop()
     onVisibleChanged: {
         if (visible) {
