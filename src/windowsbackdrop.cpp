@@ -203,75 +203,6 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     return applyDwmBackdrop(hwnd, DWMSBT_TRANSIENTWINDOW);
 }
 
-bool refreshMaterialForTheme(QWindow* window, BackdropKind kind)
-{
-    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    if (!hwnd) {
-        return false;
-    }
-
-    BOOL cloaked = FALSE;
-    if (kind == BackdropKind::MainWindow) {
-        // Recreate DWM's composed surface without changing QWindow visibility,
-        // activation, placement, or maximized state. This follows the native
-        // lifecycle that refreshes Mica when a minimized window is restored.
-        cloaked = TRUE;
-        const HRESULT cloakResult = DwmSetWindowAttribute(
-            hwnd,
-            DWMWA_CLOAK,
-            &cloaked,
-            sizeof(cloaked));
-        if (FAILED(cloakResult)) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to cloak window for Mica theme refresh: %1")
-                         .arg(formatHresult(cloakResult)));
-        }
-        clearDwmBackdrop(hwnd);
-        const HRESULT flushResult = DwmFlush();
-        if (FAILED(flushResult)) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to synchronize Mica theme refresh: %1")
-                         .arg(formatHresult(flushResult)));
-        }
-    }
-
-    const bool materialActive = applyMaterial(window, kind);
-    if (cloaked) {
-        const HRESULT materialFlushResult = DwmFlush();
-        if (FAILED(materialFlushResult)) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to present refreshed Mica material: %1")
-                         .arg(formatHresult(materialFlushResult)));
-        }
-        const BOOL uncloak = FALSE;
-        const HRESULT uncloakResult = DwmSetWindowAttribute(
-            hwnd,
-            DWMWA_CLOAK,
-            &uncloak,
-            sizeof(uncloak));
-        if (FAILED(uncloakResult)) {
-            LOG_WARN(LogCategory,
-                     QString("Failed to uncloak window after Mica theme refresh: %1")
-                         .arg(formatHresult(uncloakResult)));
-        }
-    }
-    SetWindowPos(
-        hwnd,
-        nullptr,
-        0,
-        0,
-        0,
-        0,
-        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE
-            | SWP_FRAMECHANGED);
-    RedrawWindow(
-        hwnd,
-        nullptr,
-        nullptr,
-        RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN | RDW_UPDATENOW);
-    return materialActive;
-}
-
 void clearMaterial(QWindow* window)
 {
     const HWND hwnd = reinterpret_cast<HWND>(window->winId());
@@ -369,22 +300,6 @@ bool WindowsBackdrop::applyTransientBackdrop(QObject* windowObject)
 bool WindowsBackdrop::applyMainWindowBackdrop(QObject* windowObject)
 {
     return applyBackdrop(windowObject, true);
-}
-
-bool WindowsBackdrop::refreshMainWindowBackdrop(QObject* windowObject)
-{
-    QWindow* window = windowFromObject(windowObject);
-    if (!window) {
-        LOG_WARN(LogCategory, "Cannot refresh backdrop: object is not a window");
-        return false;
-    }
-
-    const auto trackedWindow = m_impl->windows.find(window);
-    if (trackedWindow == m_impl->windows.end()
-        || trackedWindow->second->kind != BackdropKind::MainWindow) {
-        return applyBackdrop(windowObject, true);
-    }
-    return refreshMaterialForTheme(window, BackdropKind::MainWindow);
 }
 
 bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)

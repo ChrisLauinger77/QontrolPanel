@@ -19,6 +19,7 @@ ApplicationWindow {
 
     readonly property int maxSettingsPageIndex: 11
     property bool nativeBackdropActive: false
+    property bool nativeBackdropSuppressed: false
     property int rowHeight: 35
 
     background: Rectangle {
@@ -30,6 +31,10 @@ ApplicationWindow {
     onVisibleChanged: {
         if (visible) {
             Qt.callLater(updateNativeBackdrop)
+        } else {
+            WindowsBackdrop.removeBackdrop(root)
+            nativeBackdropActive = false
+            nativeBackdropSuppressed = false
         }
     }
 
@@ -37,16 +42,19 @@ ApplicationWindow {
         target: Qt.application.styleHints
 
         function onColorSchemeChanged() {
-            // Keep the Qt client opaque while DWM recreates its Mica surface.
+            // DWM does not reliably retheme Mica on a visible Qt window.
+            // Keep this instance readable and retry after it is reopened.
+            root.nativeBackdropSuppressed = root.visible
             root.nativeBackdropActive = false
-            Qt.callLater(function () {
-                root.nativeBackdropActive
-                        = WindowsBackdrop.refreshMainWindowBackdrop(root)
-            })
+            WindowsBackdrop.removeBackdrop(root)
         }
     }
 
     function updateNativeBackdrop() {
+        if (!visible || nativeBackdropSuppressed) {
+            nativeBackdropActive = false
+            return
+        }
         nativeBackdropActive = WindowsBackdrop.applyMainWindowBackdrop(root)
     }
 
