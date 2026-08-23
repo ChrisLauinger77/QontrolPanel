@@ -21,6 +21,7 @@ public:
 
     Q_INVOKABLE bool applyTransientBackdrop(QObject* windowObject);
     Q_INVOKABLE bool applyMainWindowBackdrop(QObject* windowObject);
+    Q_INVOKABLE bool refreshMainWindowBackdrop(QObject* windowObject);
     Q_INVOKABLE void removeBackdrop(QObject* windowObject);
 
 private:

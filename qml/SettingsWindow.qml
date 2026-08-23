@@ -37,10 +37,12 @@ ApplicationWindow {
         target: Qt.application.styleHints
 
         function onColorSchemeChanged() {
-            // The native theme handler rebuilds the material. Keep the client
-            // opaque until that compositor refresh has completed.
+            // Keep the Qt client opaque while DWM recreates its Mica surface.
             root.nativeBackdropActive = false
-            Qt.callLater(root.updateNativeBackdrop)
+            Qt.callLater(function () {
+                root.nativeBackdropActive
+                        = WindowsBackdrop.refreshMainWindowBackdrop(root)
+            })
         }
     }
 
