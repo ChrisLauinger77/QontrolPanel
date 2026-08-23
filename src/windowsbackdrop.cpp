@@ -203,6 +203,29 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     return applyDwmBackdrop(hwnd, DWMSBT_TRANSIENTWINDOW);
 }
 
+void refreshMaterialForTheme(QWindow* window, BackdropKind kind)
+{
+    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
+    if (!hwnd) {
+        return;
+    }
+
+    if (kind == BackdropKind::MainWindow) {
+        // Reapplying the same backdrop type is not enough to make DWM rebuild
+        // an existing light Mica surface after Qt switches back to dark mode.
+        // Reset only this long-lived material so the new theme takes effect
+        // immediately, matching the refresh Windows performs on restore.
+        clearDwmBackdrop(hwnd);
+    }
+
+    applyMaterial(window, kind);
+    RedrawWindow(
+        hwnd,
+        nullptr,
+        nullptr,
+        RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
+}
+
 void clearMaterial(QWindow* window)
 {
     const HWND hwnd = reinterpret_cast<HWND>(window->winId());
@@ -258,7 +281,9 @@ WindowsBackdrop::WindowsBackdrop(QObject* parent)
             for (const auto& [window, trackedWindow] : m_impl->windows) {
                 Q_UNUSED(window)
                 if (trackedWindow->window) {
-                    applyMaterial(trackedWindow->window, trackedWindow->kind);
+                    refreshMaterialForTheme(
+                        trackedWindow->window,
+                        trackedWindow->kind);
                 }
             }
         });
