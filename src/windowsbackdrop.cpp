@@ -203,6 +203,44 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
     return applyDwmBackdrop(hwnd, DWMSBT_TRANSIENTWINDOW);
 }
 
+void refreshMaterialForTheme(QWindow* window, BackdropKind kind)
+{
+    const HWND hwnd = reinterpret_cast<HWND>(window->winId());
+    if (!hwnd) {
+        return;
+    }
+
+    if (kind == BackdropKind::MainWindow) {
+        // DWM can coalesce back-to-back NONE and MAINWINDOW attribute changes,
+        // preserving the previous Mica theme until the window is restored.
+        // Present the cleared material first so the following application
+        // creates a new backdrop using the current color scheme.
+        clearDwmBackdrop(hwnd);
+        const HRESULT flushResult = DwmFlush();
+        if (FAILED(flushResult)) {
+            LOG_WARN(LogCategory,
+                     QString("Failed to synchronize Mica theme refresh: %1")
+                         .arg(formatHresult(flushResult)));
+        }
+    }
+
+    applyMaterial(window, kind);
+    SetWindowPos(
+        hwnd,
+        nullptr,
+        0,
+        0,
+        0,
+        0,
+        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE
+            | SWP_FRAMECHANGED);
+    RedrawWindow(
+        hwnd,
+        nullptr,
+        nullptr,
+        RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN | RDW_UPDATENOW);
+}
+
 void clearMaterial(QWindow* window)
 {
     const HWND hwnd = reinterpret_cast<HWND>(window->winId());
@@ -258,7 +296,9 @@ WindowsBackdrop::WindowsBackdrop(QObject* parent)
             for (const auto& [window, trackedWindow] : m_impl->windows) {
                 Q_UNUSED(window)
                 if (trackedWindow->window) {
-                    applyMaterial(trackedWindow->window, trackedWindow->kind);
+                    refreshMaterialForTheme(
+                        trackedWindow->window,
+                        trackedWindow->kind);
                 }
             }
         });
