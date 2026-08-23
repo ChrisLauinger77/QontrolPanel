@@ -67,6 +67,7 @@ set(SOURCES
     src/keyboardshortcutmanager.cpp
     src/trayiconprovider.cpp
     src/windowsbackdrop.cpp
+    src/windowchrome.cpp
 )
 
 set(HEADERS
@@ -92,6 +93,7 @@ set(HEADERS
     include/keyboardshortcutmanager.h
     include/trayiconprovider.h
     include/windowsbackdrop.h
+    include/windowchrome.h
 )
 
 # Get git commit hash
