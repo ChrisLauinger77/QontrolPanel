@@ -297,7 +297,12 @@ ApplicationWindow {
                     id: sidebarList
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    interactive: false
+                    clip: true
+                    interactive: contentHeight > height
+                    boundsBehavior: Flickable.StopAtBounds
+                    ScrollBar.vertical: ScrollBar {
+                        policy: ScrollBar.AsNeeded
+                    }
                     model: [
                         {
                             text: qsTr("General"),

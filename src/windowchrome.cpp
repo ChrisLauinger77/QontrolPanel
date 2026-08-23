@@ -108,6 +108,7 @@ struct WindowChrome::Impl
         QPointer<QQuickItem> maximizeButton;
         QPointer<QQuickItem> closeButton;
         QMetaObject::Connection destroyedConnection;
+        bool maximizeButtonTracking = false;
     };
 
     std::unordered_map<HWND, std::unique_ptr<TrackedWindow>> windows;
@@ -267,13 +268,33 @@ bool WindowChrome::nativeEventFilter(
         return false;
     }
 
-    const Impl::TrackedWindow& trackedWindow = *trackedWindowIterator->second;
+    Impl::TrackedWindow& trackedWindow = *trackedWindowIterator->second;
     if (!trackedWindow.window) {
         return false;
     }
     const auto setResult = [result](qintptr value) {
         if (result) {
             *result = value;
+        }
+    };
+    const auto toggleMaximized = [&trackedWindow]() {
+        if (trackedWindow.window->visibility() == QWindow::Maximized) {
+            trackedWindow.window->showNormal();
+        } else {
+            trackedWindow.window->showMaximized();
+        }
+    };
+    const HWND hwnd = msg->hwnd;
+    const auto finishMaximizeClick = [this, &trackedWindow, &toggleMaximized, hwnd](
+                                         bool pointerInside) {
+        trackedWindow.maximizeButtonTracking = false;
+        if (GetCapture() == hwnd) {
+            ReleaseCapture();
+        }
+        setMaximizeButtonPressed(false);
+        setMaximizeButtonHovered(pointerInside);
+        if (pointerInside) {
+            toggleMaximized();
         }
     };
 
@@ -340,17 +361,15 @@ bool WindowChrome::nativeEventFilter(
         return false;
     case WM_NCMOUSELEAVE:
         setMaximizeButtonHovered(false);
-        setMaximizeButtonPressed(false);
+        if (!trackedWindow.maximizeButtonTracking) {
+            setMaximizeButtonPressed(false);
+        }
         return false;
     case WM_NCLBUTTONDOWN:
         if (msg->wParam == HTMAXBUTTON) {
+            trackedWindow.maximizeButtonTracking = true;
+            SetCapture(msg->hwnd);
             setMaximizeButtonPressed(true);
-            if (trackedWindow.window->visibility() == QWindow::Maximized) {
-                trackedWindow.window->showNormal();
-            } else {
-                trackedWindow.window->showMaximized();
-            }
-            setMaximizeButtonPressed(false);
             setResult(0);
             return true;
         }
@@ -362,19 +381,52 @@ bool WindowChrome::nativeEventFilter(
         return false;
     case WM_NCLBUTTONDBLCLK:
         if (msg->wParam == HTCAPTION) {
-            if (trackedWindow.window->visibility() == QWindow::Maximized) {
-                trackedWindow.window->showNormal();
-            } else {
-                trackedWindow.window->showMaximized();
-            }
+            toggleMaximized();
+            setResult(0);
+            return true;
+        }
+        return false;
+    case WM_MOUSEMOVE:
+        if (trackedWindow.maximizeButtonTracking) {
+            const POINT clientPoint{GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam)};
+            const bool pointerInside = itemContainsNativePoint(
+                trackedWindow.maximizeButton,
+                trackedWindow.window,
+                clientPoint);
+            setMaximizeButtonHovered(pointerInside);
+            setMaximizeButtonPressed(pointerInside);
+            setResult(0);
+            return true;
+        }
+        return false;
+    case WM_LBUTTONUP:
+        if (trackedWindow.maximizeButtonTracking) {
+            const POINT clientPoint{GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam)};
+            finishMaximizeClick(itemContainsNativePoint(
+                trackedWindow.maximizeButton,
+                trackedWindow.window,
+                clientPoint));
             setResult(0);
             return true;
         }
         return false;
     case WM_NCLBUTTONUP:
+        if (trackedWindow.maximizeButtonTracking) {
+            POINT clientPoint{GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam)};
+            const bool pointAvailable = ScreenToClient(msg->hwnd, &clientPoint) != FALSE;
+            finishMaximizeClick(
+                pointAvailable
+                && itemContainsNativePoint(
+                    trackedWindow.maximizeButton,
+                    trackedWindow.window,
+                    clientPoint));
+            setResult(0);
+            return true;
+        }
         setMaximizeButtonPressed(false);
         return false;
     case WM_CAPTURECHANGED:
+        trackedWindow.maximizeButtonTracking = false;
         setMaximizeButtonPressed(false);
         return false;
     case WM_GETMINMAXINFO: {
