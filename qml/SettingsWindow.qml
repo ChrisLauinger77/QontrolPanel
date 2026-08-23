@@ -37,7 +37,15 @@ ApplicationWindow {
         target: Qt.application.styleHints
 
         function onColorSchemeChanged() {
-            root.updateNativeBackdrop()
+            // DWM coalesces an immediate Mica reset and reapply, leaving the
+            // old light material behind when Qt switches back to dark mode.
+            // Keep the client readable with the new opaque fallback for one
+            // event-loop turn, then create a fresh native material instance.
+            root.nativeBackdropActive = false
+            Qt.callLater(function () {
+                WindowsBackdrop.removeBackdrop(root)
+                Qt.callLater(root.updateNativeBackdrop)
+            })
         }
     }
 
