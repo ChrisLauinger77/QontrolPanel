@@ -5,7 +5,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project(QontrolPanel VERSION 2.0.0 LANGUAGES C CXX)
+project(QontrolPanel VERSION 2.1.0 LANGUAGES C CXX)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
 set(CMAKE_CXX_STANDARD 20)
@@ -67,6 +67,7 @@ set(SOURCES
     src/keyboardshortcutmanager.cpp
     src/trayiconprovider.cpp
     src/windowsbackdrop.cpp
+    src/windowchrome.cpp
 )
 
 set(HEADERS
@@ -92,6 +93,7 @@ set(HEADERS
     include/keyboardshortcutmanager.h
     include/trayiconprovider.h
     include/windowsbackdrop.h
+    include/windowchrome.h
 )
 
 # Get git commit hash

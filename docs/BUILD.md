@@ -88,7 +88,7 @@ If running manually, close any already-running QontrolPanel instance first. The 
 cmake --install build --config Release
 ```
 
-The install step copies the executable, Qt runtime dependencies, QML dependencies, translations, and `hidapi.dll` when CMake can find it in the vcpkg installation. Native acrylic uses Windows APIs already provided by the operating system and does not require the Windows App Runtime.
+The install step copies the executable, Qt runtime dependencies, QML dependencies, translations, and `hidapi.dll` when CMake can find it in the vcpkg installation. Native acrylic and Mica use Windows APIs already provided by the operating system and do not require the Windows App Runtime.
 
 By default, this project sets:
 

@@ -125,13 +125,15 @@ Most UI is organized as:
 
 QML should call C++ through bridge methods and properties rather than duplicating native logic.
 
-### Windows Acrylic Surfaces
+### Windows Backdrop Materials and Settings Chrome
 
 `WindowsBackdrop` owns the native material lifecycle for the main controls panel, its separate media card, `MediaOverlay`, and `ChatMixNotification`. It dynamically enables Windows' acrylic window accent policy on each exact-size Qt window, with a theme-aware translucent luminosity color that keeps the live desktop hue visible behind these non-activating tray surfaces. The material is reapplied when a window becomes visible or the system color scheme changes.
 
 The acrylic path is dispatcher-free and does not require the Windows App Runtime. This avoids coupling Qt's window lifecycle to CoreMessaging. If the compatibility API is unavailable, `WindowsBackdrop` uses the documented DWM transient system backdrop instead.
 
-The settings window requests the documented DWM main-window system backdrop (Mica) for its standard native title bar, matching the material intended for long-lived Windows settings surfaces. Qt Quick paints the client area with the neutral panel surface in both activation states because its decorated render surface does not expose the DWM backdrop through transparent pixels. Activation changes recheck High Contrast, DWM composition, the Windows transparency-effects setting, and the native result so unavailable effects retain the standard opaque title-bar fallback. Its setting cards use a single translucent layer fill so they remain distinct against the Windows Settings-style client surface.
+The settings window is a frameless transparent Qt window that requests the documented DWM main-window system backdrop (Mica), matching the material intended for long-lived Windows settings surfaces. `WindowChrome` owns its Windows native event handling and restores the expected move, resize, system-menu, minimize, maximize, title-bar double-click, and Snap Layout behavior. Closing the settings window, including through Alt+F4, hides the persistent QML window instead of destroying its HWND so this native chrome registration remains valid when the window is reopened.
+
+Mica is exposed through the transparent Qt client area when Windows accepts the backdrop request. Activation changes recheck High Contrast, DWM composition, the Windows transparency-effects setting, and the native result; unavailable effects retain the standard opaque `Constants.panelColor` fallback. DWM does not reliably retheme a visible Mica surface after a Qt application color-scheme change, so the settings window uses the correctly themed opaque fallback for the remainder of that visible session and retries Mica after the window is hidden and reopened. Its setting cards use a single translucent layer fill so they remain distinct against either surface.
 
 ## Build and Deployment
 

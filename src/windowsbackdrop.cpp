@@ -257,7 +257,8 @@ WindowsBackdrop::WindowsBackdrop(QObject* parent)
         [this]() {
             for (const auto& [window, trackedWindow] : m_impl->windows) {
                 Q_UNUSED(window)
-                if (trackedWindow->window) {
+                if (trackedWindow->window
+                    && trackedWindow->kind == BackdropKind::Transient) {
                     applyMaterial(trackedWindow->window, trackedWindow->kind);
                 }
             }
