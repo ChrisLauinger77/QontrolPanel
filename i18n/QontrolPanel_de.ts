@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>Per-application volume shortcuts</source>
-        <translation type="unfinished">Lautstärke-Tastenkombinationen pro Anwendung</translation>
+        <translation>Lautstärke-Tastenkombinationen pro Anwendung</translation>
     </message>
     <message>
         <source>Assign global hotkeys to control volume of specific applications</source>
