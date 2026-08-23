@@ -271,6 +271,11 @@ bool WindowChrome::nativeEventFilter(
     if (!trackedWindow.window) {
         return false;
     }
+    const auto setResult = [result](qintptr value) {
+        if (result) {
+            *result = value;
+        }
+    };
 
     switch (msg->message) {
     case WM_NCHITTEST: {
@@ -282,7 +287,7 @@ bool WindowChrome::nativeEventFilter(
         const LRESULT resizeResult = resizeHitTest(msg->hwnd, clientPoint);
         if (resizeResult != HTNOWHERE) {
             setMaximizeButtonHovered(false);
-            *result = resizeResult;
+            setResult(resizeResult);
             return true;
         }
 
@@ -298,7 +303,7 @@ bool WindowChrome::nativeEventFilter(
                 0,
             };
             TrackMouseEvent(&tracking);
-            *result = HTMAXBUTTON;
+            setResult(HTMAXBUTTON);
             return true;
         }
 
@@ -311,21 +316,21 @@ bool WindowChrome::nativeEventFilter(
                 trackedWindow.closeButton,
                 trackedWindow.window,
                 clientPoint)) {
-            *result = HTCLIENT;
+            setResult(HTCLIENT);
             return true;
         }
         if (itemContainsNativePoint(
                 trackedWindow.systemMenu,
                 trackedWindow.window,
                 clientPoint)) {
-            *result = HTSYSMENU;
+            setResult(HTSYSMENU);
             return true;
         }
         if (itemContainsNativePoint(
                 trackedWindow.titleBar,
                 trackedWindow.window,
                 clientPoint)) {
-            *result = HTCAPTION;
+            setResult(HTCAPTION);
             return true;
         }
         return false;
@@ -346,12 +351,12 @@ bool WindowChrome::nativeEventFilter(
                 trackedWindow.window->showMaximized();
             }
             setMaximizeButtonPressed(false);
-            *result = 0;
+            setResult(0);
             return true;
         }
         if (msg->wParam == HTCAPTION) {
             trackedWindow.window->startSystemMove();
-            *result = 0;
+            setResult(0);
             return true;
         }
         return false;
@@ -362,7 +367,7 @@ bool WindowChrome::nativeEventFilter(
             } else {
                 trackedWindow.window->showMaximized();
             }
-            *result = 0;
+            setResult(0);
             return true;
         }
         return false;
@@ -393,7 +398,7 @@ bool WindowChrome::nativeEventFilter(
             minMaxInfo->ptMinTrackSize.y,
             static_cast<LONG>(std::lround(
                 trackedWindow.window->minimumHeight() * devicePixelRatio)));
-        *result = 0;
+        setResult(0);
         return true;
     }
     default:
