@@ -1,0 +1,37 @@
+# Let Git detect text files and normalize their repository representation to LF.
+* text=auto
+
+# Repository metadata, documentation, configuration, and build scripts use LF.
+.gitattributes  text eol=lf
+.gitignore      text eol=lf
+.gitmodules     text eol=lf
+AGENTS.md       text eol=lf
+LICENSE         text eol=lf
+CMakeLists.txt  text eol=lf
+*.md            text eol=lf
+*.txt           text eol=lf
+*.json          text eol=lf
+*.yml           text eol=lf
+*.yaml          text eol=lf
+*.cmake         text eol=lf
+*.py            text eol=lf
+*.sh            text eol=lf
+*.ts            text eol=lf
+*.svg           text eol=lf
+
+# Windows application source and resource files use CRLF in the working tree.
+*.c             text eol=crlf
+*.cpp           text eol=crlf
+*.h             text eol=crlf
+*.hpp           text eol=crlf
+*.in            text eol=crlf
+*.qml           text eol=crlf
+*.qrc           text eol=crlf
+*.rc            text eol=crlf
+*.iss           text eol=crlf
+
+# Binary assets and generated translations must never be line-ending converted.
+*.ico           binary
+*.png           binary
+*.qm            binary
+*.wav           binary
