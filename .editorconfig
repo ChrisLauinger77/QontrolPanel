@@ -1,0 +1,11 @@
+root = true
+
+# Default for documentation, configuration, scripts, and translations
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# Windows application source and resource files
+[*.{c,cpp,h,hpp,in,qml,qrc,rc,iss}]
+end_of_line = crlf

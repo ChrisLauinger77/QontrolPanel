@@ -3,6 +3,7 @@
 
 # Repository metadata, documentation, configuration, and build scripts use LF.
 .gitattributes  text eol=lf
+.editorconfig   text eol=lf
 .gitignore      text eol=lf
 .gitmodules     text eol=lf
 AGENTS.md       text eol=lf
