@@ -23,7 +23,13 @@ ApplicationWindow {
     property int rowHeight: 35
 
     background: Rectangle {
-        color: root.nativeBackdropActive ? "transparent" : Constants.panelColor
+        color: !root.nativeBackdropActive
+               ? Constants.panelColor
+               : root.active
+                 ? (Constants.darkMode
+                    ? Qt.rgba(0.0, 0.18, 0.42, 0.22)
+                    : Qt.rgba(0.55, 0.75, 1.0, 0.12))
+                 : "transparent"
     }
 
     Component.onCompleted: Qt.callLater(initializeNativeWindow)
