@@ -51,13 +51,18 @@ ColumnLayout {
         }
 
         ToolButton {
+            id: sourceSwitchButton
             Layout.preferredWidth: 24
             Layout.preferredHeight: 24
             visible: MediaSessionBridge.sourceCount > 1
-            icon.source: "qrc:/icons/arrow.svg"
-            icon.color: palette.text
-            icon.width: 12
-            icon.height: 12
+
+            contentItem: IconImage {
+                source: "qrc:/icons/arrow.svg"
+                sourceSize.width: 12
+                sourceSize.height: 12
+                color: sourceSwitchButton.palette.buttonText
+            }
+
             onClicked: MediaSessionBridge.nextSource()
         }
     }
