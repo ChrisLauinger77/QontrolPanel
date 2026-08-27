@@ -34,7 +34,7 @@ ApplicationWindow {
     function calculateHeight() {
         const sizeMultipliers = [0.8, 1.0, 1.2]
         const multiplier = sizeMultipliers[UserSettings.mediaOverlaySize] || 1.0
-        return Math.round(80 * multiplier)
+        return Math.round(80 * multiplier) + 24
     }
 
     Component.onCompleted: {
@@ -380,63 +380,104 @@ ApplicationWindow {
             opacity: 0.15
         }
 
-        RowLayout {
+        ColumnLayout {
             anchors.fill: parent
             anchors.margins: 10
-            spacing: 10
+            spacing: 6
 
-            // Album art - span 2
-            Rectangle {
-                Layout.preferredWidth: parent.height
-                Layout.preferredHeight: parent.height
-                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                color: "#2a2a2a"
-                radius: 3
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 18
+                spacing: 7
 
-                Image {
-                    anchors.fill: parent
-                    anchors.margins: 2
-                    source: MediaSessionBridge.mediaArt || ""
-                    fillMode: Image.PreserveAspectCrop
-                    visible: MediaSessionBridge.mediaArt !== ""
-                    smooth: true
+                Item {
+                    Layout.preferredWidth: 16
+                    Layout.preferredHeight: 16
+
+                    Image {
+                        anchors.fill: parent
+                        source: MediaSessionBridge.sourceIcon || ""
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        visible: MediaSessionBridge.sourceIcon !== ""
+                    }
+
+                    IconImage {
+                        anchors.fill: parent
+                        source: "qrc:/icons/music.svg"
+                        color: palette.text
+                        opacity: 0.7
+                        visible: MediaSessionBridge.sourceIcon === ""
+                    }
                 }
 
-                IconImage {
-                    anchors.centerIn: parent
-                    source: "qrc:/icons/headset.svg"
-                    sourceSize.width: 24
-                    sourceSize.height: 24
-                    color: palette.text
-                    opacity: 0.3
-                    visible: MediaSessionBridge.mediaArt === ""
+                Label {
+                    text: MediaSessionBridge.sourceName || ""
+                    font.pixelSize: 11
+                    font.bold: true
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
                 }
             }
 
-            // Title and Artist - span 1
-            ColumnLayout {
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: 10
 
-                Label {
-                    text: MediaSessionBridge.mediaTitle || qsTr("No media playing")
-                    font.pixelSize: 13
-                    font.bold: true
-                    Layout.fillWidth: true
-                    wrapMode: Text.Wrap
-                    elide: Text.ElideRight
-                    maximumLineCount: 2
+                // Album art - span 2
+                Rectangle {
+                    Layout.preferredWidth: parent.height
+                    Layout.preferredHeight: parent.height
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                    color: "#2a2a2a"
+                    radius: 3
+
+                    Image {
+                        anchors.fill: parent
+                        anchors.margins: 2
+                        source: MediaSessionBridge.mediaArt || ""
+                        fillMode: Image.PreserveAspectCrop
+                        visible: MediaSessionBridge.mediaArt !== ""
+                        smooth: true
+                    }
+
+                    IconImage {
+                        anchors.centerIn: parent
+                        source: "qrc:/icons/headset.svg"
+                        sourceSize.width: 24
+                        sourceSize.height: 24
+                        color: palette.text
+                        opacity: 0.3
+                        visible: MediaSessionBridge.mediaArt === ""
+                    }
                 }
 
-                Label {
-                    text: MediaSessionBridge.mediaArtist || ""
-                    font.pixelSize: 11
-                    opacity: 0.7
+                // Title and Artist - span 1
+                ColumnLayout {
                     Layout.fillWidth: true
-                    elide: Text.ElideRight
-                    maximumLineCount: 1
-                    visible: MediaSessionBridge.mediaArtist !== ""
+                    Layout.fillHeight: true
+                    spacing: 10
+
+                    Label {
+                        text: MediaSessionBridge.mediaTitle || qsTr("No media playing")
+                        font.pixelSize: 13
+                        font.bold: true
+                        Layout.fillWidth: true
+                        wrapMode: Text.Wrap
+                        elide: Text.ElideRight
+                        maximumLineCount: 2
+                    }
+
+                    Label {
+                        text: MediaSessionBridge.mediaArtist || ""
+                        font.pixelSize: 11
+                        opacity: 0.7
+                        Layout.fillWidth: true
+                        elide: Text.ElideRight
+                        maximumLineCount: 1
+                        visible: MediaSessionBridge.mediaArtist !== ""
+                    }
                 }
             }
         }

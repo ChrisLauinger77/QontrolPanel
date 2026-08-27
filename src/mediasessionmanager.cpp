@@ -8,7 +8,14 @@
 #include <QImage>
 #include <QPainter>
 #include <QPainterPath>
+#include <QFileInfo>
+#include <QSettings>
+#include <shobjidl.h>
+#include <shellapi.h>
+#include <winver.h>
 #include <winrt/Windows.Storage.Streams.h>
+#include <cstring>
+#include <vector>
 
 using namespace winrt;
 using namespace Windows::Media::Control;
@@ -18,6 +25,204 @@ using namespace Windows::Storage::Streams;
 static QThread* g_mediaWorkerThread = nullptr;
 static MediaWorker* g_mediaWorker = nullptr;
 static QMutex g_mediaInitMutex;
+
+namespace {
+
+QString imageToDataUri(const QImage& image)
+{
+    if (image.isNull()) {
+        return {};
+    }
+
+    QByteArray imageData;
+    QBuffer buffer(&imageData);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "PNG");
+    return QStringLiteral("data:image/png;base64,") + imageData.toBase64();
+}
+
+QImage bitmapToImage(HBITMAP bitmap)
+{
+    BITMAP bitmapInfo{};
+    if (!bitmap || GetObject(bitmap, sizeof(bitmapInfo), &bitmapInfo) == 0) {
+        return {};
+    }
+
+    BITMAPINFO dibInfo{};
+    dibInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    dibInfo.bmiHeader.biWidth = bitmapInfo.bmWidth;
+    dibInfo.bmiHeader.biHeight = -bitmapInfo.bmHeight;
+    dibInfo.bmiHeader.biPlanes = 1;
+    dibInfo.bmiHeader.biBitCount = 32;
+    dibInfo.bmiHeader.biCompression = BI_RGB;
+
+    QImage image(bitmapInfo.bmWidth, bitmapInfo.bmHeight, QImage::Format_ARGB32);
+    HDC deviceContext = GetDC(nullptr);
+    const int copiedLines = GetDIBits(deviceContext, bitmap, 0, bitmapInfo.bmHeight,
+                                      image.bits(), &dibInfo, DIB_RGB_COLORS);
+    ReleaseDC(nullptr, deviceContext);
+
+    return copiedLines == bitmapInfo.bmHeight ? image : QImage{};
+}
+
+QImage iconToImage(HICON icon, int size)
+{
+    if (!icon) {
+        return {};
+    }
+
+    BITMAPINFO bitmapInfo{};
+    bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bitmapInfo.bmiHeader.biWidth = size;
+    bitmapInfo.bmiHeader.biHeight = -size;
+    bitmapInfo.bmiHeader.biPlanes = 1;
+    bitmapInfo.bmiHeader.biBitCount = 32;
+    bitmapInfo.bmiHeader.biCompression = BI_RGB;
+
+    void* pixels = nullptr;
+    HDC screenContext = GetDC(nullptr);
+    HBITMAP bitmap = CreateDIBSection(screenContext, &bitmapInfo, DIB_RGB_COLORS,
+                                      &pixels, nullptr, 0);
+    HDC drawContext = CreateCompatibleDC(screenContext);
+    if (!screenContext || !bitmap || !pixels || !drawContext) {
+        if (drawContext) {
+            DeleteDC(drawContext);
+        }
+        if (bitmap) {
+            DeleteObject(bitmap);
+        }
+        if (screenContext) {
+            ReleaseDC(nullptr, screenContext);
+        }
+        return {};
+    }
+
+    HGDIOBJ oldBitmap = SelectObject(drawContext, bitmap);
+    memset(pixels, 0, static_cast<size_t>(size * size * 4));
+    DrawIconEx(drawContext, 0, 0, icon, size, size, 0, nullptr, DI_NORMAL);
+
+    QImage image(static_cast<uchar*>(pixels), size, size, QImage::Format_ARGB32);
+    QImage result = image.copy();
+
+    SelectObject(drawContext, oldBitmap);
+    DeleteDC(drawContext);
+    DeleteObject(bitmap);
+    ReleaseDC(nullptr, screenContext);
+    return result;
+}
+
+QString executableDisplayName(const QString& executablePath)
+{
+    const std::wstring nativePath = executablePath.toStdWString();
+    const DWORD dataSize = GetFileVersionInfoSize(nativePath.c_str(), nullptr);
+    if (dataSize == 0) {
+        return {};
+    }
+
+    std::vector<BYTE> versionData(dataSize);
+    if (!GetFileVersionInfo(nativePath.c_str(), 0, dataSize, versionData.data())) {
+        return {};
+    }
+
+    void* value = nullptr;
+    UINT valueLength = 0;
+    for (const wchar_t* key : {L"\\StringFileInfo\\040904b0\\ProductName",
+                               L"\\StringFileInfo\\040904b0\\FileDescription"}) {
+        if (VerQueryValue(versionData.data(), key, &value, &valueLength) && valueLength > 1) {
+            return QString::fromWCharArray(static_cast<const wchar_t*>(value));
+        }
+    }
+    return {};
+}
+
+QString executablePathForSource(const QString& sourceId)
+{
+    QString executableName = QFileInfo(sourceId).fileName();
+    if (!executableName.endsWith(QStringLiteral(".exe"), Qt::CaseInsensitive)) {
+        return {};
+    }
+
+    if (QFileInfo::exists(sourceId)) {
+        return sourceId;
+    }
+
+    const QStringList registryRoots = {
+        QStringLiteral("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\"),
+        QStringLiteral("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\")
+    };
+    for (const QString& root : registryRoots) {
+        QSettings registry(root + executableName, QSettings::NativeFormat);
+        QString path = registry.value(QStringLiteral(".")).toString();
+        path.remove(u'\"');
+        if (QFileInfo::exists(path)) {
+            return path;
+        }
+    }
+
+    std::wstring nativeName = executableName.toStdWString();
+    std::vector<wchar_t> pathBuffer(32768);
+    const DWORD length = SearchPathW(nullptr, nativeName.c_str(), nullptr,
+                                     static_cast<DWORD>(pathBuffer.size()), pathBuffer.data(), nullptr);
+    if (length > 0 && length < pathBuffer.size()) {
+        return QString::fromWCharArray(pathBuffer.data(), static_cast<qsizetype>(length));
+    }
+    return {};
+}
+
+void resolveSourceIdentity(const QString& sourceId, QString& sourceName, QString& sourceIcon)
+{
+    const std::wstring nativeId = sourceId.toStdWString();
+    IShellItem* shellItem = nullptr;
+    if (SUCCEEDED(SHCreateItemInKnownFolder(FOLDERID_AppsFolder, KF_FLAG_DEFAULT,
+                                             nativeId.c_str(), IID_PPV_ARGS(&shellItem)))) {
+        PWSTR displayName = nullptr;
+        if (SUCCEEDED(shellItem->GetDisplayName(SIGDN_NORMALDISPLAY, &displayName))) {
+            sourceName = QString::fromWCharArray(displayName);
+            CoTaskMemFree(displayName);
+        }
+
+        IShellItemImageFactory* imageFactory = nullptr;
+        if (SUCCEEDED(shellItem->QueryInterface(IID_PPV_ARGS(&imageFactory)))) {
+            HBITMAP iconBitmap = nullptr;
+            const SIZE iconSize{32, 32};
+            if (SUCCEEDED(imageFactory->GetImage(iconSize,
+                                                 static_cast<SIIGBF>(SIIGBF_ICONONLY | SIIGBF_BIGGERSIZEOK),
+                                                 &iconBitmap))) {
+                sourceIcon = imageToDataUri(bitmapToImage(iconBitmap));
+                DeleteObject(iconBitmap);
+            }
+            imageFactory->Release();
+        }
+        shellItem->Release();
+    }
+
+    const QString executablePath = executablePathForSource(sourceId);
+    if (!executablePath.isEmpty()) {
+        if (sourceName.isEmpty()) {
+            sourceName = executableDisplayName(executablePath);
+        }
+        if (sourceIcon.isEmpty()) {
+            SHFILEINFO fileInfo{};
+            if (SHGetFileInfo(executablePath.toStdWString().c_str(), 0, &fileInfo, sizeof(fileInfo),
+                              SHGFI_ICON | SHGFI_LARGEICON)) {
+                sourceIcon = imageToDataUri(iconToImage(fileInfo.hIcon, 32));
+                DestroyIcon(fileInfo.hIcon);
+            }
+        }
+    }
+
+    if (sourceName.isEmpty()) {
+        sourceName = QFileInfo(sourceId).completeBaseName();
+        if (sourceName.contains(u'!')) {
+            sourceName = sourceName.section(u'!', -1);
+        }
+        if (!sourceName.isEmpty()) {
+            sourceName[0] = sourceName[0].toUpper();
+        }
+    }
+}
+
+} // namespace
 
 QPixmap createRoundedPixmap(const QPixmap& source, int targetSize, int radius) {
     // Scale the source to target size while maintaining aspect ratio
@@ -53,10 +258,19 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
 
     try {
         init_apartment();
-        auto sessionManager = GlobalSystemMediaTransportControlsSessionManager::RequestAsync().get();
-        auto currentSession = sessionManager.GetCurrentSession();
+        if (!worker || !worker->ensureCurrentSession()) {
+            LOG_INFO("MediaSessionManager", "No active media session found");
+            return info;
+        }
+
+        auto currentSession = worker->m_currentSession;
+        auto sessions = worker->m_sessionManager.GetSessions();
+        info.sourceCount = static_cast<int>(sessions.Size());
 
         if (currentSession) {
+            const QString sourceId = QString::fromWCharArray(currentSession.SourceAppUserModelId().c_str());
+            resolveSourceIdentity(sourceId, info.sourceName, info.sourceIcon);
+
             auto properties = currentSession.TryGetMediaPropertiesAsync().get();
             if (properties) {
                 info.title = QString::fromWCharArray(properties.Title().c_str());
@@ -182,7 +396,22 @@ bool MediaWorker::ensureCurrentSession() {
             m_sessionManager = GlobalSystemMediaTransportControlsSessionManager::RequestAsync().get();
         }
 
-        auto currentSession = m_sessionManager.GetCurrentSession();
+        auto sessions = m_sessionManager.GetSessions();
+        bool currentSessionStillExists = false;
+        for (const auto& session : sessions) {
+            if (session == m_currentSession) {
+                currentSessionStillExists = true;
+                break;
+            }
+        }
+
+        if (m_sourceSelectedManually && !currentSessionStillExists) {
+            m_sourceSelectedManually = false;
+        }
+
+        auto currentSession = m_sourceSelectedManually
+            ? m_currentSession
+            : m_sessionManager.GetCurrentSession();
 
         // If session changed, update notifications
         if (m_currentSession != currentSession) {
@@ -288,6 +517,7 @@ void MediaWorker::stopMonitoring() {
     cleanupSessionManagerNotifications();
     m_currentSession = nullptr;
     m_sessionManager = nullptr;
+    m_sourceSelectedManually = false;
 
     // Clear cache on stop
     m_cachedRawAlbumArt.clear();
@@ -341,6 +571,39 @@ void MediaWorker::previousTrack() {
         }
     } catch (...) {
         LOG_CRITICAL("MediaSessionManager", "Failed to skip to previous track");
+    }
+}
+
+void MediaWorker::nextSource() {
+    LOG_INFO("MediaSessionManager", "Switching to next media source");
+
+    try {
+        if (!ensureCurrentSession()) {
+            return;
+        }
+
+        const auto sessions = m_sessionManager.GetSessions();
+        if (sessions.Size() < 2) {
+            return;
+        }
+
+        uint32_t currentIndex = 0;
+        for (uint32_t index = 0; index < sessions.Size(); ++index) {
+            if (sessions.GetAt(index) == m_currentSession) {
+                currentIndex = index;
+                break;
+            }
+        }
+
+        cleanupSessionNotifications();
+        m_currentSession = sessions.GetAt((currentIndex + 1) % sessions.Size());
+        m_sourceSelectedManually = true;
+        m_cachedRawAlbumArt.clear();
+        m_cachedProcessedAlbumArt.clear();
+        setupSessionNotifications();
+        queryMediaInfo();
+    } catch (...) {
+        LOG_CRITICAL("MediaSessionManager", "Failed to switch media source");
     }
 }
 
@@ -421,6 +684,12 @@ void MediaSessionManager::nextTrackAsync() {
 void MediaSessionManager::previousTrackAsync() {
     if (g_mediaWorker) {
         QMetaObject::invokeMethod(g_mediaWorker, "previousTrack", Qt::QueuedConnection);
+    }
+}
+
+void MediaSessionManager::nextSourceAsync() {
+    if (g_mediaWorker) {
+        QMetaObject::invokeMethod(g_mediaWorker, "nextSource", Qt::QueuedConnection);
     }
 }
 
