@@ -374,6 +374,19 @@ void MediaWorker::setupSessionManagerNotifications() {
                 }, Qt::QueuedConnection);
             });
 
+        // Follow the source Windows considers most relevant, matching Quick Settings.
+        m_currentSessionChangedToken = m_sessionManager.CurrentSessionChanged(
+            [this](GlobalSystemMediaTransportControlsSessionManager const& sender,
+                   CurrentSessionChangedEventArgs const& args) {
+                Q_UNUSED(sender)
+                Q_UNUSED(args)
+                QMetaObject::invokeMethod(this, [this]() {
+                    LOG_INFO("MediaSessionManager", "Current media session changed");
+                    m_sourceSelectedManually = false;
+                    queryMediaInfo();
+                }, Qt::QueuedConnection);
+            });
+
         LOG_INFO("MediaSessionManager", "Session manager notifications registered");
     } catch (...) {
         LOG_CRITICAL("MediaSessionManager", "Failed to setup session manager notifications");
@@ -381,10 +394,16 @@ void MediaWorker::setupSessionManagerNotifications() {
 }
 
 void MediaWorker::cleanupSessionManagerNotifications() {
-    if (m_sessionManager && m_sessionsChangedToken.value != 0) {
+    if (m_sessionManager) {
         try {
-            m_sessionManager.SessionsChanged(m_sessionsChangedToken);
-            m_sessionsChangedToken = {};
+            if (m_sessionsChangedToken.value != 0) {
+                m_sessionManager.SessionsChanged(m_sessionsChangedToken);
+                m_sessionsChangedToken = {};
+            }
+            if (m_currentSessionChangedToken.value != 0) {
+                m_sessionManager.CurrentSessionChanged(m_currentSessionChangedToken);
+                m_currentSessionChangedToken = {};
+            }
             LOG_INFO("MediaSessionManager", "Session manager notifications cleaned up");
         } catch (...) {
             LOG_WARN("MediaSessionManager", "Error cleaning up session manager notifications");
@@ -466,7 +485,19 @@ void MediaWorker::setupSessionNotifications() {
                    PlaybackInfoChangedEventArgs const& args) {
                 Q_UNUSED(session)
                 Q_UNUSED(args)
-                QMetaObject::invokeMethod(this, "queryMediaInfo", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(this, [this]() {
+                    if (m_sourceSelectedManually && m_currentSession) {
+                        const auto playbackInfo = m_currentSession.GetPlaybackInfo();
+                        if (playbackInfo) {
+                            const auto status = playbackInfo.PlaybackStatus();
+                            if (status == GlobalSystemMediaTransportControlsSessionPlaybackStatus::Stopped
+                                || status == GlobalSystemMediaTransportControlsSessionPlaybackStatus::Closed) {
+                                m_sourceSelectedManually = false;
+                            }
+                        }
+                    }
+                    queryMediaInfo();
+                }, Qt::QueuedConnection);
             });
 
         LOG_INFO("MediaSessionManager", "Session event notifications registered successfully");

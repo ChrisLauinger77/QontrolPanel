@@ -47,6 +47,7 @@ private:
 
     // Event tokens for cleanup
     event_token m_sessionsChangedToken{};
+    event_token m_currentSessionChangedToken{};
     event_token m_propertiesChangedToken{};
     event_token m_playbackInfoChangedToken{};
 
