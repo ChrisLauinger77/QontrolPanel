@@ -55,6 +55,7 @@ ColumnLayout {
             Layout.preferredHeight: 24
             visible: MediaSessionBridge.sourceCount > 1
             icon.source: "qrc:/icons/arrow.svg"
+            icon.color: palette.text
             icon.width: 12
             icon.height: 12
             onClicked: MediaSessionBridge.nextSource()
