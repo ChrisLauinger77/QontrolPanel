@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <shobjidl.h>
+#include <shlobj.h>
 #include <shellapi.h>
 #include "mediasessionmanager.h"
 #include "logmanager.h"
@@ -14,6 +15,7 @@
 #include <QFileInfo>
 #include <QSettings>
 #include <winver.h>
+#include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <cstring>
 #include <vector>
