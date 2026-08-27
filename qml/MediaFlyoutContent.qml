@@ -16,6 +16,59 @@ ColumnLayout {
         }
     }
 
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 24
+        spacing: 8
+
+        Item {
+            Layout.preferredWidth: 18
+            Layout.preferredHeight: 18
+
+            Image {
+                anchors.fill: parent
+                source: MediaSessionBridge.sourceIcon || ""
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                visible: MediaSessionBridge.sourceIcon !== ""
+            }
+
+            IconImage {
+                anchors.fill: parent
+                source: "qrc:/icons/music.svg"
+                color: palette.text
+                opacity: 0.7
+                visible: MediaSessionBridge.sourceIcon === ""
+            }
+        }
+
+        Label {
+            text: MediaSessionBridge.sourceName || ""
+            font.pixelSize: 12
+            font.bold: true
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+        }
+
+        ToolButton {
+            id: sourceSwitchButton
+            Layout.preferredWidth: 24
+            Layout.preferredHeight: 24
+            visible: MediaSessionBridge.sourceCount > 1
+
+            contentItem: Text {
+                text: "\uE76C"
+                font.family: "Segoe Fluent Icons"
+                font.pixelSize: 12
+                color: sourceSwitchButton.palette.buttonText
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            onClicked: MediaSessionBridge.nextSource()
+        }
+    }
+
     ColumnLayout {
         Layout.fillWidth: true
 

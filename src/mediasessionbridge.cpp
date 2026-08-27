@@ -14,6 +14,9 @@ MediaSessionBridge::MediaSessionBridge(QObject* parent)
                     m_mediaArtist = info.artist;
                     m_mediaArt = info.albumArt;
                     m_isMediaPlaying = info.isPlaying;
+                    m_sourceName = info.sourceName;
+                    m_sourceIcon = info.sourceIcon;
+                    m_sourceCount = info.sourceCount;
                     emit mediaInfoChanged();
                 });
     }
@@ -62,6 +65,18 @@ QString MediaSessionBridge::mediaArt() const {
     return m_mediaArt;
 }
 
+QString MediaSessionBridge::sourceName() const {
+    return m_sourceName;
+}
+
+QString MediaSessionBridge::sourceIcon() const {
+    return m_sourceIcon;
+}
+
+int MediaSessionBridge::sourceCount() const {
+    return m_sourceCount;
+}
+
 void MediaSessionBridge::playPause() {
     MediaSessionManager::playPauseAsync();
 }
@@ -72,6 +87,11 @@ void MediaSessionBridge::nextTrack() {
 
 void MediaSessionBridge::previousTrack() {
     MediaSessionManager::previousTrackAsync();
+}
+
+void MediaSessionBridge::nextSource() {
+    emit mediaSourceSwitchRequested();
+    MediaSessionManager::nextSourceAsync();
 }
 
 void MediaSessionBridge::startMediaMonitoring() {

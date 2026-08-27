@@ -19,6 +19,9 @@ struct MediaInfo {
     QString album;
     bool isPlaying = false;
     QString albumArt;
+    QString sourceName;
+    QString sourceIcon;
+    int sourceCount = 0;
 };
 
 class MediaWorker : public QObject
@@ -32,6 +35,7 @@ public slots:
     void playPause();
     void nextTrack();
     void previousTrack();
+    void nextSource();
 
 signals:
     void mediaInfoChanged(const MediaInfo& info);
@@ -39,9 +43,11 @@ signals:
 private:
     GlobalSystemMediaTransportControlsSessionManager m_sessionManager{ nullptr };
     GlobalSystemMediaTransportControlsSession m_currentSession{ nullptr };
+    bool m_sourceSelectedManually = false;
 
     // Event tokens for cleanup
     event_token m_sessionsChangedToken{};
+    event_token m_currentSessionChangedToken{};
     event_token m_propertiesChangedToken{};
     event_token m_playbackInfoChangedToken{};
 
@@ -68,5 +74,6 @@ void stopMonitoringAsync();
 void playPauseAsync();
 void nextTrackAsync();
 void previousTrackAsync();
+void nextSourceAsync();
 MediaWorker* getWorker();
 }
