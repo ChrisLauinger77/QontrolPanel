@@ -56,11 +56,13 @@ ColumnLayout {
             Layout.preferredHeight: 24
             visible: MediaSessionBridge.sourceCount > 1
 
-            contentItem: IconImage {
-                source: "qrc:/icons/arrow.svg"
-                sourceSize.width: 12
-                sourceSize.height: 12
+            contentItem: Text {
+                text: "\uE76C"
+                font.family: "Segoe Fluent Icons"
+                font.pixelSize: 12
                 color: sourceSwitchButton.palette.buttonText
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
 
             onClicked: MediaSessionBridge.nextSource()
