@@ -10,7 +10,7 @@ ApplicationWindow {
     width: calculateWidth()
     height: calculateHeight()
     visible: false
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
+    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
     color: "#00000000"
 
     property bool isAnimatingIn: false
@@ -18,6 +18,7 @@ ApplicationWindow {
     property string previousTitle: ""
     property string previousArtist: ""
     property bool hasReceivedFirstUpdate: false
+    property bool suppressNextMediaInfoOverlay: false
     property bool nativeBackdropActive: false
     property real restingX: 0
     property real restingY: 0
@@ -71,6 +72,11 @@ ApplicationWindow {
     Connections {
         target: MediaSessionBridge
 
+        function onMediaSourceSwitchRequested() {
+            suppressNextMediaInfoOverlay = true
+            sourceSwitchSuppressionTimer.restart()
+        }
+
         function onMediaInfoChanged() {
             if (!UserSettings.enableMediaOverlay || !UserSettings.enableMediaSessionManager) {
                 return
@@ -78,6 +84,14 @@ ApplicationWindow {
 
             const newTitle = MediaSessionBridge.mediaTitle || ""
             const newArtist = MediaSessionBridge.mediaArtist || ""
+
+            if (suppressNextMediaInfoOverlay) {
+                previousTitle = newTitle
+                previousArtist = newArtist
+                suppressNextMediaInfoOverlay = false
+                sourceSwitchSuppressionTimer.stop()
+                return
+            }
 
             // First update after component creation - just store the values, don't show overlay
             if (!hasReceivedFirstUpdate) {
@@ -94,6 +108,13 @@ ApplicationWindow {
                 showOverlay()
             }
         }
+    }
+
+    Timer {
+        id: sourceSwitchSuppressionTimer
+        interval: 2000
+        repeat: false
+        onTriggered: suppressNextMediaInfoOverlay = false
     }
 
     Timer {

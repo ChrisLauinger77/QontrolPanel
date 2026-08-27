@@ -90,6 +90,7 @@ void MediaSessionBridge::previousTrack() {
 }
 
 void MediaSessionBridge::nextSource() {
+    emit mediaSourceSwitchRequested();
     MediaSessionManager::nextSourceAsync();
 }
 

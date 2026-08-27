@@ -42,6 +42,7 @@ public:
 
 signals:
     void mediaInfoChanged();
+    void mediaSourceSwitchRequested();
 
 private:
     static MediaSessionBridge* m_instance;
