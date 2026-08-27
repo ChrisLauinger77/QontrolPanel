@@ -1,3 +1,6 @@
+#include <windows.h>
+#include <shobjidl.h>
+#include <shellapi.h>
 #include "mediasessionmanager.h"
 #include "logmanager.h"
 #include <QMetaObject>
@@ -10,8 +13,6 @@
 #include <QPainterPath>
 #include <QFileInfo>
 #include <QSettings>
-#include <shobjidl.h>
-#include <shellapi.h>
 #include <winver.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <cstring>
