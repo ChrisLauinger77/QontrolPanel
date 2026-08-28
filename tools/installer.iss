@@ -66,6 +66,13 @@ Name: "italian";    MessagesFile: "compiler:Languages\Italian.isl"
 Name: "korean";     MessagesFile: "compiler:Languages\Korean.isl"
 Name: "russian";    MessagesFile: "compiler:Languages\Russian.isl"
 
+[CustomMessages]
+italian.NameAndVersion=%1 %2
+italian.LaunchProgram=Esegui %1
+italian.AdditionalIcons=Collegamenti:
+italian.CreateDesktopIcon=Crea collegamento programma sul &desktop
+italian.CreateQuickLaunchIcon=Crea collegamento programma nella &barra 'Avvio veloce'
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
