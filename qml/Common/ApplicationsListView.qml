@@ -11,6 +11,7 @@ Rectangle {
     property alias model: applicationsList.model
     property bool expanded: false
     property string executableName: ""
+    property bool nativeBackdropActive: false
 
     // Export the height needed when fully expanded
     property real expandedNeededHeight: {
@@ -28,7 +29,7 @@ Rectangle {
     Layout.preferredHeight: expanded ? expandedNeededHeight : 0
     Layout.leftMargin: -14
     Layout.rightMargin: -14
-    color: Constants.footerColor
+    color: nativeBackdropActive ? "transparent" : Constants.footerColor
 
     function closeContextMenus() {
         if (renameContextMenu.visible) {
