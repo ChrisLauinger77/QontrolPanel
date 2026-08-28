@@ -804,6 +804,7 @@ ApplicationWindow {
                         DevicesListView {
                             id: outputDevicesRect
                             model: AudioBridge.outputDevices
+                            nativeBackdropActive: panel.nativeBackdropActive
                             onDeviceClicked: function(name, index) {
                                 AudioBridge.setOutputDevice(index)
                                 expanded = false
@@ -877,6 +878,7 @@ ApplicationWindow {
                         DevicesListView {
                             id: inputDevicesRect
                             model: AudioBridge.inputDevices
+                            nativeBackdropActive: panel.nativeBackdropActive
                             onDeviceClicked: function(name, index) {
                                 AudioBridge.setInputDevice(index)
                                 expanded = false

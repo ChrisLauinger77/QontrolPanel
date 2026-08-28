@@ -10,6 +10,7 @@ Rectangle {
 
     property alias model: devicesList.model
     property bool expanded: false
+    property bool nativeBackdropActive: false
     property real expandedNeededHeight: devicesList.contentHeight + 20
 
     signal deviceClicked(string name, int index)
@@ -18,7 +19,7 @@ Rectangle {
     Layout.preferredHeight: expanded ? expandedNeededHeight : 0
     Layout.leftMargin: -14
     Layout.rightMargin: -14
-    color: Constants.footerColor
+    color: nativeBackdropActive ? "transparent" : Constants.footerColor
 
     function closeContextMenus() {
         if (deviceRenameContextMenu.visible) {

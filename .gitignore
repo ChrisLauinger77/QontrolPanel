@@ -2,3 +2,4 @@ build/
 CMakeLists.txt.user
 .qmlls.ini
 .cache/*
+.vs/*
