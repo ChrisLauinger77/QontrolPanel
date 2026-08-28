@@ -1024,6 +1024,7 @@ ApplicationWindow {
                                     id: individualAppsRect
                                     model: AudioBridge.getSessionsForExecutable(appDelegateRoot.model.executableName)
                                     executableName: appDelegateRoot.model.executableName
+                                    nativeBackdropActive: panel.nativeBackdropActive
 
                                     onApplicationVolumeChanged: function(appId, volume) {
                                         AudioBridge.setApplicationVolume(appId, volume)
