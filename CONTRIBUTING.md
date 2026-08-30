@@ -80,11 +80,11 @@ Translator-specific notes live in `.github/TRANSLATIONS.md`.
 
 ## HeadsetControl Changes
 
-Headset device/protocol work belongs in `dependencies/headsetcontrol`. QontrolPanel should usually only consume capabilities and expose settings/UI.
+Do not make headset device/protocol changes directly in the `dependencies/headsetcontrol` submodule. Implement them in the [upstream HeadsetControl repository](https://github.com/Sapd/HeadsetControl) and submit them there. QontrolPanel should usually only consume upstream capabilities, expose settings/UI, and update the pinned submodule commit when needed.
 
 For headset-related PRs, explain:
 
-- whether the change is in QontrolPanel, HeadsetControl, or both;
+- whether the change is in QontrolPanel, an upstream HeadsetControl pull request, or both;
 - which headset model was tested;
 - which capabilities were verified;
 - whether `hidapi.dll` deployment or CMake linking changed.
