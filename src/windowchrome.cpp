@@ -299,6 +299,12 @@ bool WindowChrome::nativeEventFilter(
     };
 
     switch (msg->message) {
+    case WM_ERASEBKGND:
+        // DWM supplies the Settings client-area material. Prevent the native
+        // window class brush from painting white before Qt Quick swaps its
+        // first transparent frame.
+        setResult(1);
+        return true;
     case WM_NCHITTEST: {
         POINT clientPoint{GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam)};
         if (!ScreenToClient(msg->hwnd, &clientPoint)) {

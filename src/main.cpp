@@ -8,6 +8,7 @@
 #include <QLocalSocket>
 #include <QLocalServer>
 #include <QLoggingCategory>
+#include <QQuickWindow>
 #include <QThread>
 
 #ifdef Q_OS_WIN
@@ -80,6 +81,12 @@ int main(int argc, char *argv[])
         );
 
     QApplication a(argc, argv);
+#ifdef Q_OS_WIN
+    // The Direct3D Qt Quick swapchain is opaque to DWM. OpenGL preserves the
+    // alpha channel required to expose the native Settings system backdrop.
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+#endif
+    QQuickWindow::setDefaultAlphaBuffer(true);
     a.setQuitOnLastWindowClosed(false);
     a.setOrganizationName("ChrisLauinger77");
     a.setApplicationName("QontrolPanel");

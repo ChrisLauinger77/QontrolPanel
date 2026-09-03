@@ -13,7 +13,10 @@ ApplicationWindow {
     minimumWidth: 1100
     visible: false
     transientParent: null
-    flags: Qt.Window | Qt.FramelessWindowHint
+    // WindowChrome removes the native caption after HWND creation. Avoid
+    // FramelessWindowHint here: Qt otherwise makes this alpha window layered,
+    // which prevents DWM's system backdrop from composing through the client.
+    flags: Qt.Window | Qt.CustomizeWindowHint
     title: qsTr("QontrolPanel - Settings")
     color: "transparent"
 
@@ -26,21 +29,26 @@ ApplicationWindow {
         color: root.nativeBackdropActive ? "transparent" : Constants.panelColor
     }
 
-    Component.onCompleted: Qt.callLater(initializeNativeWindow)
+    Component.onCompleted: {
+        initializeNativeWindow()
+        Qt.callLater(function () {
+            openPage(UserSettings.settingsStartupPage, false)
+        })
+    }
     onClosing: function(close) {
         if (visible) {
             close.accepted = false
             hide()
         }
     }
-    onActiveChanged: updateNativeBackdrop()
     onVisibleChanged: {
         if (visible) {
-            Qt.callLater(updateNativeBackdrop)
-        } else {
-            WindowsBackdrop.removeBackdrop(root)
-            nativeBackdropActive = false
+            updateNativeBackdrop()
+        } else if (nativeBackdropSuppressed) {
+            // A theme change suppresses Mica until the visible window is
+            // hidden. Prepare the replacement material before its next show.
             nativeBackdropSuppressed = false
+            updateNativeBackdrop()
         }
     }
 
@@ -57,7 +65,7 @@ ApplicationWindow {
     }
 
     function updateNativeBackdrop() {
-        if (!visible || nativeBackdropSuppressed) {
+        if (nativeBackdropSuppressed) {
             nativeBackdropActive = false
             return
         }
@@ -126,22 +134,25 @@ ApplicationWindow {
     }
 
     function showPreferredPane() {
+        updateNativeBackdrop()
+        openPage(UserSettings.settingsStartupPage, false)
         show()
-        openPage(UserSettings.settingsStartupPage, true)
         raise()
         requestActivate()
     }
 
     function showUpdatePane() {
+        updateNativeBackdrop()
+        openPage(10, false)
         show()
-        openPage(10, true)
         raise()
         requestActivate()
     }
 
     function showHeadsetcontrolPane() {
+        updateNativeBackdrop()
+        openPage(7, false)
         show()
-        openPage(7, true)
         raise()
         requestActivate()
     }
@@ -408,7 +419,8 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
             initialItem: generalPaneComponent
-            readonly property bool settingsPageTransitionsEnabled: UserSettings.settingsAnimationsEnabled
+            readonly property bool settingsPageTransitionsEnabled: root.visible
+                                                                   && UserSettings.settingsAnimationsEnabled
             readonly property int settingsPageFadeDuration: UserSettings.settingsAnimationsEnabled ? 150 : 0
             readonly property int settingsPageSlideDuration: UserSettings.settingsAnimationsEnabled ? 300 : 0
             readonly property real settingsPageSlideDistance: Math.min(32, stackView.width * 0.3)
