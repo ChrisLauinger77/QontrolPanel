@@ -136,6 +136,21 @@ bool applyDwmBackdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType)
     return true;
 }
 
+bool extendDwmFrameIntoClientArea(HWND hwnd, bool enabled)
+{
+    const MARGINS margins = enabled
+        ? MARGINS{-1, -1, -1, -1}
+        : MARGINS{0, 0, 0, 0};
+    const HRESULT result = DwmExtendFrameIntoClientArea(hwnd, &margins);
+    if (FAILED(result)) {
+        LOG_WARN(LogCategory,
+                 QString("Failed to update DWM client-area extension: %1")
+                     .arg(formatHresult(result)));
+        return false;
+    }
+    return true;
+}
+
 void clearDwmBackdrop(HWND hwnd)
 {
     const DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_NONE;
@@ -191,10 +206,26 @@ bool applyMaterial(QWindow* window, BackdropKind kind)
         if (!transparencyEffectsEnabled()) {
             applyWindowAcrylic(hwnd, false);
             clearDwmBackdrop(hwnd);
+            extendDwmFrameIntoClientArea(hwnd, false);
             return false;
         }
         applyWindowAcrylic(hwnd, false);
-        return applyDwmBackdrop(hwnd, DWMSBT_MAINWINDOW);
+        if ((GetWindowLongPtrW(hwnd, GWL_EXSTYLE) & WS_EX_LAYERED) != 0) {
+            clearDwmBackdrop(hwnd);
+            extendDwmFrameIntoClientArea(hwnd, false);
+            LOG_WARN(LogCategory,
+                     "Cannot expose Mica through a layered Settings window");
+            return false;
+        }
+        if (!extendDwmFrameIntoClientArea(hwnd, true)) {
+            clearDwmBackdrop(hwnd);
+            return false;
+        }
+        if (!applyDwmBackdrop(hwnd, DWMSBT_MAINWINDOW)) {
+            extendDwmFrameIntoClientArea(hwnd, false);
+            return false;
+        }
+        return true;
     }
 
     if (applyWindowAcrylic(hwnd, true)) {
@@ -212,6 +243,7 @@ void clearMaterial(QWindow* window)
 
     applyWindowAcrylic(hwnd, false);
     clearDwmBackdrop(hwnd);
+    extendDwmFrameIntoClientArea(hwnd, false);
 }
 }
 
@@ -312,8 +344,10 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
         return false;
     }
     const auto existingWindow = m_impl->windows.find(window);
-    if (existingWindow != m_impl->windows.end()
-        && existingWindow->second->kind != kind) {
+    if (existingWindow != m_impl->windows.end()) {
+        if (existingWindow->second->kind == kind) {
+            return true;
+        }
         clearMaterial(window);
     }
     if (!applyMaterial(window, kind)) {
@@ -335,7 +369,8 @@ bool WindowsBackdrop::applyBackdrop(QObject* windowObject, bool mainWindow)
         [this, window](bool visible) {
             if (visible) {
                 const auto trackedWindow = m_impl->windows.find(window);
-                if (trackedWindow != m_impl->windows.end()) {
+                if (trackedWindow != m_impl->windows.end()
+                    && trackedWindow->second->kind == BackdropKind::Transient) {
                     applyMaterial(window, trackedWindow->second->kind);
                 }
             }
