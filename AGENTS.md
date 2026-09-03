@@ -60,6 +60,7 @@ When possible, validate changes with:
 
 - a CMake configure;
 - a Release build;
+- before manually testing the executable, build the `INSTALL` target and run `build/install/bin/QontrolPanel.exe`; the executable in the raw build directory may not have its required runtime files;
 - manual launch from Qt Creator or the installed output;
 - affected settings pane interaction;
 - real-device validation for audio, HID, display, hotkey, or power behavior.
