@@ -8,6 +8,7 @@
 #include <QLocalSocket>
 #include <QLocalServer>
 #include <QLoggingCategory>
+#include <QOperatingSystemVersion>
 #include <QQuickWindow>
 #include <QThread>
 
@@ -82,9 +83,13 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 #ifdef Q_OS_WIN
-    // The Direct3D Qt Quick swapchain is opaque to DWM. OpenGL preserves the
-    // alpha channel required to expose the native Settings system backdrop.
-    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+    if (QOperatingSystemVersion::current()
+        >= QOperatingSystemVersion::Windows11_22H2) {
+        // The Direct3D Qt Quick swapchain is opaque to DWM. OpenGL preserves
+        // the alpha channel required by the Windows 11 system backdrop. Older
+        // Windows versions keep Qt's default Direct3D renderer.
+        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+    }
 #endif
     QQuickWindow::setDefaultAlphaBuffer(true);
     a.setQuitOnLastWindowClosed(false);

@@ -285,7 +285,7 @@ qt_generate_deploy_qml_app_script(
     TARGET QontrolPanel
     OUTPUT_SCRIPT deploy_script
     NO_TRANSLATIONS
-    DEPLOY_TOOL_OPTIONS --no-compiler-runtime --no-opengl-sw --no-system-dxc-compiler --no-system-d3d-compiler --skip-plugin-types designer,iconengines,qmllint,generic,networkinformation,help,qmltooling,sqldrivers,qmlls
+    DEPLOY_TOOL_OPTIONS --no-compiler-runtime --no-system-dxc-compiler --no-system-d3d-compiler --skip-plugin-types designer,iconengines,qmllint,generic,networkinformation,help,qmltooling,sqldrivers,qmlls
 )
 install(SCRIPT ${deploy_script})
 
