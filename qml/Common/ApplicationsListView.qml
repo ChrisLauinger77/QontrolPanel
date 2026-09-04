@@ -12,6 +12,7 @@ Rectangle {
     property bool expanded: false
     property string executableName: ""
     property bool nativeBackdropActive: false
+    readonly property bool chatMixEffectiveEnabled: UserSettings.activateChatmix && UserSettings.chatMixEnabled
 
     // Export the height needed when fully expanded
     property real expandedNeededHeight: {
@@ -112,7 +113,7 @@ Rectangle {
                 spacing: -4
 
                 Label {
-                    opacity: UserSettings.chatMixEnabled ? 0.3 : 0.5
+                    opacity: root.chatMixEffectiveEnabled ? 0.3 : 0.5
                     elide: Text.ElideRight
                     Layout.preferredWidth: 200
                     Layout.leftMargin: 18
@@ -154,7 +155,7 @@ Rectangle {
                     id: volumeSlider
                     from: 0
                     to: 100
-                    enabled: !UserSettings.chatMixEnabled && !muteButton.highlighted
+                    enabled: !root.chatMixEffectiveEnabled && !muteButton.highlighted
                     audioLevel: {
                         AudioBridge.applicationAudioLevels
                         return AudioBridge.getApplicationAudioLevel(individualAppLayout.model.appId)
@@ -168,7 +169,7 @@ Rectangle {
                         if (pressed) {
                             return value
                         }
-                        if (!UserSettings.chatMixEnabled) {
+                        if (!root.chatMixEffectiveEnabled) {
                             return individualAppLayout.model.volume
                         }
                         let appName = individualAppLayout.model.name
@@ -181,12 +182,12 @@ Rectangle {
                         text: Math.round(volumeSlider.value).toString()
                     }
                     onValueChanged: {
-                        if (!UserSettings.chatMixEnabled && pressed) {
+                        if (!root.chatMixEffectiveEnabled && pressed) {
                             root.applicationVolumeChanged(individualAppLayout.model.appId, value)
                         }
                     }
                     onPressedChanged: {
-                        if (!pressed && !UserSettings.chatMixEnabled) {
+                        if (!pressed && !root.chatMixEffectiveEnabled) {
                             root.applicationVolumeChanged(individualAppLayout.model.appId, value)
                         }
                         if (!UserSettings.showAudioLevel) return
@@ -197,7 +198,7 @@ Rectangle {
                         }
                     }
                     onWheelChanged: {
-                        if (!UserSettings.chatMixEnabled) {
+                        if (!root.chatMixEffectiveEnabled) {
                             root.applicationVolumeChanged(individualAppLayout.model.appId, value)
                         }
                     }

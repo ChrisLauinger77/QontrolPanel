@@ -24,6 +24,7 @@ ApplicationWindow {
     property real mediaRestingX: 0
     property real mediaRestingY: 0
     property alias mediaSurfaceWindow: mediaPanelWindow
+    readonly property bool chatMixEffectiveEnabled: UserSettings.activateChatmix && UserSettings.chatMixEnabled
     // Preserve the original 24px spacer after the media content's 15px outer inset.
     readonly property real panelGap: 9
     property string taskbarPos: {
@@ -941,7 +942,7 @@ ApplicationWindow {
                                         spacing: -4
 
                                         Label {
-                                            opacity: UserSettings.chatMixEnabled ? 0.3 : 1
+                                            opacity: panel.chatMixEffectiveEnabled ? 0.3 : 1
                                             elide: Text.ElideRight
                                             Layout.preferredWidth: 200
                                             Layout.leftMargin: 18
@@ -952,7 +953,7 @@ ApplicationWindow {
                                                     name = qsTr("System sounds")
                                                 }
 
-                                                if (UserSettings.chatMixEnabled && AudioBridge.isCommApp(name) && !appDelegateRoot.model.isSystemSounds) {
+                                                if (panel.chatMixEffectiveEnabled && AudioBridge.isCommApp(name) && !appDelegateRoot.model.isSystemSounds) {
                                                     name += " (Comm)"
                                                 }
                                                 return name
@@ -977,25 +978,29 @@ ApplicationWindow {
                                             from: 0
                                             to: 100
                                             value: pressed ? value : appDelegateRoot.model.averageVolume
-                                            enabled: !UserSettings.chatMixEnabled && !executableMuteButton.highlighted
+                                            enabled: !panel.chatMixEffectiveEnabled && !executableMuteButton.highlighted
                                             opacity: enabled ? 1 : 0.5
                                             Layout.fillWidth: true
                                             displayProgress: !appDelegateRoot.model.isSystemSounds
-                                            audioLevel: !appDelegateRoot.model.isSystemSounds
-                                                        ? (appDelegateRoot.model.averageAudioLevel || 0)
-                                                        : 0
+                                            audioLevel: {
+                                                // Keep this binding subscribed even while the session list is collapsed.
+                                                AudioBridge.applicationAudioLevels
+                                                return !appDelegateRoot.model.isSystemSounds
+                                                    ? (appDelegateRoot.model.averageAudioLevel || 0)
+                                                    : 0
+                                            }
                                             onValueChanged: {
-                                                if (!UserSettings.chatMixEnabled && pressed) {
+                                                if (!panel.chatMixEffectiveEnabled && pressed) {
                                                     AudioBridge.setExecutableVolume(appDelegateRoot.model.executableName, value)
                                                 }
                                             }
                                             onPressedChanged: {
-                                                if (!pressed && !UserSettings.chatMixEnabled) {
+                                                if (!pressed && !panel.chatMixEffectiveEnabled) {
                                                     AudioBridge.setExecutableVolume(appDelegateRoot.model.executableName, value)
                                                 }
                                             }
                                             onWheelChanged: {
-                                                if (!UserSettings.chatMixEnabled) {
+                                                if (!panel.chatMixEffectiveEnabled) {
                                                     AudioBridge.setExecutableVolume(appDelegateRoot.model.executableName, value)
                                                 }
                                             }

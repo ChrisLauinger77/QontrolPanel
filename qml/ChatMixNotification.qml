@@ -58,7 +58,15 @@ ApplicationWindow {
         target: KeyboardShortcutManager
 
         function onChatMixToggleRequested() {
-            UserSettings.chatMixEnabled = !UserSettings.chatMixEnabled
+            if (UserSettings.activateChatmix) {
+                UserSettings.chatMixEnabled = !UserSettings.chatMixEnabled
+
+                if (UserSettings.chatMixEnabled) {
+                    AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue)
+                } else {
+                    AudioBridge.restoreOriginalVolumes()
+                }
+            }
 
             if (UserSettings.chatMixShortcutNotification) {
                 notificationType = "chatmix"
