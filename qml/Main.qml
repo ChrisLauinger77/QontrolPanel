@@ -291,6 +291,8 @@ ApplicationWindow {
         }
         onFinished: {
             panel.isAnimatingIn = false
+            // Moving a hidden OpenGL window on-screen does not always schedule a frame.
+            panel.update()
         }
     }
 
