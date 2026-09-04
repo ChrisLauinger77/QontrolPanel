@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QScreen>
 #include <QRect>
+#include <QQuickWindow>
 #include <QWindow>
 #include <QQmlContext>
 #include <QTimer>
@@ -65,6 +66,14 @@ void PanelEngine::initializeQMLEngine()
     if (!engine->rootObjects().isEmpty()) {
         panelWindow = qobject_cast<QWindow*>(engine->rootObjects().constFirst());
         if (panelWindow) {
+            if (auto* quickWindow = qobject_cast<QQuickWindow*>(panelWindow)) {
+                // The main panel is animated fully off-screen before it is hidden.
+                // Recreate its OpenGL scene graph on the next show so Windows/DWM
+                // cannot retain a stale backing surface that only repaints on resize.
+                quickWindow->setPersistentGraphics(false);
+                quickWindow->setPersistentSceneGraph(false);
+            }
+
             QObject* mediaWindowObject = panelWindow->property("mediaSurfaceWindow").value<QObject*>();
             mediaPanelWindow = qobject_cast<QWindow*>(mediaWindowObject);
             if (!mediaPanelWindow) {
@@ -82,6 +91,9 @@ void PanelEngine::onPanelVisibilityChanged(bool visible)
 
     if (visible) {
         startFocusMonitoring();
+        if (auto* quickWindow = qobject_cast<QQuickWindow*>(panelWindow)) {
+            QTimer::singleShot(0, quickWindow, &QQuickWindow::update);
+        }
     } else {
         stopFocusMonitoring();
     }

@@ -106,11 +106,11 @@ struct ApplicationGroup {
     QString displayName;
     QString iconPath;
     QList<AudioApplication> sessions;
-    int averageVolume;
-    bool anyMuted;
-    bool allMuted;
-    int sessionCount;
-    int averageAudioLevel;
+    int averageVolume = 0;
+    bool anyMuted = false;
+    bool allMuted = false;
+    int sessionCount = 0;
+    int averageAudioLevel = 0;
     bool isSystemSounds = false;
 };
 
