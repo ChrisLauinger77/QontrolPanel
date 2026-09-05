@@ -10,10 +10,10 @@ The root `CMakeLists.txt` expects HeadsetControl at:
 dependencies/headsetcontrol
 ```
 
-It is added with:
+Upstream writes `lib/version.h` into its source directory. QontrolPanel copies the pinned source into the build directory first, preserving the submodule unchanged, and adds the copy with:
 
 ```cmake
-add_subdirectory("${HEADSETCONTROL_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}/headsetcontrol" EXCLUDE_FROM_ALL)
+add_subdirectory("${HEADSETCONTROL_BUILD_SOURCE}" "${CMAKE_CURRENT_BINARY_DIR}/headsetcontrol" EXCLUDE_FROM_ALL)
 ```
 
 The app links:
@@ -26,7 +26,7 @@ hidapi::hidapi
 On MSVC, the project aligns the HeadsetControl runtime library with the main app:
 
 ```cmake
-MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>"
+MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
 ```
 
 This avoids mixing incompatible CRT settings between the application and vendored dependency.
@@ -63,7 +63,8 @@ Important state includes:
 
 `HeadsetControlBridge` is the QML singleton. It:
 
-- forwards monitor properties to QML;
+- owns the dedicated monitor thread independently of AudioWorker;
+- exposes copied `HeadsetControlState` snapshots to QML;
 - exposes `Q_INVOKABLE` commands for UI controls;
 - connects monitor signals to QML notifications;
 - tracks low-battery notification state;
@@ -116,7 +117,7 @@ UI controls should bind to capability properties so unsupported headset function
 
 1. Read support from `HeadsetControlBridge.has...Capability`.
 2. Read the saved value from `UserSettings`.
-3. On user interaction, save through `UserSettings` and apply through `HeadsetControlBridge`.
+3. On user interaction, call the bridge setter, which persists the desired value. The bridge also observes settings changes made elsewhere.
 4. Let bridge signals refresh UI state after polling.
 
 ## Polling Lifecycle
@@ -124,8 +125,8 @@ UI controls should bind to capability properties so unsupported headset function
 The monitor starts only when enabled. On start it:
 
 1. Applies test-device configuration if test mode is enabled.
-2. Starts the fetch timer.
-3. Immediately fetches headset information.
+2. Immediately fetches headset information.
+3. Schedules the single-shot timer after polling completes, with a minimum 60-second interval.
 4. Emits monitoring-state and data-change signals.
 
 On stop it:
@@ -157,11 +158,13 @@ HeadsetControl API calls return result objects. App code should:
 - log failure details from `result.error().fullMessage()`;
 - avoid throwing exceptions through QML.
 
-This keeps unsupported devices and transient USB failures visible in diagnostics without crashing the tray app.
+The monitor never reads GUI-owned UserSettings. The bridge sends copied desired values, and the monitor records applied values only after successful writes. Failed settings are retried at most three times per desired value and active headset; a manual refresh resets the retry budget. Exceptions and result errors become a visible bridge error. Duplicate setters with unchanged values do not duplicate successful HID writes.
+
+The active device key uses VID/PID/name rather than enumeration index. Battery matching to audio endpoints remains model-based (VID/PID). The pinned upstream library deduplicates identical VID/PID devices and resolves HID paths by model, so this app cannot reliably select two physically distinct identical headsets. That requires a HeadsetControl fork/upstream change; it must not be patched in this submodule.
 
 ## Updating the Vendored Dependency
 
-The GitHub build workflow updates the HeadsetControl submodule to the latest upstream master during CI. For local development, update deliberately:
+The build workflow uses the recorded submodule revision. The scheduled updater proposes a pin change and dispatches a validation build. For intentional local dependency evaluation:
 
 ```pwsh
 git submodule update --init --recursive --remote --checkout dependencies/headsetcontrol
@@ -179,7 +182,7 @@ After updating:
 
 | Change type | Preferred location |
 | --- | --- |
-| New headset protocol or vendor quirk | `dependencies/headsetcontrol/lib/devices/` |
+| New headset protocol or vendor quirk | A HeadsetControl fork and upstream pull request; then a reviewed submodule pin update |
 | New HeadsetControl capability mapping | `HeadsetControlMonitor` |
 | New QML property or command | `HeadsetControlBridge` and `HeadsetControlMonitor` |
 | New user setting | `UserSettings` and `HeadsetControlPane.qml` |

@@ -60,7 +60,7 @@ Headset polling is controlled by user settings:
 - `headsetcontrolFetchRate`
 - `headsetcontrolLowBatteryThreshold`
 
-The default monitor interval is initialized to 30 seconds and can be changed through the bridge with `setFetchRate`.
+The bridge applies the saved fetch rate before monitoring starts, with a minimum interval of 60 seconds. The monitor owns a dedicated worker thread independently of audio enablement.
 
 Keep polling conservative. USB HID reads can be relatively expensive, some devices are slow to respond, and repeated writes may affect battery-powered devices.
 
@@ -75,7 +75,7 @@ The app can request device writes through `HeadsetControlMonitor`:
 - `setSidetone(int value)`
 - `setInactiveTime(int value)`
 
-Each write operation checks the relevant capability and verifies that a headset is connected before calling the HeadsetControl API. Callers should still keep the UI capability-gated to avoid presenting unsupported controls.
+The bridge sends a copied desired-settings snapshot to the monitor thread. Each write checks device presence and capability; only successful writes are acknowledged. Failed settings are retried at most three times per value and active device, and the settings pane exposes the error. Refresh resets the retry limit. Keep UI controls capability-gated.
 
 ## Adding or Updating Device Support
 
@@ -83,9 +83,9 @@ Device protocol support belongs in the vendored HeadsetControl source, not in Qo
 
 Use this path when adding a device:
 
-1. Add or update the device implementation under `dependencies/headsetcontrol/lib/devices/`.
-2. Register the device with HeadsetControl's device registry.
-3. Add or update HeadsetControl tests where practical.
+1. Implement the device in a fork of HeadsetControl and register it with the library. Do not edit the submodule checkout in this repository.
+2. Add or update HeadsetControl tests and submit an upstream pull request.
+3. Update QontrolPanel's pinned revision when the reviewed dependency change is available, and explicitly report the pin change.
 4. Rebuild QontrolPanel and verify the capability list exposed through `HeadsetControlMonitor`.
 5. Update QontrolPanel UI only if a newly supported capability needs a new user-facing control.
 
