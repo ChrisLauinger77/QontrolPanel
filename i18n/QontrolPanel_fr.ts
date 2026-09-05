@@ -945,6 +945,10 @@ You can enable it in the Components tab.</source>
         <source>Device battery</source>
         <translation>Batterie du périphérique</translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -1087,6 +1091,18 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Version %1 is available for download</source>
         <translation>La version %1 est disponible en téléchargement</translation>
+    </message>
+    <message>
+        <source>Power action failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1547,6 +1563,47 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
         <translation>Téléchargé %1 sur %2 fichiers de traduction</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
