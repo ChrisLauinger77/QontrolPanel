@@ -968,6 +968,13 @@ You can enable it in the Components tab.</source>
     </message>
 </context>
 <context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LabeledSwitch</name>
     <message>
         <source>On</source>
@@ -1190,6 +1197,13 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Update available</source>
         <translation>Atualização disponível</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1522,10 +1536,6 @@ You can enable it in the Components tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation type="unfinished">Falha no download: %1</translation>
     </message>
@@ -1579,20 +1589,6 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PowerBridge</name>
-    <message>
-        <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>KeyboardShortcutManager</name>
-    <message>
-        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

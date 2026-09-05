@@ -968,6 +968,13 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
 </context>
 <context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LabeledSwitch</name>
     <message>
         <source>On</source>
@@ -1190,6 +1197,13 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>Update available</source>
         <translation>Dostępna aktualizacja</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1523,7 +1537,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation>Nie można rozpocząć pobierania</translation>
+        <translation type="vanished">Nie można rozpocząć pobierania</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
@@ -1579,20 +1593,6 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PowerBridge</name>
-    <message>
-        <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>KeyboardShortcutManager</name>
-    <message>
-        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

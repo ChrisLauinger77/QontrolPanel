@@ -967,6 +967,13 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
 </context>
 <context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LabeledSwitch</name>
     <message>
         <source>On</source>
@@ -1189,6 +1196,13 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>Update available</source>
         <translation>Posodobitev je na voljo</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1522,7 +1536,7 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation>Prenosa ni mogoče začeti</translation>
+        <translation type="vanished">Prenosa ni mogoče začeti</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
@@ -1578,20 +1592,6 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PowerBridge</name>
-    <message>
-        <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>KeyboardShortcutManager</name>
-    <message>
-        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
