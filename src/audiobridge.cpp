@@ -1,3 +1,4 @@
+#include "jsonstore.h"
 #include "audiobridge.h"
 #include "audiomanager.h"
 #include "audiomodels.h"
@@ -31,7 +32,10 @@ AudioBridge::AudioBridge(QObject *parent)
     , m_outputDeviceDisplayName("")
     , m_inputDeviceDisplayName("")
 {
+    m_instance = this;
     auto* manager = AudioManager::instance();
+    connect(m_inputDeviceModel, &FilteredDeviceModel::countChanged, this, &AudioBridge::inputDeviceCountChanged);
+    connect(m_outputDeviceModel, &FilteredDeviceModel::countChanged, this, &AudioBridge::outputDeviceCountChanged);
 
     // Connect volume signals
     connect(manager, &AudioManager::outputVolumeChanged, this, &AudioBridge::onOutputVolumeChanged);
@@ -65,6 +69,16 @@ AudioBridge::AudioBridge(QObject *parent)
     connect(KeyboardShortcutManager::instance(), &KeyboardShortcutManager::appVolumeHotkeyPressed,
             this, &AudioBridge::onAppVolumeHotkeyPressed);
 
+    auto syncAudioComponents = [this] {
+        auto* settings = UserSettings::instance();
+        if (settings->enableDeviceManager() || settings->enableApplicationMixer())
+            initialize();
+        else
+            cleanup();
+    };
+    connect(UserSettings::instance(), &UserSettings::enableDeviceManagerChanged, this, syncAudioComponents);
+    connect(UserSettings::instance(), &UserSettings::enableApplicationMixerChanged, this, syncAudioComponents);
+
     loadCommAppsFromFile();
     loadAppRenamesFromFile();
     loadExecutableRenamesFromFile();
@@ -83,11 +97,14 @@ AudioBridge::AudioBridge(QObject *parent)
 }
 
 AudioBridge::~AudioBridge() {
+    m_instance = nullptr;
+    for (auto it = m_originalMuteStates.cbegin(); it != m_originalMuteStates.cend(); ++it)
+        AudioManager::instance()->setApplicationMuteAsync(it.key(), it.value());
     bool activateChatMix = UserSettings::instance()->activateChatmix();
     bool chatMixEnabled = UserSettings::instance()->chatMixEnabled();
 
     if (activateChatMix && chatMixEnabled) {
-        restoreOriginalVolumesSync();
+        queueVolumeRestoration();
     }
 
     // Clean up session models
@@ -133,7 +150,7 @@ ExecutableSessionModel* AudioBridge::getSessionsForExecutable(const QString& exe
 
             // Use the original name first, then get the display name (which includes custom names)
             QString originalName = m_applicationModel->data(index, ApplicationModel::NameRole).toString();
-            app.name = getDisplayNameForApplication(originalName, app.streamIndex);
+            app.name = originalName;
 
             sessions.append(app);
         }
@@ -528,23 +545,9 @@ QString AudioBridge::getCommAppsFilePath() const
 void AudioBridge::loadCommAppsFromFile()
 {
     QString filePath = getCommAppsFilePath();
-    QFile file(filePath);
-
-    if (!file.exists()) {
+    const QJsonDocument doc = JsonStore::load(filePath, "commApps");
+    if (doc.isNull())
         return;
-    }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QByteArray data = file.readAll();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if (error.error != QJsonParseError::NoError) {
-        return;
-    }
 
     QJsonObject root = doc.object();
     QJsonArray commAppsArray = root["commApps"].toArray();
@@ -562,11 +565,6 @@ void AudioBridge::loadCommAppsFromFile()
 void AudioBridge::saveCommAppsToFile()
 {
     QString filePath = getCommAppsFilePath();
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
 
     QJsonArray commAppsArray;
     for (const CommApp& app : m_commApps) {
@@ -580,7 +578,7 @@ void AudioBridge::saveCommAppsToFile()
     root["commApps"] = commAppsArray;
 
     QJsonDocument doc(root);
-    file.write(doc.toJson());
+    JsonStore::save(filePath, doc);
 }
 
 // Event handlers
@@ -630,9 +628,31 @@ void AudioBridge::onApplicationMuteChanged(const QString& appId, bool muted)
 
 void AudioBridge::onApplicationsChanged(const QList<AudioApplication>& applications)
 {
+    QSet<QString> liveIds;
+    for (const auto& app : applications)
+        liveIds.insert(app.id);
+    m_originalMuteStates.removeIf([&](auto it) { return !liveIds.contains(it.key()); });
+    QSet<QString> liveExecutables;
+    for (const auto& app : applications)
+        liveExecutables.insert(app.executableName);
+    for (auto it = m_sessionModels.begin(); it != m_sessionModels.end();)
+    {
+        if (!liveExecutables.contains(it.key()))
+        {
+            it.value()->setSessions({});
+            it.value()->deleteLater();
+            it = m_sessionModels.erase(it);
+        }
+        else
+            ++it;
+    }
     m_applicationModel->setApplications(applications);
     updateGroupedApplications(); // Only rebuild when apps are added/removed
 
+    for (const auto& executable : m_windowFocusManager->getBackgroundMutedApplications())
+    {
+        onApplicationFocusChanged(executable, m_windowFocusManager->isFocused(executable));
+    }
     QTimer::singleShot(0, this, &AudioBridge::applyChatMixIfEnabled);
 }
 
@@ -661,6 +681,7 @@ void AudioBridge::onDefaultDeviceChanged(const QString& deviceId, bool isInput)
 
 void AudioBridge::onInitializationComplete()
 {
+    m_instance = this;
     auto* manager = AudioManager::instance();
     m_outputVolume = manager->getOutputVolume();
     m_inputVolume = manager->getInputVolume();
@@ -687,7 +708,7 @@ void AudioBridge::onInitializationComplete()
     updateDeviceDisplayNames();
 }
 
-void AudioBridge::restoreOriginalVolumesSync()
+void AudioBridge::queueVolumeRestoration()
 {
     int restoreVolume = UserSettings::instance()->chatmixRestoreVolume();
 
@@ -714,9 +735,7 @@ void AudioBridge::restoreOriginalVolumesSync()
             continue;
         }
 
-        QMetaObject::invokeMethod(worker, "setApplicationVolume",
-                                  Qt::BlockingQueuedConnection,
-                                  Q_ARG(QString, appId),
+        QMetaObject::invokeMethod(worker, "setApplicationVolume", Qt::QueuedConnection, Q_ARG(QString, appId),
                                   Q_ARG(int, restoreVolume));
     }
 }
@@ -741,6 +760,11 @@ void AudioBridge::initialize()
 void AudioBridge::cleanup()
 {
     LOG_INFO("AudioManager", "AudioBridge cleanup requested");
+    if (UserSettings::instance()->activateChatmix() && UserSettings::instance()->chatMixEnabled())
+        queueVolumeRestoration();
+    for (auto it = m_originalMuteStates.cbegin(); it != m_originalMuteStates.cend(); ++it)
+        AudioManager::instance()->setApplicationMuteAsync(it.key(), it.value());
+    m_originalMuteStates.clear();
     auto* manager = AudioManager::instance();
     manager->cleanup();
 
@@ -957,26 +981,14 @@ void AudioBridge::createDefaultAppRenames()
 void AudioBridge::loadAppRenamesFromFile()
 {
     QString filePath = getAppRenamesFilePath();
-    QFile file(filePath);
-
-    if (!file.exists()) {
+    if (!QFile::exists(filePath))
+    {
         createDefaultAppRenames();
         return;
     }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        createDefaultAppRenames();
+    const QJsonDocument doc = JsonStore::load(filePath, "appRenames");
+    if (doc.isNull())
         return;
-    }
-
-    QByteArray data = file.readAll();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if (error.error != QJsonParseError::NoError) {
-        createDefaultAppRenames();
-        return;
-    }
 
     QJsonObject root = doc.object();
     QJsonArray renamesArray = root["appRenames"].toArray();
@@ -990,21 +1002,11 @@ void AudioBridge::loadAppRenamesFromFile()
         rename.streamIndex = renameObj["streamIndex"].toInt();
         m_appRenames.append(rename);
     }
-
-    // If file was empty or had no renames, create defaults
-    if (m_appRenames.isEmpty()) {
-        createDefaultAppRenames();
-    }
 }
 
 void AudioBridge::saveAppRenamesToFile()
 {
     QString filePath = getAppRenamesFilePath();
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
 
     QJsonArray renamesArray;
     for (const AppRename& rename : m_appRenames) {
@@ -1019,7 +1021,7 @@ void AudioBridge::saveAppRenamesToFile()
     root["appRenames"] = renamesArray;
 
     QJsonDocument doc(root);
-    file.write(doc.toJson());
+    JsonStore::save(filePath, doc);
 }
 
 QString AudioBridge::getCustomExecutableName(const QString& executableName) const
@@ -1085,23 +1087,9 @@ QString AudioBridge::getExecutableRenamesFilePath() const
 void AudioBridge::loadExecutableRenamesFromFile()
 {
     QString filePath = getExecutableRenamesFilePath();
-    QFile file(filePath);
-
-    if (!file.exists()) {
+    const QJsonDocument doc = JsonStore::load(filePath, "executableRenames");
+    if (doc.isNull())
         return;
-    }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QByteArray data = file.readAll();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if (error.error != QJsonParseError::NoError) {
-        return;
-    }
 
     QJsonObject root = doc.object();
     QJsonArray renamesArray = root["executableRenames"].toArray();
@@ -1119,11 +1107,6 @@ void AudioBridge::loadExecutableRenamesFromFile()
 void AudioBridge::saveExecutableRenamesToFile()
 {
     QString filePath = getExecutableRenamesFilePath();
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
 
     QJsonArray renamesArray;
     for (const ExecutableRename& rename : m_executableRenames) {
@@ -1137,7 +1120,7 @@ void AudioBridge::saveExecutableRenamesToFile()
     root["executableRenames"] = renamesArray;
 
     QJsonDocument doc(root);
-    file.write(doc.toJson());
+    JsonStore::save(filePath, doc);
 }
 
 void AudioBridge::onApplicationAudioLevelChanged(const QString& appId, int level)
@@ -1209,41 +1192,24 @@ bool AudioBridge::isApplicationLocked(const QString& originalName, int streamInd
 
 void AudioBridge::setApplicationLocked(const QString& originalName, int streamIndex, bool locked)
 {
-    bool changed = false;
-
-    // Check if we already have a lock entry for this app and index
-    for (int i = 0; i < m_appLocks.count(); ++i) {
-        if (m_appLocks[i].originalName.compare(originalName, Qt::CaseInsensitive) == 0 &&
-            m_appLocks[i].streamIndex == streamIndex) {
-
-            if (!locked) {
-                // Remove the lock if unlocking
-                m_appLocks.removeAt(i);
-                changed = true;
-            } else if (m_appLocks[i].isLocked != locked) {
-                // Update existing lock
-                m_appLocks[i].isLocked = locked;
-                changed = true;
+    if (streamIndex < 0 || originalName.trimmed().isEmpty())
+        return;
+    const bool wasLocked = isApplicationLocked(originalName, streamIndex);
+    m_appLocks.removeIf([&](const AppLock& item) {
+        return item.originalName.compare(originalName, Qt::CaseInsensitive) == 0 && item.streamIndex == streamIndex;
+    });
+    if (locked)
+    {
+        AppLock entry;
+        entry.originalName = originalName;
+        entry.streamIndex = streamIndex;
+        entry.isLocked = true;
+        m_appLocks.append(entry);
             }
-            break;
-        }
-    }
-
-    // Add new lock if locking and not found
-    if (!changed && locked) {
-        AppLock newLock;
-        newLock.originalName = originalName;
-        newLock.streamIndex = streamIndex;
-        newLock.isLocked = true;
-        m_appLocks.append(newLock);
-        changed = true;
-    }
-
-    if (changed) {
         saveAppLocksToFile();
-        // Force refresh similar to rename functionality
+    if (wasLocked != locked)
+    {
         refreshApplicationDisplayNames(originalName, streamIndex);
-        // Emit signal for real-time updates
         emit applicationLockChanged(originalName, streamIndex, locked);
     }
 }
@@ -1258,23 +1224,9 @@ QString AudioBridge::getAppLocksFilePath() const
 void AudioBridge::loadAppLocksFromFile()
 {
     QString filePath = getAppLocksFilePath();
-    QFile file(filePath);
-
-    if (!file.exists()) {
+    const QJsonDocument doc = JsonStore::load(filePath, "appLocks");
+    if (doc.isNull())
         return;
-    }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QByteArray data = file.readAll();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if (error.error != QJsonParseError::NoError) {
-        return;
-    }
 
     QJsonObject root = doc.object();
     QJsonArray locksArray = root["appLocks"].toArray();
@@ -1293,11 +1245,6 @@ void AudioBridge::loadAppLocksFromFile()
 void AudioBridge::saveAppLocksToFile()
 {
     QString filePath = getAppLocksFilePath();
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
 
     QJsonArray locksArray;
     for (const AppLock& lock : m_appLocks) {
@@ -1312,29 +1259,15 @@ void AudioBridge::saveAppLocksToFile()
     root["appLocks"] = locksArray;
 
     QJsonDocument doc(root);
-    file.write(doc.toJson());
+    JsonStore::save(filePath, doc);
 }
 
 void AudioBridge::loadDeviceRenamesFromFile()
 {
     QString filePath = getDeviceRenamesFilePath();
-    QFile file(filePath);
-
-    if (!file.exists()) {
+    const QJsonDocument doc = JsonStore::load(filePath, "deviceRenames");
+    if (doc.isNull())
         return;
-    }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QByteArray data = file.readAll();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if (error.error != QJsonParseError::NoError) {
-        return;
-    }
 
     QJsonObject root = doc.object();
     QJsonArray renamesArray = root["deviceRenames"].toArray();
@@ -1352,11 +1285,6 @@ void AudioBridge::loadDeviceRenamesFromFile()
 void AudioBridge::saveDeviceRenamesToFile()
 {
     QString filePath = getDeviceRenamesFilePath();
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
 
     QJsonArray renamesArray;
     for (const DeviceRename& rename : m_deviceRenames) {
@@ -1370,7 +1298,7 @@ void AudioBridge::saveDeviceRenamesToFile()
     root["deviceRenames"] = renamesArray;
 
     QJsonDocument doc(root);
-    file.write(doc.toJson());
+    JsonStore::save(filePath, doc);
 }
 
 QString AudioBridge::getDeviceRenamesFilePath() const
@@ -1495,23 +1423,9 @@ void AudioBridge::refreshDeviceModelData(const QString& originalName)
 void AudioBridge::loadDeviceIconsFromFile()
 {
     QString filePath = getDeviceIconsFilePath();
-    QFile file(filePath);
-
-    if (!file.exists()) {
+    const QJsonDocument doc = JsonStore::load(filePath, "deviceIcons");
+    if (doc.isNull())
         return;
-    }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QByteArray data = file.readAll();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if (error.error != QJsonParseError::NoError) {
-        return;
-    }
 
     QJsonObject root = doc.object();
     QJsonArray iconsArray = root["deviceIcons"].toArray();
@@ -1529,11 +1443,6 @@ void AudioBridge::loadDeviceIconsFromFile()
 void AudioBridge::saveDeviceIconsToFile()
 {
     QString filePath = getDeviceIconsFilePath();
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
 
     QJsonArray iconsArray;
     for (const DeviceIcon& icon : m_deviceIcons) {
@@ -1547,7 +1456,7 @@ void AudioBridge::saveDeviceIconsToFile()
     root["deviceIcons"] = iconsArray;
 
     QJsonDocument doc(root);
-    file.write(doc.toJson());
+    JsonStore::save(filePath, doc);
 }
 
 QString AudioBridge::getDeviceIconsFilePath() const
@@ -1653,7 +1562,12 @@ bool AudioBridge::isApplicationMutedInBackground(const QString& executableName) 
 
 void AudioBridge::setApplicationMutedInBackground(const QString& executableName, bool muted)
 {
+    // Restore owned mute changes before removing the rule that authorizes them.
+    if (!muted)
+        onApplicationFocusChanged(executableName, true);
     m_windowFocusManager->setApplicationMutedInBackground(executableName, muted);
+    if (muted)
+        onApplicationFocusChanged(executableName, m_windowFocusManager->isFocused(executableName));
 }
 
 void AudioBridge::onApplicationFocusChanged(const QString& executableName, bool hasFocus)

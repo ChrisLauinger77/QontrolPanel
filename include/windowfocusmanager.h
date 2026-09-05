@@ -21,6 +21,7 @@ public:
     void setApplicationMutedInBackground(const QString& executableName, bool muted);
 
     QStringList getBackgroundMutedApplications() const;
+    bool isFocused(const QString& executable) const { return m_currentFocusedApp == executable.toCaseFolded(); }
 
 signals:
     void applicationFocusChanged(const QString& executableName, bool hasFocus);
@@ -41,7 +42,6 @@ private:
 
     HWINEVENTHOOK m_winEventHook;
     QSet<QString> m_backgroundMutedApps;
-    QMap<QString, bool> m_currentFocusState; // executable -> has focus
     QString m_currentFocusedApp;
     bool m_isMonitoring;
 };

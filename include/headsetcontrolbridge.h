@@ -4,7 +4,9 @@
 #include <QtQml/qqmlregistration.h>
 #include <QQmlEngine>
 
-class HeadsetControlMonitor;
+#include "headsetcontrolmonitor.h"
+#include <QThread>
+class AudioWorker;
 
 class HeadsetControlBridge : public QObject
 {
@@ -27,15 +29,20 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(QStringList equalizerPresetNames READ equalizerPresetNames NOTIFY equalizerPresetNamesChanged)
     Q_PROPERTY(bool anyDeviceFound READ anyDeviceFound NOTIFY anyDeviceFoundChanged)
     Q_PROPERTY(bool testModeEnabled READ testModeEnabled NOTIFY testModeEnabledChanged)
+    Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
     Q_PROPERTY(int testProfile READ testProfile NOTIFY testProfileChanged)
 
+private:
+    explicit HeadsetControlBridge(QObject* parent = nullptr);
+
 public:
-    explicit HeadsetControlBridge(QObject *parent = nullptr);
     ~HeadsetControlBridge();
 
     static HeadsetControlBridge* instance();
     static HeadsetControlBridge* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
 
+    void attachAudioWorker(AudioWorker* worker);
+    void shutdown();
     Q_INVOKABLE void setMonitoringEnabled(bool enabled);
     Q_INVOKABLE void setLights(bool enabled);
     Q_INVOKABLE void setRotateToMute(bool enabled);
@@ -64,6 +71,7 @@ public:
     bool anyDeviceFound() const;
     bool testModeEnabled() const;
     int testProfile() const;
+    QString lastError() const { return m_lastError; }
 
 signals:
     void capabilitiesChanged();
@@ -77,44 +85,20 @@ signals:
     void testModeEnabledChanged();
     void testProfileChanged();
     void lowHeadsetBattery();
-
-private slots:
-    void onMonitorCapabilitiesChanged();
-    void onMonitorDeviceNameChanged();
-    void onMonitorBatteryStatusChanged();
-    void onMonitorBatteryLevelChanged();
-    void onMonitorChatMixChanged();
-    void onMonitorEqualizerPresetNamesChanged();
-    void onMonitorAnyDeviceFoundChanged();
-    void onMonitorTestModeEnabledChanged();
-    void onMonitorTestProfileChanged();
+    void lastErrorChanged();
+    void headsetDataUpdated(const QList<HeadsetControlDevice>& devices);
 
 private:
-    struct CachedState {
-        bool hasSidetoneCapability = false;
-        bool hasLightsCapability = false;
-        bool hasRotateToMuteCapability = false;
-        bool hasChatMixCapability = false;
-        bool hasVoicePromptsCapability = false;
-        bool hasEqualizerPresetsCapability = false;
-        bool hasInactiveTimeCapability = false;
-        QString deviceName;
-        QString batteryStatus = "BATTERY_UNAVAILABLE";
-        int batteryLevel = -1;
-        int chatMix = -1;
-        QStringList equalizerPresetNames;
-        bool anyDeviceFound = false;
-        bool testModeEnabled = false;
-        int testProfile = 1;
-    };
-
     static HeadsetControlBridge* m_instance;
     HeadsetControlMonitor* findMonitor() const;
     void connectToMonitor();
-    void queueCacheRefresh(HeadsetControlMonitor* monitor);
-    void resetCachedStateToDefaults();
+    void applyState(const HeadsetControlState& state);
+    void syncDesiredSettings();
+    QThread* m_thread = nullptr;
+    HeadsetControlMonitor* m_monitor = nullptr;
     void updateLowBatteryNotificationState();
 
     bool m_lowBatteryNotificationSent = false;
-    CachedState m_cachedState;
+    HeadsetControlState m_cachedState;
+    QString m_lastError;
 };

@@ -2,12 +2,17 @@
 
 #include <QObject>
 #include <QMutex>
-#include <QIcon>
+#include <QImage>
+#include "audiotypes.h"
+#include "sessionindices.h"
 #include <QMap>
 #include <QAbstractListModel>
 #include <QThread>
+#include <QPointer>
 #include <array>
 #include <optional>
+#include <memory>
+#include <atomic>
 #include <windows.h>
 #include <mmdeviceapi.h>
 #include <endpointvolume.h>
@@ -17,84 +22,11 @@
 
 // Forward declarations
 class AudioWorker;
-
-struct AudioApplication {
-    QString id;              // Process ID as string
-    QString name;            // Display name
-    QString executableName;  // Executable name
-    QString iconPath;        // Base64 encoded icon
-    int volume;              // 0-100
-    bool isMuted;            // Mute state
-    int streamIndex;         // Index within the same executable (0, 1, 2, ...)
-    bool isSystemSounds;     // Stable internal flag for Windows system sounds
-
-    AudioApplication() : volume(0), isMuted(false), streamIndex(0), isSystemSounds(false) {}
-
-    bool operator==(const AudioApplication& other) const {
-        return id == other.id;
-    }
-};
-
-struct AudioDevice {
-    QString id;
-    QString name;
-    QString description;
-    QString shortName;
-    bool isDefault;
-    bool isDefaultCommunication;
-    bool isInput;
-    QString state;
-    QString vendorId;            // USB VID
-    QString productId;           // USB PID
-    int batteryPercentage;       // Battery level 0-100, -1 if not available
-    QString batteryStatus;       // "BATTERY_AVAILABLE", "BATTERY_CHARGING", "BATTERY_UNAVAILABLE"
-
-    AudioDevice() : isDefault(false), isDefaultCommunication(false), isInput(false),
-        batteryPercentage(-1), batteryStatus("BATTERY_UNAVAILABLE") {}
-
-    bool operator==(const AudioDevice& other) const {
-        return id == other.id;
-    }
-};
-
-Q_DECLARE_METATYPE(AudioApplication)
-Q_DECLARE_METATYPE(AudioDevice)
-
-class AudioDeviceModel : public QAbstractListModel
+class SessionEventsClient;
+struct AudioCallbackTarget
 {
-    Q_OBJECT
-
-public:
-    enum DeviceRoles {
-        IdRole = Qt::UserRole + 1,
-        NameRole,
-        DescriptionRole,
-        IsDefaultRole,
-        IsDefaultCommunicationRole,
-        IsInputRole,
-        StateRole,
-        VendorIdRole,
-        ProductIdRole,
-        BatteryPercentageRole,
-        BatteryStatusRole
-    };
-    Q_ENUM(DeviceRoles)
-
-    explicit AudioDeviceModel(QObject *parent = nullptr);
-
-    // QAbstractListModel interface
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QHash<int, QByteArray> roleNames() const override;
-
-    // Model management
-    void setDevices(const QList<AudioDevice>& devices);
-    void updateDevice(const AudioDevice& device);
-    void removeDevice(const QString& deviceId);
-
-private:
-    QList<AudioDevice> m_devices;
-    int findDeviceIndex(const QString& deviceId) const;
+    QMutex mutex;
+    AudioWorker* worker = nullptr;
 };
 
 class AudioWorker : public QObject
@@ -120,12 +52,14 @@ public:
         return (flow == Output) ? eRender : eCapture;
     }
 
-    bool hasProcessId(DWORD processId);
-    HeadsetControlMonitor* getHeadsetControlMonitor() const { return m_headsetControlMonitor; }
+    void requestApplicationRefresh();
+    void requestDeviceRefresh();
+    std::shared_ptr<AudioCallbackTarget> callbackTarget() const { return m_callbackTarget; }
 
 public slots:
     void initialize();
     void cleanup();
+    void onHeadsetDataUpdated(const QList<HeadsetControlDevice>& headsetDevices);
     void setOutputVolume(int volume);
     void setInputVolume(int volume);
     void setOutputMute(bool mute);
@@ -171,7 +105,6 @@ private slots:
     void initializeAudioLevelTimer();
     void startApplicationAudioLevelMonitoring();
     void stopApplicationAudioLevelMonitoring();
-    void onHeadsetDataUpdated(const QList<HeadsetControlDevice>& headsetDevices);
 
 private:
     // COM objects
@@ -188,7 +121,6 @@ private:
     IAudioEndpointVolume* m_inputVolumeControl;
 
     // Session event clients for tracking individual app volume changes
-    QMap<QString, class SessionEventsClient*> m_sessionEventClients;
 
     // Cache
     int m_outputVolume;
@@ -197,6 +129,7 @@ private:
     bool m_inputMuted;
     std::optional<bool> m_requestedSystemSoundsMute;
     QList<AudioApplication> m_applications;
+    SessionIndices m_streamIndices;
     QList<AudioDevice> m_devices;
 
     HRESULT initializeCOM();
@@ -212,9 +145,8 @@ private:
     AudioDevice createAudioDeviceFromInterface(IMMDevice* device, EDataFlow dataFlow);
     QString getDeviceProperty(IMMDevice* device, const PROPERTYKEY& key);
 
-    QIcon getApplicationIcon(const QString& executablePath);
+    QImage getApplicationIcon(const QString& executablePath);
     QString getApplicationDisplayName(const QString& executablePath);
-    QString getExecutablePath(DWORD processId);
 
     struct SessionInfo {
         IAudioSessionControl* sessionControl;
@@ -228,7 +160,6 @@ private:
     QMap<QString, ISimpleAudioVolume*> m_sessionVolumeControls;
 
     QTimer* m_audioLevelTimer;
-    QList<AudioApplication> m_cachedApplications;
     QList<HeadsetControlDevice> m_cachedHeadsetDevices;
 
     int getDeviceAudioLevel(EDataFlow dataFlow);
@@ -243,8 +174,11 @@ private:
     bool ensureValidSessionManager();
     void updateDevicesBatteryInfo(const QList<HeadsetControlDevice>& headsetDevices);
 
-    HeadsetControlMonitor* m_headsetControlMonitor;
-    QThread* m_headsetControlThread;
+    std::atomic_bool m_applicationRefreshQueued{false};
+    std::atomic_bool m_deviceRefreshQueued{false};
+    bool m_comInitialized = false;
+    bool m_cleanedUp = false;
+    std::shared_ptr<AudioCallbackTarget> m_callbackTarget = std::make_shared<AudioCallbackTarget>();
 };
 
 // Device change notification callback
@@ -252,7 +186,7 @@ class DeviceNotificationClient : public IMMNotificationClient
 {
 private:
     LONG m_cRef;
-    AudioWorker* m_worker;
+    std::shared_ptr<AudioCallbackTarget> m_callbackTarget;
 
 public:
     DeviceNotificationClient(AudioWorker* worker);
@@ -276,7 +210,7 @@ class VolumeNotificationClient : public IAudioEndpointVolumeCallback
 {
 private:
     LONG m_cRef;
-    AudioWorker* m_worker;
+    std::shared_ptr<AudioCallbackTarget> m_callbackTarget;
     EDataFlow m_dataFlow;
 
 public:
@@ -297,7 +231,7 @@ class SessionNotificationClient : public IAudioSessionNotification
 {
 private:
     LONG m_cRef;
-    AudioWorker* m_worker;
+    std::shared_ptr<AudioCallbackTarget> m_callbackTarget;
 
 public:
     SessionNotificationClient(AudioWorker* worker);
@@ -317,7 +251,7 @@ class SessionEventsClient : public IAudioSessionEvents
 {
 private:
     LONG m_cRef;
-    AudioWorker* m_worker;
+    std::shared_ptr<AudioCallbackTarget> m_callbackTarget;
     QString m_appId;
 
 public:
@@ -407,6 +341,9 @@ private:
     static AudioManager* m_instance;
     static QMutex m_mutex;
 
+    quint64 m_generation = 0;
+    QPointer<QThread> m_retiringThread;
+    bool m_initializeAfterRetirement = false;
     QThread* m_workerThread;
     AudioWorker* m_worker;
 

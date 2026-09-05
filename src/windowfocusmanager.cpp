@@ -1,3 +1,4 @@
+#include "jsonstore.h"
 #include "windowfocusmanager.h"
 #include <QStandardPaths>
 #include <QDir>
@@ -20,9 +21,6 @@ WindowFocusManager::WindowFocusManager(QObject *parent)
 {
     s_instance = this;
     loadSettings();
-
-    connect(this, &WindowFocusManager::applicationFocusChanged,
-            this, &WindowFocusManager::onApplicationFocusChanged);
 }
 
 WindowFocusManager::~WindowFocusManager()
@@ -38,14 +36,14 @@ void WindowFocusManager::startMonitoring()
         return;
     }
 
-    m_winEventHook = SetWinEventHook(
-        EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND,
-        NULL, WinEventProc, 0, 0,
-        WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS
-        );
+    m_winEventHook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProc, 0, 0,
+                                     WINEVENT_OUTOFCONTEXT);
 
     if (m_winEventHook) {
         m_isMonitoring = true;
+        QMetaObject::invokeMethod(
+            this, [this] { onApplicationFocusChanged(getExecutableNameFromHwnd(GetForegroundWindow()), true); },
+            Qt::QueuedConnection);
     } else {
         LOG_CRITICAL("WindowFocusManager",
                      "Failed to start window focus monitoring");
@@ -74,15 +72,10 @@ void CALLBACK WindowFocusManager::WinEventProc(HWINEVENTHOOK hWinEventHook, DWOR
     }
 
     QString executableName = s_instance->getExecutableNameFromHwnd(hwnd);
-    if (executableName.isEmpty()) {
-        return;
-    }
 
     // Emit signal asynchronously to main thread
-    QMetaObject::invokeMethod(s_instance, "applicationFocusChanged",
-                              Qt::QueuedConnection,
-                              Q_ARG(QString, executableName),
-                              Q_ARG(bool, true));
+    QMetaObject::invokeMethod(s_instance, "onApplicationFocusChanged", Qt::QueuedConnection,
+                              Q_ARG(QString, executableName), Q_ARG(bool, true));
 }
 
 QString WindowFocusManager::getExecutableNameFromHwnd(HWND hwnd)
@@ -94,62 +87,41 @@ QString WindowFocusManager::getExecutableNameFromHwnd(HWND hwnd)
 
 QString WindowFocusManager::getExecutableNameFromPid(DWORD pid)
 {
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
-    if (!hProcess) {
-        return QString();
-    }
-
-    WCHAR exePath[MAX_PATH];
-    if (GetModuleFileNameEx(hProcess, NULL, exePath, MAX_PATH)) {
-        QString path = QString::fromWCharArray(exePath);
-        QFileInfo fileInfo(path);
-        CloseHandle(hProcess);
-        return fileInfo.baseName();
-    }
-
-    CloseHandle(hProcess);
-    return QString();
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if (!process)
+        return {};
+    wchar_t path[32768]{};
+    DWORD length = 32768;
+    const bool success = QueryFullProcessImageNameW(process, 0, path, &length);
+    CloseHandle(process);
+    return success ? QFileInfo(QString::fromWCharArray(path, length)).completeBaseName().toCaseFolded() : QString{};
 }
 
 void WindowFocusManager::onApplicationFocusChanged(const QString& executableName, bool hasFocus)
 {
-    // If the same app is gaining focus, no need to process
-    if (hasFocus && m_currentFocusedApp == executableName) {
+    if (!hasFocus)
         return;
-    }
-
-    QString previousFocusedApp = m_currentFocusedApp;
-
-    if (hasFocus) {
-        m_currentFocusedApp = executableName;
-
-        // Previous app lost focus
-        if (!previousFocusedApp.isEmpty() && previousFocusedApp != executableName) {
-            m_currentFocusState[previousFocusedApp] = false;
-            if (m_backgroundMutedApps.contains(previousFocusedApp)) {
-                emit applicationFocusChanged(previousFocusedApp, false);
-            }
-        }
-
-        // Current app gained focus
-        m_currentFocusState[executableName] = true;
-        if (m_backgroundMutedApps.contains(executableName)) {
-            emit applicationFocusChanged(executableName, true);
-        }
-    }
+    const QString key = executableName.toCaseFolded();
+    if (m_currentFocusedApp == key)
+        return;
+    const QString previous = m_currentFocusedApp;
+    m_currentFocusedApp = key;
+    if (!previous.isEmpty())
+        emit applicationFocusChanged(previous, false);
+    emit applicationFocusChanged(key, true);
 }
 
 bool WindowFocusManager::isApplicationMutedInBackground(const QString& executableName) const
 {
-    return m_backgroundMutedApps.contains(executableName);
+    return m_backgroundMutedApps.contains(executableName.toCaseFolded());
 }
 
 void WindowFocusManager::setApplicationMutedInBackground(const QString& executableName, bool muted)
 {
     if (muted) {
-        m_backgroundMutedApps.insert(executableName);
+        m_backgroundMutedApps.insert(executableName.toCaseFolded());
     } else {
-        m_backgroundMutedApps.remove(executableName);
+        m_backgroundMutedApps.remove(executableName.toCaseFolded());
     }
     saveSettings();
 }
@@ -162,41 +134,22 @@ QStringList WindowFocusManager::getBackgroundMutedApplications() const
 void WindowFocusManager::loadSettings()
 {
     QString filePath = getSettingsFilePath();
-    QFile file(filePath);
-
-    if (!file.exists()) {
+    const QJsonDocument doc = JsonStore::load(filePath, "backgroundMutedApps");
+    if (doc.isNull())
         return;
-    }
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QByteArray data = file.readAll();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if (error.error != QJsonParseError::NoError) {
-        return;
-    }
 
     QJsonObject root = doc.object();
     QJsonArray mutedAppsArray = root["backgroundMutedApps"].toArray();
 
     m_backgroundMutedApps.clear();
     for (const QJsonValue& value : mutedAppsArray) {
-        m_backgroundMutedApps.insert(value.toString());
+        m_backgroundMutedApps.insert(value.toString().toCaseFolded());
     }
 }
 
 void WindowFocusManager::saveSettings()
 {
     QString filePath = getSettingsFilePath();
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
 
     QJsonArray mutedAppsArray;
     for (const QString& app : m_backgroundMutedApps) {
@@ -207,7 +160,7 @@ void WindowFocusManager::saveSettings()
     root["backgroundMutedApps"] = mutedAppsArray;
 
     QJsonDocument doc(root);
-    file.write(doc.toJson());
+    JsonStore::save(filePath, doc);
 }
 
 QString WindowFocusManager::getSettingsFilePath() const

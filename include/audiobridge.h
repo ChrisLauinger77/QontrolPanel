@@ -38,8 +38,10 @@ class AudioBridge : public QObject
     Q_PROPERTY(QString outputDeviceDisplayName READ outputDeviceDisplayName NOTIFY outputDeviceDisplayNameChanged)
     Q_PROPERTY(QString inputDeviceDisplayName READ inputDeviceDisplayName NOTIFY inputDeviceDisplayNameChanged)
 
+private:
+    explicit AudioBridge(QObject* parent = nullptr);
+
 public:
-    explicit AudioBridge(QObject *parent = nullptr);
     ~AudioBridge();
     static AudioBridge* instance();
     static AudioBridge* create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
@@ -192,7 +194,7 @@ private:
     void saveCommAppsToFile();
     void updateGroupedApplications();
 
-    void restoreOriginalVolumesSync();
+    void queueVolumeRestoration();
 
     int m_outputAudioLevel = 0;
     int m_inputAudioLevel = 0;

@@ -75,6 +75,8 @@ set(SOURCES
 
 set(HEADERS
     include/nativeimage.h
+    include/sessionindices.h
+    include/audiotypes.h
     include/jsonstore.h
     include/workerthreads.h
     include/audiomanager.h
