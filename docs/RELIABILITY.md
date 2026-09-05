@@ -28,7 +28,11 @@ The portable CMake test configuration covers malformed/truncated Night Light dat
 
 With Qt development packages installed, `reliability_tests` additionally covers concurrent logging and bounded delivery, corrupt-settings recovery and failed writes, malformed schemas, stable stream indexes, Qt model invariants, synchronous/reentrant network cancellation, and cleanup/destruction on the owning worker thread. Windows builds require these tests. The tests do not invoke destructive power actions or real devices.
 
-Local validation on Linux (2026-09-05): the portable Release configuration and build succeeded; CTest passed both available suites (Night Light and five provenance cases). Workflow YAML, translation XML, Python syntax, changed-file line endings, and `git diff --check` passed. Qt development packages are unavailable here, so the Qt suite, MSVC application build, installed-runtime checks, and real-device checks have not been run. The submodule remains clean at `86dfc452b63aea63dfa8e0ae2ce2f53548e7073b`.
+Local validation on Linux (2026-09-05): the portable Release configuration and build succeeded; CTest passed both available suites (Night Light and five provenance cases). Workflow YAML, translation XML, Python syntax, changed-file line endings, and `git diff --check` passed. Qt development packages are unavailable locally. The submodule remains clean at `86dfc452b63aea63dfa8e0ae2ce2f53548e7073b`.
+
+Windows CI validation on 2026-09-05: [Build run 33957737802](https://github.com/ChrisLauinger77/QontrolPanel/actions/runs/33957737802) passed for source revision `40c644eda104524ba97d11e0c99ccf91a5769206`, using MSVC 19.44.35228.0 and Qt 6.11.2. Release configuration, compilation, installation and Qt runtime deployment succeeded. CTest passed all three suites (`nightlight_data`, `release_provenance`, and `qt_reliability`). The build left the dependency and translation sources unchanged and produced the portable ZIP, installer, and artifact provenance. No source fixes were required by this run.
+
+Interactive launch, installed-runtime smoke tests, and real-device checks remain outstanding; CI does not establish those results.
 
 See [BUILD.md](BUILD.md#reliability-tests) for commands. A successful portable test run is not a substitute for a Windows Release build and installed-runtime smoke test.
 
