@@ -42,7 +42,15 @@ KeyboardShortcutManager::KeyboardShortcutManager(QObject *parent)
     // Load per-app volume hotkeys from file
     loadAppVolumeHotkeys();
 
-    if (UserSettings::instance()->globalShortcutsEnabled()) {
+    auto* settings = UserSettings::instance();
+    connect(settings, &UserSettings::globalShortcutsEnabledChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::panelShortcutKeyChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::panelShortcutModifiersChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::chatMixShortcutKeyChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::chatMixShortcutModifiersChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::micMuteShortcutKeyChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::micMuteShortcutModifiersChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    if (settings->globalShortcutsEnabled()) {
         registerHotkeys();
     }
 }
@@ -65,9 +73,9 @@ KeyboardShortcutManager::~KeyboardShortcutManager()
     }
 }
 
-void KeyboardShortcutManager::manageGlobalShortcuts(bool enabled)
+void KeyboardShortcutManager::syncGlobalShortcuts()
 {
-    if (!enabled)
+    if (!UserSettings::instance()->globalShortcutsEnabled())
     {
         m_registrationQueued = false;
         unregisterHotkeys();
@@ -81,7 +89,7 @@ void KeyboardShortcutManager::manageGlobalShortcuts(bool enabled)
             return;
         m_registrationQueued = false;
         if (UserSettings::instance()->globalShortcutsEnabled())
-        registerHotkeys();
+            registerHotkeys();
     });
 }
 

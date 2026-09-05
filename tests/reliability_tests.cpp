@@ -20,6 +20,7 @@
 #include <QScopeGuard>
 #include <QStandardPaths>
 #include <QUuid>
+#include <QSettings>
 #include <memory>
 #endif
 
@@ -55,6 +56,9 @@ class ReliabilityTests : public QObject
     QString m_originalApplicationName;
     QString m_shortcutDataDirectory;
     bool m_originalTestMode = false;
+    QTemporaryDir m_preferencesDirectory;
+    QSettings::Format m_originalSettingsFormat = QSettings::NativeFormat;
+    QString m_preferencesPath;
 
     static bool shortcutIsAvailable(UINT key)
     {
@@ -72,6 +76,20 @@ private slots:
 #ifdef Q_OS_WIN
     void initTestCase()
     {
+        // Keep native hotkey tests completely separate from the user's preferences.
+        QVERIFY(m_preferencesDirectory.isValid());
+        m_originalSettingsFormat = QSettings::defaultFormat();
+        QSettings::setDefaultFormat(QSettings::IniFormat);
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, m_preferencesDirectory.path());
+        QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, m_preferencesDirectory.path());
+        QSettings preferences(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
+        preferences.setValue("enableDeviceManager", false);
+        preferences.setValue("enableApplicationMixer", false);
+        preferences.setValue("headsetcontrolMonitoring", false);
+        preferences.setValue("globalShortcutsEnabled", true);
+        preferences.sync();
+        QCOMPARE(preferences.status(), QSettings::NoError);
+        m_preferencesPath = preferences.fileName();
         m_originalApplicationName = QCoreApplication::applicationName();
         m_originalTestMode = QStandardPaths::isTestModeEnabled();
         QStandardPaths::setTestModeEnabled(true);
@@ -87,8 +105,59 @@ private slots:
     }
     void cleanupTestCase()
     {
+        QSettings::setDefaultFormat(m_originalSettingsFormat);
         QCoreApplication::setApplicationName(m_originalApplicationName);
         QStandardPaths::setTestModeEnabled(m_originalTestMode);
+    }
+    void globalShortcutChangesRequireSavedSettings()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setGlobalShortcutsEnabled(true);
+        constexpr int modifiers = Qt::ControlModifier | Qt::AltModifier | Qt::ShiftModifier;
+        m_shortcuts.reset(KeyboardShortcutManager::instance());
+        QVERIFY(m_shortcuts->addAppVolumeHotkey("player.exe", Qt::Key_F20, modifiers, Qt::Key_F21, modifiers));
+        QVERIFY(!shortcutIsAvailable(VK_F20));
+        QFile preferences(m_preferencesPath);
+        QVERIFY(preferences.open(QIODevice::ReadOnly));
+        const auto saved = preferences.readAll();
+        preferences.close();
+        QSignalSpy changed(settings, &UserSettings::globalShortcutsEnabledChanged);
+        QSignalSpy failed(settings, &UserSettings::saveFailed);
+        {
+            const HANDLE lock = CreateFileW(reinterpret_cast<LPCWSTR>(m_preferencesPath.utf16()), GENERIC_READ,
+                                            FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+            QVERIFY(lock != INVALID_HANDLE_VALUE);
+            const auto unlock = qScopeGuard([&] { CloseHandle(lock); });
+            settings->setGlobalShortcutsEnabled(false);
+            QCoreApplication::processEvents();
+            QVERIFY(settings->globalShortcutsEnabled());
+            QCOMPARE(changed.size(), 0);
+            QCOMPARE(failed.size(), 1);
+            QVERIFY(!shortcutIsAvailable(VK_F20));
+            QVERIFY(!shortcutIsAvailable(VK_F21));
+            QVERIFY(preferences.open(QIODevice::ReadOnly));
+            QCOMPARE(preferences.readAll(), saved);
+            preferences.close();
+        }
+        settings->setGlobalShortcutsEnabled(false);
+        QVERIFY(!settings->globalShortcutsEnabled());
+        QCOMPARE(changed.size(), 1);
+        QVERIFY(shortcutIsAvailable(VK_F20));
+        QVERIFY(shortcutIsAvailable(VK_F21));
+        settings->setGlobalShortcutsEnabled(true);
+        QTRY_VERIFY(!shortcutIsAvailable(VK_F20));
+        QVERIFY(!shortcutIsAvailable(VK_F21));
+        QCOMPARE(changed.size(), 2);
+
+        // Accepted key/modifier edits also apply without a settings pane calling the manager.
+        const int oldKey = settings->panelShortcutKey();
+        const int oldModifiers = settings->panelShortcutModifiers();
+        settings->setPanelShortcutModifiers(modifiers);
+        settings->setPanelShortcutKey(Qt::Key_F22);
+        QTRY_VERIFY(!shortcutIsAvailable(VK_F22));
+        settings->setPanelShortcutKey(oldKey);
+        settings->setPanelShortcutModifiers(oldModifiers);
+        QTRY_VERIFY(shortcutIsAvailable(VK_F22));
     }
     void shortcutSaveFailure_data()
     {
