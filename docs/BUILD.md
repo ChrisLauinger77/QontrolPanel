@@ -83,6 +83,25 @@ cmake --build build --target update_translations
 
 Review those changes and update only `i18n/*.ts`; compiled `.qm` files are generated outputs.
 
+### Extract translation messages on Linux
+
+Qt's `lupdate` can scan the C++ and QML sources without compiling the Windows application. The root CMake `update_translations` target requires the full app configuration; `QONTROLPANEL_CORE_TESTS_ONLY` does not create it. On Linux, run `lupdate` directly instead.
+
+On Debian or Ubuntu, install the Qt 6 translation tools:
+
+```sh
+sudo apt install qt6-l10n-tools
+```
+
+Then, from the repository root:
+
+```sh
+/usr/lib/qt6/bin/lupdate src include qml -locations none -ts i18n/QontrolPanel_*.ts
+git diff -- i18n
+```
+
+For another Qt installation, use its Qt 6 `lupdate` executable. Prefer the same Qt version as CI when available to reduce tool-version differences in generated catalogs. Scan only the app directories shown above, excluding the dependency and build trees. This updates source messages in `.ts` files; it does not translate new text or compile `.qm` files. Review added, changed, and vanished messages before committing.
+
 ## Run Locally
 
 During development, the easiest path is to run from Qt Creator with the configured kit.
