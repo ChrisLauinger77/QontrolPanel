@@ -1,4 +1,5 @@
 #include "updater.h"
+#include "replybatch.h"
 #include <QApplication>
 #include <QDir>
 #include <QFile>
@@ -12,6 +13,10 @@
 #include <QStandardPaths>
 #include <QTimeZone>
 #include <QUrl>
+#include <QTranslator>
+#include <QVersionNumber>
+#include <QRegularExpression>
+#include <utility>
 #include <QDebug>
 #include <headsetcontrol.hpp>
 #include <string>
@@ -94,6 +99,7 @@ Updater::Updater(QObject *parent)
     , m_translationAutoUpdateTimer(new QTimer(this))
     , m_appUpdateCheckTimer(new QTimer(this))
 {
+    m_networkManager->setTransferTimeout(30000);
     loadTranslationProgressData();
 
     m_translationAutoUpdateTimer->setInterval(4 * 60 * 60 * 1000);
@@ -128,6 +134,11 @@ void Updater::checkForUpdates()
     LOG_INFO("Updater", "Checking for application updates");
     setChecking(true);
 
+    m_updateAvailable = false;
+    m_downloadUrl.clear();
+    m_expectedSha256.clear();
+    emit updateAvailableChanged();
+
     // Clear previous release notes
     setReleaseNotes("");
 
@@ -137,12 +148,18 @@ void Updater::checkForUpdates()
     request.setHeader(QNetworkRequest::UserAgentHeader, "QontrolPanel-Updater");
 
     QNetworkReply* reply = m_networkManager->get(request);
+    connect(reply, &QNetworkReply::downloadProgress, reply, [reply](qint64 received, qint64 total) {
+        if (received > 2 * 1024 * 1024 || total > 2 * 1024 * 1024)
+            reply->abort();
+    });
     connect(reply, &QNetworkReply::finished, this, &Updater::onVersionCheckFinished);
 }
 
 void Updater::onVersionCheckFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    if (!reply)
+        return;
     reply->deleteLater();
 
     setChecking(false);
@@ -154,14 +171,26 @@ void Updater::onVersionCheckFinished()
         return;
     }
 
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    QJsonObject obj = doc.object();
+    const auto data = reply->readAll();
+    QJsonParseError parseError;
+    const QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+    if (data.size() > 2 * 1024 * 1024 || parseError.error != QJsonParseError::NoError || !doc.isObject())
+    {
+        emit updateFinished(false, tr("Invalid release metadata"));
+        return;
+    }
+    const QJsonObject obj = doc.object();
 
     m_latestVersion = obj["tag_name"].toString();
     if (m_latestVersion.startsWith("v")) {
         m_latestVersion = m_latestVersion.mid(1);
     }
 
+    if (!QRegularExpression("^[0-9]+\\.[0-9]+\\.[0-9]+$").match(m_latestVersion).hasMatch())
+    {
+        emit updateFinished(false, tr("Invalid release metadata"));
+        return;
+    }
     // Extract release notes
     QString releaseBody = obj["body"].toString();
     if (!releaseBody.isEmpty()) {
@@ -175,8 +204,17 @@ void Updater::onVersionCheckFinished()
     for (const auto& asset : assets) {
         QJsonObject assetObj = asset.toObject();
         QString name = assetObj["name"].toString();
-        if (name.endsWith(".exe") && name.contains("QontrolPanel")) {
-            m_downloadUrl = assetObj["browser_download_url"].toString();
+        if (name == "QontrolPanel_Installer.exe")
+        {
+            const QUrl assetUrl(assetObj["browser_download_url"].toString());
+            if (assetUrl.scheme() != "https" || assetUrl.host() != "github.com" ||
+                !assetUrl.path().startsWith("/ChrisLauinger77/QontrolPanel/releases/download/"))
+                continue;
+            m_downloadUrl = assetUrl.toString();
+            const QString digest = assetObj["digest"].toString();
+            if (QRegularExpression("^sha256:[0-9a-fA-F]{64}$").match(digest).hasMatch())
+                m_expectedSha256 = QByteArray::fromHex(digest.mid(7).toLatin1());
+            m_expectedSize = assetObj["size"].toInteger();
             break;
         }
     }
@@ -208,18 +246,30 @@ void Updater::onVersionCheckFinished()
 
 void Updater::downloadAndInstall()
 {
-    if (m_downloadUrl.isEmpty() || m_isDownloading || m_isChecking) {
-        emit updateFinished(false, tr("Cannot start download"));
+    if (m_downloadUrl.isEmpty() || m_isDownloading || m_isChecking)
+        return;
+    if (m_expectedSha256.size() != 32 || m_expectedSize <= 0 || m_expectedSize > 512 * 1024 * 1024)
+    {
+        emit updateFinished(false, tr("The release has no valid SHA-256 checksum or file size."));
         return;
     }
-
+    m_installerFile.reset();
+    m_stagingDirectory = std::make_unique<QTemporaryDir>(QDir::tempPath() + "/QontrolPanel-update-XXXXXX");
+    m_installerFile = std::make_unique<QSaveFile>(m_stagingDirectory->filePath("QontrolPanel_Installer.exe"));
+    if (!m_stagingDirectory->isValid() || !m_installerFile->open(QIODevice::WriteOnly))
+    {
+        emit updateFinished(false, tr("Failed to save update file"));
+        return;
+    }
+    m_receivedSize = 0;
+    m_downloadHash.reset();
+    m_downloadError.clear();
     setDownloading(true);
     setDownloadProgress(0);
-
-    QUrl url{m_downloadUrl};
-    QNetworkRequest request{url};
-    QNetworkReply* reply = m_networkManager->get(request);
-
+    QNetworkRequest request{QUrl(m_downloadUrl)};
+    auto* reply = m_networkManager->get(request);
+    reply->setReadBufferSize(64 * 1024);
+    connect(reply, &QNetworkReply::readyRead, this, [this, reply] { writeDownloadChunk(reply); });
     connect(reply, &QNetworkReply::downloadProgress, this, &Updater::onDownloadProgress);
     connect(reply, &QNetworkReply::finished, this, &Updater::onDownloadFinished);
 }
@@ -234,47 +284,48 @@ void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void Updater::onDownloadFinished()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto* reply = qobject_cast<QNetworkReply*>(sender());
+    if (!reply)
+        return;
+    writeDownloadChunk(reply);
     reply->deleteLater();
-
     setDownloading(false);
     setDownloadProgress(0);
-
-    if (reply->error() != QNetworkReply::NoError) {
-        emit updateFinished(false, tr("Download failed: %1").arg(reply->errorString()));
+    if (reply->error() != QNetworkReply::NoError || !m_downloadError.isEmpty())
+    {
+        m_installerFile.reset();
+        emit updateFinished(
+            false, tr("Download failed: %1").arg(m_downloadError.isEmpty() ? reply->errorString() : m_downloadError));
         return;
     }
-
-    // Save to temp file
-    QString tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
-    QString tempFile = tempDir + "/QontrolPanel_update.exe";
-
-    QFile file(tempFile);
-    if (!file.open(QIODevice::WriteOnly)) {
+    if (m_receivedSize != m_expectedSize || m_downloadHash.result() != m_expectedSha256)
+    {
+        m_installerFile.reset();
+        emit updateFinished(false, tr("Update verification failed. The installer was discarded."));
+        return;
+    }
+    const QString path = m_installerFile->fileName();
+    if (!m_installerFile->commit())
+    {
         emit updateFinished(false, tr("Failed to save update file"));
+        m_installerFile.reset();
         return;
     }
-
-    file.write(reply->readAll());
-    file.close();
-
-    installExecutable(tempFile);
+    m_installerFile.reset();
+    installExecutable(path);
 }
 
 void Updater::installExecutable(const QString& newExePath)
 {
-    QString currentExeDir = QApplication::applicationDirPath();
-    QDir dir(currentExeDir);
-    dir.cdUp();
-    dir.cdUp();
-    QString targetDir = QDir::toNativeSeparators(dir.absolutePath());
-
-    bool started = QProcess::startDetached(newExePath);
-
-    if (started) {
+    if (QProcess::startDetached(newExePath))
+    {
+        // Windows needs the installer after this process exits.
+        m_stagingDirectory->setAutoRemove(false);
         emit updateFinished(true, tr("Update started."));
         QApplication::quit();
-    } else {
+    }
+    else
+    {
         emit updateFinished(false, tr("Failed to start update executable"));
     }
 }
@@ -286,22 +337,7 @@ QString Updater::getCurrentVersion() const
 
 bool Updater::isNewerVersion(const QString& latest, const QString& current) const
 {
-    QStringList latestParts = latest.split('.');
-    QStringList currentParts = current.split('.');
-
-    // Pad with zeros if needed
-    while (latestParts.size() < 3) latestParts.append("0");
-    while (currentParts.size() < 3) currentParts.append("0");
-
-    for (int i = 0; i < 3; ++i) {
-        int latestNum = latestParts[i].toInt();
-        int currentNum = currentParts[i].toInt();
-
-        if (latestNum > currentNum) return true;
-        if (latestNum < currentNum) return false;
-    }
-
-    return false; // Versions are equal
+    return QVersionNumber::fromString(latest) > QVersionNumber::fromString(current);
 }
 
 void Updater::setChecking(bool checking)
@@ -356,7 +392,11 @@ void Updater::checkForTranslationUpdates()
 
 void Updater::downloadLatestTranslations()
 {
-    cancelTranslationDownload();
+    if (m_translationDownloading)
+        return;
+    ++m_translationGeneration;
+    m_translationDownloading = true;
+    emit translationDownloadingChanged();
 
     m_totalTranslationDownloads = 0;
     m_completedTranslationDownloads = 0;
@@ -365,7 +405,7 @@ void Updater::downloadLatestTranslations()
     QStringList languageCodes = getLanguageCodes();
     QString baseUrl = "https://raw.githubusercontent.com/ChrisLauinger77/QontrolPanel/main/i18n_compiled/QontrolPanel_%1.qm";
 
-    m_totalTranslationDownloads = languageCodes.size();
+    m_totalTranslationDownloads = languageCodes.size() + 1;
     emit translationDownloadStarted();
 
     for (const QString& langCode : languageCodes) {
@@ -382,12 +422,14 @@ void Updater::downloadLatestTranslations()
 
 void Updater::cancelTranslationDownload()
 {
-    for (QNetworkReply* reply : m_activeTranslationDownloads) {
-        if (reply && reply->isRunning()) {
-            reply->abort();
+    ++m_translationGeneration;
+    cancelReplyBatch(m_activeTranslationDownloads, this);
+    if (m_translationDownloading)
+    {
+        m_translationDownloading = false;
+        emit translationDownloadingChanged();
+        emit translationDownloadFinished(false, tr("Download cancelled"));
         }
-    }
-    m_activeTranslationDownloads.clear();
 }
 
 void Updater::downloadTranslationFile(const QString& languageCode, const QString& githubUrl)
@@ -405,6 +447,11 @@ void Updater::downloadTranslationFile(const QString& languageCode, const QString
 
     QNetworkReply* reply = m_networkManager->get(request);
     reply->setProperty("languageCode", languageCode);
+    reply->setProperty("translationGeneration", QVariant::fromValue(m_translationGeneration));
+    connect(reply, &QNetworkReply::downloadProgress, reply, [reply](qint64 received, qint64 total) {
+        if (received > 4 * 1024 * 1024 || total > 4 * 1024 * 1024)
+            reply->abort();
+    });
     m_activeTranslationDownloads.append(reply);
 
     connect(reply, &QNetworkReply::downloadProgress, this,
@@ -427,41 +474,36 @@ void Updater::onTranslationFileDownloaded()
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     if (!reply) return;
 
-    QString languageCode = reply->property("languageCode").toString();
+    if (reply->property("translationGeneration").toULongLong() != m_translationGeneration)
+    {
+        reply->deleteLater();
+        return;
+    }
+    const QString languageCode = reply->property("languageCode").toString();
     m_activeTranslationDownloads.removeAll(reply);
-
+    bool success = false;
     if (reply->error() == QNetworkReply::NoError) {
-        QString downloadPath = getTranslationDownloadPath();
-        QString fileName = QString("QontrolPanel_%1.qm").arg(languageCode);
-        QString filePath = downloadPath + "/" + fileName;
-        QByteArray data = reply->readAll();
-        const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-
-        QDir().mkpath(downloadPath);
-
-        if (data.isEmpty()) {
-            qWarning() << "Downloaded empty file for:" << languageCode;
-            m_failedTranslationDownloads++;
-        } else if (contentType.startsWith("text/html", Qt::CaseInsensitive)) {
-            qWarning() << "Received HTML instead of translation file for:" << languageCode
-                       << "Content-Type:" << contentType;
-            m_failedTranslationDownloads++;
-        } else {
-            QFile file(filePath);
-            if (file.open(QIODevice::WriteOnly)) {
-                file.write(data);
-                file.close();
-            } else {
-                qWarning() << "Failed to save translation file:" << filePath;
-                m_failedTranslationDownloads++;
+        const QByteArray data = reply->readAll();
+        const bool metadata = languageCode == "translation_progress";
+        QTranslator validator;
+        const QJsonDocument document = metadata ? QJsonDocument::fromJson(data) : QJsonDocument{};
+        const bool valid = !data.isEmpty() && data.size() <= 4 * 1024 * 1024 &&
+                           (metadata ? document.isObject()
+                                     : validator.load(reinterpret_cast<const uchar*>(data.constData()), data.size()));
+        if (valid)
+        {
+            QDir().mkpath(getTranslationDownloadPath());
+            QSaveFile file(metadata ? getTranslationProgressPath()
+                                    : getTranslationDownloadPath() + "/QontrolPanel_" + languageCode + ".qm");
+            success = file.open(QIODevice::WriteOnly) && file.write(data) == data.size() && file.commit();
+            if (success && metadata)
+                loadTranslationProgressData();
             }
         }
-    } else {
-        qWarning() << "Failed to download translation for" << languageCode
-                   << "Error:" << reply->error()
-                   << "HTTP Status:" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()
-                   << "Message:" << reply->errorString();
-        m_failedTranslationDownloads++;
+    if (!success)
+    {
+        ++m_failedTranslationDownloads;
+        LOG_WARN("Updater", QString("Translation update failed validation or saving: %1").arg(languageCode));
     }
 
     m_completedTranslationDownloads++;
@@ -479,6 +521,8 @@ void Updater::onTranslationFileDownloaded()
                 .arg(m_totalTranslationDownloads);
         }
 
+        m_translationDownloading = false;
+        emit translationDownloadingChanged();
         emit translationDownloadFinished(success, message);
     }
 
@@ -533,38 +577,9 @@ void Updater::loadTranslationProgressData()
 
 void Updater::downloadTranslationProgressFile()
 {
-    QString githubUrl = "https://raw.githubusercontent.com/ChrisLauinger77/QontrolPanel/main/i18n_compiled/translation_progress.json";
-    LOG_INFO("Updater",
-             QString("Downloading translation progress file from: %1").arg(githubUrl));
-
-    QNetworkRequest request(githubUrl);
-    request.setHeader(QNetworkRequest::UserAgentHeader, "QontrolPanel");
-    QNetworkReply* reply = m_networkManager->get(request);
-
-    connect(reply, &QNetworkReply::finished, [this, reply]() {
-        if (reply->error() == QNetworkReply::NoError) {
-            QByteArray data = reply->readAll();
-            LOG_INFO("Updater",
-                     QString("Translation progress data downloaded (%1 bytes)").arg(data.size()));
-
-            QString progressFilePath = getTranslationProgressPath();
-            QFile file(progressFilePath);
-            if (file.open(QIODevice::WriteOnly)) {
-                file.write(data);
-                file.close();
-                LOG_INFO("Updater",
-                         "Translation progress file saved successfully");
-                loadTranslationProgressData();
-            } else {
-                LOG_CRITICAL("Updater",
-                             QString("Failed to save translation progress file: %1").arg(file.errorString()));
-            }
-        } else {
-            LOG_CRITICAL("Updater",
-                         QString("Failed to download translation progress: %1").arg(reply->errorString()));
-        }
-        reply->deleteLater();
-    });
+    downloadTranslationFile(
+        "translation_progress",
+        "https://raw.githubusercontent.com/ChrisLauinger77/QontrolPanel/main/i18n_compiled/translation_progress.json");
 }
 
 int Updater::getTranslationProgress(const QString& languageCode)
@@ -668,4 +683,34 @@ QString Updater::getHeadsetControlVersion() const
 QString Updater::getBuildTimestamp() const
 {
     return formatLocalizedTimestamp(QString(BUILD_TIMESTAMP));
+}
+
+void Updater::writeDownloadChunk(QNetworkReply* reply)
+{
+    if (!m_installerFile || !m_downloadError.isEmpty())
+        return;
+    while (reply->bytesAvailable() > 0)
+    {
+        const QByteArray chunk = reply->read(64 * 1024);
+        m_receivedSize += chunk.size();
+        if (m_receivedSize > m_expectedSize || m_installerFile->write(chunk) != chunk.size())
+        {
+            m_downloadError = tr("The download exceeded its expected size or could not be saved.");
+            if (reply->isRunning())
+                reply->abort();
+            return;
+        }
+        m_downloadHash.addData(chunk);
+    }
+}
+
+Updater::~Updater()
+{
+    cancelTranslationDownload();
+    for (auto* reply : m_networkManager->findChildren<QNetworkReply*>())
+    {
+        disconnect(reply, nullptr, this, nullptr);
+        reply->abort();
+    }
+    m_instance = nullptr;
 }

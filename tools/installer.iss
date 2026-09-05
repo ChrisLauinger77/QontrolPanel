@@ -51,7 +51,7 @@ DefaultGroupName={#AppName}
 DefaultDirName={localappdata}\Programs\{#AppName}
 
 PrivilegesRequired=lowest
-OutputBaseFilename=QontrolPanel_installer
+OutputBaseFilename=QontrolPanel_Installer
 Compression=lzma
 SolidCompression=yes
 UsedUserAreasWarning=no
@@ -92,20 +92,23 @@ Filename: "{app}\bin\{#AppExeName}"; Description: "{cm:LaunchProgram,{#StringCha
 [Code]
 function VCRedistNeedsInstall: Boolean;
 var
+  Installed: Cardinal;
   Version: String;
+  RequiredVersion: String;
+  InstalledPacked: Int64;
+  RequiredPacked: Int64;
 begin
-  // Check if VC++ 2015-2022 Redistributable (x64) is installed
-  // The minimum version we check for is 14.30 (VS 2022)
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE,
+  Result := True;
+  if not GetVersionNumbersString(ExpandConstant('{tmp}\{#VCRedistFile}'), RequiredVersion) then
+    Exit;
+  if RegQueryDWordValue(HKLM64,
+    'SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64', 'Installed', Installed)
+    and (Installed = 1)
+    and RegQueryStringValue(HKLM64,
     'SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64', 'Version', Version) then
   begin
-    Log('VC++ Redistributable already installed, version: ' + Version);
-    Result := False;
-  end
-  else
-  begin
-    Log('VC++ Redistributable not found, will install.');
-    Result := True;
+    if (Length(Version) > 0) and (Version[1] = 'v') then Delete(Version, 1, 1);
+    if StrToVersion(Version, InstalledPacked) and StrToVersion(RequiredVersion, RequiredPacked) then
+      Result := ComparePackedVersion(InstalledPacked, RequiredPacked) < 0;
   end;
 end;
-
