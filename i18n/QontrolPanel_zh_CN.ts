@@ -1535,10 +1535,6 @@ You can enable it in the Components tab.</source>
         <translation>在最新版本中未找到可执行文件</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">无法开始下载</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>下载失败：%1</translation>
     </message>

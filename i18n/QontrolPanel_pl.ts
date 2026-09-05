@@ -1536,10 +1536,6 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Nie znaleziono pliku wykonywalnego w najnowszej wersji</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">Nie można rozpocząć pobierania</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Pobieranie nie powiodło się: %1</translation>
     </message>

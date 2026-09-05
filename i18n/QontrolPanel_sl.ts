@@ -1535,10 +1535,6 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>V najnovejši izdaji ni bilo mogoče najti izvedljive datoteke</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">Prenosa ni mogoče začeti</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Prenos ni uspel: %1</translation>
     </message>

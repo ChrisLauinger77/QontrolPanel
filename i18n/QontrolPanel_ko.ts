@@ -1536,10 +1536,6 @@ You can enable it in the Components tab.</source>
         <translation>최신 릴리스에서 실행 파일을 찾을 수 없습니다</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">다운로드를 시작할 수 없습니다</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>다운로드 실패: %1</translation>
     </message>

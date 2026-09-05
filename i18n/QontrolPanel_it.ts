@@ -1536,10 +1536,6 @@ Puoi abilitarlo nella scheda Componenti.</translation>
         <translation>Nessun eseguibile trovato nella versione più recente</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">Impossibile avviare il download</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Download fallito: %1</translation>
     </message>
