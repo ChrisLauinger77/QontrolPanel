@@ -26,6 +26,13 @@ ColumnLayout {
                 width: parent.width
                 spacing: 3
 
+                Label {
+                    Layout.fillWidth: true
+                    visible: KeyboardShortcutManager.lastError.length > 0
+                    text: KeyboardShortcutManager.lastError
+                    wrapMode: Text.Wrap
+                }
+
                 Card {
                     Layout.fillWidth: true
                     title: qsTr("Enable global shortcuts")
@@ -35,7 +42,7 @@ ColumnLayout {
                         checked: UserSettings.globalShortcutsEnabled
                         onClicked: {
                             UserSettings.globalShortcutsEnabled = checked
-                            KeyboardShortcutManager.manageGlobalShortcuts(checked)
+                            checked = Qt.binding(function() { return UserSettings.globalShortcutsEnabled })
                         }
                     }
                 }
@@ -119,6 +126,7 @@ ColumnLayout {
         }
 
         Dialog {
+            Component.onDestruction: KeyboardShortcutManager.globalShortcutsSuspended = false
             id: shortcutDialog
             modal: true
             width: 400
@@ -252,10 +260,6 @@ ColumnLayout {
                             } else if (shortcutDialog.shortcutType === "micmute") {
                                 UserSettings.micMuteShortcutModifiers = shortcutDialog.tempModifiers
                                 UserSettings.micMuteShortcutKey = shortcutDialog.tempKey
-                            }
-                            // Re-register hotkeys with new settings
-                            if (UserSettings.globalShortcutsEnabled) {
-                                KeyboardShortcutManager.manageGlobalShortcuts(true)
                             }
                             shortcutDialog.close()
                         }

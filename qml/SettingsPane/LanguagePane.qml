@@ -32,7 +32,7 @@ ColumnLayout {
                     title: qsTr("Update Translations")
                     description: qsTr("Download the latest translation files from GitHub")
 
-                    property bool downloadInProgress: false
+                    readonly property bool downloadInProgress: Updater.translationDownloading
 
                     additionalControl: RowLayout {
                         spacing: 10
@@ -48,7 +48,6 @@ ColumnLayout {
                             text: qsTr("Download")
                             enabled: !dlCard.downloadInProgress
                             onClicked: {
-                                dlCard.downloadInProgress = true
                                 Updater.downloadLatestTranslations()
                             }
                         }
@@ -58,17 +57,14 @@ ColumnLayout {
                         target: Updater
 
                         function onTranslationDownloadFinished(success, message) {
-                            dlCard.downloadInProgress = false
                             if (success) {
                                 toastNotification.showToast(qsTr("Download completed successfully!"), true)
-                                LanguageBridge.changeApplicationLanguage(UserSettings.languageIndex)
                             } else {
                                 toastNotification.showToast(qsTr("Download failed: %1").arg(message), false)
                             }
                         }
 
                         function onTranslationDownloadError(errorMessage) {
-                            dlCard.downloadInProgress = false
                             toastNotification.showToast(qsTr("Error: %1").arg(errorMessage), false)
                         }
                     }
@@ -99,8 +95,7 @@ ColumnLayout {
                         currentIndex: UserSettings.languageIndex
                         onActivated: {
                             UserSettings.languageIndex = currentIndex
-                            LanguageBridge.changeApplicationLanguage(currentIndex)
-                            currentIndex = UserSettings.languageIndex
+                            currentIndex = Qt.binding(function() { return UserSettings.languageIndex })
                         }
                     }
                 }

@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   update-headsetcontrol:
@@ -201,11 +202,11 @@ jobs:
           set -euo pipefail
 
           if [ "$VERSION_BUMPED" = "true" ]; then
-            commit_message="Update HeadsetControl and bump version to $NEW_VERSION [skip ci]"
+            commit_message="Update HeadsetControl and bump version to $NEW_VERSION"
             title="Update HeadsetControl and bump version to $NEW_VERSION"
             version_line="- Version: $CURRENT_VERSION -> $NEW_VERSION"
           else
-            commit_message="Update HeadsetControl submodule [skip ci]"
+            commit_message="Update HeadsetControl submodule"
             title="Update HeadsetControl submodule"
             version_line="- Version: unchanged at $CURRENT_VERSION"
           fi
@@ -244,3 +245,11 @@ jobs:
           add-paths: |
             CMakeLists.txt
             dependencies/headsetcontrol
+      - name: Validate dependency update branch
+        if: steps.submodule.outputs.needs_update == 'true'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              ...context.repo, workflow_id: 'build.yml', ref: 'automation/update-headsetcontrol'
+            });

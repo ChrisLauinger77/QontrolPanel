@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation>Не удалось сохранить настройки звука. Проверьте права доступа к профилю пользователя и наличие свободного места на диске.</translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
@@ -943,6 +950,10 @@ You can enable it in the Components tab.</source>
         <source>Device battery</source>
         <translation>Батарея устройства</translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation>Не удалось применить некоторые настройки гарнитуры. Обновите данные, чтобы повторить попытку.</translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -961,6 +972,17 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Welcome to QontrolPanel!</source>
         <translation>Добро пожаловать в QontrolPanel!</translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>Не удалось сохранить сочетания клавиш для приложений. Проверьте доступ к своему профилю пользователя и наличие свободного места на диске.</translation>
+    </message>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation>Системе Windows не удалось зарегистрировать сочетание клавиш (ошибка %1). Прежнее назначение было сохранено, если это было возможно.</translation>
     </message>
 </context>
 <context>
@@ -1086,6 +1108,18 @@ You can enable it in the Components tab.</source>
         <source>Brightness</source>
         <translation>Яркость</translation>
     </message>
+    <message>
+        <source>Power action failed</source>
+        <translation>Не удалось выполнить действие по управлению питанием</translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation>Не удалось зарегистрировать сочетание клавиш</translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation>Не удалось сохранить настройки</translation>
+    </message>
 </context>
 <context>
     <name>MediaOverlay</name>
@@ -1174,6 +1208,13 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Update available</source>
         <translation>Доступно обновление</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation>Системе Windows не удалось выполнить действие по управлению питанием (ошибка %1).</translation>
     </message>
 </context>
 <context>
@@ -1506,10 +1547,6 @@ You can enable it in the Components tab.</source>
         <translation>В последнем выпуске не найден исполняемый файл</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation>Не удалось начать загрузку</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Ошибка загрузки: %1</translation>
     </message>
@@ -1544,6 +1581,33 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
         <translation>Загружено %1 из %2 файлов перевода</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation>Недопустимые метаданные выпуска</translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation>Для этого выпуска отсутствует допустимая контрольная сумма SHA-256 или допустимый размер файла.</translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation>Проверка обновления не пройдена. Установщик был удалён.</translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation>Размер загружаемого файла превысил ожидаемый или файл не удалось сохранить.</translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation>Загрузка отменена</translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation>Не удалось сохранить настройки. Проверьте доступ к своему профилю пользователя.</translation>
     </message>
 </context>
 </TS>

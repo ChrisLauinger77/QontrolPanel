@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation>Could not save audio settings. Check access to your user profile and available disk space.</translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
@@ -942,6 +949,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
 You can enable it in the Components tab.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -960,6 +971,17 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Welcome to QontrolPanel!</source>
         <translation>Welcome to QontrolPanel!</translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>Could not save application shortcuts. Check access to your user profile and available disk space.</translation>
+    </message>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1085,6 +1107,18 @@ You can enable it in the Components tab.</source>
         <source>Brightness</source>
         <translation>Brightness</translation>
     </message>
+    <message>
+        <source>Power action failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MediaOverlay</name>
@@ -1173,6 +1207,13 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Update available</source>
         <translation>Update available</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1505,10 +1546,6 @@ You can enable it in the Components tab.</source>
         <translation>No executable found in latest release</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation>Cannot start download</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Download failed: %1</translation>
     </message>
@@ -1543,6 +1580,33 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
         <translation>Downloaded %1 of %2 translation files</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

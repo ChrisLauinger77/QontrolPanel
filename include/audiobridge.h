@@ -24,6 +24,7 @@ class AudioBridge : public QObject
     Q_PROPERTY(int inputVolume READ inputVolume NOTIFY inputVolumeChanged)
     Q_PROPERTY(bool outputMuted READ outputMuted NOTIFY outputMutedChanged)
     Q_PROPERTY(bool inputMuted READ inputMuted NOTIFY inputMutedChanged)
+    Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
     Q_PROPERTY(bool isReady READ isReady NOTIFY isReadyChanged)
     Q_PROPERTY(ApplicationModel* applications READ applications CONSTANT)
     Q_PROPERTY(GroupedApplicationModel* groupedApplications READ groupedApplications CONSTANT)
@@ -38,11 +39,15 @@ class AudioBridge : public QObject
     Q_PROPERTY(QString outputDeviceDisplayName READ outputDeviceDisplayName NOTIFY outputDeviceDisplayNameChanged)
     Q_PROPERTY(QString inputDeviceDisplayName READ inputDeviceDisplayName NOTIFY inputDeviceDisplayNameChanged)
 
+private:
+    explicit AudioBridge(QObject* parent = nullptr);
+
 public:
-    explicit AudioBridge(QObject *parent = nullptr);
     ~AudioBridge();
     static AudioBridge* instance();
     static AudioBridge* create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+
+    QString lastError() const { return m_lastError; }
 
     // Properties
     int outputVolume() const { return m_outputVolume; }
@@ -78,8 +83,8 @@ public:
     Q_INVOKABLE void applyChatMixToApplications(int value);
     Q_INVOKABLE void restoreOriginalVolumes();
     Q_INVOKABLE bool isCommApp(const QString& name) const;
-    Q_INVOKABLE void addCommApp(const QString& name);
-    Q_INVOKABLE void removeCommApp(const QString& name);
+    Q_INVOKABLE bool addCommApp(const QString& name);
+    Q_INVOKABLE bool removeCommApp(const QString& name);
 
     int outputAudioLevel() const { return m_outputAudioLevel; }
     int inputAudioLevel() const { return m_inputAudioLevel; }
@@ -92,11 +97,11 @@ public:
     Q_INVOKABLE void cleanup();
 
     Q_INVOKABLE QString getDisplayNameForApplication(const QString& appName, int streamIndex) const;
-    Q_INVOKABLE void setCustomApplicationName(const QString& originalName, int streamIndex, const QString& customName);
+    Q_INVOKABLE bool setCustomApplicationName(const QString& originalName, int streamIndex, const QString& customName);
     Q_INVOKABLE QString getCustomApplicationName(const QString& originalName, int streamIndex) const;
 
     Q_INVOKABLE QString getCustomExecutableName(const QString& executableName) const;
-    Q_INVOKABLE void setCustomExecutableName(const QString& executableName, const QString& customName);
+    Q_INVOKABLE bool setCustomExecutableName(const QString& executableName, const QString& customName);
 
     QVariantMap applicationAudioLevels() const { return m_applicationAudioLevels; }
     Q_INVOKABLE int getApplicationAudioLevel(const QString& appId) const;
@@ -104,27 +109,29 @@ public:
     Q_INVOKABLE void stopApplicationAudioLevelMonitoring();
 
     Q_INVOKABLE bool isApplicationLocked(const QString& originalName, int streamIndex) const;
-    Q_INVOKABLE void setApplicationLocked(const QString& originalName, int streamIndex, bool locked);
+    Q_INVOKABLE bool setApplicationLocked(const QString& originalName, int streamIndex, bool locked);
 
     QString outputDeviceDisplayName() const { return m_outputDeviceDisplayName; }
     QString inputDeviceDisplayName() const { return m_inputDeviceDisplayName; }
 
-    Q_INVOKABLE void setCustomDeviceName(const QString& originalName, const QString& customName);
+    Q_INVOKABLE bool setCustomDeviceName(const QString& originalName, const QString& customName);
     Q_INVOKABLE QString getCustomDeviceName(const QString& originalName) const;
     Q_INVOKABLE QString getDisplayNameForDevice(const QString& deviceName) const;
 
     Q_INVOKABLE void refreshDeviceDisplayNames();
 
-    Q_INVOKABLE void setCustomDeviceIcon(const QString& originalName, const QString& iconName);
+    Q_INVOKABLE bool setCustomDeviceIcon(const QString& originalName, const QString& iconName);
     Q_INVOKABLE QString getCustomDeviceIcon(const QString& originalName) const;
     Q_INVOKABLE QString getDisplayIconForDevice(const QString& deviceName, bool isInput) const;
 
     Q_INVOKABLE bool isApplicationMutedInBackground(const QString& executableName) const;
-    Q_INVOKABLE void setApplicationMutedInBackground(const QString& executableName, bool muted);
+    Q_INVOKABLE bool setApplicationMutedInBackground(const QString& executableName, bool muted);
 
     Q_INVOKABLE int getExecutableVolume(const QString& executableName) const;
 
 signals:
+    void lastErrorChanged();
+    void saveFailed(const QString& message);
     void outputVolumeChanged();
     void inputVolumeChanged();
     void outputMutedChanged();
@@ -165,6 +172,11 @@ private slots:
     void onApplicationFocusChanged(const QString& executableName, bool hasFocus);
 
 private:
+    QString m_lastError;
+    bool savePolicyFile(const QString& path, const QJsonDocument& document);
+    bool reportPolicySaveResult(bool saved);
+    void applyBackgroundMute(const QString& executableName, bool hasFocus);
+
     int m_outputVolume;
     int m_inputVolume;
     bool m_outputMuted;
@@ -189,10 +201,10 @@ private:
     void applyChatMixIfEnabled();
     QString getCommAppsFilePath() const;
     void loadCommAppsFromFile();
-    void saveCommAppsToFile();
+    bool saveCommAppsToFile(const QList<CommApp>& entries);
     void updateGroupedApplications();
 
-    void restoreOriginalVolumesSync();
+    void queueVolumeRestoration();
 
     int m_outputAudioLevel = 0;
     int m_inputAudioLevel = 0;
@@ -221,13 +233,13 @@ private:
     QList<ExecutableRename> m_executableRenames;
 
     void loadExecutableRenamesFromFile();
-    void saveExecutableRenamesToFile();
+    bool saveExecutableRenamesToFile(const QList<ExecutableRename>& entries);
     QString getExecutableRenamesFilePath() const;
 
     QList<AppRename> m_appRenames;
 
     void loadAppRenamesFromFile();
-    void saveAppRenamesToFile();
+    bool saveAppRenamesToFile(const QList<AppRename>& entries);
     QString getAppRenamesFilePath() const;
     void createDefaultAppRenames();
     void refreshApplicationDisplayNames(const QString& originalName, int streamIndex);
@@ -236,7 +248,7 @@ private:
     void updateSingleGroupAudioLevel(const QString& executableName);
 
     void loadAppLocksFromFile();
-    void saveAppLocksToFile();
+    bool saveAppLocksToFile(const QList<AppLock>& entries);
     QString getAppLocksFilePath() const;
 
     QString m_outputDeviceDisplayName;
@@ -249,7 +261,7 @@ private:
     QList<DeviceRename> m_deviceRenames;
 
     void loadDeviceRenamesFromFile();
-    void saveDeviceRenamesToFile();
+    bool saveDeviceRenamesToFile(const QList<DeviceRename>& entries);
     QString getDeviceRenamesFilePath() const;
     void updateDeviceDisplayNames();
     void refreshDeviceModelData(const QString& originalName);
@@ -262,7 +274,7 @@ private:
     QList<DeviceIcon> m_deviceIcons;
 
     void loadDeviceIconsFromFile();
-    void saveDeviceIconsToFile();
+    bool saveDeviceIconsToFile(const QList<DeviceIcon>& entries);
     QString getDeviceIconsFilePath() const;
 
     static AudioBridge* m_instance;

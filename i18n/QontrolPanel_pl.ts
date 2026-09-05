@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation>Nie udało się zapisać ustawień dźwięku. Sprawdź dostęp do profilu użytkownika i ilość wolnego miejsca na dysku.</translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
@@ -943,6 +950,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <source>1 - Error conditions</source>
         <translation>1 - Warunki błędu</translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation>Nie udało się zastosować niektórych ustawień zestawu słuchawkowego. Odśwież, aby spróbować ponownie.</translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -961,6 +972,17 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>Automatic application update</source>
         <translation>Automatyczna aktualizacja aplikacji</translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>Nie udało się zapisać skrótów klawiaturowych aplikacji. Sprawdź dostęp do swojego profilu użytkownika i ilość wolnego miejsca na dysku.</translation>
+    </message>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation>System Windows nie mógł zarejestrować skrótu klawiaturowego (błąd %1). W miarę możliwości zachowano poprzednie przypisanie.</translation>
     </message>
 </context>
 <context>
@@ -1086,6 +1108,18 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <source>Version %1 is available for download</source>
         <translation>Wersja %1 jest dostępna do pobrania</translation>
     </message>
+    <message>
+        <source>Power action failed</source>
+        <translation>Operacja zasilania nie powiodła się</translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation>Nie udało się zarejestrować skrótu klawiaturowego</translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation>Nie udało się zapisać ustawień</translation>
+    </message>
 </context>
 <context>
     <name>MediaOverlay</name>
@@ -1174,6 +1208,13 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>Update available</source>
         <translation>Dostępna aktualizacja</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation>System Windows nie mógł wykonać operacji zasilania (błąd %1).</translation>
     </message>
 </context>
 <context>
@@ -1506,10 +1547,6 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Nie znaleziono pliku wykonywalnego w najnowszej wersji</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation>Nie można rozpocząć pobierania</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Pobieranie nie powiodło się: %1</translation>
     </message>
@@ -1544,6 +1581,33 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>All translations downloaded successfully</source>
         <translation>Wszystkie tłumaczenia zostały pobrane pomyślnie</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation>Nieprawidłowe metadane wydania</translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation>Brakuje prawidłowej sumy kontrolnej SHA-256 lub prawidłowego rozmiaru pliku dla tego wydania.</translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation>Weryfikacja aktualizacji nie powiodła się. Instalator został odrzucony.</translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation>Pobierany plik przekroczył oczekiwany rozmiar lub nie udało się go zapisać.</translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation>Pobieranie anulowane</translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation>Nie udało się zapisać ustawień. Sprawdź dostęp do swojego profilu użytkownika.</translation>
     </message>
 </context>
 </TS>

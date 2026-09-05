@@ -40,6 +40,7 @@ Install or update vcpkg:
 
 ```pwsh
 git clone https://github.com/microsoft/vcpkg.git C:\vcpkg
+git -C C:\vcpkg checkout --detach (Get-Content cmake/vcpkg-baseline.txt -Raw).Trim()
 C:\vcpkg\bootstrap-vcpkg.bat
 ```
 
@@ -74,7 +75,32 @@ When using a multi-config generator such as Visual Studio, pass the build config
 cmake --build build --config Release
 ```
 
-The build produces the `QontrolPanel` executable and also updates Qt translation source files through the `update_translations` dependency.
+Normal builds compile existing translations without editing `.ts` sources. Extract new source messages and remove messages no longer present in the source explicitly when needed:
+
+```pwsh
+cmake --build build --target update_translations
+```
+
+Extraction uses `-no-obsolete` to remove obsolete and vanished messages. Review additions, changes, and removals in `i18n/*.ts` before committing; Git history retains removed translations. Compiled `.qm` files are generated outputs.
+
+### Extract translation messages on Linux
+
+Qt's `lupdate` can scan the C++ and QML sources without compiling the Windows application. The root CMake `update_translations` target requires the full app configuration; `QONTROLPANEL_CORE_TESTS_ONLY` does not create it. On Linux, run `lupdate` directly instead.
+
+On Debian or Ubuntu, install the Qt 6 translation tools:
+
+```sh
+sudo apt install qt6-l10n-tools
+```
+
+Then, from the repository root:
+
+```sh
+/usr/lib/qt6/bin/lupdate src include qml -locations none -no-obsolete -ts i18n/QontrolPanel_*.ts
+git diff -- i18n
+```
+
+For another Qt installation, use its Qt 6 `lupdate` executable. Prefer the same Qt version as CI when available to reduce tool-version differences in generated catalogs. Scan only the app directories shown above, excluding the dependency and build trees. This updates source messages and removes obsolete and vanished messages in `.ts` files; it does not translate new text or compile `.qm` files. Review additions, changes, and removals before committing.
 
 ## Run Locally
 
@@ -144,13 +170,32 @@ Run the install step. The project uses Qt deployment helpers during install; run
 The main build workflow:
 
 1. Checks out the repository with submodules.
-2. Updates the HeadsetControl submodule to the latest upstream master for the workflow run.
+2. Verifies the exact recorded HeadsetControl revision and builds a disposable copy, leaving the submodule source untouched.
 3. Extracts the app version from `CMakeLists.txt`.
-4. Selects the Visual Studio 2026 generator, installs ATL for the MSVC `v143` compatibility toolset, and sets up vcpkg with the same toolset.
+4. Selects the Visual Studio 2026 generator, installs ATL for `v143`, checks out the recorded vcpkg revision, and installs packages into an isolated build directory.
 5. Installs Qt.
-6. Configures, builds, and installs Release.
-7. Cleans changed translation files.
-8. Uploads a ZIP artifact.
-9. Builds an Inno Setup installer.
+6. Configures, builds, runs CTest, and installs Release.
+7. Checks that dependency and translation sources did not change.
+8. Produces ZIP and installer artifacts, plus provenance containing source/dependency revisions, versions, sizes, and SHA-256 digests.
 
-Local builds should usually use the checked-out submodule revision unless you are intentionally validating an upstream HeadsetControl update.
+Local builds use the checked-out submodule revision. The scheduled dependency-update workflow proposes a reviewed pin update and explicitly dispatches its validation build.
+
+The Release workflow requires a successful main-branch Build run ID. It checks out that run's source, downloads all artifacts from that one run, verifies provenance and file hashes, and refuses a version tag pointing to different source.
+
+## Reliability tests
+
+```pwsh
+ctest --test-dir build -C Release --output-on-failure
+```
+
+A hardware-independent subset can also be configured on Linux:
+
+```sh
+cmake -S . -B /tmp/qontrol-tests -DQONTROLPANEL_CORE_TESTS_ONLY=ON -DCMAKE_BUILD_TYPE=Release
+cmake --build /tmp/qontrol-tests
+ctest --test-dir /tmp/qontrol-tests --output-on-failure
+```
+
+Night Light binary-format and release-provenance tests require C++20 and Python 3.11 or newer. Qt Core/Qml/Network/Test development packages enable the logging, storage, model, cancellation, and worker-lifecycle tests as well. Windows release validation requires those Qt tests. These tests do not exercise real power actions or hardware.
+
+The portable ZIP requires a compatible MSVC runtime. The installer checks the installed runtime against the actual bundled redistributable version and installs it when missing or older. Always install/deploy before launching `build/install/bin/QontrolPanel.exe` for manual testing.

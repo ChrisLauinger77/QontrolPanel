@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation>无法保存音频设置。请检查用户配置文件的访问权限和可用磁盘空间。</translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
@@ -942,6 +949,10 @@ You can enable it in the Components tab.</source>
         <source>Device battery</source>
         <translation>设备电量</translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation>部分耳机设置无法应用。请刷新以重试。</translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -960,6 +971,17 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Welcome to QontrolPanel!</source>
         <translation>欢迎来到 QontrolPanel!</translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>无法保存应用快捷键。请检查是否有权访问用户配置文件以及磁盘可用空间是否充足。</translation>
+    </message>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation>Windows 无法注册快捷键（错误 %1）。已尽可能保留原有绑定。</translation>
     </message>
 </context>
 <context>
@@ -1085,6 +1107,18 @@ You can enable it in the Components tab.</source>
         <source>Brightness</source>
         <translation>亮度</translation>
     </message>
+    <message>
+        <source>Power action failed</source>
+        <translation>电源操作失败</translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation>快捷键注册失败</translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation>无法保存设置</translation>
+    </message>
 </context>
 <context>
     <name>MediaOverlay</name>
@@ -1173,6 +1207,13 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Update available</source>
         <translation>有更新可用</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation>Windows 无法完成电源操作（错误 %1）。</translation>
     </message>
 </context>
 <context>
@@ -1505,10 +1546,6 @@ You can enable it in the Components tab.</source>
         <translation>在最新版本中未找到可执行文件</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation>无法开始下载</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>下载失败：%1</translation>
     </message>
@@ -1543,6 +1580,33 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
         <translation>已下载 %1/%2 个翻译文件</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation>版本元数据无效</translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation>此版本缺少有效的 SHA-256 校验和或文件大小。</translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation>更新验证失败。安装程序已被丢弃。</translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation>下载文件超出预期大小或无法保存。</translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation>下载已取消</translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation>无法保存设置。请检查是否有权访问用户配置文件。</translation>
     </message>
 </context>
 </TS>

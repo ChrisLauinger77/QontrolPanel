@@ -4,6 +4,8 @@
 #include "usersettings.h"
 #include <QPointer>
 #include <QTimer>
+#include <QCoreApplication>
+#include "workerthreads.h"
 
 HeadsetControlBridge* HeadsetControlBridge::m_instance = nullptr;
 
@@ -22,11 +24,26 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
                 updateLowBatteryNotificationState();
                 emit batteryIconChanged();
             });
-    QTimer::singleShot(100, this, &HeadsetControlBridge::connectToMonitor);
+    connect(settings, &UserSettings::enableNotificationsChanged, this,
+            &HeadsetControlBridge::updateLowBatteryNotificationState);
+    connect(settings, &UserSettings::headsetcontrolLightsChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolRotateToMuteChanged, this,
+            &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolVoicePromptsChanged, this,
+            &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolEqualizerPresetChanged, this,
+            &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolSidetoneChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolInactiveTimeChanged, this,
+            &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolFetchRateChanged, this,
+            [this] { setFetchRate(UserSettings::instance()->headsetcontrolFetchRate()); });
+    connectToMonitor();
 }
 
 HeadsetControlBridge::~HeadsetControlBridge()
 {
+    shutdown();
     if (m_instance == this) {
         m_instance = nullptr;
     }
@@ -35,7 +52,7 @@ HeadsetControlBridge::~HeadsetControlBridge()
 HeadsetControlBridge* HeadsetControlBridge::instance()
 {
     if (!m_instance) {
-        m_instance = new HeadsetControlBridge();
+        m_instance = new HeadsetControlBridge(QCoreApplication::instance());
     }
     return m_instance;
 }
@@ -44,66 +61,73 @@ HeadsetControlBridge* HeadsetControlBridge::create(QQmlEngine* qmlEngine, QJSEng
 {
     Q_UNUSED(qmlEngine);
     Q_UNUSED(jsEngine);
-
-    if (!m_instance) {
-        m_instance = new HeadsetControlBridge();
-    }
-    return m_instance;
+    auto* bridge = instance();
+    QQmlEngine::setObjectOwnership(bridge, QQmlEngine::CppOwnership);
+    return bridge;
 }
 
 void HeadsetControlBridge::connectToMonitor()
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        connect(monitor, &HeadsetControlMonitor::capabilitiesChanged,
-                this, &HeadsetControlBridge::onMonitorCapabilitiesChanged);
-        connect(monitor, &HeadsetControlMonitor::deviceNameChanged,
-                this, &HeadsetControlBridge::onMonitorDeviceNameChanged);
-        connect(monitor, &HeadsetControlMonitor::batteryStatusChanged,
-                this, &HeadsetControlBridge::onMonitorBatteryStatusChanged);
-        connect(monitor, &HeadsetControlMonitor::batteryLevelChanged,
-                this, &HeadsetControlBridge::onMonitorBatteryLevelChanged);
-        connect(monitor, &HeadsetControlMonitor::chatMixChanged,
-            this, &HeadsetControlBridge::onMonitorChatMixChanged);
-        connect(monitor, &HeadsetControlMonitor::equalizerPresetNamesChanged,
-            this, &HeadsetControlBridge::onMonitorEqualizerPresetNamesChanged);
-        connect(monitor, &HeadsetControlMonitor::anyDeviceFoundChanged,
-                this, &HeadsetControlBridge::onMonitorAnyDeviceFoundChanged);
-        connect(monitor, &HeadsetControlMonitor::testModeEnabledChanged,
-            this, &HeadsetControlBridge::onMonitorTestModeEnabledChanged);
-        connect(monitor, &HeadsetControlMonitor::testProfileChanged,
-            this, &HeadsetControlBridge::onMonitorTestProfileChanged);
-        connect(monitor, &HeadsetControlMonitor::headsetDataUpdated,
-                this, [this](const QList<HeadsetControlDevice>&) {
-                    HeadsetControlMonitor* monitor = findMonitor();
-                    if (monitor) {
-                        queueCacheRefresh(monitor);
-                    }
+    if (m_monitor)
+        return;
+    m_thread = new QThread();
+    m_monitor = new HeadsetControlMonitor();
+    m_monitor->moveToThread(m_thread);
+    connect(m_monitor, &HeadsetControlMonitor::snapshotReady, this, &HeadsetControlBridge::applyState);
+    connect(m_monitor, &HeadsetControlMonitor::headsetDataUpdated, this, &HeadsetControlBridge::headsetDataUpdated);
+    connect(m_monitor, &HeadsetControlMonitor::operationErrorChanged, this, [this](const QString& error) {
+        if (m_lastError == error)
+            return;
+        m_lastError = error;
+        emit lastErrorChanged();
                 });
-
-        int fetchRateSeconds = UserSettings::instance()->headsetcontrolFetchRate();
-        int fetchRateMs = fetchRateSeconds * 1000;
-        QMetaObject::invokeMethod(monitor, "setFetchInterval", Qt::QueuedConnection,
-                                  Q_ARG(int, fetchRateMs));
-
-        if (UserSettings::instance()->headsetcontrolMonitoring()) {
-            QMetaObject::invokeMethod(monitor, "startMonitoring", Qt::QueuedConnection);
+    m_thread->start();
+    QMetaObject::invokeMethod(
+        m_monitor, [monitor = m_monitor] { emit monitor->snapshotReady(monitor->snapshot()); }, Qt::QueuedConnection);
+    syncDesiredSettings();
+    setFetchRate(UserSettings::instance()->headsetcontrolFetchRate());
+    setMonitoringEnabled(UserSettings::instance()->headsetcontrolMonitoring());
         }
 
-        queueCacheRefresh(monitor);
-    } else {
-        QTimer::singleShot(200, this, &HeadsetControlBridge::connectToMonitor);
+void HeadsetControlBridge::shutdown()
+{
+    if (!m_thread)
+        return;
+    disconnect(m_monitor, nullptr, this, nullptr);
+    retireWorkerThread(m_thread, m_monitor, "stopMonitoring");
+    m_thread = nullptr;
+    m_monitor = nullptr;
     }
+
+void HeadsetControlBridge::attachAudioWorker(AudioWorker* worker)
+{
+    connect(this, &HeadsetControlBridge::headsetDataUpdated, worker, &AudioWorker::onHeadsetDataUpdated,
+            Qt::QueuedConnection);
+    // Snapshot is produced on the monitor thread and delivered through this bridge.
+    if (m_monitor)
+        QMetaObject::invokeMethod(
+            m_monitor, [monitor = m_monitor] { emit monitor->headsetDataUpdated(monitor->getCachedDevices()); },
+            Qt::QueuedConnection);
+}
+
+void HeadsetControlBridge::syncDesiredSettings()
+{
+    if (!m_monitor)
+        return;
+    auto* settings = UserSettings::instance();
+    const QVariantMap desired{{"lights", settings->headsetcontrolLights()},
+                              {"rotateToMute", settings->headsetcontrolRotateToMute()},
+                              {"voicePrompts", settings->headsetcontrolVoicePrompts()},
+                              {"equalizerPreset", settings->headsetcontrolEqualizerPreset()},
+                              {"sidetone", settings->headsetcontrolSidetone()},
+                              {"inactiveTime", settings->headsetcontrolInactiveTime()}};
+    QMetaObject::invokeMethod(
+        m_monitor, [monitor = m_monitor, desired] { monitor->setDesiredSettings(desired); }, Qt::QueuedConnection);
 }
 
 HeadsetControlMonitor* HeadsetControlBridge::findMonitor() const
 {
-    AudioManager* audioManager = AudioManager::instance();
-    if (audioManager) {
-        AudioWorker* worker = audioManager->getWorker();
-        return worker ? worker->getHeadsetControlMonitor() : nullptr;
-    }
-    return nullptr;
+    return m_monitor;
 }
 
 void HeadsetControlBridge::setMonitoringEnabled(bool enabled)
@@ -120,56 +144,32 @@ void HeadsetControlBridge::setMonitoringEnabled(bool enabled)
 
 void HeadsetControlBridge::setLights(bool enabled)
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        QMetaObject::invokeMethod(monitor, "setLights", Qt::QueuedConnection,
-                                  Q_ARG(bool, enabled));
-    }
+    UserSettings::instance()->setHeadsetcontrolLights(enabled);
 }
 
 void HeadsetControlBridge::setRotateToMute(bool enabled)
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        QMetaObject::invokeMethod(monitor, "setRotateToMute", Qt::QueuedConnection,
-                                  Q_ARG(bool, enabled));
-    }
+    UserSettings::instance()->setHeadsetcontrolRotateToMute(enabled);
 }
 
 void HeadsetControlBridge::setVoicePrompts(bool enabled)
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        QMetaObject::invokeMethod(monitor, "setVoicePrompts", Qt::QueuedConnection,
-                                  Q_ARG(bool, enabled));
-    }
+    UserSettings::instance()->setHeadsetcontrolVoicePrompts(enabled);
 }
 
 void HeadsetControlBridge::setEqualizerPreset(int preset)
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        QMetaObject::invokeMethod(monitor, "setEqualizerPreset", Qt::QueuedConnection,
-                                  Q_ARG(int, preset));
-    }
+    UserSettings::instance()->setHeadsetcontrolEqualizerPreset(preset);
 }
 
 void HeadsetControlBridge::setSidetone(int value)
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        QMetaObject::invokeMethod(monitor, "setSidetone", Qt::QueuedConnection,
-                                  Q_ARG(int, value));
-    }
+    UserSettings::instance()->setHeadsetcontrolSidetone(value);
 }
 
 void HeadsetControlBridge::setInactiveTime(int value)
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        QMetaObject::invokeMethod(monitor, "setInactiveTime", Qt::QueuedConnection,
-                                  Q_ARG(int, value));
-    }
+    UserSettings::instance()->setHeadsetcontrolInactiveTime(value);
 }
 
 void HeadsetControlBridge::refreshNow()
@@ -274,82 +274,14 @@ int HeadsetControlBridge::testProfile() const
     return m_cachedState.testProfile;
 }
 
-void HeadsetControlBridge::onMonitorCapabilitiesChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::onMonitorDeviceNameChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::onMonitorBatteryStatusChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::onMonitorBatteryLevelChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::onMonitorChatMixChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::onMonitorEqualizerPresetNamesChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::onMonitorAnyDeviceFoundChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
 void HeadsetControlBridge::updateLowBatteryNotificationState()
 {
     const int level = batteryLevel();
     const int lowBatteryThreshold = UserSettings::instance()->headsetcontrolLowBatteryThreshold();
 
-    if (level < 0 || level > lowBatteryThreshold || !UserSettings::instance()->enableNotifications()) {
+    if (batteryStatus() != "BATTERY_AVAILABLE" || level < 0 || level > lowBatteryThreshold ||
+        !UserSettings::instance()->enableNotifications())
+    {
         m_lowBatteryNotificationSent = false;
         return;
     }
@@ -360,116 +292,10 @@ void HeadsetControlBridge::updateLowBatteryNotificationState()
     }
 }
 
-void HeadsetControlBridge::onMonitorTestModeEnabledChanged()
+void HeadsetControlBridge::applyState(const HeadsetControlState& state)
 {
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::onMonitorTestProfileChanged()
-{
-    HeadsetControlMonitor* monitor = findMonitor();
-    if (monitor) {
-        queueCacheRefresh(monitor);
-        return;
-    }
-    resetCachedStateToDefaults();
-}
-
-void HeadsetControlBridge::queueCacheRefresh(HeadsetControlMonitor* monitor)
-{
-    if (!monitor) {
-        return;
-    }
-
-    QPointer<HeadsetControlBridge> bridge(this);
-    QMetaObject::invokeMethod(
-        monitor,
-        [bridge, monitor]() {
-            if (!bridge) {
-                return;
-            }
-
-            CachedState state;
-            state.hasSidetoneCapability = monitor->hasSidetoneCapability();
-            state.hasLightsCapability = monitor->hasLightsCapability();
-            state.hasRotateToMuteCapability = monitor->hasRotateToMuteCapability();
-            state.hasChatMixCapability = monitor->hasChatMixCapability();
-            state.hasVoicePromptsCapability = monitor->hasVoicePromptsCapability();
-            state.hasEqualizerPresetsCapability = monitor->hasEqualizerPresetsCapability();
-            state.hasInactiveTimeCapability = monitor->hasInactiveTimeCapability();
-            state.deviceName = monitor->deviceName();
-            state.batteryStatus = monitor->batteryStatus();
-            state.batteryLevel = monitor->batteryLevel();
-            state.chatMix = monitor->chatMix();
-            state.equalizerPresetNames = monitor->equalizerPresetNames();
-            state.anyDeviceFound = monitor->anyDeviceFound();
-            state.testModeEnabled = monitor->testModeEnabled();
-            state.testProfile = monitor->testProfile();
-
-            QMetaObject::invokeMethod(bridge.data(), [bridge, state]() {
-                if (!bridge) {
-                    return;
-                }
-
-                const CachedState previous = bridge->m_cachedState;
-                bridge->m_cachedState = state;
-
-                const bool capabilitiesChangedNow =
-                    previous.hasSidetoneCapability != bridge->m_cachedState.hasSidetoneCapability ||
-                    previous.hasLightsCapability != bridge->m_cachedState.hasLightsCapability ||
-                    previous.hasRotateToMuteCapability != bridge->m_cachedState.hasRotateToMuteCapability ||
-                    previous.hasChatMixCapability != bridge->m_cachedState.hasChatMixCapability ||
-                    previous.hasVoicePromptsCapability != bridge->m_cachedState.hasVoicePromptsCapability ||
-                    previous.hasEqualizerPresetsCapability != bridge->m_cachedState.hasEqualizerPresetsCapability ||
-                    previous.hasInactiveTimeCapability != bridge->m_cachedState.hasInactiveTimeCapability;
-
-                if (capabilitiesChangedNow) {
-                    emit bridge->capabilitiesChanged();
-                }
-                if (previous.deviceName != bridge->m_cachedState.deviceName) {
-                    emit bridge->deviceNameChanged();
-                }
-                if (previous.batteryStatus != bridge->m_cachedState.batteryStatus) {
-                    emit bridge->batteryStatusChanged();
-                    emit bridge->batteryIconChanged();
-                }
-                if (previous.batteryLevel != bridge->m_cachedState.batteryLevel) {
-                    bridge->updateLowBatteryNotificationState();
-                    emit bridge->batteryLevelChanged();
-                    emit bridge->batteryIconChanged();
-                }
-                if (previous.chatMix != bridge->m_cachedState.chatMix) {
-                    emit bridge->chatMixChanged();
-                }
-                if (previous.equalizerPresetNames != bridge->m_cachedState.equalizerPresetNames) {
-                    emit bridge->equalizerPresetNamesChanged();
-                }
-                if (previous.anyDeviceFound != bridge->m_cachedState.anyDeviceFound) {
-                    if (!bridge->m_cachedState.anyDeviceFound) {
-                        bridge->m_lowBatteryNotificationSent = false;
-                    }
-                    emit bridge->anyDeviceFoundChanged();
-                }
-                if (previous.testModeEnabled != bridge->m_cachedState.testModeEnabled) {
-                    emit bridge->testModeEnabledChanged();
-                }
-                if (previous.testProfile != bridge->m_cachedState.testProfile) {
-                    emit bridge->testProfileChanged();
-                }
-            }, Qt::QueuedConnection);
-        },
-        Qt::QueuedConnection);
-}
-
-void HeadsetControlBridge::resetCachedStateToDefaults()
-{
-    const CachedState previous = m_cachedState;
-    m_cachedState = CachedState{};
+    const HeadsetControlState previous = m_cachedState;
+    m_cachedState = state;
 
     const bool capabilitiesChangedNow =
         previous.hasSidetoneCapability != m_cachedState.hasSidetoneCapability ||
@@ -480,46 +306,58 @@ void HeadsetControlBridge::resetCachedStateToDefaults()
         previous.hasEqualizerPresetsCapability != m_cachedState.hasEqualizerPresetsCapability ||
         previous.hasInactiveTimeCapability != m_cachedState.hasInactiveTimeCapability;
 
-    if (capabilitiesChangedNow) {
+    if (capabilitiesChangedNow)
+    {
         emit capabilitiesChanged();
     }
-    if (previous.deviceName != m_cachedState.deviceName) {
+    if (previous.deviceName != m_cachedState.deviceName)
+    {
         emit deviceNameChanged();
     }
-    if (previous.batteryStatus != m_cachedState.batteryStatus) {
+    if (previous.batteryStatus != m_cachedState.batteryStatus)
+    {
         emit batteryStatusChanged();
         emit batteryIconChanged();
     }
-    if (previous.batteryLevel != m_cachedState.batteryLevel) {
-        updateLowBatteryNotificationState();
+    if (previous.batteryLevel != m_cachedState.batteryLevel)
+    {
         emit batteryLevelChanged();
         emit batteryIconChanged();
     }
-    if (previous.chatMix != m_cachedState.chatMix) {
+    if (previous.chatMix != m_cachedState.chatMix)
+    {
         emit chatMixChanged();
     }
-    if (previous.equalizerPresetNames != m_cachedState.equalizerPresetNames) {
+    if (previous.equalizerPresetNames != m_cachedState.equalizerPresetNames)
+    {
         emit equalizerPresetNamesChanged();
     }
-    if (previous.anyDeviceFound != m_cachedState.anyDeviceFound) {
-        if (!m_cachedState.anyDeviceFound) {
+    if (previous.anyDeviceFound != m_cachedState.anyDeviceFound)
+    {
+        if (!m_cachedState.anyDeviceFound)
+        {
             m_lowBatteryNotificationSent = false;
         }
         emit anyDeviceFoundChanged();
     }
-    if (previous.testModeEnabled != m_cachedState.testModeEnabled) {
+    if (previous.testModeEnabled != m_cachedState.testModeEnabled)
+    {
         emit testModeEnabledChanged();
     }
-    if (previous.testProfile != m_cachedState.testProfile) {
+    if (previous.testProfile != m_cachedState.testProfile)
+    {
         emit testProfileChanged();
     }
+    if (previous.deviceName != state.deviceName)
+        m_lowBatteryNotificationSent = false;
+    updateLowBatteryNotificationState();
 }
 
 void HeadsetControlBridge::setFetchRate(int seconds)
 {
     HeadsetControlMonitor* monitor = findMonitor();
     if (monitor) {
-        int intervalMs = seconds * 1000;
+        int intervalMs = qBound(60, seconds, 86400) * 1000;
         QMetaObject::invokeMethod(monitor, "setFetchInterval", Qt::QueuedConnection,
                                   Q_ARG(int, intervalMs));
     }

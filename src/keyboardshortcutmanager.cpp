@@ -1,7 +1,10 @@
+#include "jsonstore.h"
+#include "logmanager.h"
 #include "keyboardshortcutmanager.h"
 #include "usersettings.h"
 #include <QCoreApplication>
 #include <QWindow>
+#include <QTimer>
 #include <QStandardPaths>
 #include <QDir>
 #include <QFile>
@@ -39,7 +42,15 @@ KeyboardShortcutManager::KeyboardShortcutManager(QObject *parent)
     // Load per-app volume hotkeys from file
     loadAppVolumeHotkeys();
 
-    if (UserSettings::instance()->globalShortcutsEnabled()) {
+    auto* settings = UserSettings::instance();
+    connect(settings, &UserSettings::globalShortcutsEnabledChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::panelShortcutKeyChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::panelShortcutModifiersChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::chatMixShortcutKeyChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::chatMixShortcutModifiersChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::micMuteShortcutKeyChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    connect(settings, &UserSettings::micMuteShortcutModifiersChanged, this, &KeyboardShortcutManager::syncGlobalShortcuts);
+    if (settings->globalShortcutsEnabled()) {
         registerHotkeys();
     }
 }
@@ -62,13 +73,24 @@ KeyboardShortcutManager::~KeyboardShortcutManager()
     }
 }
 
-void KeyboardShortcutManager::manageGlobalShortcuts(bool enabled)
+void KeyboardShortcutManager::syncGlobalShortcuts()
 {
-    if (enabled) {
-        registerHotkeys();
-    } else {
+    if (!UserSettings::instance()->globalShortcutsEnabled())
+    {
+        m_registrationQueued = false;
         unregisterHotkeys();
+        return;
     }
+    if (m_registrationQueued)
+        return;
+    m_registrationQueued = true;
+    QTimer::singleShot(0, this, [this] {
+        if (!m_registrationQueued)
+            return;
+        m_registrationQueued = false;
+        if (UserSettings::instance()->globalShortcutsEnabled())
+            registerHotkeys();
+    });
 }
 
 bool KeyboardShortcutManager::globalShortcutsSuspended() const
@@ -85,41 +107,42 @@ void KeyboardShortcutManager::setGlobalShortcutsSuspended(bool suspended)
     emit globalShortcutsSuspendedChanged();
 }
 
-void KeyboardShortcutManager::toggleChatMixFromShortcut(bool enabled)
-{
-    emit chatMixEnabledChanged(enabled);
-}
-
 void KeyboardShortcutManager::registerHotkeys()
 {
-    if (!m_hwnd) return;
-
-    // Unregister any existing hotkeys first
-    unregisterHotkeys();
-
-    // Register panel toggle hotkey
-    UINT panelMods = convertQtModifiers(UserSettings::instance()->panelShortcutModifiers());
-    UINT panelKey = qtKeyToVirtualKey(UserSettings::instance()->panelShortcutKey());
-    if (panelKey != 0 && RegisterHotKey(m_hwnd, HOTKEY_PANEL_TOGGLE, panelMods, panelKey)) {
-        m_registeredHotkeys[HOTKEY_PANEL_TOGGLE] = true;
+    if (m_registering || !m_hwnd)
+        return;
+    m_registering = true;
+    m_lastError.clear();
+    auto* settings = UserSettings::instance();
+    auto apply = [&](int id, int key, int modifiers, auto restore) {
+        if (registerBinding(id, convertQtModifiers(modifiers), qtKeyToVirtualKey(key)))
+        {
+            m_acceptedGlobalBindings[id] = qMakePair(key, modifiers);
     }
-
-    // Register ChatMix toggle hotkey
-    UINT chatMixMods = convertQtModifiers(UserSettings::instance()->chatMixShortcutModifiers());
-    UINT chatMixKey = qtKeyToVirtualKey(UserSettings::instance()->chatMixShortcutKey());
-    if (chatMixKey != 0 && RegisterHotKey(m_hwnd, HOTKEY_CHATMIX_TOGGLE, chatMixMods, chatMixKey)) {
-        m_registeredHotkeys[HOTKEY_CHATMIX_TOGGLE] = true;
+        else if (m_acceptedGlobalBindings.contains(id))
+        {
+            const auto previous = m_acceptedGlobalBindings.value(id);
+            restore(previous.first, previous.second);
     }
-
-    // Register mic mute hotkey
-    UINT micMuteMods = convertQtModifiers(UserSettings::instance()->micMuteShortcutModifiers());
-    UINT micMuteKey = qtKeyToVirtualKey(UserSettings::instance()->micMuteShortcutKey());
-    if (micMuteKey != 0 && RegisterHotKey(m_hwnd, HOTKEY_MIC_MUTE, micMuteMods, micMuteKey)) {
-        m_registeredHotkeys[HOTKEY_MIC_MUTE] = true;
-    }
-
-    // Register per-app volume hotkeys
+    };
+    apply(HOTKEY_PANEL_TOGGLE, settings->panelShortcutKey(), settings->panelShortcutModifiers(),
+          [&](int key, int modifiers) {
+              settings->setPanelShortcutKey(key);
+              settings->setPanelShortcutModifiers(modifiers);
+          });
+    apply(HOTKEY_CHATMIX_TOGGLE, settings->chatMixShortcutKey(), settings->chatMixShortcutModifiers(),
+          [&](int key, int modifiers) {
+              settings->setChatMixShortcutKey(key);
+              settings->setChatMixShortcutModifiers(modifiers);
+          });
+    apply(HOTKEY_MIC_MUTE, settings->micMuteShortcutKey(), settings->micMuteShortcutModifiers(),
+          [&](int key, int modifiers) {
+              settings->setMicMuteShortcutKey(key);
+              settings->setMicMuteShortcutModifiers(modifiers);
+          });
     registerAppVolumeHotkeys();
+    m_registering = false;
+    emit lastErrorChanged();
 }
 
 void KeyboardShortcutManager::unregisterHotkeys()
@@ -130,24 +153,7 @@ void KeyboardShortcutManager::unregisterHotkeys()
         UnregisterHotKey(m_hwnd, it.key());
     }
     m_registeredHotkeys.clear();
-}
-
-void KeyboardShortcutManager::updateHotkey(HotkeyId id, int qtKey, int qtMods)
-{
-    if (!m_hwnd) return;
-
-    // Unregister the old hotkey
-    if (m_registeredHotkeys.contains(id)) {
-        UnregisterHotKey(m_hwnd, id);
-        m_registeredHotkeys.remove(id);
-    }
-
-    // Register the new hotkey
-    UINT mods = convertQtModifiers(qtMods);
-    UINT key = qtKeyToVirtualKey(qtKey);
-    if (key != 0 && RegisterHotKey(m_hwnd, id, mods, key)) {
-        m_registeredHotkeys[id] = true;
-    }
+    m_bindings.clear();
 }
 
 UINT KeyboardShortcutManager::convertQtModifiers(int qtMods)
@@ -156,6 +162,8 @@ UINT KeyboardShortcutManager::convertQtModifiers(int qtMods)
     if (qtMods & Qt::ControlModifier) winMods |= MOD_CONTROL;
     if (qtMods & Qt::ShiftModifier) winMods |= MOD_SHIFT;
     if (qtMods & Qt::AltModifier) winMods |= MOD_ALT;
+    if (qtMods & Qt::MetaModifier)
+        winMods |= MOD_WIN;
     return winMods;
 }
 
@@ -166,7 +174,8 @@ bool KeyboardShortcutManager::nativeEventFilter(const QByteArray &eventType, voi
     if (eventType == "windows_generic_MSG" || eventType == "windows_dispatcher_MSG") {
         MSG* msg = static_cast<MSG*>(message);
 
-        if (msg->message == WM_HOTKEY) {
+        if (msg->message == WM_HOTKEY && msg->hwnd == m_hwnd)
+        {
             // Check if shortcuts are suspended
             if (m_globalShortcutsSuspended) {
                 return false;
@@ -298,13 +307,7 @@ QString KeyboardShortcutManager::getAppVolumeHotkeysFilePath() const
 
 void KeyboardShortcutManager::loadAppVolumeHotkeys()
 {
-    QFile file(getAppVolumeHotkeysFilePath());
-    if (!file.open(QIODevice::ReadOnly))
-        return;
-
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-    file.close();
-
+    const auto doc = JsonStore::load(getAppVolumeHotkeysFilePath());
     if (!doc.isArray())
         return;
 
@@ -322,10 +325,10 @@ void KeyboardShortcutManager::loadAppVolumeHotkeys()
     }
 }
 
-void KeyboardShortcutManager::saveAppVolumeHotkeys()
+bool KeyboardShortcutManager::saveAppVolumeHotkeys(const QList<AppVolumeHotkey>& hotkeys)
 {
     QJsonArray arr;
-    for (const auto &hotkey : m_appVolumeHotkeys) {
+    for (const auto &hotkey : hotkeys) {
         QJsonObject obj;
         obj["executableName"] = hotkey.executableName;
         obj["volumeUpKey"] = hotkey.volumeUpKey;
@@ -336,35 +339,36 @@ void KeyboardShortcutManager::saveAppVolumeHotkeys()
         arr.append(obj);
     }
 
-    QFile file(getAppVolumeHotkeysFilePath());
-    if (file.open(QIODevice::WriteOnly)) {
-        file.write(QJsonDocument(arr).toJson());
-        file.close();
-    }
+    return JsonStore::save(getAppVolumeHotkeysFilePath(), QJsonDocument(arr));
+}
+
+void KeyboardShortcutManager::reportAppVolumeHotkeysSaveFailure()
+{
+    LOG_WARN("Shortcuts", "Could not persist application volume hotkeys");
+    m_lastError = tr("Could not save application shortcuts. Check access to your user profile and available disk space.");
+    emit lastErrorChanged();
+    emit saveFailed(m_lastError);
 }
 
 void KeyboardShortcutManager::registerAppVolumeHotkeys()
 {
     if (!m_hwnd) return;
 
-    m_nextAppHotkeyId = APP_HOTKEY_BASE_ID;
 
     for (auto &hotkey : m_appVolumeHotkeys) {
         // Register volume up
         UINT upMods = convertQtModifiers(hotkey.volumeUpModifiers);
         UINT upKey = qtKeyToVirtualKey(hotkey.volumeUpKey);
+        if (!hotkey.volumeUpHotkeyId)
         hotkey.volumeUpHotkeyId = m_nextAppHotkeyId++;
-        if (upKey != 0 && RegisterHotKey(m_hwnd, hotkey.volumeUpHotkeyId, upMods, upKey)) {
-            m_registeredHotkeys[hotkey.volumeUpHotkeyId] = true;
-        }
+        registerBinding(hotkey.volumeUpHotkeyId, upMods, upKey);
 
         // Register volume down
         UINT downMods = convertQtModifiers(hotkey.volumeDownModifiers);
         UINT downKey = qtKeyToVirtualKey(hotkey.volumeDownKey);
+        if (!hotkey.volumeDownHotkeyId)
         hotkey.volumeDownHotkeyId = m_nextAppHotkeyId++;
-        if (downKey != 0 && RegisterHotKey(m_hwnd, hotkey.volumeDownHotkeyId, downMods, downKey)) {
-            m_registeredHotkeys[hotkey.volumeDownHotkeyId] = true;
-        }
+        registerBinding(hotkey.volumeDownHotkeyId, downMods, downKey);
     }
 }
 
@@ -376,60 +380,91 @@ void KeyboardShortcutManager::unregisterAppVolumeHotkeys()
         if (m_registeredHotkeys.contains(hotkey.volumeUpHotkeyId)) {
             UnregisterHotKey(m_hwnd, hotkey.volumeUpHotkeyId);
             m_registeredHotkeys.remove(hotkey.volumeUpHotkeyId);
+            m_bindings.remove(hotkey.volumeUpHotkeyId);
         }
         if (m_registeredHotkeys.contains(hotkey.volumeDownHotkeyId)) {
             UnregisterHotKey(m_hwnd, hotkey.volumeDownHotkeyId);
             m_registeredHotkeys.remove(hotkey.volumeDownHotkeyId);
+            m_bindings.remove(hotkey.volumeDownHotkeyId);
         }
     }
 }
 
 bool KeyboardShortcutManager::addAppVolumeHotkey(const QString &executableName, int volUpKey, int volUpMods, int volDownKey, int volDownMods, int volumeStepSize)
 {
-    // Remove existing hotkey for this app if any
-    removeAppVolumeHotkey(executableName);
-
+    if (executableName.trimmed().isEmpty())
+        return false;
+    const auto previous = m_appVolumeHotkeys;
+    unregisterAppVolumeHotkeys();
+    m_appVolumeHotkeys.removeIf([&](const AppVolumeHotkey& item) {
+        return item.executableName.compare(executableName, Qt::CaseInsensitive) == 0;
+    });
     AppVolumeHotkey hotkey;
     hotkey.executableName = executableName;
     hotkey.volumeUpKey = volUpKey;
     hotkey.volumeUpModifiers = volUpMods;
     hotkey.volumeDownKey = volDownKey;
     hotkey.volumeDownModifiers = volDownMods;
-    hotkey.volumeStepSize = volumeStepSize;
-
+    hotkey.volumeStepSize = qBound(0, volumeStepSize, 100);
     m_appVolumeHotkeys.append(hotkey);
-    saveAppVolumeHotkeys();
-
-    // Re-register all hotkeys if global shortcuts are enabled
-    if (UserSettings::instance()->globalShortcutsEnabled()) {
-        manageGlobalShortcuts(true);
+    m_lastError.clear();
+    if (UserSettings::instance()->globalShortcutsEnabled())
+        registerAppVolumeHotkeys();
+    const bool persistenceFailed = m_lastError.isEmpty() && !saveAppVolumeHotkeys(m_appVolumeHotkeys);
+    if (!m_lastError.isEmpty() || persistenceFailed)
+    {
+        const QString error = m_lastError;
+        unregisterAppVolumeHotkeys();
+        m_appVolumeHotkeys = previous;
+        if (UserSettings::instance()->globalShortcutsEnabled())
+            registerAppVolumeHotkeys();
+        if (persistenceFailed)
+            reportAppVolumeHotkeysSaveFailure();
+        else
+        {
+            m_lastError = error;
+            emit lastErrorChanged();
+        }
+        return false;
     }
-
+    emit lastErrorChanged();
     emit appVolumeHotkeysChanged();
     return true;
 }
 
-void KeyboardShortcutManager::removeAppVolumeHotkey(const QString &executableName)
+bool KeyboardShortcutManager::removeAppVolumeHotkey(const QString &executableName)
 {
     for (int i = 0; i < m_appVolumeHotkeys.size(); ++i) {
         if (m_appVolumeHotkeys[i].executableName == executableName) {
+            auto desired = m_appVolumeHotkeys;
+            desired.removeAt(i);
+            // Keep the current list and native bindings until the removal is durable.
+            if (!saveAppVolumeHotkeys(desired))
+            {
+                reportAppVolumeHotkeysSaveFailure();
+                return false;
+            }
             // Unregister these specific hotkeys
             if (m_hwnd) {
                 if (m_registeredHotkeys.contains(m_appVolumeHotkeys[i].volumeUpHotkeyId)) {
                     UnregisterHotKey(m_hwnd, m_appVolumeHotkeys[i].volumeUpHotkeyId);
                     m_registeredHotkeys.remove(m_appVolumeHotkeys[i].volumeUpHotkeyId);
+                    m_bindings.remove(m_appVolumeHotkeys[i].volumeUpHotkeyId);
                 }
                 if (m_registeredHotkeys.contains(m_appVolumeHotkeys[i].volumeDownHotkeyId)) {
                     UnregisterHotKey(m_hwnd, m_appVolumeHotkeys[i].volumeDownHotkeyId);
                     m_registeredHotkeys.remove(m_appVolumeHotkeys[i].volumeDownHotkeyId);
+                    m_bindings.remove(m_appVolumeHotkeys[i].volumeDownHotkeyId);
                 }
             }
-            m_appVolumeHotkeys.removeAt(i);
-            saveAppVolumeHotkeys();
+            m_appVolumeHotkeys = desired;
+            m_lastError.clear();
+            emit lastErrorChanged();
             emit appVolumeHotkeysChanged();
-            return;
+            return true;
         }
     }
+    return false;
 }
 
 QJsonArray KeyboardShortcutManager::appVolumeHotkeysJson() const
@@ -446,4 +481,39 @@ QJsonArray KeyboardShortcutManager::appVolumeHotkeysJson() const
         arr.append(obj);
     }
     return arr;
+}
+
+bool KeyboardShortcutManager::registerBinding(int id, UINT modifiers, UINT key)
+{
+    const auto previous = m_bindings.value(id);
+    const auto desired = qMakePair(modifiers, key);
+    if (previous == desired && m_registeredHotkeys.contains(id))
+        return true;
+    if (m_registeredHotkeys.contains(id))
+    {
+        UnregisterHotKey(m_hwnd, id);
+        m_registeredHotkeys.remove(id);
+        m_bindings.remove(id);
+    }
+    if (!key)
+        return true; // An empty key deliberately disables this action.
+    if (m_hwnd && RegisterHotKey(m_hwnd, id, modifiers, key))
+    {
+        m_registeredHotkeys[id] = true;
+        m_bindings[id] = desired;
+        return true;
+    }
+    const DWORD error = GetLastError();
+    if (previous.second && RegisterHotKey(m_hwnd, id, previous.first, previous.second))
+    {
+        m_registeredHotkeys[id] = true;
+        m_bindings[id] = previous;
+    }
+    m_lastError =
+        tr("Windows could not register a shortcut (error %1). The previous binding was retained when possible.")
+            .arg(error);
+    LOG_WARN("Shortcuts", QString("Hotkey %1 registration failed: %2").arg(id).arg(error));
+    emit lastErrorChanged();
+    emit registrationFailed(m_lastError);
+    return false;
 }

@@ -5,6 +5,8 @@
 #include <QMutex>
 #include <QTimer>
 #include <QByteArray>
+#include <atomic>
+#include <memory>
 #include <windows.h>
 #include <winrt/Windows.Media.Control.h>
 #include <winrt/Windows.Foundation.h>
@@ -24,12 +26,27 @@ struct MediaInfo {
     int sourceCount = 0;
 };
 
+Q_DECLARE_METATYPE(MediaInfo)
+
+class MediaWorker;
+struct MediaCallbackTarget
+{
+    QMutex mutex;
+    MediaWorker* worker = nullptr;
+};
+
 class MediaWorker : public QObject
 {
     Q_OBJECT
 
+public:
+    MediaWorker();
+    ~MediaWorker() override;
+    void requestStop() { m_stopRequested.store(true); }
 public slots:
+    void cleanup();
     void queryMediaInfo();
+    void handleMediaEvent(bool resetManualSelection, bool checkPlayback);
     void startMonitoring();
     void stopMonitoring();
     void playPause();
@@ -41,8 +58,14 @@ signals:
     void mediaInfoChanged(const MediaInfo& info);
 
 private:
-    GlobalSystemMediaTransportControlsSessionManager m_sessionManager{ nullptr };
-    GlobalSystemMediaTransportControlsSession m_currentSession{ nullptr };
+    QTimer* m_retryTimer = nullptr;
+    int m_retryInterval = 2000;
+    bool m_running = false;
+    bool m_apartmentInitialized = false;
+    std::atomic_bool m_stopRequested{false};
+    std::shared_ptr<MediaCallbackTarget> m_callbackTarget = std::make_shared<MediaCallbackTarget>();
+    GlobalSystemMediaTransportControlsSessionManager m_sessionManager{nullptr};
+    GlobalSystemMediaTransportControlsSession m_currentSession{nullptr};
     bool m_sourceSelectedManually = false;
 
     // Event tokens for cleanup
@@ -55,6 +78,7 @@ private:
     QByteArray m_cachedRawAlbumArt;
     QString m_cachedProcessedAlbumArt;
 
+    void resetSessionManager();
     void setupSessionManagerNotifications();
     void cleanupSessionManagerNotifications();
     void setupSessionNotifications();

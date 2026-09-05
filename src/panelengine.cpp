@@ -1,6 +1,8 @@
 #include "panelengine.h"
 #include "mediasessionmanager.h"
-#include "LanguageBridge.h"
+#include "languagebridge.h"
+#include "workerthreads.h"
+#include "headsetcontrolbridge.h"
 #include "trayiconprovider.h"
 #include "usersettings.h"
 #include <QMenu>
@@ -15,6 +17,7 @@
 #include <QVariant>
 #include <Windows.h>
 #include <QProcess>
+#include <cstdlib>
 
 HWINEVENTHOOK PanelEngine::focusHook = NULL;
 PanelEngine* PanelEngine::instance = nullptr;
@@ -41,7 +44,7 @@ PanelEngine::PanelEngine(QWidget *parent)
                 this, &PanelEngine::onLanguageChanged);
     }
 
-    LanguageBridge::instance()->changeApplicationLanguage(UserSettings::instance()->languageIndex());
+    LanguageBridge::instance()->reloadApplicationLanguage();
 }
 
 PanelEngine::~PanelEngine()
@@ -49,7 +52,10 @@ PanelEngine::~PanelEngine()
     stopFocusMonitoring();
     MediaSessionManager::cleanup();
     destroyQMLEngine();
+    HeadsetControlBridge::instance()->shutdown();
     cleanupLocalServer();
+    if (!drainRetiredWorkerThreads())
+        std::_Exit(EXIT_FAILURE);
     instance = nullptr;
 }
 
@@ -60,13 +66,17 @@ void PanelEngine::initializeQMLEngine()
     }
 
     engine = new QQmlApplicationEngine(this);
+    connect(
+        engine, &QQmlApplicationEngine::objectCreationFailed, qApp, [] { QCoreApplication::exit(EXIT_FAILURE); },
+        Qt::QueuedConnection);
     engine->addImageProvider("trayicon", new TrayIconProvider());
     engine->loadFromModule("ChrisLauinger77.QontrolPanel", "Main");
 
     if (!engine->rootObjects().isEmpty()) {
         panelWindow = qobject_cast<QWindow*>(engine->rootObjects().constFirst());
         if (panelWindow) {
-            if (auto* quickWindow = qobject_cast<QQuickWindow*>(panelWindow)) {
+            if (auto* quickWindow = qobject_cast<QQuickWindow*>(panelWindow.data()))
+            {
                 // The main panel is animated fully off-screen before it is hidden.
                 // Recreate its OpenGL scene graph on the next show so Windows/DWM
                 // cannot retain a stale backing surface that only repaints on resize.
@@ -91,7 +101,8 @@ void PanelEngine::onPanelVisibilityChanged(bool visible)
 
     if (visible) {
         startFocusMonitoring();
-        if (auto* quickWindow = qobject_cast<QQuickWindow*>(panelWindow)) {
+        if (auto* quickWindow = qobject_cast<QQuickWindow*>(panelWindow.data()))
+        {
             QTimer::singleShot(0, quickWindow, &QQuickWindow::update);
         }
     } else {
@@ -102,7 +113,7 @@ void PanelEngine::onPanelVisibilityChanged(bool visible)
 void PanelEngine::destroyQMLEngine()
 {
     if (engine) {
-        engine->deleteLater();
+        delete engine;
         engine = nullptr;
     }
     panelWindow = nullptr;
@@ -169,8 +180,10 @@ void PanelEngine::setupLocalServer()
     localServer = new QLocalServer(this);
     QLocalServer::removeServer("QontrolPanel");
 
+    localServer->setSocketOptions(QLocalServer::UserAccessOption);
     if (!localServer->listen("QontrolPanel")) {
         qWarning() << "Failed to create local server:" << localServer->errorString();
+        QTimer::singleShot(0, qApp, [] { QCoreApplication::exit(EXIT_FAILURE); });
         return;
     }
 
@@ -195,12 +208,24 @@ void PanelEngine::onNewConnection()
         return;
     }
 
+    QTimer::singleShot(3000, clientSocket, &QLocalSocket::abort);
+    clientSocket->setReadBufferSize(64);
     connect(clientSocket, &QLocalSocket::readyRead, this, [this, clientSocket]() {
-        QByteArray data = clientSocket->readAll();
-        QString message = QString::fromUtf8(data);
+        QByteArray data = clientSocket->property("requestBytes").toByteArray() + clientSocket->readAll();
+        if (data.size() > 32)
+        {
+            clientSocket->abort();
+            return;
+        }
+        clientSocket->setProperty("requestBytes", data);
+        if (!data.contains('\n') && data != "show_panel")
+            return;
+        const QString message = QString::fromUtf8(data).trimmed();
 
-        if (message == "show_panel") {
-            if (panelWindow) {
+        if (message == "show_panel")
+        {
+            if (panelWindow)
+            {
                 QMetaObject::invokeMethod(panelWindow, "showPanel");
             }
         }

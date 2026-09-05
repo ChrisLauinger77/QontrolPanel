@@ -137,45 +137,13 @@ ApplicationWindow {
                 panel.repositionWindows()
             }
         }
-
-        function onEnableMediaSessionManagerChanged() {
-            if (UserSettings.enableMediaSessionManager) {
-                MediaSessionBridge.startMediaMonitoring()
-            } else {
-                MediaSessionBridge.stopMediaMonitoring()
-            }
-        }
-
-        function onAllowBrightnessControlChanged() {
-            if (UserSettings.allowBrightnessControl) {
-                MonitorManager.initialize()
-                if (MonitorManager.monitorDetected) {
-                    MonitorManager.setDDCCIBrightness(Math.round(UserSettings.ddcciBrightness), UserSettings.ddcciQueueDelay)
-                }
-            } else {
-                MonitorManager.cleanup()
-            }
-        }
-
-        function onEnableDeviceManagerChanged() {
-            if (UserSettings.enableDeviceManager || UserSettings.enableApplicationMixer) {
-                AudioBridge.initialize()
-            } else {
-                AudioBridge.cleanup()
-            }
-        }
-
-        function onEnableApplicationMixerChanged() {
-            if (UserSettings.enableDeviceManager || UserSettings.enableApplicationMixer) {
-                AudioBridge.initialize()
-            } else {
-                AudioBridge.cleanup()
-            }
-        }
     }
 
     Connections {
         target: AudioBridge
+        function onSaveFailed(message) {
+            systemTray.showMessage(qsTr("Settings could not be saved"), message)
+        }
         function onOutputDeviceCountChanged() {
             if (AudioBridge.outputDevices.count <= 1) {
                 outputDevicesRect.expanded = false
@@ -631,6 +599,30 @@ ApplicationWindow {
             if (visibilities[i]) return true
         }
         return false
+    }
+
+    Connections {
+        target: KeyboardShortcutManager
+        function onRegistrationFailed(message) {
+            systemTray.showMessage(qsTr("Shortcut registration failed"), message)
+        }
+        function onSaveFailed(message) {
+            systemTray.showMessage(qsTr("Settings could not be saved"), message)
+        }
+    }
+
+    Connections {
+        target: UserSettings
+        function onSaveFailed(message) {
+            systemTray.showMessage(qsTr("Settings could not be saved"), message)
+        }
+    }
+
+    Connections {
+        target: PowerBridge
+        function onOperationFailed(message) {
+            systemTray.showMessage(qsTr("Power action failed"), message)
+        }
     }
 
     Connections {

@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation>No se pudo guardar la configuración de audio. Compruebe el acceso a su perfil de usuario y el espacio disponible en el disco.</translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
@@ -943,6 +950,10 @@ You can enable it in the Components tab.</source>
         <translation>La supervisión de HeadsetControl está desactivada
 Puedes activarla en la pestaña Componentes.</translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation>No se pudieron aplicar algunos ajustes de los auriculares. Actualiza para volver a intentarlo.</translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -961,6 +972,17 @@ Puedes activarla en la pestaña Componentes.</translation>
     <message>
         <source>Welcome to QontrolPanel!</source>
         <translation>¡Bienvenido a QontrolPanel!</translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>No se pudieron guardar los atajos de las aplicaciones. Comprueba el acceso a tu perfil de usuario y el espacio disponible en disco.</translation>
+    </message>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation>Windows no pudo registrar un atajo de teclado (error %1). Se conservó la asignación anterior siempre que fue posible.</translation>
     </message>
 </context>
 <context>
@@ -1086,6 +1108,18 @@ Puedes activarla en la pestaña Componentes.</translation>
         <source>Brightness</source>
         <translation>Brillo</translation>
     </message>
+    <message>
+        <source>Power action failed</source>
+        <translation>Error en la operación de energía</translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation>Error al registrar el atajo de teclado</translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation>No se pudo guardar la configuración</translation>
+    </message>
 </context>
 <context>
     <name>MediaOverlay</name>
@@ -1174,6 +1208,13 @@ Puedes activarla en la pestaña Componentes.</translation>
     <message>
         <source>Update available</source>
         <translation>Actualización disponible</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation>Windows no pudo completar la operación de energía (error %1).</translation>
     </message>
 </context>
 <context>
@@ -1506,10 +1547,6 @@ Puedes activarla en la pestaña Componentes.</translation>
         <translation>No se encontró ningún ejecutable en la última versión</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation>No se puede iniciar la descarga</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Error al descargar: %1</translation>
     </message>
@@ -1544,6 +1581,33 @@ Puedes activarla en la pestaña Componentes.</translation>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
         <translation>Se descargaron %1 de %2 archivos de traducción</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation>Metadatos de la versión no válidos</translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation>La versión no incluye una suma de comprobación SHA-256 válida o un tamaño de archivo válido.</translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation>La verificación de la actualización falló. Se descartó el instalador.</translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation>La descarga superó el tamaño previsto o no se pudo guardar.</translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation>Descarga cancelada</translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation>No se pudo guardar la configuración. Comprueba el acceso a tu perfil de usuario.</translation>
     </message>
 </context>
 </TS>

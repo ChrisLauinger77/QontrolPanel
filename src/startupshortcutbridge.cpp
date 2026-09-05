@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QDir>
+#include "logmanager.h"
 
 StartupShortcutBridge* StartupShortcutBridge::m_instance = nullptr;
 
@@ -41,10 +42,13 @@ void StartupShortcutBridge::manageShortcut(bool state, QString shortcutName)
 
     if (state) {
         QString applicationPath = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
-        registry.setValue(shortcutName, applicationPath);
+        registry.setValue(shortcutName, QString("\"%1\"").arg(applicationPath));
     } else {
         registry.remove(shortcutName);
     }
+    registry.sync();
+    if (registry.status() != QSettings::NoError)
+        LOG_WARN("Startup", "Could not update startup registration");
 }
 
 bool StartupShortcutBridge::isShortcutPresent(QString shortcutName)

@@ -18,8 +18,10 @@ class MediaSessionBridge : public QObject
     Q_PROPERTY(QString sourceIcon READ sourceIcon NOTIFY mediaInfoChanged)
     Q_PROPERTY(int sourceCount READ sourceCount NOTIFY mediaInfoChanged)
 
-public:
+private:
     explicit MediaSessionBridge(QObject* parent = nullptr);
+
+public:
     ~MediaSessionBridge() override;
 
     static MediaSessionBridge* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
@@ -55,4 +57,3 @@ private:
     QString m_sourceIcon;
     int m_sourceCount = 0;
 };
-

@@ -24,6 +24,7 @@ class KeyboardShortcutManager : public QObject, public QAbstractNativeEventFilte
     QML_ELEMENT
     QML_SINGLETON
     Q_PROPERTY(bool globalShortcutsSuspended READ globalShortcutsSuspended WRITE setGlobalShortcutsSuspended NOTIFY globalShortcutsSuspendedChanged)
+    Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
     Q_PROPERTY(QJsonArray appVolumeHotkeys READ appVolumeHotkeysJson NOTIFY appVolumeHotkeysChanged)
 
 public:
@@ -31,27 +32,29 @@ public:
     static KeyboardShortcutManager* create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     ~KeyboardShortcutManager() override;
 
+    QString lastError() const { return m_lastError; }
     bool globalShortcutsSuspended() const;
     void setGlobalShortcutsSuspended(bool suspended);
 
-    Q_INVOKABLE void manageGlobalShortcuts(bool enabled);
-
     // Per-app volume hotkeys
     Q_INVOKABLE bool addAppVolumeHotkey(const QString &executableName, int volUpKey, int volUpMods, int volDownKey, int volDownMods, int volumeStepSize = 0);
-    Q_INVOKABLE void removeAppVolumeHotkey(const QString &executableName);
+    Q_INVOKABLE bool removeAppVolumeHotkey(const QString &executableName);
     QJsonArray appVolumeHotkeysJson() const;
 
     // Native event filter to handle WM_HOTKEY messages
     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
 
 signals:
+    void lastErrorChanged();
+    void registrationFailed(const QString& message);
+    void saveFailed(const QString& message);
     void panelToggleRequested();
     void globalShortcutsSuspendedChanged();
     void chatMixEnabledChanged(bool enabled);
     void chatMixNotificationRequested(QString message);
     void chatMixToggleRequested();
     void micMuteToggleRequested();
-    void appVolumeHotkeyPressed(const QString &executableName, bool volumeUp, int volumeStepSize);
+    void appVolumeHotkeyPressed(const QString& executableName, bool volumeUp, int volumeStepSize);
     void appVolumeHotkeysChanged();
 
 private:
@@ -72,19 +75,25 @@ private:
 
     HWND m_hwnd = nullptr;
     QMap<int, bool> m_registeredHotkeys;
+    QMap<int, QPair<UINT, UINT>> m_bindings;
+    QString m_lastError;
+    bool m_registering = false;
+    bool m_registrationQueued = false;
+    QMap<int, QPair<int, int>> m_acceptedGlobalBindings;
+    bool registerBinding(int id, UINT modifiers, UINT key);
 
     // Per-app volume hotkeys
     QList<AppVolumeHotkey> m_appVolumeHotkeys;
     int m_nextAppHotkeyId = APP_HOTKEY_BASE_ID;
 
+    void syncGlobalShortcuts();
     void registerHotkeys();
     void unregisterHotkeys();
-    void updateHotkey(HotkeyId id, int qtKey, int qtMods);
-    void toggleChatMixFromShortcut(bool enabled);
 
     void registerAppVolumeHotkeys();
     void unregisterAppVolumeHotkeys();
     void loadAppVolumeHotkeys();
-    void saveAppVolumeHotkeys();
+    bool saveAppVolumeHotkeys(const QList<AppVolumeHotkey>& hotkeys);
+    void reportAppVolumeHotkeysSaveFailure();
     QString getAppVolumeHotkeysFilePath() const;
 };

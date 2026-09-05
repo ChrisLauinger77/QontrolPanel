@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
@@ -942,6 +949,10 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <source>Device battery</source>
         <translation>Baterija naprave</translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -960,6 +971,17 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>Welcome to QontrolPanel!</source>
         <translation>Dobrodošli v QontrolPanelu!</translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1085,6 +1107,18 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <source>Brightness</source>
         <translation>Svetlost</translation>
     </message>
+    <message>
+        <source>Power action failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MediaOverlay</name>
@@ -1173,6 +1207,13 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>Update available</source>
         <translation>Posodobitev je na voljo</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1505,10 +1546,6 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>V najnovejši izdaji ni bilo mogoče najti izvedljive datoteke</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation>Prenosa ni mogoče začeti</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Prenos ni uspel: %1</translation>
     </message>
@@ -1543,6 +1580,33 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
         <translation>Prenesenih %1 od %2  datotek prevoda</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

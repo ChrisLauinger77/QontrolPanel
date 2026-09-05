@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>
@@ -943,6 +950,10 @@ You can enable it in the Components tab.</source>
         <translation>헤드셋 제어 모니터링이 비활성화되었습니다
 구성 요소 탭에서 활성화할 수 있습니다.</translation>
     </message>
+    <message>
+        <source>Some headset settings could not be applied. Refresh to retry.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IntroWindow</name>
@@ -961,6 +972,17 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Welcome to QontrolPanel!</source>
         <translation>QontrolPanel에 오신 것을 환영합니다!</translation>
+    </message>
+</context>
+<context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1086,6 +1108,18 @@ You can enable it in the Components tab.</source>
         <source>Brightness</source>
         <translation>밝기</translation>
     </message>
+    <message>
+        <source>Power action failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcut registration failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings could not be saved</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MediaOverlay</name>
@@ -1174,6 +1208,13 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Update available</source>
         <translation>업데이트 가능</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1506,10 +1547,6 @@ You can enable it in the Components tab.</source>
         <translation>최신 릴리스에서 실행 파일을 찾을 수 없습니다</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation>다운로드를 시작할 수 없습니다</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>다운로드 실패: %1</translation>
     </message>
@@ -1544,6 +1581,33 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Downloaded %1 of %2 translation files</source>
         <translation>%2개의 번역 파일 중 %1개를 다운로드했습니다</translation>
+    </message>
+    <message>
+        <source>Invalid release metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The release has no valid SHA-256 checksum or file size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update verification failed. The installer was discarded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The download exceeded its expected size or could not be saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserSettings</name>
+    <message>
+        <source>Could not save settings. Check access to your user profile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

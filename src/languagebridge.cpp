@@ -1,7 +1,10 @@
 #include "languagebridge.h"
 #include "languages.h"
-#include <QApplication>
+#include "updater.h"
+#include "usersettings.h"
 #include <QCoreApplication>
+#include <QDebug>
+#include <QLocale>
 
 LanguageBridge* LanguageBridge::m_instance = nullptr;
 
@@ -24,7 +27,10 @@ LanguageBridge::LanguageBridge(QObject *parent)
     : QObject(parent)
     , translator(new QTranslator(this))
 {
-
+    connect(UserSettings::instance(), &UserSettings::languageIndexChanged,
+            this, &LanguageBridge::reloadApplicationLanguage);
+    connect(Updater::instance(), &Updater::translationDownloadFinished,
+            this, &LanguageBridge::reloadApplicationLanguage);
 }
 
 QString LanguageBridge::getCurrentLanguageCode() const {
@@ -42,9 +48,10 @@ QString LanguageBridge::getCurrentLanguageCode() const {
     return languageCode;
 }
 
-void LanguageBridge::changeApplicationLanguage(int languageIndex)
+void LanguageBridge::reloadApplicationLanguage()
 {
-    qApp->removeTranslator(translator);
+    const int languageIndex = UserSettings::instance()->languageIndex();
+    QCoreApplication::removeTranslator(translator);
     delete translator;
     translator = new QTranslator(this);
 
@@ -55,9 +62,9 @@ void LanguageBridge::changeApplicationLanguage(int languageIndex)
         languageCode = getLanguageCodeFromIndex(languageIndex);
     }
 
-    QString translationFile = QString(qApp->applicationDirPath() + "/i18n/QontrolPanel_%1.qm").arg(languageCode);
+    QString translationFile = QString(QCoreApplication::applicationDirPath() + "/i18n/QontrolPanel_%1.qm").arg(languageCode);
     if (translator->load(translationFile)) {
-        qApp->installTranslator(translator);
+        QCoreApplication::installTranslator(translator);
     } else {
         qWarning() << "Failed to load translation file:" << translationFile;
     }
@@ -94,4 +101,10 @@ QStringList LanguageBridge::getLanguageNativeNames() const
 {
     auto names = ::getLanguageNativeNames();
     return names;
+}
+
+LanguageBridge::~LanguageBridge()
+{
+    QCoreApplication::removeTranslator(translator);
+    m_instance = nullptr;
 }
