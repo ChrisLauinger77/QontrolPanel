@@ -137,7 +137,6 @@ ApplicationWindow {
                 panel.repositionWindows()
             }
         }
-
     }
 
     Connections {
@@ -597,6 +596,27 @@ ApplicationWindow {
             if (visibilities[i]) return true
         }
         return false
+    }
+
+    Connections {
+        target: KeyboardShortcutManager
+        function onRegistrationFailed(message) {
+            systemTray.showMessage(qsTr("Shortcut registration failed"), message)
+        }
+    }
+
+    Connections {
+        target: UserSettings
+        function onSaveFailed(message) {
+            systemTray.showMessage(qsTr("Settings could not be saved"), message)
+        }
+    }
+
+    Connections {
+        target: PowerBridge
+        function onOperationFailed(message) {
+            systemTray.showMessage(qsTr("Power action failed"), message)
+        }
     }
 
     Connections {

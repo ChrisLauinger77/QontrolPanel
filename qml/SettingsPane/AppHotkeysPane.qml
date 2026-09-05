@@ -16,6 +16,13 @@ ColumnLayout {
         Layout.bottomMargin: 15
     }
 
+    Label {
+        Layout.fillWidth: true
+        visible: KeyboardShortcutManager.lastError.length > 0
+        text: KeyboardShortcutManager.lastError
+        wrapMode: Text.Wrap
+    }
+
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
@@ -67,6 +74,7 @@ ColumnLayout {
         }
 
         Dialog {
+            Component.onDestruction: KeyboardShortcutManager.globalShortcutsSuspended = false
             id: addHotkeyDialog
             title: qsTr("Add App Volume Hotkey")
             modal: true

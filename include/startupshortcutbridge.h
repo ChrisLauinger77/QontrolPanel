@@ -10,8 +10,10 @@ class StartupShortcutBridge : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
-public:
+private:
     explicit StartupShortcutBridge(QObject* parent = nullptr);
+
+public:
     ~StartupShortcutBridge() override;
 
     static StartupShortcutBridge* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
