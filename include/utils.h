@@ -10,8 +10,10 @@ class Utils : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
-public:
+private:
     explicit Utils(QObject* parent = nullptr);
+
+public:
     ~Utils() override;
 
     static Utils* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);

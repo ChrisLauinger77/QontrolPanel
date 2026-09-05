@@ -4,6 +4,7 @@
 #include <QString>
 #include <QQmlEngine>
 #include <QSet>
+#include <QMutex>
 
 class LogManager : public QObject
 {
@@ -29,22 +30,24 @@ public:
 
     Q_INVOKABLE QStringList getAllCategories() const;
     Q_INVOKABLE void setQmlReady();
+    Q_INVOKABLE void clearLogs();
+    Q_INVOKABLE QVariantList snapshot() const;
 
 signals:
-    void logReceived(const QString &formattedMessage, LogType type);
     void bufferedLogsReady(const QVariantList &logs);
     void categoryRegistered(const QString &category);
 
 private:
     explicit LogManager(QObject *parent = nullptr);
-    static LogManager* m_instance;
 
     void registerCategory(const QString &category);
-    QString formatMessage(const QString &category, LogType type, const QString &content) const;
     void emitLog(const QString &category, LogType type, const QString &content);
 
     QList<QPair<QString, LogType>> m_bufferedLogs;
+    mutable QMutex m_mutex;
     bool m_qmlReady = false;
+    bool m_deliveryPending = false;
+    void publishSnapshot();
 
     QSet<QString> m_registeredCategories;
 };

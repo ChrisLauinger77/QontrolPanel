@@ -5,7 +5,7 @@ import ChrisLauinger77.QontrolPanel
 Item {
     id: logBridge
 
-    property int maxLogEntries: 500
+    readonly property int maxLogEntries: 500
     property ListModel logModel: ListModel {}
     property ListModel filteredModel: ListModel {}
     readonly property string allFilterValue: "__ALL__"
@@ -23,11 +23,9 @@ Item {
     Connections {
         target: LogManager
 
-        function onLogReceived(message, type) {
-            logBridge.addLogEntry(message, type)
-        }
-
         function onBufferedLogsReady(logs) {
+            logModel.clear()
+            filteredModel.clear()
             for (let i = 0; i < logs.length; i++) {
                 let log = logs[i]
                 logBridge.addLogEntry(log.message, log.type)
@@ -40,6 +38,10 @@ Item {
 
         // Proper cleanup - remove excess entries FIRST
         while (logModel.count >= maxLogEntries) {
+            let oldest = logModel.get(0)
+            if (currentFilter === allFilterValue || oldest.sender === currentFilter) {
+                if (filteredModel.count > 0) filteredModel.remove(0)
+            }
             logModel.remove(0)
         }
 
@@ -65,8 +67,7 @@ Item {
     }
 
     function clearLogs() {
-        logModel.clear()
-        filteredModel.clear()
+        LogManager.clearLogs()
         logsCleared()
     }
 

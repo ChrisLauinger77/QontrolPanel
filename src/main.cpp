@@ -19,7 +19,7 @@
 namespace {
 
 constexpr auto kLocalServerName = "QontrolPanel";
-constexpr auto kServerStartupTimeoutMs = 5000;
+constexpr auto kServerStartupTimeoutMs = 15000;
 constexpr auto kServerRetryIntervalMs = 50;
 constexpr auto kServerConnectionTimeoutMs = 250;
 
@@ -35,7 +35,7 @@ bool tryConnectToExistingInstance(int timeoutMs = 1000)
     socket.connectToServer(kLocalServerName);
 
     if (socket.waitForConnected(timeoutMs)) {
-        socket.write("show_panel");
+        socket.write("show_panel\n");
         socket.waitForBytesWritten(1000);
         socket.disconnectFromServer();
         return true;

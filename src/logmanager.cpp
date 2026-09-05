@@ -2,7 +2,6 @@
 #include <QDebug>
 #include <QDateTime>
 
-LogManager* LogManager::m_instance = nullptr;
 
 LogManager::LogManager(QObject *parent)
     : QObject(parent)
@@ -13,23 +12,28 @@ LogManager* LogManager::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
     Q_UNUSED(qmlEngine)
     Q_UNUSED(jsEngine)
-    return instance();
+    auto* logger = instance();
+    QQmlEngine::setObjectOwnership(logger, QQmlEngine::CppOwnership);
+    return logger;
 }
 
 LogManager* LogManager::instance()
 {
-    if (!m_instance) {
-        m_instance = new LogManager();
-    }
-    return m_instance;
+    // Deliberately process-owned: logging remains valid during native shutdown.
+    static LogManager* logger = new LogManager();
+    return logger;
 }
 
 void LogManager::registerCategory(const QString &category)
 {
-    if (!m_registeredCategories.contains(category)) {
+    bool added;
+    {
+        QMutexLocker lock(&m_mutex);
+        added = !m_registeredCategories.contains(category);
         m_registeredCategories.insert(category);
-        emit categoryRegistered(category);
     }
+    if (added)
+        emit categoryRegistered(category);
 }
 
 void LogManager::log(const QString &category, const QString &content)
@@ -52,29 +56,10 @@ void LogManager::critical(const QString &category, const QString &content)
 
 QStringList LogManager::getAllCategories() const
 {
+    QMutexLocker lock(&m_mutex);
     QStringList categories = m_registeredCategories.values();
     categories.sort();
     return categories;
-}
-
-QString LogManager::formatMessage(const QString &category, LogType type, const QString &content) const
-{
-    QString typeStr;
-    switch (type) {
-    case Info:
-        typeStr = "INFO";
-        break;
-    case Warning:
-        typeStr = "WARN";
-        break;
-    case Critical:
-        typeStr = "CRITICAL";
-        break;
-    }
-
-    QString timestamp = QDateTime::currentDateTime().toString("hh:mm:ss");
-    return QString("[%1] %2 [%3] - %4")
-        .arg(timestamp, category, typeStr, content);
 }
 
 void LogManager::emitLog(const QString &category, LogType type, const QString &content)
@@ -108,30 +93,51 @@ void LogManager::emitLog(const QString &category, LogType type, const QString &c
 
     qDebug().noquote() << consoleMessage;
 
-    if (m_qmlReady) {
-        emit logReceived(plainMessage, type);
-    } else {
+    QMutexLocker lock(&m_mutex);
         m_bufferedLogs.append(qMakePair(plainMessage, type));
+    while (m_bufferedLogs.size() > 500)
+        m_bufferedLogs.removeFirst();
+    if (m_qmlReady && !m_deliveryPending)
+    {
+        m_deliveryPending = true;
+        QMetaObject::invokeMethod(this, &LogManager::publishSnapshot, Qt::QueuedConnection);
     }
+}
+
+QVariantList LogManager::snapshot() const
+{
+    QMutexLocker lock(&m_mutex);
+    QVariantList logs;
+    for (const auto& entry : m_bufferedLogs)
+    {
+        logs.append(QVariantMap{{"message", entry.first}, {"type", static_cast<int>(entry.second)}});
+    }
+    return logs;
+}
+
+void LogManager::publishSnapshot()
+{
+    {
+        QMutexLocker lock(&m_mutex);
+        m_deliveryPending = false;
+    }
+    emit bufferedLogsReady(snapshot());
 }
 
 void LogManager::setQmlReady()
 {
-    if (m_qmlReady) return;
-
+    {
+        QMutexLocker lock(&m_mutex);
     m_qmlReady = true;
-
-    QVariantList bufferedLogs;
-    for (const auto& log : m_bufferedLogs) {
-        QVariantMap logEntry;
-        logEntry["message"] = log.first;
-        logEntry["type"] = static_cast<int>(log.second);
-        bufferedLogs.append(logEntry);
+    }
+    publishSnapshot();
     }
 
-    if (!bufferedLogs.isEmpty()) {
-        emit bufferedLogsReady(bufferedLogs);
-    }
-
+void LogManager::clearLogs()
+{
+    {
+        QMutexLocker lock(&m_mutex);
     m_bufferedLogs.clear();
+}
+    publishSnapshot();
 }

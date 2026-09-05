@@ -15,8 +15,10 @@ class WindowChrome : public QObject, public QAbstractNativeEventFilter
     Q_PROPERTY(bool maximizeButtonHovered READ maximizeButtonHovered NOTIFY maximizeButtonHoveredChanged)
     Q_PROPERTY(bool maximizeButtonPressed READ maximizeButtonPressed NOTIFY maximizeButtonPressedChanged)
 
-public:
+private:
     explicit WindowChrome(QObject* parent = nullptr);
+
+public:
     ~WindowChrome() override;
 
     static WindowChrome* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);

@@ -12,8 +12,10 @@ class WindowsBackdrop : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
-public:
+private:
     explicit WindowsBackdrop(QObject* parent = nullptr);
+
+public:
     ~WindowsBackdrop() override;
 
     static WindowsBackdrop* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
