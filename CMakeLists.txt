@@ -45,6 +45,9 @@ endif()
 include(cmake/languages.cmake)
 
 set(SOURCES
+    src/nativeimage.cpp
+    src/jsonstore.cpp
+    src/workerthreads.cpp
     src/audiomanager.cpp
     src/audiobridge.cpp
     src/audiomodels.cpp
@@ -71,6 +74,9 @@ set(SOURCES
 )
 
 set(HEADERS
+    include/nativeimage.h
+    include/jsonstore.h
+    include/workerthreads.h
     include/audiomanager.h
     include/audiobridge.h
     include/audiomodels.h
