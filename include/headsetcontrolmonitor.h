@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QJsonObject>
+#include <QVariantMap>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <headsetcontrol.hpp>
@@ -25,6 +26,27 @@ struct HeadsetControlDevice {
 };
 Q_DECLARE_METATYPE(HeadsetControlDevice)
 
+struct HeadsetControlState
+{
+    bool hasSidetoneCapability = false;
+    bool hasLightsCapability = false;
+    bool hasRotateToMuteCapability = false;
+    bool hasChatMixCapability = false;
+    bool hasVoicePromptsCapability = false;
+    bool hasEqualizerPresetsCapability = false;
+    bool hasInactiveTimeCapability = false;
+    QString deviceName;
+    QString batteryStatus = "BATTERY_UNAVAILABLE";
+    int batteryLevel = -1;
+    int chatMix = -1;
+    QStringList equalizerPresetNames;
+    bool anyDeviceFound = false;
+    bool testModeEnabled = false;
+    int testProfile = 1;
+};
+
+Q_DECLARE_METATYPE(HeadsetControlState)
+
 class HeadsetControlMonitor : public QObject
 {
     Q_OBJECT
@@ -33,6 +55,7 @@ public:
     ~HeadsetControlMonitor();
 
     bool isMonitoring() const;
+    HeadsetControlState snapshot() const;
     QList<HeadsetControlDevice> getCachedDevices() const { return m_cachedDevices; }
 
     bool hasSidetoneCapability() const { return m_hasSidetoneCapability; }
@@ -52,6 +75,7 @@ public:
     int testProfile() const { return m_testProfile; }
 
 public slots:
+    void setDesiredSettings(const QVariantMap& settings);
     void startMonitoring();
     void stopMonitoring();
     void requestRefresh();
@@ -66,6 +90,8 @@ public slots:
     void setTestProfile(int profile);
 
 signals:
+    void snapshotReady(const HeadsetControlState& state);
+    void operationErrorChanged(const QString& error);
     void headsetDataUpdated(const QList<HeadsetControlDevice>& devices);
     void monitoringStateChanged(bool enabled);
     void capabilitiesChanged();
@@ -89,6 +115,11 @@ private:
     void updateFetchTimerInterval(bool deviceFound);
     void updateDeviceCache();
     void updateCapabilities();
+    void applyPendingSettings();
+    void clearDeviceState();
+    QVariantMap m_desiredSettings;
+    QVariantMap m_appliedSettings;
+    QMap<QString, int> m_settingAttempts;
     headsetcontrol::Headset* activeHeadset();
     QString activeHeadsetSettingsKey(const headsetcontrol::Headset& headset) const;
     QString batteryStatusToString(battery_status status) const;

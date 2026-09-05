@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QtQml/qqmlregistration.h>
-#include "audiomanager.h"
+#include "audiotypes.h"
 
 // Forward declarations
 struct AudioApplication;
@@ -41,7 +41,6 @@ public:
     void setApplications(const QList<AudioApplication>& applications);
     void updateApplicationVolume(const QString& appId, int volume);
     void updateApplicationMute(const QString& appId, bool muted);
-    void updateApplicationAudioLevel(const QString& appId, int audioLevel);
 
 private:
     QList<AudioApplication> m_applications;

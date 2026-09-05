@@ -36,6 +36,13 @@ ColumnLayout {
                 width: parent.width
                 spacing: 3
 
+                Label {
+                    Layout.fillWidth: true
+                    visible: HeadsetControlBridge.lastError.length > 0
+                    text: qsTr("Some headset settings could not be applied. Refresh to retry.") + "\n" + HeadsetControlBridge.lastError
+                    wrapMode: Text.Wrap
+                }
+
                 Card {
                     Layout.fillWidth: true
                     visible: !HeadsetControlBridge.anyDeviceFound && UserSettings.headsetcontrolMonitoring && !HeadsetControlBridge.testModeEnabled
@@ -154,7 +161,6 @@ ColumnLayout {
                         }
                         onActivated: {
                             UserSettings.headsetcontrolEqualizerPreset = currentIndex;
-                            HeadsetControlBridge.setEqualizerPreset(currentIndex);
                         }
                     }
                 }
@@ -177,12 +183,10 @@ ColumnLayout {
                             onPressedChanged: {
                                 if (!pressed) {
                                     UserSettings.headsetcontrolInactiveTime = Math.round(value);
-                                    HeadsetControlBridge.setInactiveTime(Math.round(value));
                                 }
                             }
                             onWheelChanged: {
                                 UserSettings.headsetcontrolInactiveTime = Math.round(value);
-                                HeadsetControlBridge.setInactiveTime(Math.round(value));
                             }
                         }
 
@@ -204,7 +208,6 @@ ColumnLayout {
                         checked: UserSettings.headsetcontrolLights
                         onClicked: {
                             UserSettings.headsetcontrolLights = checked;
-                            HeadsetControlBridge.setLights(checked);
                         }
                     }
                 }
@@ -220,7 +223,6 @@ ColumnLayout {
                         checked: UserSettings.headsetcontrolRotateToMute
                         onClicked: {
                             UserSettings.headsetcontrolRotateToMute = checked;
-                            HeadsetControlBridge.setRotateToMute(checked);
                         }
                     }
                 }
@@ -243,12 +245,10 @@ ColumnLayout {
                             onPressedChanged: {
                                 if (!pressed) {
                                     UserSettings.headsetcontrolSidetone = Math.round(value);
-                                    HeadsetControlBridge.setSidetone(Math.round(value));
                                 }
                             }
                             onWheelChanged: {
                                 UserSettings.headsetcontrolSidetone = Math.round(value);
-                                HeadsetControlBridge.setSidetone(Math.round(value));
                             }
                         }
 
@@ -270,7 +270,6 @@ ColumnLayout {
                         checked: UserSettings.headsetcontrolVoicePrompts
                         onClicked: {
                             UserSettings.headsetcontrolVoicePrompts = checked;
-                            HeadsetControlBridge.setVoicePrompts(checked);
                         }
                     }
                 }
@@ -296,7 +295,6 @@ ColumnLayout {
                             stepSize: 5
                             onValueModified: {
                                 UserSettings.headsetcontrolFetchRate = value;
-                                HeadsetControlBridge.setFetchRate(value);
                             }
                         }
                     }

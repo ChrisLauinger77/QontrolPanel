@@ -1,6 +1,15 @@
 #include "audiomodels.h"
-#include "audiobridge.h"
 #include <algorithm>
+
+namespace
+{
+    template <class Items, class Key> bool sameRows(const Items& previous, const Items& next, Key key)
+    {
+        return previous.size() == next.size() &&
+               std::equal(previous.cbegin(), previous.cend(), next.cbegin(),
+                          [&](const auto& a, const auto& b) { return key(a) == key(b); });
+    }
+} // namespace
 
 // ============================================================================
 // ApplicationModel Implementation
@@ -13,13 +22,13 @@ ApplicationModel::ApplicationModel(QObject *parent)
 
 int ApplicationModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
-    return m_applications.count();
+    return parent.isValid() ? 0 : m_applications.count();
 }
 
 QVariant ApplicationModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_applications.count())
+    if (!index.isValid() || index.model() != this || index.column() != 0 || index.row() < 0 ||
+        index.row() >= m_applications.count())
         return QVariant();
 
     const AudioApplication& app = m_applications.at(index.row());
@@ -62,7 +71,6 @@ QHash<int, QByteArray> ApplicationModel::roleNames() const
 
 void ApplicationModel::setApplications(const QList<AudioApplication>& applications)
 {
-    beginResetModel();
 
     QList<AudioApplication> sortedApplications;
     AudioApplication systemSounds;
@@ -90,8 +98,14 @@ void ApplicationModel::setApplications(const QList<AudioApplication>& applicatio
         sortedApplications.append(systemSounds);
     }
 
+    const bool stable = sameRows(m_applications, sortedApplications, [](const auto& item) { return item.id; });
+    if (!stable)
+        beginResetModel();
     m_applications = sortedApplications;
+    if (!stable)
     endResetModel();
+    else if (!m_applications.isEmpty())
+        emit dataChanged(index(0, 0), index(m_applications.size() - 1, 0));
 }
 
 void ApplicationModel::updateApplicationVolume(const QString& appId, int volume)
@@ -114,13 +128,6 @@ void ApplicationModel::updateApplicationMute(const QString& appId, bool muted)
     }
 }
 
-void ApplicationModel::updateApplicationAudioLevel(const QString& appId, int audioLevel)
-{
-    // Audio levels are not stored in the model currently
-    // This is for future extension if needed
-    Q_UNUSED(appId)
-    Q_UNUSED(audioLevel)
-}
 
 int ApplicationModel::findApplicationIndex(const QString& appId) const
 {
@@ -143,13 +150,13 @@ FilteredDeviceModel::FilteredDeviceModel(bool isInputFilter, QObject *parent)
 
 int FilteredDeviceModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
-    return m_devices.count();
+    return parent.isValid() ? 0 : m_devices.count();
 }
 
 QVariant FilteredDeviceModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_devices.count())
+    if (!index.isValid() || index.model() != this || index.column() != 0 || index.row() < 0 ||
+        index.row() >= m_devices.count())
         return QVariant();
 
     const AudioDevice& device = m_devices.at(index.row());
@@ -206,32 +213,24 @@ QString FilteredDeviceModel::getDeviceName(int index) const
 
 void FilteredDeviceModel::setDevices(const QList<AudioDevice>& devices)
 {
+    QList<AudioDevice> filtered;
+    for (const auto& device : devices)
+    {
+        if (device.isInput == m_isInputFilter)
+            filtered.append(device);
+    }
+    const int oldCount = m_devices.size();
+    const bool stable = sameRows(m_devices, filtered, [](const auto& item) { return item.id; });
+    if (!stable)
     beginResetModel();
-
-    int oldCount = m_devices.count();
-    m_devices.clear();
-
-    for (const AudioDevice& device : devices) {
-        if (device.isInput == m_isInputFilter) {
-            m_devices.append(device);
-        }
-    }
-
+    m_devices = filtered;
+    if (!stable)
     endResetModel();
+    else if (!m_devices.isEmpty())
+        emit dataChanged(index(0, 0), index(m_devices.size() - 1, 0));
     updateCurrentDefaultIndex();
-
-    if (oldCount != m_devices.count()) {
+    if (oldCount != m_devices.size())
         emit countChanged();
-
-        AudioBridge* audioBridge = qobject_cast<AudioBridge*>(parent());
-        if (audioBridge) {
-            if (m_isInputFilter) {
-                emit audioBridge->inputDeviceCountChanged();
-            } else {
-                emit audioBridge->outputDeviceCountChanged();
-            }
-        }
-    }
 }
 
 int FilteredDeviceModel::getCurrentDefaultIndex() const
@@ -276,13 +275,13 @@ GroupedApplicationModel::GroupedApplicationModel(QObject *parent)
 
 int GroupedApplicationModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
-    return m_groups.count();
+    return parent.isValid() ? 0 : m_groups.count();
 }
 
 QVariant GroupedApplicationModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_groups.count())
+    if (!index.isValid() || index.model() != this || index.column() != 0 || index.row() < 0 ||
+        index.row() >= m_groups.count())
         return QVariant();
 
     const ApplicationGroup& group = m_groups.at(index.row());
@@ -328,9 +327,14 @@ QHash<int, QByteArray> GroupedApplicationModel::roleNames() const
 
 void GroupedApplicationModel::setGroups(const QList<ApplicationGroup>& groups)
 {
+    const bool stable = sameRows(m_groups, groups, [](const auto& item) { return item.executableName; });
+    if (!stable)
     beginResetModel();
     m_groups = groups;
+    if (!stable)
     endResetModel();
+    else if (!m_groups.isEmpty())
+        emit dataChanged(index(0, 0), index(m_groups.size() - 1, 0));
 }
 
 void GroupedApplicationModel::updateGroupVolume(const QString& executableName, int averageVolume)
@@ -383,13 +387,13 @@ ExecutableSessionModel::ExecutableSessionModel(QObject *parent)
 
 int ExecutableSessionModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
-    return m_sessions.count();
+    return parent.isValid() ? 0 : m_sessions.count();
 }
 
 QVariant ExecutableSessionModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_sessions.count())
+    if (!index.isValid() || index.model() != this || index.column() != 0 || index.row() < 0 ||
+        index.row() >= m_sessions.count())
         return QVariant();
 
     const AudioApplication& session = m_sessions.at(index.row());
@@ -432,9 +436,14 @@ QHash<int, QByteArray> ExecutableSessionModel::roleNames() const
 
 void ExecutableSessionModel::setSessions(const QList<AudioApplication>& sessions)
 {
+    const bool stable = sameRows(m_sessions, sessions, [](const auto& item) { return item.id; });
+    if (!stable)
     beginResetModel();
     m_sessions = sessions;
+    if (!stable)
     endResetModel();
+    else if (!m_sessions.isEmpty())
+        emit dataChanged(index(0, 0), index(m_sessions.size() - 1, 0));
 }
 
 void ExecutableSessionModel::updateSessionVolume(const QString& appId, int volume)

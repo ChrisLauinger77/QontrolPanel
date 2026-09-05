@@ -157,21 +157,6 @@ ApplicationWindow {
             }
         }
 
-        function onEnableDeviceManagerChanged() {
-            if (UserSettings.enableDeviceManager || UserSettings.enableApplicationMixer) {
-                AudioBridge.initialize()
-            } else {
-                AudioBridge.cleanup()
-            }
-        }
-
-        function onEnableApplicationMixerChanged() {
-            if (UserSettings.enableDeviceManager || UserSettings.enableApplicationMixer) {
-                AudioBridge.initialize()
-            } else {
-                AudioBridge.cleanup()
-            }
-        }
     }
 
     Connections {

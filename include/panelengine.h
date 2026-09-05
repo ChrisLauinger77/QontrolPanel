@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QQmlApplicationEngine>
 #include <QWindow>
+#include <QPointer>
 #include <Windows.h>
 #include <QLocalServer>
 #include <QLocalSocket>
@@ -24,8 +25,8 @@ private slots:
 
 private:
     QQmlApplicationEngine* engine;
-    QWindow* panelWindow;
-    QWindow* mediaPanelWindow;
+    QPointer<QWindow> panelWindow;
+    QPointer<QWindow> mediaPanelWindow;
 
     void initializeQMLEngine();
     void destroyQMLEngine();
