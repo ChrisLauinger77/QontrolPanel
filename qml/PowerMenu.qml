@@ -2,12 +2,13 @@ import QtQuick.Controls.FluentWinUI3
 import ChrisLauinger77.QontrolPanel
 
 Menu {
+    enabled: !PowerBridge.busy
     id: powerMenu
 
     signal setPowerAction(int action)
 
     MenuItem {
-        enabled: PowerBridge.isSleepSupported()
+        enabled: PowerBridge.sleepSupported
         icon.source: "qrc:/icons/sleep.svg"
         text: qsTr("Sleep")
         onTriggered: PowerBridge.sleep()
@@ -23,7 +24,7 @@ Menu {
                 PowerBridge.hibernate()
             }
         }
-        enabled: PowerBridge.isHibernateSupported()
+        enabled: PowerBridge.hibernateSupported
     }
 
     MenuItem {
@@ -41,7 +42,7 @@ Menu {
     MenuItem {
         icon.source: "qrc:/icons/restart.svg"
         text: qsTr("Restart UEFI")
-        enabled: PowerBridge.isUEFISupported
+        enabled: PowerBridge.uefiSupported
         onTriggered: {
             if (UserSettings.showPowerDialogConfirmation) {
                 powerMenu.setPowerAction(4)
@@ -85,7 +86,7 @@ Menu {
 
     MenuItem {
         icon.source: "qrc:/icons/switch.svg"
-        enabled: PowerBridge.hasMultipleUsers()
+        enabled: PowerBridge.multipleUsers
         text: qsTr("Switch User")
         onTriggered: PowerBridge.switchAccount()
     }

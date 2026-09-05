@@ -9,6 +9,7 @@ class UserSettings : public QObject
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
+    Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
 
     Q_PROPERTY(bool enableDeviceManager READ enableDeviceManager WRITE setEnableDeviceManager NOTIFY enableDeviceManagerChanged)
     Q_PROPERTY(bool enableApplicationMixer READ enableApplicationMixer WRITE setEnableApplicationMixer NOTIFY enableApplicationMixerChanged)
@@ -19,7 +20,6 @@ class UserSettings : public QObject
     Q_PROPERTY(int yAxisMargin READ yAxisMargin WRITE setYAxisMargin NOTIFY yAxisMarginChanged)
     Q_PROPERTY(int languageIndex READ languageIndex WRITE setLanguageIndex NOTIFY languageIndexChanged)
 
-    Q_PROPERTY(QVariantList commApps READ commApps WRITE setCommApps NOTIFY commAppsChanged)
     Q_PROPERTY(int chatMixValue READ chatMixValue WRITE setChatMixValue NOTIFY chatMixValueChanged)
     Q_PROPERTY(bool chatMixEnabled READ chatMixEnabled WRITE setChatMixEnabled NOTIFY chatMixEnabledChanged)
     Q_PROPERTY(bool activateChatmix READ activateChatmix WRITE setActivateChatmix NOTIFY activateChatmixChanged)
@@ -73,6 +73,7 @@ class UserSettings : public QObject
 
 public:
     static UserSettings* create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+    QString lastError() const { return m_lastError; }
     static UserSettings* instance();
 
     // Getters
@@ -85,7 +86,6 @@ public:
     int yAxisMargin() const { return m_yAxisMargin; }
     int languageIndex() const { return m_languageIndex; }
 
-    QVariantList commApps() const { return m_commApps; }
     int chatMixValue() const { return m_chatMixValue; }
     bool chatMixEnabled() const { return m_chatMixEnabled; }
     bool activateChatmix() const { return m_activateChatmix; }
@@ -147,7 +147,6 @@ public:
     void setYAxisMargin(int value);
     void setLanguageIndex(int value);
 
-    void setCommApps(const QVariantList &value);
     void setChatMixValue(int value);
     void setChatMixEnabled(bool value);
     void setActivateChatmix(bool value);
@@ -200,6 +199,8 @@ public:
     void setSliderWheelSensivity(int value);
 
 signals:
+    void lastErrorChanged();
+    void saveFailed(const QString& error);
     void enableDeviceManagerChanged();
     void enableApplicationMixerChanged();
     void enableMediaSessionManagerChanged();
@@ -209,7 +210,6 @@ signals:
     void yAxisMarginChanged();
     void languageIndexChanged();
 
-    void commAppsChanged();
     void chatMixValueChanged();
     void chatMixEnabledChanged();
     void activateChatmixChanged();
@@ -264,9 +264,10 @@ signals:
 private:
     explicit UserSettings(QObject *parent = nullptr);
     static UserSettings* m_instance;
+    QString m_lastError;
 
     void initProperties();
-    void saveValue(const QString &key, const QVariant &value);
+    bool saveValue(const QString& key, const QVariant& value);
 
     bool m_enableDeviceManager;
     bool m_enableApplicationMixer;
@@ -277,7 +278,6 @@ private:
     int m_yAxisMargin;
     int m_languageIndex;
 
-    QVariantList m_commApps;
     int m_chatMixValue;
     bool m_chatMixEnabled;
     bool m_activateChatmix;

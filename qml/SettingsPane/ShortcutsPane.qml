@@ -26,6 +26,13 @@ ColumnLayout {
                 width: parent.width
                 spacing: 3
 
+                Label {
+                    Layout.fillWidth: true
+                    visible: KeyboardShortcutManager.lastError.length > 0
+                    text: KeyboardShortcutManager.lastError
+                    wrapMode: Text.Wrap
+                }
+
                 Card {
                     Layout.fillWidth: true
                     title: qsTr("Enable global shortcuts")
@@ -119,6 +126,7 @@ ColumnLayout {
         }
 
         Dialog {
+            Component.onDestruction: KeyboardShortcutManager.globalShortcutsSuspended = false
             id: shortcutDialog
             modal: true
             width: 400
