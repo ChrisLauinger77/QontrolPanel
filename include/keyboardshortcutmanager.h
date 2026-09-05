@@ -36,8 +36,6 @@ public:
     bool globalShortcutsSuspended() const;
     void setGlobalShortcutsSuspended(bool suspended);
 
-    Q_INVOKABLE void manageGlobalShortcuts(bool enabled);
-
     // Per-app volume hotkeys
     Q_INVOKABLE bool addAppVolumeHotkey(const QString &executableName, int volUpKey, int volUpMods, int volDownKey, int volDownMods, int volumeStepSize = 0);
     Q_INVOKABLE bool removeAppVolumeHotkey(const QString &executableName);
@@ -88,6 +86,7 @@ private:
     QList<AppVolumeHotkey> m_appVolumeHotkeys;
     int m_nextAppHotkeyId = APP_HOTKEY_BASE_ID;
 
+    void syncGlobalShortcuts();
     void registerHotkeys();
     void unregisterHotkeys();
 
