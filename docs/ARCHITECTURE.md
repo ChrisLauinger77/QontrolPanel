@@ -25,7 +25,7 @@ QontrolPanel is a Windows desktop utility built with Qt 6, C++20, QML, Windows s
 The first process creates `PanelEngine`, which:
 
 - initializes persistent user settings;
-- conditionally starts the media session manager;
+- prepares the media service; its bridge controls monitoring from saved preferences;
 - creates the `QQmlApplicationEngine`;
 - loads the `ChrisLauinger77.QontrolPanel` QML module and `Main.qml`;
 - registers a tray icon image provider;
@@ -42,7 +42,7 @@ The UI is QML-first. Native behavior enters QML through C++ classes marked with 
 - `SystemTray.qml` and related tray icon support expose the app as a tray utility.
 - `StartupShortcutBridge` manages startup shortcut behavior.
 - `LanguageBridge` applies the selected Qt translation and asks the QML engine to retranslate.
-- `LogManager` centralizes log messages for diagnostics and the debug pane.
+- `LogManager` keeps a mutex-protected 500-entry history and coalesces UI snapshots, including before the debug pane has been opened.
 
 ### Settings
 
@@ -67,7 +67,9 @@ When adding a setting, update all relevant layers:
 - custom names, icons, locks, and background mute state;
 - input/output/application audio level monitoring.
 
-The audio UI consumes Qt models declared in `audiomodels.*` rather than directly polling Windows APIs.
+Audio runs in a COM MTA. Native callback targets are invalidated before callback unregistration. Session IDs come from Core Audio's session instance identifier. `audiotypes.h` contains portable values; `audiomodels.*` exposes them to QML and preserves model indexes when row identity is unchanged. `nativeimage.*` provides shared QImage conversion for audio and media workers.
+
+`AudioBridge` still owns grouping and ChatMix policy, while `JsonStore` handles bounded, schema-checked reads and atomic JSON writes. Background mute keys are case-folded and only mute changes owned by this feature are restored.
 
 ### Media Sessions
 
@@ -87,7 +89,7 @@ Display work should stay off the UI thread. New display operations should follow
 
 ### Power Actions
 
-`PowerBridge` exposes shutdown, restart, sleep, hibernate, lock, sign out, switch account, and restart-to-UEFI actions. It also checks support state for sleep, hibernate, UEFI, and multiple-user switching. Power operations touch privileged Windows APIs, so UI flows should keep confirmation behavior explicit and respect `UserSettings`.
+`PowerBridge` exposes shutdown, restart, sleep, hibernate, lock, sign out, switch account, and restart-to-UEFI actions. It also checks support state for sleep, hibernate, UEFI, and multiple-user switching. `PowerWorker` performs capability queries and actions off the GUI thread. Capability properties are cached and notify QML when ready. Failed operations are reported through the bridge and tray. Shutdown and restart allow Windows to negotiate application shutdown rather than forcing applications closed; existing confirmation preferences still apply.
 
 ### Global Shortcuts
 
@@ -95,12 +97,12 @@ Display work should stay off the UI thread. New display operations should follow
 
 ## HeadsetControl Integration
 
-The project builds the vendored HeadsetControl library from `dependencies/headsetcontrol` with `add_subdirectory`. QontrolPanel links to `headsetcontrol_lib` and `hidapi::hidapi`.
+The project builds a disposable copy of the pinned HeadsetControl submodule with `add_subdirectory`; this confines upstream source-directory generation to the build directory. QontrolPanel links to `headsetcontrol_lib` and `hidapi::hidapi`.
 
 The integration has two app-side layers:
 
 - `HeadsetControlMonitor` owns polling, capability detection, cached headset state, and write operations such as sidetone, lights, equalizer preset, inactive time, voice prompts, and rotate-to-mute.
-- `HeadsetControlBridge` exposes monitor state and commands to QML as a singleton and handles low-battery notification state.
+- `HeadsetControlBridge` owns the headset thread independently of audio, sends copied desired settings, receives value snapshots, and handles low-battery notifications. Disabling audio does not stop headset controls.
 
 See `docs/HEADSETCONTROL_INTEGRATION.md` for details.
 
@@ -170,5 +172,15 @@ For slow or blocking Windows APIs, use the existing worker-thread pattern instea
 - Keep QML responsive by using async managers for polling or slow native operations.
 - Prefer Qt models for list-like UI data.
 - Keep user settings centralized in `UserSettings`.
-- Treat HeadsetControl as an upstream dependency: put headset-specific protocol work in the vendored library unless QontrolPanel only needs UI or orchestration changes.
+- Do not edit the HeadsetControl submodule. Protocol changes belong in a fork and an upstream pull request; app orchestration belongs here.
 - Update translations when changing user-visible strings.
+
+## Ownership and shutdown
+
+QML singletons use explicit factories. Most bridge objects are engine-owned; settings and logging are intentionally process-owned so workers and bridge destructors can still use them. The headset bridge is application-owned and explicitly shut down by `PanelEngine`. Windows attached surfaces remain tracked through guarded pointers.
+
+Component preferences are observed in C++ so services do not depend on a particular QML settings page being instantiated. Workers receive copied inputs and publish values through queued connections. Audio and display callbacks include generation checks so retired workers cannot overwrite a restarted service's state.
+
+`workerthreads.*` retires workers asynchronously: queued restoration requests run first, cleanup runs on the worker's own thread, then the thread exits and destroys its worker. No running QThread is deleted or force-terminated. `PanelEngine` destroys the QML engine synchronously and allows a combined ten-second deadline for retired workers. If a native driver remains blocked, the process exits without C++ static destruction, preventing global HID/COM teardown racing that driver. This is a failure path, not successful resource cleanup.
+
+See [Reliability changes and validation](RELIABILITY.md) for remaining limitations and the hardware validation matrix.
