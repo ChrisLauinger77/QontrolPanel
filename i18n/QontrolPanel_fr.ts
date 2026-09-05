@@ -947,7 +947,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Certains paramètres du casque n'ont pas pu être appliqués. Actualisez pour réessayer.</translation>
     </message>
 </context>
 <context>
@@ -973,7 +973,7 @@ You can enable it in the Components tab.</source>
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows n'a pas pu enregistrer un raccourci clavier (erreur %1). L'affectation précédente a été conservée lorsque cela était possible.</translation>
     </message>
 </context>
 <context>
@@ -1101,15 +1101,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l'action d'alimentation</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l'enregistrement du raccourci clavier</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d'enregistrer les paramètres</translation>
     </message>
 </context>
 <context>
@@ -1205,7 +1205,7 @@ You can enable it in the Components tab.</source>
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows n'a pas pu effectuer l'action d'alimentation (erreur %1).</translation>
     </message>
 </context>
 <context>
@@ -1576,30 +1576,30 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Invalid release metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Métadonnées de version invalides</translation>
     </message>
     <message>
         <source>The release has no valid SHA-256 checksum or file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>La somme de contrôle SHA-256 ou la taille du fichier de cette version est manquante ou invalide.</translation>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de la vérification de la mise à jour. Le programme d'installation a été supprimé.</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le téléchargement a dépassé la taille prévue ou n'a pas pu être enregistré.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Téléchargement annulé</translation>
     </message>
 </context>
 <context>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d'enregistrer les paramètres. Vérifiez l'accès à votre profil utilisateur.</translation>
     </message>
 </context>
 </TS>

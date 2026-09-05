@@ -945,7 +945,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Einige Headset-Einstellungen konnten nicht angewendet werden. Aktualisieren Sie die Ansicht, um es erneut zu versuchen.</translation>
     </message>
 </context>
 <context>
@@ -971,7 +971,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows konnte eine Tastenkombination nicht registrieren (Fehler %1). Die bisherige Zuordnung wurde nach Möglichkeit beibehalten.</translation>
     </message>
 </context>
 <context>
@@ -1099,15 +1099,15 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Power action failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Energieaktion fehlgeschlagen</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrierung der Tastenkombination fehlgeschlagen</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen konnten nicht gespeichert werden</translation>
     </message>
 </context>
 <context>
@@ -1203,7 +1203,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows konnte die Energieaktion nicht ausführen (Fehler %1).</translation>
     </message>
 </context>
 <context>
@@ -1573,30 +1573,30 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Invalid release metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Versionsmetadaten</translation>
     </message>
     <message>
         <source>The release has no valid SHA-256 checksum or file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Für diese Version ist keine gültige SHA-256-Prüfsumme oder Dateigröße angegeben.</translation>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Überprüfung des Updates ist fehlgeschlagen. Das Installationsprogramm wurde verworfen.</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Download hat die erwartete Größe überschritten oder konnte nicht gespeichert werden.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Download abgebrochen</translation>
     </message>
 </context>
 <context>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Einstellungen konnten nicht gespeichert werden. Prüfen Sie den Zugriff auf Ihr Benutzerprofil.</translation>
     </message>
 </context>
 </TS>
