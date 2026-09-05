@@ -15,7 +15,7 @@ public:
     static LanguageBridge* instance();
     static LanguageBridge* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
 
-    Q_INVOKABLE void changeApplicationLanguage(int languageIndex);
+    void reloadApplicationLanguage();
     Q_INVOKABLE QString getLanguageCodeFromIndex(int index) const;
     Q_INVOKABLE QStringList getLanguageNativeNames() const;
 

@@ -20,6 +20,10 @@
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
 #include "audiobridge.h"
 #endif
+#ifdef QONTROLPANEL_LANGUAGE_TESTS
+#include "languagebridge.h"
+#include "updater.h"
+#endif
 #include <QScopeGuard>
 #include <QStandardPaths>
 #include <QUuid>
@@ -93,6 +97,8 @@ private slots:
         preferences.setValue("enableApplicationMixer", false);
         preferences.setValue("headsetcontrolMonitoring", false);
         preferences.setValue("globalShortcutsEnabled", true);
+        preferences.setValue("autoUpdateTranslations", false);
+        preferences.setValue("autoFetchForAppUpdates", false);
         preferences.sync();
         QCOMPARE(preferences.status(), QSettings::NoError);
         m_preferencesPath = preferences.fileName();
@@ -232,6 +238,61 @@ private slots:
         QVERIFY(QDir().rmdir(path));
         QVERIFY(m_audio->addCommApp("Player"));
         QVERIFY(m_audio->isCommApp("Player"));
+    }
+#endif
+#ifdef QONTROLPANEL_LANGUAGE_TESTS
+    void languageChangesRequireSavedSettings()
+    {
+        auto* settings = UserSettings::instance();
+        const int originalLanguage = settings->languageIndex();
+        const auto restoreLanguage = qScopeGuard([&] { settings->setLanguageIndex(originalLanguage); });
+        std::unique_ptr<Updater> updater(Updater::instance());
+        std::unique_ptr<LanguageBridge> language(LanguageBridge::instance());
+        int german = -1;
+        int english = -1;
+        for (int i = 1; i <= language->getLanguageNativeNames().size(); ++i) {
+            if (language->getLanguageCodeFromIndex(i) == "de") german = i;
+            if (language->getLanguageCodeFromIndex(i) == "en") english = i;
+        }
+        QVERIFY(german > 0 && english > 0);
+        settings->setLanguageIndex(german);
+        language->reloadApplicationLanguage(); // The startup path also uses the accepted setting.
+        QCOMPARE(QCoreApplication::translate("LanguagePane", "Language"), QString("Sprache"));
+        QSignalSpy changed(language.get(), &LanguageBridge::languageChanged);
+        QSignalSpy settingChanged(settings, &UserSettings::languageIndexChanged);
+        QSignalSpy failed(settings, &UserSettings::saveFailed);
+        QFile preferences(m_preferencesPath);
+        QVERIFY(preferences.open(QIODevice::ReadOnly));
+        const auto saved = preferences.readAll();
+        preferences.close();
+        {
+            const HANDLE lock = CreateFileW(reinterpret_cast<LPCWSTR>(m_preferencesPath.utf16()), GENERIC_READ,
+                                            FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+            QVERIFY(lock != INVALID_HANDLE_VALUE);
+            const auto unlock = qScopeGuard([&] { CloseHandle(lock); });
+            settings->setLanguageIndex(english);
+            QCOMPARE(settings->languageIndex(), german);
+            QCOMPARE(settingChanged.size(), 0);
+            QCOMPARE(changed.size(), 0);
+            QCOMPARE(failed.size(), 1);
+            QCOMPARE(QCoreApplication::translate("LanguagePane", "Language"), QString("Sprache"));
+            QVERIFY(preferences.open(QIODevice::ReadOnly));
+            QCOMPARE(preferences.readAll(), saved);
+            preferences.close();
+
+            // A completed download must reload the persisted language, even after a rejected edit.
+            updater->translationDownloadFinished(true, QString{});
+            QCOMPARE(changed.size(), 1);
+            QCOMPARE(QCoreApplication::translate("LanguagePane", "Language"), QString("Sprache"));
+        }
+        settings->setLanguageIndex(english);
+        QCOMPARE(settings->languageIndex(), english);
+        QCOMPARE(settingChanged.size(), 1);
+        QCOMPARE(changed.size(), 2);
+        QCOMPARE(QCoreApplication::translate("LanguagePane", "Language"), QString("Language"));
+        QVERIFY(settings->lastError().isEmpty());
+        QSettings persisted(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
+        QCOMPARE(persisted.value("languageIndex").toInt(), english);
     }
 #endif
     void globalShortcutChangesRequireSavedSettings()

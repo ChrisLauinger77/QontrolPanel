@@ -44,7 +44,7 @@ PanelEngine::PanelEngine(QWidget *parent)
                 this, &PanelEngine::onLanguageChanged);
     }
 
-    LanguageBridge::instance()->changeApplicationLanguage(UserSettings::instance()->languageIndex());
+    LanguageBridge::instance()->reloadApplicationLanguage();
 }
 
 PanelEngine::~PanelEngine()
