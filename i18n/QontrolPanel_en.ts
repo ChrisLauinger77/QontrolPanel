@@ -1535,10 +1535,6 @@ You can enable it in the Components tab.</source>
         <translation>No executable found in latest release</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">Cannot start download</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Download failed: %1</translation>
     </message>

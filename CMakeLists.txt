@@ -17,7 +17,7 @@ if(WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project(QontrolPanel VERSION 2.2.3 LANGUAGES C CXX)
+project(QontrolPanel VERSION 2.3.0 LANGUAGES C CXX)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
@@ -288,7 +288,7 @@ get_qm_files(QM_FILES ${CMAKE_PROJECT_NAME})
 qt_add_translations(${CMAKE_PROJECT_NAME}
     TS_FILES ${TS_FILES}
     QM_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/i18n/
-    LUPDATE_OPTIONS "-locations none"
+    LUPDATE_OPTIONS -locations none -no-obsolete
 )
 
 # Translation extraction is explicit: cmake --build build --target update_translations

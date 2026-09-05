@@ -1536,10 +1536,6 @@ Puedes activarla en la pestaña Componentes.</translation>
         <translation>No se encontró ningún ejecutable en la última versión</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">No se puede iniciar la descarga</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Error al descargar: %1</translation>
     </message>

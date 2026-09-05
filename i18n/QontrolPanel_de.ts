@@ -1536,10 +1536,6 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>In der neuesten Version wurde keine ausführbare Datei gefunden</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">Der Download kann nicht gestartet werden</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Der Download ist fehlgeschlagen: %1</translation>
     </message>

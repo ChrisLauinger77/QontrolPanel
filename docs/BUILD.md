@@ -75,13 +75,13 @@ When using a multi-config generator such as Visual Studio, pass the build config
 cmake --build build --config Release
 ```
 
-Normal builds compile existing translations without editing `.ts` sources. Extract new source messages explicitly when needed:
+Normal builds compile existing translations without editing `.ts` sources. Extract new source messages and remove messages no longer present in the source explicitly when needed:
 
 ```pwsh
 cmake --build build --target update_translations
 ```
 
-Review those changes and update only `i18n/*.ts`; compiled `.qm` files are generated outputs.
+Extraction uses `-no-obsolete` to remove obsolete and vanished messages. Review additions, changes, and removals in `i18n/*.ts` before committing; Git history retains removed translations. Compiled `.qm` files are generated outputs.
 
 ### Extract translation messages on Linux
 
@@ -96,11 +96,11 @@ sudo apt install qt6-l10n-tools
 Then, from the repository root:
 
 ```sh
-/usr/lib/qt6/bin/lupdate src include qml -locations none -ts i18n/QontrolPanel_*.ts
+/usr/lib/qt6/bin/lupdate src include qml -locations none -no-obsolete -ts i18n/QontrolPanel_*.ts
 git diff -- i18n
 ```
 
-For another Qt installation, use its Qt 6 `lupdate` executable. Prefer the same Qt version as CI when available to reduce tool-version differences in generated catalogs. Scan only the app directories shown above, excluding the dependency and build trees. This updates source messages in `.ts` files; it does not translate new text or compile `.qm` files. Review added, changed, and vanished messages before committing.
+For another Qt installation, use its Qt 6 `lupdate` executable. Prefer the same Qt version as CI when available to reduce tool-version differences in generated catalogs. Scan only the app directories shown above, excluding the dependency and build trees. This updates source messages and removes obsolete and vanished messages in `.ts` files; it does not translate new text or compile `.qm` files. Review additions, changes, and removals before committing.
 
 ## Run Locally
 

@@ -1535,10 +1535,6 @@ You can enable it in the Components tab.</source>
         <translation>最新のリリースで実行ファイルが見つかりませんでした</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">ダウンロードを開始できません</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>ダウンロードに失敗しました: %1</translation>
     </message>

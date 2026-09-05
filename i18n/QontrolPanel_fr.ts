@@ -1539,10 +1539,6 @@ You can enable it in the Components tab.</source>
         <translation>Aucun fichier exécutable trouvé dans la dernière version</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">Impossible de démarrer le téléchargement</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Échec du téléchargement : %1</translation>
     </message>

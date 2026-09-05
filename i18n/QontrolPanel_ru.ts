@@ -1536,10 +1536,6 @@ You can enable it in the Components tab.</source>
         <translation>В последнем выпуске не найден исполняемый файл</translation>
     </message>
     <message>
-        <source>Cannot start download</source>
-        <translation type="vanished">Не удалось начать загрузку</translation>
-    </message>
-    <message>
         <source>Download failed: %1</source>
         <translation>Ошибка загрузки: %1</translation>
     </message>
