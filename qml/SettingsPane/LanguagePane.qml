@@ -95,8 +95,7 @@ ColumnLayout {
                         currentIndex: UserSettings.languageIndex
                         onActivated: {
                             UserSettings.languageIndex = currentIndex
-                            LanguageBridge.changeApplicationLanguage(currentIndex)
-                            currentIndex = UserSettings.languageIndex
+                            currentIndex = Qt.binding(function() { return UserSettings.languageIndex })
                         }
                     }
                 }

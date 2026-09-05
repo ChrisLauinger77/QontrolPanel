@@ -31,7 +31,20 @@ if(Qt6_FOUND)
                 ../src/nativeimage.cpp
                 ../src/headsetcontrolbridge.cpp ../include/headsetcontrolbridge.h
                 ../src/headsetcontrolmonitor.cpp ../include/headsetcontrolmonitor.h)
-            target_compile_definitions(reliability_tests PRIVATE QONTROLPANEL_AUDIO_POLICY_TESTS)
+            target_sources(reliability_tests PRIVATE
+                ../src/languagebridge.cpp ../include/languagebridge.h
+                ../src/updater.cpp ../include/updater.h)
+            target_include_directories(reliability_tests PRIVATE "${CMAKE_BINARY_DIR}")
+            target_link_libraries(reliability_tests PRIVATE Qt6::Widgets)
+            target_compile_definitions(reliability_tests PRIVATE QONTROLPANEL_AUDIO_POLICY_TESTS QONTROLPANEL_LANGUAGE_TESTS)
+            # Keep test catalogs separate from the app's compiled translations in all generators.
+            set_target_properties(reliability_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/runtime")
+            add_custom_target(reliability_test_translations
+                COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:reliability_tests>/i18n"
+                COMMAND Qt6::lrelease "${CMAKE_CURRENT_SOURCE_DIR}/../i18n/QontrolPanel_de.ts"
+                    -qm "$<TARGET_FILE_DIR:reliability_tests>/i18n/QontrolPanel_de.qm"
+                VERBATIM)
+            add_dependencies(reliability_tests reliability_test_translations)
             target_link_libraries(reliability_tests PRIVATE headsetcontrol_lib hidapi::hidapi Gdi32 Version Shell32)
         endif()
     endif()
