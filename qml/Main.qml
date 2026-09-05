@@ -603,6 +603,9 @@ ApplicationWindow {
         function onRegistrationFailed(message) {
             systemTray.showMessage(qsTr("Shortcut registration failed"), message)
         }
+        function onSaveFailed(message) {
+            systemTray.showMessage(qsTr("Settings could not be saved"), message)
+        }
     }
 
     Connections {

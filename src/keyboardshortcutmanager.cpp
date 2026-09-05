@@ -317,10 +317,10 @@ void KeyboardShortcutManager::loadAppVolumeHotkeys()
     }
 }
 
-void KeyboardShortcutManager::saveAppVolumeHotkeys()
+bool KeyboardShortcutManager::saveAppVolumeHotkeys(const QList<AppVolumeHotkey>& hotkeys)
 {
     QJsonArray arr;
-    for (const auto &hotkey : m_appVolumeHotkeys) {
+    for (const auto &hotkey : hotkeys) {
         QJsonObject obj;
         obj["executableName"] = hotkey.executableName;
         obj["volumeUpKey"] = hotkey.volumeUpKey;
@@ -331,7 +331,15 @@ void KeyboardShortcutManager::saveAppVolumeHotkeys()
         arr.append(obj);
     }
 
-    JsonStore::save(getAppVolumeHotkeysFilePath(), QJsonDocument(arr));
+    return JsonStore::save(getAppVolumeHotkeysFilePath(), QJsonDocument(arr));
+}
+
+void KeyboardShortcutManager::reportAppVolumeHotkeysSaveFailure()
+{
+    LOG_WARN("Shortcuts", "Could not persist application volume hotkeys");
+    m_lastError = tr("Could not save application shortcuts. Check access to your user profile and available disk space.");
+    emit lastErrorChanged();
+    emit saveFailed(m_lastError);
 }
 
 void KeyboardShortcutManager::registerAppVolumeHotkeys()
@@ -394,26 +402,40 @@ bool KeyboardShortcutManager::addAppVolumeHotkey(const QString &executableName, 
     m_lastError.clear();
     if (UserSettings::instance()->globalShortcutsEnabled())
         registerAppVolumeHotkeys();
-    if (!m_lastError.isEmpty())
+    const bool persistenceFailed = m_lastError.isEmpty() && !saveAppVolumeHotkeys(m_appVolumeHotkeys);
+    if (!m_lastError.isEmpty() || persistenceFailed)
     {
         const QString error = m_lastError;
         unregisterAppVolumeHotkeys();
         m_appVolumeHotkeys = previous;
         if (UserSettings::instance()->globalShortcutsEnabled())
             registerAppVolumeHotkeys();
-        m_lastError = error;
-        emit lastErrorChanged();
+        if (persistenceFailed)
+            reportAppVolumeHotkeysSaveFailure();
+        else
+        {
+            m_lastError = error;
+            emit lastErrorChanged();
+        }
         return false;
     }
-    saveAppVolumeHotkeys();
+    emit lastErrorChanged();
     emit appVolumeHotkeysChanged();
     return true;
 }
 
-void KeyboardShortcutManager::removeAppVolumeHotkey(const QString &executableName)
+bool KeyboardShortcutManager::removeAppVolumeHotkey(const QString &executableName)
 {
     for (int i = 0; i < m_appVolumeHotkeys.size(); ++i) {
         if (m_appVolumeHotkeys[i].executableName == executableName) {
+            auto desired = m_appVolumeHotkeys;
+            desired.removeAt(i);
+            // Keep the current list and native bindings until the removal is durable.
+            if (!saveAppVolumeHotkeys(desired))
+            {
+                reportAppVolumeHotkeysSaveFailure();
+                return false;
+            }
             // Unregister these specific hotkeys
             if (m_hwnd) {
                 if (m_registeredHotkeys.contains(m_appVolumeHotkeys[i].volumeUpHotkeyId)) {
@@ -427,12 +449,14 @@ void KeyboardShortcutManager::removeAppVolumeHotkey(const QString &executableNam
                     m_bindings.remove(m_appVolumeHotkeys[i].volumeDownHotkeyId);
                 }
             }
-            m_appVolumeHotkeys.removeAt(i);
-            saveAppVolumeHotkeys();
+            m_appVolumeHotkeys = desired;
+            m_lastError.clear();
+            emit lastErrorChanged();
             emit appVolumeHotkeysChanged();
-            return;
+            return true;
         }
     }
+    return false;
 }
 
 QJsonArray KeyboardShortcutManager::appVolumeHotkeysJson() const

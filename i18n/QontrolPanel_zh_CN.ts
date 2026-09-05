@@ -969,6 +969,10 @@ You can enable it in the Components tab.</source>
 <context>
     <name>KeyboardShortcutManager</name>
     <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>无法保存应用快捷键。请检查是否有权访问用户配置文件以及磁盘可用空间是否充足。</translation>
+    </message>
+    <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation>Windows 无法注册快捷键（错误 %1）。已尽可能保留原有绑定。</translation>
     </message>
