@@ -1,5 +1,6 @@
 #include "monitormanagerimpl.h"
 #include "logmanager.h"
+#include "nightlightdata.h"
 #include <algorithm>
 #include <qlogging.h>
 #include <vector>
@@ -11,26 +12,13 @@ MonitorManagerImpl::MonitorManagerImpl()
 {
     LOG_INFO("MonitorManager", "Initializing MonitorManager");
 
-    // Initialize COM for this specific thread with consistent apartment model
-    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    if (FAILED(hr) && hr != RPC_E_CHANGED_MODE) {
-        LOG_WARN("MonitorManager",
-                 QString("COM initialization failed with apartment model: %1, trying multithreaded").arg(QString::number(hr, 16)));
-        // Try with multithreaded model as fallback
-        hr = CoInitializeEx(NULL, COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE);
-        if (FAILED(hr) && hr != RPC_E_CHANGED_MODE) {
-            LOG_CRITICAL("MonitorManager",
-                         QString("COM initialization failed completely: %1").arg(QString::number(hr, 16)));
-        } else {
-            LOG_INFO("MonitorManager", "COM initialized with multithreaded model");
-        }
-    } else {
-        LOG_INFO("MonitorManager", "COM initialized with apartment model");
-    }
+    const HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    m_comInitialized = SUCCEEDED(hr);
+    if (!m_comInitialized)
+        LOG_WARN("MonitorManager", QString("COM initialization failed: %1").arg(QString::number(hr, 16)));
 
     // Initialize components
     initNightLightRegistry();
-    enumerateMonitors();
     setupChangeDetection();
 
     LOG_INFO("MonitorManager", "MonitorManager initialization complete");
@@ -41,6 +29,9 @@ MonitorManagerImpl::~MonitorManagerImpl() {
     cleanup();
     cleanupNightLightRegistry();
     cleanupWMI();
+    if (messageWindow)
+        DestroyWindow(messageWindow);
+    if (m_comInitialized)
     CoUninitialize();
 }
 
@@ -76,11 +67,8 @@ bool MonitorManagerImpl::quickWMIHealthCheck() {
 
     // Quick health check without debug spam
     IEnumWbemClassObject* pTest = nullptr;
-    HRESULT testResult = pWMIService->ExecQuery(
-        bstr_t("WQL"),
-        bstr_t("SELECT * FROM Win32_ComputerSystem"),
-        WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
-        NULL, &pTest);
+    HRESULT testResult = pWMIService->ExecQuery(bstr_t("WQL"), bstr_t("SELECT * FROM WmiMonitorBrightness"),
+                                                WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &pTest);
 
     bool healthy = SUCCEEDED(testResult);
     if (pTest) pTest->Release();
@@ -119,7 +107,8 @@ void MonitorManagerImpl::initializeWMI() {
     }
 
     // Connect to WMI namespace
-    hres = pLoc->ConnectServer(_bstr_t(L"ROOT\\WMI"), NULL, NULL, 0, NULL, 0, 0, &pWMIService);
+    hres =
+        pLoc->ConnectServer(_bstr_t(L"ROOT\\WMI"), NULL, NULL, 0, WBEM_FLAG_CONNECT_USE_MAX_WAIT, 0, 0, &pWMIService);
     if (FAILED(hres)) {
         LOG_CRITICAL("MonitorManager",
                      QString("WMI ConnectServer failed: %1").arg(QString::number(hres, 16)));
@@ -188,7 +177,11 @@ bool MonitorManagerImpl::setBrightnessInternal(int monitorIndex, int brightness)
         }
         return result;
     } else {
-        bool result = SetVCPFeature(monitors[monitorIndex].physicalMonitor.hPhysicalMonitor, 0x10, brightness);
+        if (!testDDCCI(monitorIndex))
+            return false;
+        const DWORD nativeBrightness = static_cast<DWORD>(
+            (static_cast<uint64_t>(brightness) * monitors[monitorIndex].maximumBrightness + 50) / 100);
+        bool result = SetVCPFeature(monitors[monitorIndex].physicalMonitor.hPhysicalMonitor, 0x10, nativeBrightness);
         if (result) {
             monitors[monitorIndex].cachedBrightness = brightness;
             LOG_INFO("MonitorManager",
@@ -235,9 +228,13 @@ int MonitorManagerImpl::getBrightnessInternal(int monitorIndex) {
 
     DWORD current, max;
     if (GetVCPFeatureAndVCPFeatureReply(monitors[monitorIndex].physicalMonitor.hPhysicalMonitor, 0x10, NULL, &current, &max)) {
-        monitors[monitorIndex].ddcciWorking = true;
-        monitors[monitorIndex].cachedBrightness = (int)current;
-        return (int)current;
+        monitors[monitorIndex].ddcciWorking = max > 0 && current <= max;
+        if (!monitors[monitorIndex].ddcciWorking)
+            return -1;
+        monitors[monitorIndex].maximumBrightness = max;
+        const int percent = static_cast<int>((static_cast<uint64_t>(current) * 100 + max / 2) / max);
+        monitors[monitorIndex].cachedBrightness = percent;
+        return percent;
     }
 
     monitors[monitorIndex].ddcciWorking = false;
@@ -298,7 +295,7 @@ void MonitorManagerImpl::detectLaptopDisplays() {
         if (SUCCEEDED(hres)) {
             IWbemClassObject* pclsObj = NULL;
             ULONG uReturn = 0;
-            HRESULT hr = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+            HRESULT hr = pEnumerator->Next(2000, 1, &pclsObj, &uReturn);
             if (uReturn > 0) {
                 wmiHasBrightnessSupport = true;
                 LOG_INFO("MonitorManager",
@@ -329,6 +326,7 @@ void MonitorManagerImpl::detectLaptopDisplays() {
             wcscpy_s(laptopMonitor.physicalMonitor.szPhysicalMonitorDescription,
                      PHYSICAL_MONITOR_DESCRIPTION_SIZE, L"Laptop Internal Display");
             laptopMonitor.deviceName = L"LAPTOP";
+            laptopMonitor.deviceId = L"wmi:internal";
             laptopMonitor.ddcciTested = true;
             laptopMonitor.ddcciWorking = false;
             laptopMonitor.isLaptopDisplay = true;
@@ -379,7 +377,7 @@ bool MonitorManagerImpl::setLaptopBrightness(int brightness) {
     bool success = false;
 
     while (pEnumerator) {
-        HRESULT hr = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+        HRESULT hr = pEnumerator->Next(2000, 1, &pclsObj, &uReturn);
         if (uReturn == 0) break;
 
         // Get the method class
@@ -409,7 +407,7 @@ bool MonitorManagerImpl::setLaptopBrightness(int brightness) {
 
                     if (SUCCEEDED(putBrightness)) {
                         // Execute method
-                        VARIANT vtProp;
+                        VARIANT vtProp{};
                         VariantInit(&vtProp);
                         HRESULT pathResult = pclsObj->Get(L"__PATH", 0, &vtProp, 0, 0);
 
@@ -466,11 +464,12 @@ int MonitorManagerImpl::getLaptopBrightness() {
     int brightness = -1;
 
     if (pEnumerator) {
-        HRESULT hr = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+        HRESULT hr = pEnumerator->Next(2000, 1, &pclsObj, &uReturn);
         if (uReturn != 0) {
-            VARIANT vtProp;
+            VARIANT vtProp{};
             hr = pclsObj->Get(L"CurrentBrightness", 0, &vtProp, 0, 0);
-            if (SUCCEEDED(hr)) {
+            if (SUCCEEDED(hr) && vtProp.vt == VT_UI1)
+            {
                 brightness = vtProp.bVal;
             }
             VariantClear(&vtProp);
@@ -497,6 +496,14 @@ BOOL CALLBACK MonitorManagerImpl::MonitorEnumProc(HMONITOR hMonitor, HDC hdcMoni
                 MonitorInfo info = {};
                 info.physicalMonitor = physMonitors[i];
                 info.deviceName = monitorInfo.szDevice;
+                DISPLAY_DEVICEW displayDevice{};
+                displayDevice.cb = sizeof(displayDevice);
+                if (EnumDisplayDevicesW(monitorInfo.szDevice, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) &&
+                    displayDevice.DeviceID[0])
+                    info.deviceId = displayDevice.DeviceID;
+                else
+                    info.deviceId = info.deviceName + L":" + std::to_wstring(i) + L":" +
+                                    physMonitors[i].szPhysicalMonitorDescription;
                 info.ddcciTested = false;
                 info.ddcciWorking = false;
                 info.isLaptopDisplay = false;
@@ -520,9 +527,8 @@ void MonitorManagerImpl::setupChangeDetection() {
     wc.lpszClassName = L"MonitorChangeDetector";
     RegisterClassW(&wc);
 
-    messageWindow = CreateWindowW(
-        L"MonitorChangeDetector", L"", 0, 0, 0, 0, 0,
-        HWND_MESSAGE, NULL, GetModuleHandle(NULL), this);
+    messageWindow =
+        CreateWindowW(L"MonitorChangeDetector", L"", 0, 0, 0, 0, 0, nullptr, NULL, GetModuleHandle(NULL), this);
     SetWindowLongPtr(messageWindow, GWLP_USERDATA, (LONG_PTR)this);
 
     if (messageWindow) {
@@ -540,7 +546,6 @@ LRESULT CALLBACK MonitorManagerImpl::WindowProc(HWND hwnd, UINT uMsg, WPARAM wPa
         if (manager) {
             LOG_INFO("MonitorManager",
                      "Display configuration changed, re-enumerating monitors");
-            manager->enumerateMonitors();
             if (manager->changeCallback) {
                 manager->changeCallback();
             }
@@ -556,11 +561,6 @@ void MonitorManagerImpl::cleanup() {
         }
     }
     monitors.clear();
-
-    if (messageWindow) {
-        DestroyWindow(messageWindow);
-        messageWindow = nullptr;
-    }
 }
 
 // Night Light implementation
@@ -589,26 +589,28 @@ void MonitorManagerImpl::cleanupNightLightRegistry() {
     }
 }
 
+std::vector<BYTE> MonitorManagerImpl::readNightLightData() const
+{
+    if (!m_nightLightRegKey)
+        return {};
+    DWORD type = 0;
+    DWORD size = 0;
+    if (RegQueryValueEx(m_nightLightRegKey, L"Data", nullptr, &type, nullptr, &size) != ERROR_SUCCESS ||
+        type != REG_BINARY || (size != 41 && size != 43))
+        return {};
+    std::vector<BYTE> data(size);
+    if (RegQueryValueEx(m_nightLightRegKey, L"Data", nullptr, &type, data.data(), &size) != ERROR_SUCCESS ||
+        type != REG_BINARY || size != data.size())
+        return {};
+    return data;
+}
+
 bool MonitorManagerImpl::isNightLightSupported() {
-    return m_nightLightRegKey != nullptr;
+    return NightLightData::enabled(readNightLightData()).has_value();
 }
 
 bool MonitorManagerImpl::isNightLightEnabled() {
-    if (!isNightLightSupported()) return false;
-
-    BYTE data[1024];
-    DWORD dataSize = sizeof(data);
-
-    if (RegQueryValueEx(m_nightLightRegKey, L"Data", nullptr, nullptr, data, &dataSize) != ERROR_SUCCESS) {
-        LOG_WARN("MonitorManager",
-                 "Failed to read Night Light registry data");
-        return false;
-    }
-
-    std::vector<BYTE> bytes(data, data + dataSize);
-    if (bytes.size() < 19) return false;
-
-    return bytes[18] == 0x15;
+    return NightLightData::enabled(readNightLightData()).value_or(false);
 }
 
 void MonitorManagerImpl::enableNightLight() {
@@ -626,53 +628,26 @@ void MonitorManagerImpl::disableNightLight() {
 }
 
 void MonitorManagerImpl::toggleNightLight() {
-    if (!isNightLightSupported()) {
-        LOG_WARN("MonitorManager",
-                 "Cannot toggle Night Light - feature not supported");
+    const auto data = NightLightData::toggle(readNightLightData());
+    if (!data)
+    {
+        LOG_WARN("MonitorManager", "Unrecognized Night Light registry layout; refusing to modify it");
         return;
     }
-
-    BYTE data[1024];
-    DWORD dataSize = sizeof(data);
-
-    if (RegQueryValueEx(m_nightLightRegKey, L"Data", nullptr, nullptr, data, &dataSize) != ERROR_SUCCESS) {
-        LOG_CRITICAL("MonitorManager",
-                     "Failed to read Night Light registry data for toggle operation");
-        return;
+    const LONG result =
+        RegSetValueEx(m_nightLightRegKey, L"Data", 0, REG_BINARY, data->data(), static_cast<DWORD>(data->size()));
+    if (result != ERROR_SUCCESS)
+        LOG_WARN("MonitorManager", QString("Night Light write failed: %1").arg(result));
     }
 
-    std::vector<BYTE> newData;
-    bool currentlyEnabled = isNightLightEnabled();
-
-    if (currentlyEnabled) {
-        newData.resize(41, 0);
-        std::copy(data, data + 22, newData.begin());
-        std::copy(data + 25, data + 43, newData.begin() + 23);
-        newData[18] = 0x13;
-    } else {
-        newData.resize(43, 0);
-        std::copy(data, data + 22, newData.begin());
-        std::copy(data + 23, data + 41, newData.begin() + 25);
-        newData[18] = 0x15;
-        newData[23] = 0x10;
-        newData[24] = 0x00;
+std::wstring MonitorManagerImpl::getMonitorId(int index) const
+{
+    if (index < 0 || index >= getMonitorCount())
+        return {};
+    return monitors[index].deviceId;
     }
 
-    for (int i = 10; i < 15; ++i) {
-        if (newData[i] != 0xff) {
-            newData[i]++;
-            break;
+bool MonitorManagerImpl::isLaptopDisplay(int index) const
+{
+    return index >= 0 && index < getMonitorCount() && monitors[index].isLaptopDisplay;
         }
-    }
-
-    DWORD newDataSize = static_cast<DWORD>(newData.size());
-    LONG result = RegSetValueEx(m_nightLightRegKey, L"Data", 0, REG_BINARY, newData.data(), newDataSize);
-
-    if (result == ERROR_SUCCESS) {
-        LOG_INFO("MonitorManager",
-                 QString("Night Light %1 successfully").arg(currentlyEnabled ? "disabled" : "enabled"));
-    } else {
-        LOG_CRITICAL("MonitorManager",
-                     QString("Failed to toggle Night Light, registry write error: %1").arg(result));
-    }
-}

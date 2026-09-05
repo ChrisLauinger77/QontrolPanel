@@ -1,8 +1,10 @@
 #include "monitormanager.h"
+#include "workerthreads.h"
 #include "monitormanagerimpl.h"
 #include <QApplication>
 #include <QDebug>
 #include <QTimer>
+#include <algorithm>
 #include "logmanager.h"
 #include "usersettings.h"
 
@@ -21,18 +23,21 @@ MonitorWorker::MonitorWorker(QObject *parent)
     , m_pendingDDCCIBrightness(0)
     , m_hasPendingDDCCIBrightness(false)
 {
+    qRegisterMetaType<QList<Monitor>>();
     m_ddcciBrightnessTimer->setSingleShot(true);
     connect(m_ddcciBrightnessTimer, &QTimer::timeout, this, [this]() {
         if (m_hasPendingDDCCIBrightness) {
             int brightness = m_pendingDDCCIBrightness;
             m_hasPendingDDCCIBrightness = false;
 
-            setDDCCIBrightness(brightness, 16);
+            setDDCCIBrightness(brightness, m_ddcciDelayMs);
         }
     });
 
     if (UserSettings::instance()->allowBrightnessControl()) {
-        setDDCCIBrightness(UserSettings::instance()->ddcciBrightness(), UserSettings::instance()->ddcciQueueDelay());
+        m_pendingDDCCIBrightness = UserSettings::instance()->ddcciBrightness();
+        m_ddcciDelayMs = UserSettings::instance()->ddcciQueueDelay();
+        m_hasPendingDDCCIBrightness = true;
     }
 }
 
@@ -41,12 +46,16 @@ void MonitorWorker::init()
     LOG_INFO("MonitorManager", "Initializing MonitorWorker on worker thread");
 
     m_impl = new MonitorManagerImpl();
-    m_impl->setChangeCallback([this]() {
-        enumerateMonitors();
-    });
+    m_impl->setChangeCallback(
+        [this]() { QMetaObject::invokeMethod(this, &MonitorWorker::enumerateMonitors, Qt::QueuedConnection); });
 
     enumerateMonitors();
     checkNightLightStatus();
+    if (m_hasPendingDDCCIBrightness)
+    {
+        m_hasPendingDDCCIBrightness = false;
+        setDDCCIBrightness(m_pendingDDCCIBrightness, m_ddcciDelayMs);
+    }
 }
 
 MonitorWorker::~MonitorWorker()
@@ -79,7 +88,6 @@ void MonitorWorker::cleanup()
 
 void MonitorWorker::enumerateMonitors()
 {
-    QMutexLocker locker(&m_monitorsMutex);
 
     if (!m_impl) {
         return;
@@ -102,13 +110,12 @@ void MonitorWorker::updateMonitorFromImpl()
     int count = m_impl->getMonitorCount();
     for (int i = 0; i < count; i++) {
         Monitor monitor;
-        monitor.id = QString::number(i);
+        monitor.id = QString::fromStdWString(m_impl->getMonitorId(i));
         monitor.name = QString::fromStdWString(m_impl->getMonitorName(i));
         monitor.friendlyName = monitor.name;
         monitor.brightness = m_impl->getCachedBrightness(i);
         monitor.isSupported = m_impl->testDDCCI(i);
-        monitor.isLaptopDisplay = (monitor.name.contains("Laptop", Qt::CaseInsensitive) ||
-                                   monitor.name.contains("Internal", Qt::CaseInsensitive));
+        monitor.isLaptopDisplay = m_impl->isLaptopDisplay(i);
 
         int currentBrightness = m_impl->getBrightnessInternal(i);
         if (currentBrightness != -1) {
@@ -127,15 +134,14 @@ void MonitorWorker::updateMonitorFromImpl()
 
 void MonitorWorker::setBrightness(const QString& monitorId, int brightness)
 {
-    QMutexLocker locker(&m_monitorsMutex);
 
     if (!m_impl) {
         return;
     }
 
-    bool ok;
-    int index = monitorId.toInt(&ok);
-    if (!ok || index < 0) {
+    int index = indexForId(monitorId);
+    if (index < 0)
+    {
         return;
     }
 
@@ -152,48 +158,37 @@ void MonitorWorker::setBrightness(const QString& monitorId, int brightness)
 
 void MonitorWorker::setBrightnessAll(int brightness)
 {
-    QMutexLocker locker(&m_monitorsMutex);
-
-    if (!m_impl) {
+    if (!m_impl)
         return;
-    }
-
-    bool success = m_impl->setBrightnessAll(brightness);
-    if (success) {
-        for (Monitor& monitor : m_monitors) {
-            if (monitor.isSupported) {
-                monitor.brightness = brightness;
-                emit brightnessChanged(monitor.id, brightness);
-            }
-        }
+    for (const auto& monitor : std::as_const(m_monitors))
+    {
+        if (monitor.isSupported)
+            setBrightness(monitor.id, brightness);
     }
 }
 
 void MonitorWorker::refreshBrightnessLevels()
 {
-    QMutexLocker locker(&m_monitorsMutex);
 
     if (!m_impl) {
         return;
     }
 
-    QList<QPair<QString, int>> levels;
 
-    for (Monitor& monitor : m_monitors) {
-        if (monitor.isSupported) {
-            bool ok;
-            int index = monitor.id.toInt(&ok);
-            if (ok && index >= 0) {
+        for (Monitor& monitor : m_monitors) {
+            if (monitor.isSupported) {
+            int index = indexForId(monitor.id);
+            if (index >= 0)
+            {
                 int brightness = m_impl->getBrightnessInternal(index);
                 if (brightness != -1) {
-                    monitor.brightness = brightness;
-                    levels.append(qMakePair(monitor.id, brightness));
-                }
+                monitor.brightness = brightness;
             }
         }
     }
+}
 
-    emit monitorBrightnessLevelsReady(levels);
+    emit monitorsReady(m_monitors);
 }
 
 void MonitorWorker::checkNightLightStatus()
@@ -249,6 +244,10 @@ void MonitorWorker::toggleNightLight()
 
 void MonitorWorker::setDDCCIBrightness(int brightness, int delayMs)
 {
+    if (!m_impl || !m_ddcciBrightnessTimer)
+        return;
+    m_ddcciDelayMs = qBound(1, delayMs, 5000);
+    brightness = qBound(0, brightness, 100);
     // If timer is already running, buffer this request
     if (m_ddcciBrightnessTimer->isActive()) {
         // If we already have a pending request, just update it (don't queue multiple)
@@ -264,7 +263,6 @@ void MonitorWorker::setDDCCIBrightness(int brightness, int delayMs)
     }
 
     // Execute the brightness change immediately
-    QMutexLocker locker(&m_monitorsMutex);
 
     if (!m_impl) {
         return;
@@ -276,12 +274,14 @@ void MonitorWorker::setDDCCIBrightness(int brightness, int delayMs)
     bool anySuccess = false;
 
     // Set brightness for all DDC/CI-supported monitors (non-laptop displays)
-    for (int i = 0; i < m_impl->getMonitorCount(); i++) {
+    for (int i = 0; i < m_impl->getMonitorCount() && i < m_monitors.size(); i++)
+    {
         if (!m_monitors[i].isLaptopDisplay && m_impl->testDDCCI(i)) {
             if (m_impl->setBrightnessInternal(i, brightness)) {
                 // Update cached value in Qt monitor list
                 if (i < m_monitors.size()) {
                     m_monitors[i].brightness = brightness;
+                    emit brightnessChanged(m_monitors[i].id, brightness);
                 }
                 anySuccess = true;
                 LOG_INFO("MonitorManager",
@@ -303,12 +303,11 @@ void MonitorWorker::setDDCCIBrightness(int brightness, int delayMs)
     }
 
     // Start the timer to block subsequent calls
-    m_ddcciBrightnessTimer->start(delayMs);
+    m_ddcciBrightnessTimer->start(m_ddcciDelayMs);
 }
 
 void MonitorWorker::setWMIBrightness(int brightness)
 {
-    QMutexLocker locker(&m_monitorsMutex);
 
     if (!m_impl) {
         return;
@@ -320,12 +319,14 @@ void MonitorWorker::setWMIBrightness(int brightness)
     bool anySuccess = false;
 
     // Set brightness for all WMI-controlled monitors (laptop displays)
-    for (int i = 0; i < m_impl->getMonitorCount(); i++) {
+    for (int i = 0; i < m_impl->getMonitorCount() && i < m_monitors.size(); i++)
+    {
         if (m_monitors[i].isLaptopDisplay) {
             if (m_impl->setBrightnessInternal(i, brightness)) {
                 // Update cached value in Qt monitor list
                 if (i < m_monitors.size()) {
                     m_monitors[i].brightness = brightness;
+                    emit brightnessChanged(m_monitors[i].id, brightness);
                 }
                 anySuccess = true;
                 LOG_INFO("MonitorManager",
@@ -356,6 +357,12 @@ MonitorManager::MonitorManager(QObject *parent)
     , m_nightLightSupported(false)
 {
     s_instance = this;
+    connect(UserSettings::instance(), &UserSettings::allowBrightnessControlChanged, this, [this] {
+        if (UserSettings::instance()->allowBrightnessControl())
+            initialize();
+        else
+            cleanup();
+    });
 
     // Check if brightness control is enabled in settings
     bool allowBrightnessControl = UserSettings::instance()->allowBrightnessControl();
@@ -369,6 +376,7 @@ MonitorManager::MonitorManager(QObject *parent)
 
 MonitorManager::~MonitorManager()
 {
+    cleanup();
     LOG_INFO("MonitorManager", "MonitorManager destructor called");
     if (s_instance == this) {
         s_instance = nullptr;
@@ -377,151 +385,91 @@ MonitorManager::~MonitorManager()
 
 void MonitorManager::initialize()
 {
-    LOG_INFO("MonitorManager", "MonitorManager initialization started");
-
-    if (s_worker) {
-        LOG_INFO("MonitorManager", "MonitorManager already initialized, skipping");
-        return; // Already initialized
+    if (s_worker)
+        return;
+    if (m_retiringThread) {
+        m_initializeAfterRetirement = true;
+        return;
     }
-
-    LOG_INFO("MonitorManager", "Creating worker thread");
+    m_initializeAfterRetirement = false;
+    const auto generation = ++m_generation;
     s_workerThread = new QThread();
     s_worker = new MonitorWorker();
     s_worker->moveToThread(s_workerThread);
 
-    // Connect worker signals to cache updates
-    QObject::connect(s_worker, &MonitorWorker::monitorsReady,
-                     [](const QList<Monitor>& monitors) {
+    auto acceptMonitors = [this, generation](const QList<Monitor>& monitors) {
+        if (generation != m_generation)
+            return;
                          updateCache(monitors);
+        const auto first = std::find_if(monitors.cbegin(), monitors.cend(),
+                                        [](const Monitor& monitor) { return monitor.isSupported; });
+        const bool detected = first != monitors.cend();
+        const int brightness = detected ? first->brightness : 50;
+        if (m_monitorDetected != detected)
+        {
+            m_monitorDetected = detected;
+            emit monitorDetectedChanged();
+        }
+        if (m_currentBrightness != brightness)
+        {
+            m_currentBrightness = brightness;
+            emit brightnessChanged();
+        }
+        emit monitorsChanged(monitors);
+    };
+    connect(s_worker, &MonitorWorker::monitorsReady, this, acceptMonitors);
+    connect(s_worker, &MonitorWorker::brightnessChanged, this,
+            [this, generation, acceptMonitors](const QString& id, int brightness) {
+                if (generation != m_generation)
+                    return;
+                auto monitors = getMonitors();
+                for (auto& monitor : monitors)
+                {
+                    if (monitor.id == id)
+                        monitor.brightness = brightness;
+                }
+                acceptMonitors(monitors);
                      });
 
-    QObject::connect(s_worker, &MonitorWorker::brightnessChanged,
-                     [](const QString& monitorId, int brightness) {
-                         QMutexLocker locker(&s_cacheMutex);
-                         for (Monitor& monitor : s_cachedMonitors) {
-                             if (monitor.id == monitorId) {
-                                 monitor.brightness = brightness;
-                                 break;
+    auto acceptNightLight = [this, generation](bool supported, bool enabled) {
+        if (generation != m_generation)
+            return;
+        updateNightLightCache(supported, enabled);
+        if (m_nightLightSupported != supported)
+        {
+            m_nightLightSupported = supported;
+            emit nightLightSupportedChanged();
                              }
+        if (m_nightLightEnabled != enabled)
+        {
+            m_nightLightEnabled = enabled;
+            emit nightLightEnabledChanged();
                          }
-                     });
+    };
+    connect(s_worker, &MonitorWorker::nightLightStatusReady, this, acceptNightLight);
+    connect(s_worker, &MonitorWorker::nightLightChanged, this,
+            [this, acceptNightLight](bool enabled) { acceptNightLight(m_nightLightSupported, enabled); });
+    auto acceptBrightness = [this, generation](int brightness) {
+        if (generation != m_generation)
+            return;
+        if (m_currentBrightness != brightness)
+        {
+            m_currentBrightness = brightness;
+            emit brightnessChanged();
+        }
+    };
+    connect(s_worker, &MonitorWorker::ddcciBrightnessChanged, this, acceptBrightness);
+    connect(s_worker, &MonitorWorker::wmiBrightnessChanged, this, acceptBrightness);
 
-    QObject::connect(s_worker, &MonitorWorker::nightLightStatusReady,
-                     [](bool supported, bool enabled) {
-                         updateNightLightCache(supported, enabled);
-                     });
-
-    QObject::connect(s_worker, &MonitorWorker::nightLightChanged,
-                     [](bool enabled) {
-                         updateNightLightCache(s_nightLightSupported, enabled);
-                     });
-
-    // New DDC/CI and WMI brightness signals
-    QObject::connect(s_worker, &MonitorWorker::ddcciBrightnessChanged,
-                     [](int brightness) {
-                         QMutexLocker locker(&s_cacheMutex);
-                         // Update all DDC/CI monitors in cache
-                         for (Monitor& monitor : s_cachedMonitors) {
-                             if (!monitor.isLaptopDisplay && monitor.isSupported) {
-                                 monitor.brightness = brightness;
-                             }
-                         }
-                     });
-
-    QObject::connect(s_worker, &MonitorWorker::wmiBrightnessChanged,
-                     [](int brightness) {
-                         QMutexLocker locker(&s_cacheMutex);
-                         // Update all WMI monitors in cache
-                         for (Monitor& monitor : s_cachedMonitors) {
-                             if (monitor.isLaptopDisplay) {
-                                 monitor.brightness = brightness;
-                             }
-                         }
-                     });
-
-    // Connect to instance if it exists
-    if (s_instance) {
-        QObject::connect(s_worker, &MonitorWorker::monitorsReady,
-                         s_instance, [](const QList<Monitor>& monitors) {
-                             if (s_instance) {
-                                 bool hasMonitors = !monitors.isEmpty() &&
-                                                    std::any_of(monitors.begin(), monitors.end(),
-                                                                [](const Monitor& m) { return m.isSupported; });
-                                 if (s_instance->m_monitorDetected != hasMonitors) {
-                                     s_instance->m_monitorDetected = hasMonitors;
-                                     emit s_instance->monitorDetectedChanged();
-                                 }
-
-                                 // Update brightness from first supported monitor
-                                 int newBrightness = 50;
-                                 for (const Monitor& monitor : monitors) {
-                                     if (monitor.isSupported) {
-                                         newBrightness = monitor.brightness;
-                                         break;
-                                     }
-                                 }
-
-                                 if (s_instance->m_currentBrightness != newBrightness) {
-                                     s_instance->m_currentBrightness = newBrightness;
-                                     emit s_instance->brightnessChanged();
-                                 }
-
-                                 emit s_instance->monitorsChanged(monitors);
-                             }
-                         });
-
-        QObject::connect(s_worker, &MonitorWorker::nightLightStatusReady,
-                         s_instance, [](bool supported, bool enabled) {
-                             if (s_instance) {
-                                 if (s_instance->m_nightLightSupported != supported) {
-                                     s_instance->m_nightLightSupported = supported;
-                                     emit s_instance->nightLightSupportedChanged();
-                                 }
-                                 if (s_instance->m_nightLightEnabled != enabled) {
-                                     s_instance->m_nightLightEnabled = enabled;
-                                     emit s_instance->nightLightEnabledChanged();
-                                 }
-                             }
-                         });
-
-        QObject::connect(s_worker, &MonitorWorker::nightLightChanged,
-                         s_instance, [](bool enabled) {
-                             if (s_instance && s_instance->m_nightLightEnabled != enabled) {
-                                 s_instance->m_nightLightEnabled = enabled;
-                                 emit s_instance->nightLightEnabledChanged();
-                             }
-                         });
-
-        // Connect new DDC/CI and WMI brightness signals to instance
-        QObject::connect(s_worker, &MonitorWorker::ddcciBrightnessChanged,
-                         s_instance, [](int brightness) {
-                             if (s_instance && s_instance->m_currentBrightness != brightness) {
-                                 s_instance->m_currentBrightness = brightness;
-                                 emit s_instance->brightnessChanged();
-                             }
-                         });
-
-        QObject::connect(s_worker, &MonitorWorker::wmiBrightnessChanged,
-                         s_instance, [](int brightness) {
-                             if (s_instance && s_instance->m_currentBrightness != brightness) {
-                                 s_instance->m_currentBrightness = brightness;
-                                 emit s_instance->brightnessChanged();
-                             }
-                         });
-    }
-
-    LOG_INFO("MonitorManager", "Starting worker thread");
     s_workerThread->start();
-
-    // Initialize the worker on the worker thread (this does the heavy lifting)
     QMetaObject::invokeMethod(s_worker, "init", Qt::QueuedConnection);
-    QMetaObject::invokeMethod(s_worker, "refreshBrightnessLevels", Qt::QueuedConnection);
-
-    LOG_INFO("MonitorManager", "MonitorManager initialization complete");
+    LOG_INFO("MonitorManager", "MonitorManager initialization queued");
 }
 
 void MonitorManager::cleanup()
 {
+    ++m_generation;
+    m_initializeAfterRetirement = false;
     LOG_INFO("MonitorManager", "MonitorManager cleanup requested");
 
     if (!s_workerThread) {
@@ -529,26 +477,18 @@ void MonitorManager::cleanup()
         return;
     }
 
-    // Step 1: Tell worker to cleanup from its own thread
-    if (s_worker) {
-        QMetaObject::invokeMethod(s_worker, "cleanup", Qt::QueuedConnection);
-
-        // Step 2: Tell worker to delete itself from its own thread
-        QMetaObject::invokeMethod(s_worker, "deleteLater", Qt::QueuedConnection);
+    auto* worker = s_worker;
+    auto* thread = s_workerThread;
         s_worker = nullptr;
-    }
-
-    // Step 3: Quit thread and wait
-    s_workerThread->quit();
-    if (!s_workerThread->wait(5000)) {
-        qWarning() << "MonitorWorker thread did not finish gracefully, terminating...";
-        s_workerThread->terminate();
-        s_workerThread->wait(1000);
-    }
-
-    // Step 4: Delete thread
-    delete s_workerThread;
     s_workerThread = nullptr;
+    disconnect(worker, nullptr, nullptr, nullptr);
+    m_retiringThread = thread;
+    connect(thread, &QThread::finished, this, [this, retired = QPointer<QThread>(thread)] {
+        if (m_retiringThread != retired) return;
+        m_retiringThread = nullptr;
+        if (m_initializeAfterRetirement) initialize();
+    });
+    retireWorkerThread(thread, worker, "cleanup");
 
     // Clear cached data
     {
@@ -757,4 +697,16 @@ void MonitorManager::setDDCCIBrightness(int brightness, int delayMs)
 void MonitorManager::setWMIBrightness(int brightness)
 {
     setWMIBrightnessAsync(brightness);
+}
+
+int MonitorWorker::indexForId(const QString& id) const
+{
+    if (!m_impl)
+        return -1;
+    for (int index = 0; index < m_impl->getMonitorCount(); ++index)
+    {
+        if (QString::fromStdWString(m_impl->getMonitorId(index)) == id)
+            return index;
+    }
+    return -1;
 }

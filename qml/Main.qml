@@ -138,25 +138,6 @@ ApplicationWindow {
             }
         }
 
-        function onEnableMediaSessionManagerChanged() {
-            if (UserSettings.enableMediaSessionManager) {
-                MediaSessionBridge.startMediaMonitoring()
-            } else {
-                MediaSessionBridge.stopMediaMonitoring()
-            }
-        }
-
-        function onAllowBrightnessControlChanged() {
-            if (UserSettings.allowBrightnessControl) {
-                MonitorManager.initialize()
-                if (MonitorManager.monitorDetected) {
-                    MonitorManager.setDDCCIBrightness(Math.round(UserSettings.ddcciBrightness), UserSettings.ddcciQueueDelay)
-                }
-            } else {
-                MonitorManager.cleanup()
-            }
-        }
-
     }
 
     Connections {

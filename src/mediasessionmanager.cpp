@@ -4,12 +4,17 @@
 #include <shellapi.h>
 #include "mediasessionmanager.h"
 #include "logmanager.h"
+#include "workerthreads.h"
+#include "nativeimage.h"
+#include <chrono>
+#include <utility>
 #include <QMetaObject>
 #include <QMutexLocker>
 #include <QBuffer>
 #include <QByteArray>
-#include <QPixmap>
+
 #include <QImage>
+#include <QImageReader>
 #include <QPainter>
 #include <QPainterPath>
 #include <QFileInfo>
@@ -30,108 +35,70 @@ static MediaWorker* g_mediaWorker = nullptr;
 static QMutex g_mediaInitMutex;
 
 namespace {
-
-QString imageToDataUri(const QImage& image)
+    template <class Operation> auto awaitResult(const Operation& operation, const std::atomic_bool& stopping)
 {
-    if (image.isNull()) {
-        return {};
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+        while (operation.Status() == AsyncStatus::Started)
+        {
+            QThread::msleep(50);
+            if (stopping.load() || std::chrono::steady_clock::now() >= deadline)
+            {
+                operation.Cancel();
+                throw hresult_canceled();
+            }
+        }
+        if (stopping.load())
+        {
+            operation.Cancel();
+            throw hresult_canceled();
+        }
+        return operation.GetResults();
     }
 
-    QByteArray imageData;
-    QBuffer buffer(&imageData);
-    buffer.open(QIODevice::WriteOnly);
-    image.save(&buffer, "PNG");
-    return QStringLiteral("data:image/png;base64,") + imageData.toBase64();
+    void queueMediaRefresh(const std::shared_ptr<MediaCallbackTarget>& target, bool resetManual = false,
+                           bool playback = false)
+    {
+        QMutexLocker guard(&target->mutex);
+        auto* worker = target->worker;
+        if (!worker)
+            return;
+        QMetaObject::invokeMethod(
+            worker,
+            [target, worker, resetManual, playback] {
+                {
+                    QMutexLocker guard(&target->mutex);
+                    if (target->worker != worker)
+                        return;
+                }
+                worker->handleMediaEvent(resetManual, playback);
+            },
+            Qt::QueuedConnection);
 }
 
-QImage bitmapToImage(HBITMAP bitmap)
-{
-    BITMAP bitmapInfo{};
-    if (!bitmap || GetObject(bitmap, sizeof(bitmapInfo), &bitmapInfo) == 0) {
-        return {};
-    }
-
-    BITMAPINFO dibInfo{};
-    dibInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    dibInfo.bmiHeader.biWidth = bitmapInfo.bmWidth;
-    dibInfo.bmiHeader.biHeight = -bitmapInfo.bmHeight;
-    dibInfo.bmiHeader.biPlanes = 1;
-    dibInfo.bmiHeader.biBitCount = 32;
-    dibInfo.bmiHeader.biCompression = BI_RGB;
-
-    QImage image(bitmapInfo.bmWidth, bitmapInfo.bmHeight, QImage::Format_ARGB32);
-    HDC deviceContext = GetDC(nullptr);
-    const int copiedLines = GetDIBits(deviceContext, bitmap, 0, bitmapInfo.bmHeight,
-                                      image.bits(), &dibInfo, DIB_RGB_COLORS);
-    ReleaseDC(nullptr, deviceContext);
-
-    return copiedLines == bitmapInfo.bmHeight ? image : QImage{};
-}
-
-QImage iconToImage(HICON icon, int size)
-{
-    if (!icon) {
-        return {};
-    }
-
-    BITMAPINFO bitmapInfo{};
-    bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bitmapInfo.bmiHeader.biWidth = size;
-    bitmapInfo.bmiHeader.biHeight = -size;
-    bitmapInfo.bmiHeader.biPlanes = 1;
-    bitmapInfo.bmiHeader.biBitCount = 32;
-    bitmapInfo.bmiHeader.biCompression = BI_RGB;
-
-    void* pixels = nullptr;
-    HDC screenContext = GetDC(nullptr);
-    HBITMAP bitmap = CreateDIBSection(screenContext, &bitmapInfo, DIB_RGB_COLORS,
-                                      &pixels, nullptr, 0);
-    HDC drawContext = CreateCompatibleDC(screenContext);
-    if (!screenContext || !bitmap || !pixels || !drawContext) {
-        if (drawContext) {
-            DeleteDC(drawContext);
-        }
-        if (bitmap) {
-            DeleteObject(bitmap);
-        }
-        if (screenContext) {
-            ReleaseDC(nullptr, screenContext);
-        }
-        return {};
-    }
-
-    HGDIOBJ oldBitmap = SelectObject(drawContext, bitmap);
-    memset(pixels, 0, static_cast<size_t>(size * size * 4));
-    DrawIconEx(drawContext, 0, 0, icon, size, size, 0, nullptr, DI_NORMAL);
-
-    QImage image(static_cast<uchar*>(pixels), size, size, QImage::Format_ARGB32);
-    QImage result = image.copy();
-
-    SelectObject(drawContext, oldBitmap);
-    DeleteDC(drawContext);
-    DeleteObject(bitmap);
-    ReleaseDC(nullptr, screenContext);
-    return result;
-}
+    using namespace NativeImage;
 
 QString executableDisplayName(const QString& executablePath)
 {
     const std::wstring nativePath = executablePath.toStdWString();
     const DWORD dataSize = GetFileVersionInfoSize(nativePath.c_str(), nullptr);
-    if (dataSize == 0) {
+        if (dataSize == 0)
+        {
         return {};
     }
 
     std::vector<BYTE> versionData(dataSize);
-    if (!GetFileVersionInfo(nativePath.c_str(), 0, dataSize, versionData.data())) {
+        if (!GetFileVersionInfo(nativePath.c_str(), 0, dataSize, versionData.data()))
+        {
         return {};
     }
 
     void* value = nullptr;
     UINT valueLength = 0;
-    for (const wchar_t* key : {L"\\StringFileInfo\\040904b0\\ProductName",
-                               L"\\StringFileInfo\\040904b0\\FileDescription"}) {
-        if (VerQueryValue(versionData.data(), key, &value, &valueLength) && valueLength > 1) {
+        for (const wchar_t* key :
+             {L"\\StringFileInfo\\040904b0\\ProductName", L"\\StringFileInfo\\040904b0\\FileDescription"})
+        {
+            if (VerQueryValue(versionData.data(), key, &value, &valueLength) && valueLength > 1)
+            {
             return QString::fromWCharArray(static_cast<const wchar_t*>(value));
         }
     }
@@ -227,12 +194,13 @@ void resolveSourceIdentity(const QString& sourceId, QString& sourceName, QString
 
 } // namespace
 
-QPixmap createRoundedPixmap(const QPixmap& source, int targetSize, int radius) {
+QImage createRoundedImage(const QImage& source, int targetSize, int radius)
+{
     // Scale the source to target size while maintaining aspect ratio
-    QPixmap scaled = source.scaled(targetSize, targetSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    QImage scaled = source.scaled(targetSize, targetSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
     // Create a new pixmap with transparent background
-    QPixmap rounded(targetSize, targetSize);
+    QImage rounded(targetSize, targetSize, QImage::Format_ARGB32_Premultiplied);
     rounded.fill(Qt::transparent);
 
     QPainter painter(&rounded);
@@ -251,7 +219,7 @@ QPixmap createRoundedPixmap(const QPixmap& source, int targetSize, int radius) {
     int y = (targetSize - scaled.height()) / 2;
 
     // Draw the scaled image
-    painter.drawPixmap(x, y, scaled);
+    painter.drawImage(x, y, scaled);
 
     return rounded;
 }
@@ -260,7 +228,6 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
     MediaInfo info;
 
     try {
-        init_apartment();
         if (!worker || !worker->ensureCurrentSession()) {
             LOG_INFO("MediaSessionManager", "No active media session found");
             return info;
@@ -274,7 +241,7 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
             const QString sourceId = QString::fromWCharArray(currentSession.SourceAppUserModelId().c_str());
             resolveSourceIdentity(sourceId, info.sourceName, info.sourceIcon);
 
-            auto properties = currentSession.TryGetMediaPropertiesAsync().get();
+            auto properties = awaitResult(currentSession.TryGetMediaPropertiesAsync(), worker->m_stopRequested);
             if (properties) {
                 info.title = QString::fromWCharArray(properties.Title().c_str());
                 info.artist = QString::fromWCharArray(properties.Artist().c_str());
@@ -287,12 +254,14 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
                 try {
                     auto thumbnailRef = properties.Thumbnail();
                     if (thumbnailRef) {
-                        auto thumbnailStream = thumbnailRef.OpenReadAsync().get();
+                        auto thumbnailStream = awaitResult(thumbnailRef.OpenReadAsync(), worker->m_stopRequested);
                         if (thumbnailStream) {
                             auto size = thumbnailStream.Size();
-                            if (size > 0) {
+                            if (size > 0 && size <= 8 * 1024 * 1024)
+                            {
                                 DataReader reader(thumbnailStream);
-                                auto bytesLoaded = reader.LoadAsync(static_cast<uint32_t>(size)).get();
+                                auto bytesLoaded =
+                                    awaitResult(reader.LoadAsync(static_cast<uint32_t>(size)), worker->m_stopRequested);
 
                                 if (bytesLoaded > 0) {
                                     std::vector<uint8_t> buffer(bytesLoaded);
@@ -305,10 +274,22 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
                                         LOG_INFO("MediaSessionManager", "Album art changed, processing new image");
 
                                         // Load and process the image only if it changed
-                                        QPixmap originalPixmap;
-                                        if (originalPixmap.loadFromData(originalImageData)) {
+                                        QBuffer imageBuffer(&originalImageData);
+                                        imageBuffer.open(QIODevice::ReadOnly);
+                                        QImageReader imageReader(&imageBuffer);
+                                        const QSize imageSize = imageReader.size();
+                                        QImage originalPixmap;
+                                        if (imageSize.width() > 0 && imageSize.height() > 0 &&
+                                            imageSize.width() <= 4096 && imageSize.height() <= 4096)
+                                        {
+                                            imageReader.setScaledSize(
+                                                imageSize.scaled(64, 64, Qt::KeepAspectRatioByExpanding));
+                                            originalPixmap = imageReader.read();
+                                        }
+                                        if (!originalPixmap.isNull())
+                                        {
                                             int targetSize = 64;
-                                            QPixmap roundedPixmap = createRoundedPixmap(originalPixmap, targetSize, 8);
+                                            QImage roundedPixmap = createRoundedImage(originalPixmap, targetSize, 8);
 
                                             QByteArray processedImageData;
                                             QBuffer buffer(&processedImageData);
@@ -336,7 +317,12 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
                             }
                         }
                     }
-                } catch (...) {
+                }
+                catch (const hresult_error& error)
+                {
+                    LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                                        .arg(static_cast<qint32>(error.code()), 0, 16)
+                                                        .arg(QString::fromWCharArray(error.message().c_str())));
                     LOG_WARN("MediaSessionManager", "Failed to fetch album art");
                 }
             }
@@ -350,8 +336,15 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
         } else {
             LOG_INFO("MediaSessionManager", "No active media session found");
         }
-    } catch (...) {
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                            .arg(static_cast<qint32>(error.code()), 0, 16)
+                                            .arg(QString::fromWCharArray(error.message().c_str())));
         LOG_CRITICAL("MediaSessionManager", "Failed to query media session info");
+        worker->resetSessionManager();
+        return {};
     }
 
     return info;
@@ -359,63 +352,50 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
 
 void MediaWorker::setupSessionManagerNotifications() {
     try {
-        init_apartment();
-        m_sessionManager = GlobalSystemMediaTransportControlsSessionManager::RequestAsync().get();
-
-        // Listen for when sessions are added/removed
+        m_sessionManager =
+            awaitResult(GlobalSystemMediaTransportControlsSessionManager::RequestAsync(), m_stopRequested);
         m_sessionsChangedToken = m_sessionManager.SessionsChanged(
-            [this](GlobalSystemMediaTransportControlsSessionManager const& sender, SessionsChangedEventArgs const& args) {
-                Q_UNUSED(sender)
-                Q_UNUSED(args)
-                QMetaObject::invokeMethod(this, [this]() {
-                    LOG_INFO("MediaSessionManager", "Sessions changed, checking for new active session");
-                    ensureCurrentSession();
-                    queryMediaInfo();
-                }, Qt::QueuedConnection);
-            });
-
-        // Follow the source Windows considers most relevant, matching Quick Settings.
+            [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target); });
         m_currentSessionChangedToken = m_sessionManager.CurrentSessionChanged(
-            [this](GlobalSystemMediaTransportControlsSessionManager const& sender,
-                   CurrentSessionChangedEventArgs const& args) {
-                Q_UNUSED(sender)
-                Q_UNUSED(args)
-                QMetaObject::invokeMethod(this, [this]() {
-                    LOG_INFO("MediaSessionManager", "Current media session changed");
-                    m_sourceSelectedManually = false;
-                    queryMediaInfo();
-                }, Qt::QueuedConnection);
-            });
-
-        LOG_INFO("MediaSessionManager", "Session manager notifications registered");
-    } catch (...) {
-        LOG_CRITICAL("MediaSessionManager", "Failed to setup session manager notifications");
+            [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target, true); });
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager",
+                 QString("Session manager unavailable: %1").arg(QString::fromWCharArray(error.message().c_str())));
+        cleanupSessionManagerNotifications();
+        m_sessionManager = nullptr;
     }
 }
 
 void MediaWorker::cleanupSessionManagerNotifications() {
-    if (m_sessionManager) {
-        try {
-            if (m_sessionsChangedToken.value != 0) {
-                m_sessionManager.SessionsChanged(m_sessionsChangedToken);
-                m_sessionsChangedToken = {};
+    if (!m_sessionManager)
+        return;
+    auto revoke = [&](event_token& token, auto unregister) {
+        const auto previous = std::exchange(token, {});
+        if (!previous.value)
+            return;
+        try
+        {
+            unregister(previous);
             }
-            if (m_currentSessionChangedToken.value != 0) {
-                m_sessionManager.CurrentSessionChanged(m_currentSessionChangedToken);
-                m_currentSessionChangedToken = {};
+        catch (const hresult_error& error)
+        {
+            LOG_WARN("MediaSessionManager", QString::fromWCharArray(error.message().c_str()));
             }
-            LOG_INFO("MediaSessionManager", "Session manager notifications cleaned up");
-        } catch (...) {
-            LOG_WARN("MediaSessionManager", "Error cleaning up session manager notifications");
-        }
-    }
+    };
+    revoke(m_sessionsChangedToken, [&](auto token) { m_sessionManager.SessionsChanged(token); });
+    revoke(m_currentSessionChangedToken, [&](auto token) { m_sessionManager.CurrentSessionChanged(token); });
 }
 
 bool MediaWorker::ensureCurrentSession() {
+    if (!m_running || m_stopRequested.load())
+        return false;
     try {
         if (!m_sessionManager) {
-            init_apartment();
-            m_sessionManager = GlobalSystemMediaTransportControlsSessionManager::RequestAsync().get();
+            setupSessionManagerNotifications();
+            if (!m_sessionManager)
+                return false;
         }
 
         auto sessions = m_sessionManager.GetSessions();
@@ -456,81 +436,119 @@ bool MediaWorker::ensureCurrentSession() {
         }
 
         return m_currentSession != nullptr;
-    } catch (...) {
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                            .arg(static_cast<qint32>(error.code()), 0, 16)
+                                            .arg(QString::fromWCharArray(error.message().c_str())));
         LOG_CRITICAL("MediaSessionManager", "Failed to get current session");
+        resetSessionManager();
         return false;
     }
 }
 
 void MediaWorker::setupSessionNotifications() {
-    if (!m_currentSession) {
+    if (!m_currentSession)
         return;
-    }
-
-    LOG_INFO("MediaSessionManager", "Setting up session event notifications");
-
-    try {
-        // Register for media properties changes (title, artist, album art)
+    try
+    {
         m_propertiesChangedToken = m_currentSession.MediaPropertiesChanged(
-            [this](GlobalSystemMediaTransportControlsSession const& session,
-                   MediaPropertiesChangedEventArgs const& args) {
-                Q_UNUSED(session)
-                Q_UNUSED(args)
-                QMetaObject::invokeMethod(this, "queryMediaInfo", Qt::QueuedConnection);
-            });
-
-        // Register for playback info changes (play/pause state)
+            [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target); });
         m_playbackInfoChangedToken = m_currentSession.PlaybackInfoChanged(
-            [this](GlobalSystemMediaTransportControlsSession const& session,
-                   PlaybackInfoChangedEventArgs const& args) {
-                Q_UNUSED(session)
-                Q_UNUSED(args)
-                QMetaObject::invokeMethod(this, [this]() {
-                    if (m_sourceSelectedManually && m_currentSession) {
-                        const auto playbackInfo = m_currentSession.GetPlaybackInfo();
-                        if (playbackInfo) {
-                            const auto status = playbackInfo.PlaybackStatus();
-                            if (status == GlobalSystemMediaTransportControlsSessionPlaybackStatus::Stopped
-                                || status == GlobalSystemMediaTransportControlsSessionPlaybackStatus::Closed) {
-                                m_sourceSelectedManually = false;
-                            }
-                        }
-                    }
-                    queryMediaInfo();
-                }, Qt::QueuedConnection);
-            });
-
-        LOG_INFO("MediaSessionManager", "Session event notifications registered successfully");
-    } catch (...) {
-        LOG_CRITICAL("MediaSessionManager", "Failed to register session notifications");
+            [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target, false, true); });
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager",
+                 QString("Session notifications failed: %1").arg(QString::fromWCharArray(error.message().c_str())));
+        cleanupSessionNotifications();
     }
 }
 
 void MediaWorker::cleanupSessionNotifications() {
-    if (m_currentSession) {
-        LOG_INFO("MediaSessionManager", "Cleaning up session notifications");
-        try {
-            if (m_propertiesChangedToken.value != 0) {
-                m_currentSession.MediaPropertiesChanged(m_propertiesChangedToken);
-                m_propertiesChangedToken = {};
+    if (!m_currentSession)
+        return;
+    auto revoke = [&](event_token& token, auto unregister) {
+        const auto previous = std::exchange(token, {});
+        if (!previous.value)
+            return;
+        try
+        {
+            unregister(previous);
             }
-            if (m_playbackInfoChangedToken.value != 0) {
-                m_currentSession.PlaybackInfoChanged(m_playbackInfoChangedToken);
-                m_playbackInfoChangedToken = {};
+        catch (const hresult_error& error)
+        {
+            LOG_WARN("MediaSessionManager", QString::fromWCharArray(error.message().c_str()));
             }
-            LOG_INFO("MediaSessionManager", "Session notifications cleaned up successfully");
-        } catch (...) {
-            LOG_WARN("MediaSessionManager", "Error cleaning up session notifications");
+    };
+    revoke(m_propertiesChangedToken, [&](auto token) { m_currentSession.MediaPropertiesChanged(token); });
+    revoke(m_playbackInfoChangedToken, [&](auto token) { m_currentSession.PlaybackInfoChanged(token); });
         }
+
+MediaWorker::MediaWorker()
+{
+    qRegisterMetaType<MediaInfo>();
+    m_callbackTarget->worker = this;
+    m_retryTimer = new QTimer(this);
+    m_retryTimer->setSingleShot(true);
+    connect(m_retryTimer, &QTimer::timeout, this, &MediaWorker::queryMediaInfo);
+}
+MediaWorker::~MediaWorker()
+{
+    cleanup();
+}
+void MediaWorker::cleanup()
+{
+    {
+        QMutexLocker guard(&m_callbackTarget->mutex);
+        m_callbackTarget->worker = nullptr;
+    }
+    stopMonitoring();
+    if (m_apartmentInitialized)
+    {
+        uninit_apartment();
+        m_apartmentInitialized = false;
     }
 }
 
 void MediaWorker::queryMediaInfo() {
+    if (!m_running || m_stopRequested.load())
+        return;
     MediaInfo info = queryMediaInfoImpl(this);
+    if (!m_sessionManager && !m_stopRequested.load())
+    {
+        m_retryTimer->start(m_retryInterval);
+        m_retryInterval = qMin(m_retryInterval * 2, 60000);
+    }
+    else
+        m_retryInterval = 2000;
+    if (m_running && !m_stopRequested.load())
     emit mediaInfoChanged(info);
 }
 
 void MediaWorker::startMonitoring() {
+    if (m_running && !m_stopRequested.load())
+        return;
+    if (m_running)
+        stopMonitoring();
+    m_callbackTarget = std::make_shared<MediaCallbackTarget>();
+    m_callbackTarget->worker = this;
+    m_stopRequested.store(false);
+    try
+    {
+        if (!m_apartmentInitialized)
+        {
+            init_apartment(apartment_type::multi_threaded);
+            m_apartmentInitialized = true;
+        }
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_CRITICAL("MediaSessionManager", QString::fromWCharArray(error.message().c_str()));
+        return;
+    }
+    m_running = true;
     LOG_INFO("MediaSessionManager", "Starting media session monitoring");
 
     // Clear cache on start
@@ -545,13 +563,17 @@ void MediaWorker::startMonitoring() {
 }
 
 void MediaWorker::stopMonitoring() {
+    {
+        QMutexLocker guard(&m_callbackTarget->mutex);
+        m_callbackTarget->worker = nullptr;
+    }
+    m_retryTimer->stop();
+    m_running = false;
+    m_stopRequested.store(true);
+    emit mediaInfoChanged(MediaInfo{});
     LOG_INFO("MediaSessionManager", "Stopping media session monitoring");
 
-    cleanupSessionNotifications();
-    cleanupSessionManagerNotifications();
-    m_currentSession = nullptr;
-    m_sessionManager = nullptr;
-    m_sourceSelectedManually = false;
+    resetSessionManager();
 
     // Clear cache on stop
     m_cachedRawAlbumArt.clear();
@@ -565,13 +587,22 @@ void MediaWorker::playPause() {
 
     try {
         if (ensureCurrentSession() && m_currentSession) {
-            m_currentSession.TryTogglePlayPauseAsync().get();
+            if (!awaitResult(m_currentSession.TryTogglePlayPauseAsync(), m_stopRequested))
+            {
+                LOG_WARN("MediaSessionManager", "Media source rejected transport command");
+                return;
+            }
             LOG_INFO("MediaSessionManager", "Play/pause toggled successfully");
             // Event will trigger automatically via PlaybackInfoChanged
         } else {
             LOG_WARN("MediaSessionManager", "No active session for play/pause toggle");
         }
-    } catch (...) {
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                            .arg(static_cast<qint32>(error.code()), 0, 16)
+                                            .arg(QString::fromWCharArray(error.message().c_str())));
         LOG_CRITICAL("MediaSessionManager", "Failed to toggle play/pause");
     }
 }
@@ -581,13 +612,22 @@ void MediaWorker::nextTrack() {
 
     try {
         if (ensureCurrentSession() && m_currentSession) {
-            m_currentSession.TrySkipNextAsync().get();
+            if (!awaitResult(m_currentSession.TrySkipNextAsync(), m_stopRequested))
+            {
+                LOG_WARN("MediaSessionManager", "Media source rejected transport command");
+                return;
+            }
             LOG_INFO("MediaSessionManager", "Successfully skipped to next track");
             // Event will trigger automatically via MediaPropertiesChanged
         } else {
             LOG_WARN("MediaSessionManager", "No active session for next track");
         }
-    } catch (...) {
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                            .arg(static_cast<qint32>(error.code()), 0, 16)
+                                            .arg(QString::fromWCharArray(error.message().c_str())));
         LOG_CRITICAL("MediaSessionManager", "Failed to skip to next track");
     }
 }
@@ -597,13 +637,22 @@ void MediaWorker::previousTrack() {
 
     try {
         if (ensureCurrentSession() && m_currentSession) {
-            m_currentSession.TrySkipPreviousAsync().get();
+            if (!awaitResult(m_currentSession.TrySkipPreviousAsync(), m_stopRequested))
+            {
+                LOG_WARN("MediaSessionManager", "Media source rejected transport command");
+                return;
+            }
             LOG_INFO("MediaSessionManager", "Successfully skipped to previous track");
             // Event will trigger automatically via MediaPropertiesChanged
         } else {
             LOG_WARN("MediaSessionManager", "No active session for previous track");
         }
-    } catch (...) {
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                            .arg(static_cast<qint32>(error.code()), 0, 16)
+                                            .arg(QString::fromWCharArray(error.message().c_str())));
         LOG_CRITICAL("MediaSessionManager", "Failed to skip to previous track");
     }
 }
@@ -636,7 +685,12 @@ void MediaWorker::nextSource() {
         m_cachedProcessedAlbumArt.clear();
         setupSessionNotifications();
         queryMediaInfo();
-    } catch (...) {
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                            .arg(static_cast<qint32>(error.code()), 0, 16)
+                                            .arg(QString::fromWCharArray(error.message().c_str())));
         LOG_CRITICAL("MediaSessionManager", "Failed to switch media source");
     }
 }
@@ -660,29 +714,12 @@ void MediaSessionManager::initialize() {
 
 void MediaSessionManager::cleanup() {
     QMutexLocker locker(&g_mediaInitMutex);
-
-    LOG_INFO("MediaSessionManager", "Cleaning up MediaSessionManager");
-
-    if (g_mediaWorkerThread) {
-        // Stop monitoring and cleanup notifications before quitting thread
-        if (g_mediaWorker) {
-            QMetaObject::invokeMethod(g_mediaWorker, "stopMonitoring", Qt::BlockingQueuedConnection);
-        }
-
-        g_mediaWorkerThread->quit();
-        if (!g_mediaWorkerThread->wait(3000)) {
-            LOG_WARN("MediaSessionManager", "Worker thread did not quit gracefully, terminating");
-            g_mediaWorkerThread->terminate();
-            g_mediaWorkerThread->wait(1000);
-        }
-
-        delete g_mediaWorker;
-        delete g_mediaWorkerThread;
+    if (!g_mediaWorkerThread)
+        return;
+    g_mediaWorker->requestStop();
+    retireWorkerThread(g_mediaWorkerThread, g_mediaWorker, "cleanup");
         g_mediaWorker = nullptr;
         g_mediaWorkerThread = nullptr;
-
-        LOG_INFO("MediaSessionManager", "MediaSessionManager cleanup complete");
-    }
 }
 
 void MediaSessionManager::queryMediaInfoAsync() {
@@ -699,6 +736,7 @@ void MediaSessionManager::startMonitoringAsync() {
 
 void MediaSessionManager::stopMonitoringAsync() {
     if (g_mediaWorker) {
+        g_mediaWorker->requestStop();
         QMetaObject::invokeMethod(g_mediaWorker, "stopMonitoring", Qt::QueuedConnection);
     }
 }
@@ -729,4 +767,38 @@ void MediaSessionManager::nextSourceAsync() {
 
 MediaWorker* MediaSessionManager::getWorker() {
     return g_mediaWorker;
+}
+
+void MediaWorker::handleMediaEvent(bool resetManualSelection, bool checkPlayback)
+{
+    if (!m_running || m_stopRequested.load())
+        return;
+    try
+    {
+        if (resetManualSelection)
+            m_sourceSelectedManually = false;
+        if (checkPlayback && m_sourceSelectedManually && m_currentSession)
+        {
+            const auto info = m_currentSession.GetPlaybackInfo();
+            if (info && (info.PlaybackStatus() == GlobalSystemMediaTransportControlsSessionPlaybackStatus::Stopped ||
+                         info.PlaybackStatus() == GlobalSystemMediaTransportControlsSessionPlaybackStatus::Closed))
+            {
+                m_sourceSelectedManually = false;
+            }
+        }
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString::fromWCharArray(error.message().c_str()));
+    }
+    queryMediaInfo();
+}
+
+void MediaWorker::resetSessionManager()
+{
+    cleanupSessionNotifications();
+    cleanupSessionManagerNotifications();
+    m_currentSession = nullptr;
+    m_sessionManager = nullptr;
+    m_sourceSelectedManually = false;
 }

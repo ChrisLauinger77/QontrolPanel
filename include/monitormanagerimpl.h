@@ -18,14 +18,17 @@ private:
     struct MonitorInfo {
         PHYSICAL_MONITOR physicalMonitor;
         std::wstring deviceName;
+        std::wstring deviceId;
         bool ddcciTested;
         bool ddcciWorking;
         bool isLaptopDisplay;
         int cachedBrightness;
+        DWORD maximumBrightness = 100;
     };
 
     std::vector<MonitorInfo> monitors;
     HWND messageWindow;
+    bool m_comInitialized = false;
     std::function<void()> changeCallback;
 
     // WMI connection management
@@ -47,6 +50,8 @@ public:
     void enumerateMonitors();
     int getMonitorCount() const { return static_cast<int>(monitors.size()); }
     std::wstring getMonitorName(int index) const;
+    std::wstring getMonitorId(int index) const;
+    bool isLaptopDisplay(int index) const;
     bool setBrightnessInternal(int monitorIndex, int brightness);
     bool setBrightnessAll(int brightness);
     int getBrightnessInternal(int monitorIndex);
@@ -78,4 +83,5 @@ private:
     void setupChangeDetection();
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     void cleanup();
+    std::vector<BYTE> readNightLightData() const;
 };
