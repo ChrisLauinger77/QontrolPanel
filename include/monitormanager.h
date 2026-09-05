@@ -2,6 +2,8 @@
 
 #include <QObject>
 #include <QThread>
+#include <QPointer>
+#include <QTimer>
 #include <QMutex>
 #include <QMetaObject>
 #include <QQmlEngine>
@@ -23,6 +25,8 @@ struct Monitor {
     Monitor() : brightness(50), minBrightness(0), maxBrightness(100),
         isSupported(false), isLaptopDisplay(false) {}
 };
+
+Q_DECLARE_METATYPE(Monitor)
 
 class MonitorWorker : public QObject
 {
@@ -48,7 +52,6 @@ public slots:
 signals:
     void monitorsReady(const QList<Monitor>& monitors);
     void brightnessChanged(const QString& monitorId, int brightness);
-    void monitorBrightnessLevelsReady(const QList<QPair<QString, int>>& levels);
     void nightLightStatusReady(bool supported, bool enabled);
     void nightLightChanged(bool enabled);
     void ddcciBrightnessChanged(int brightness);
@@ -57,12 +60,13 @@ signals:
 private:
     MonitorManagerImpl* m_impl;
     QList<Monitor> m_monitors;
-    QMutex m_monitorsMutex;
 
     void updateMonitorFromImpl();
 
     QTimer* m_ddcciBrightnessTimer;
     int m_pendingDDCCIBrightness;
+    int m_ddcciDelayMs = 16;
+    int indexForId(const QString& id) const;
     bool m_hasPendingDDCCIBrightness;
 };
 
@@ -86,7 +90,7 @@ public:
     Q_INVOKABLE void initialize();
     Q_INVOKABLE void cleanup();
 
-    // Async methods (thread-safe)
+    // GUI-thread entry points; native work is queued to the worker
     static void enumerateMonitorsAsync();
     static void setBrightnessAsync(const QString& monitorId, int brightness);
     static void setBrightnessAllAsync(int brightness);
@@ -130,6 +134,9 @@ private:
     explicit MonitorManager(QObject *parent = nullptr);
     ~MonitorManager();
 
+    quint64 m_generation = 0;
+    QPointer<QThread> m_retiringThread;
+    bool m_initializeAfterRetirement = false;
     static MonitorWorker* s_worker;
     static QThread* s_workerThread;
     static MonitorManager* s_instance;

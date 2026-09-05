@@ -7,6 +7,8 @@ MediaSessionBridge* MediaSessionBridge::m_instance = nullptr;
 MediaSessionBridge::MediaSessionBridge(QObject* parent)
     : QObject(parent)
 {
+    m_instance = this;
+    MediaSessionManager::initialize();
     if (MediaSessionManager::getWorker()) {
         connect(MediaSessionManager::getWorker(), &MediaWorker::mediaInfoChanged,
                 this, [this](const MediaInfo& info) {
@@ -21,6 +23,12 @@ MediaSessionBridge::MediaSessionBridge(QObject* parent)
                 });
     }
 
+    connect(UserSettings::instance(), &UserSettings::enableMediaSessionManagerChanged, this, [this] {
+        if (UserSettings::instance()->enableMediaSessionManager())
+            startMediaMonitoring();
+        else
+            stopMediaMonitoring();
+    });
     if (UserSettings::instance()->enableMediaSessionManager()) {
         startMediaMonitoring();
     }

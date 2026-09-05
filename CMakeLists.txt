@@ -78,6 +78,7 @@ set(HEADERS
     include/sessionindices.h
     include/audiotypes.h
     include/jsonstore.h
+    include/nightlightdata.h
     include/workerthreads.h
     include/audiomanager.h
     include/audiobridge.h
