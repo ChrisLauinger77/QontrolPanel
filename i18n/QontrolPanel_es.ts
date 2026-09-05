@@ -945,7 +945,7 @@ Puedes activarla en la pestaña Componentes.</translation>
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudieron aplicar algunos ajustes de los auriculares. Actualiza para volver a intentarlo.</translation>
     </message>
 </context>
 <context>
@@ -971,7 +971,7 @@ Puedes activarla en la pestaña Componentes.</translation>
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows no pudo registrar un atajo de teclado (error %1). Se conservó la asignación anterior siempre que fue posible.</translation>
     </message>
 </context>
 <context>
@@ -1099,15 +1099,15 @@ Puedes activarla en la pestaña Componentes.</translation>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en la operación de energía</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al registrar el atajo de teclado</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo guardar la configuración</translation>
     </message>
 </context>
 <context>
@@ -1203,7 +1203,7 @@ Puedes activarla en la pestaña Componentes.</translation>
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows no pudo completar la operación de energía (error %1).</translation>
     </message>
 </context>
 <context>
@@ -1573,30 +1573,30 @@ Puedes activarla en la pestaña Componentes.</translation>
     </message>
     <message>
         <source>Invalid release metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadatos de la versión no válidos</translation>
     </message>
     <message>
         <source>The release has no valid SHA-256 checksum or file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>La versión no incluye una suma de comprobación SHA-256 válida o un tamaño de archivo válido.</translation>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation type="unfinished"></translation>
+        <translation>La verificación de la actualización falló. Se descartó el instalador.</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>La descarga superó el tamaño previsto o no se pudo guardar.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Descarga cancelada</translation>
     </message>
 </context>
 <context>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo guardar la configuración. Comprueba el acceso a tu perfil de usuario.</translation>
     </message>
 </context>
 </TS>

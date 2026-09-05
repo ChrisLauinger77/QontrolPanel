@@ -944,7 +944,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>部分耳机设置无法应用。请刷新以重试。</translation>
     </message>
 </context>
 <context>
@@ -970,7 +970,7 @@ You can enable it in the Components tab.</source>
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows 无法注册快捷键（错误 %1）。已尽可能保留原有绑定。</translation>
     </message>
 </context>
 <context>
@@ -1098,15 +1098,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation type="unfinished"></translation>
+        <translation>电源操作失败</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation type="unfinished"></translation>
+        <translation>快捷键注册失败</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存设置</translation>
     </message>
 </context>
 <context>
@@ -1202,7 +1202,7 @@ You can enable it in the Components tab.</source>
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows 无法完成电源操作（错误 %1）。</translation>
     </message>
 </context>
 <context>
@@ -1572,30 +1572,30 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Invalid release metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>版本元数据无效</translation>
     </message>
     <message>
         <source>The release has no valid SHA-256 checksum or file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>此版本缺少有效的 SHA-256 校验和或文件大小。</translation>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation type="unfinished"></translation>
+        <translation>更新验证失败。安装程序已被丢弃。</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>下载文件超出预期大小或无法保存。</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>下载已取消</translation>
     </message>
 </context>
 <context>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存设置。请检查是否有权访问用户配置文件。</translation>
     </message>
 </context>
 </TS>
