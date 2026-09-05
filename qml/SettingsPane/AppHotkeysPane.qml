@@ -272,6 +272,13 @@ ColumnLayout {
                     onValueChanged: addHotkeyDialog.customStepSize = value
                 }
 
+                Label {
+                    Layout.fillWidth: true
+                    visible: KeyboardShortcutManager.lastError.length > 0
+                    text: KeyboardShortcutManager.lastError
+                    wrapMode: Text.Wrap
+                }
+
                 RowLayout {
                     spacing: 15
                     Layout.topMargin: 10
@@ -290,15 +297,16 @@ ColumnLayout {
                                  addHotkeyDialog.volUpKey !== Qt.Key_unknown &&
                                  addHotkeyDialog.volDownKey !== Qt.Key_unknown
                         onClicked: {
-                            KeyboardShortcutManager.addAppVolumeHotkey(
+                            if (KeyboardShortcutManager.addAppVolumeHotkey(
                                 addHotkeyDialog.selectedApp,
                                 addHotkeyDialog.volUpKey,
                                 addHotkeyDialog.volUpMods,
                                 addHotkeyDialog.volDownKey,
                                 addHotkeyDialog.volDownMods,
                                 addHotkeyDialog.customStepSize
-                            )
-                            addHotkeyDialog.close()
+                            )) {
+                                addHotkeyDialog.close()
+                            }
                         }
                     }
                 }

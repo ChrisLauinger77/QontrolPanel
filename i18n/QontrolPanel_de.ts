@@ -970,6 +970,10 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
 <context>
     <name>KeyboardShortcutManager</name>
     <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>Tastenkombinationen für Anwendungen konnten nicht gespeichert werden. Prüfen Sie den Zugriff auf Ihr Benutzerprofil und den verfügbaren Speicherplatz.</translation>
+    </message>
+    <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation>Windows konnte eine Tastenkombination nicht registrieren (Fehler %1). Die bisherige Zuordnung wurde nach Möglichkeit beibehalten.</translation>
     </message>

@@ -970,6 +970,10 @@ You can enable it in the Components tab.</source>
 <context>
     <name>KeyboardShortcutManager</name>
     <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>Не удалось сохранить сочетания клавиш для приложений. Проверьте доступ к своему профилю пользователя и наличие свободного места на диске.</translation>
+    </message>
+    <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation>Системе Windows не удалось зарегистрировать сочетание клавиш (ошибка %1). Прежнее назначение было сохранено, если это было возможно.</translation>
     </message>

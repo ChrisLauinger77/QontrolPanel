@@ -969,6 +969,10 @@ You can enable it in the Components tab.</source>
 <context>
     <name>KeyboardShortcutManager</name>
     <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation type="unfinished"></translation>
     </message>

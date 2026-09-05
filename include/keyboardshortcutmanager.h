@@ -40,7 +40,7 @@ public:
 
     // Per-app volume hotkeys
     Q_INVOKABLE bool addAppVolumeHotkey(const QString &executableName, int volUpKey, int volUpMods, int volDownKey, int volDownMods, int volumeStepSize = 0);
-    Q_INVOKABLE void removeAppVolumeHotkey(const QString &executableName);
+    Q_INVOKABLE bool removeAppVolumeHotkey(const QString &executableName);
     QJsonArray appVolumeHotkeysJson() const;
 
     // Native event filter to handle WM_HOTKEY messages
@@ -49,6 +49,7 @@ public:
 signals:
     void lastErrorChanged();
     void registrationFailed(const QString& message);
+    void saveFailed(const QString& message);
     void panelToggleRequested();
     void globalShortcutsSuspendedChanged();
     void chatMixEnabledChanged(bool enabled);
@@ -93,6 +94,7 @@ private:
     void registerAppVolumeHotkeys();
     void unregisterAppVolumeHotkeys();
     void loadAppVolumeHotkeys();
-    void saveAppVolumeHotkeys();
+    bool saveAppVolumeHotkeys(const QList<AppVolumeHotkey>& hotkeys);
+    void reportAppVolumeHotkeysSaveFailure();
     QString getAppVolumeHotkeysFilePath() const;
 };

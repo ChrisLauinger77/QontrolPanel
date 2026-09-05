@@ -972,6 +972,10 @@ You can enable it in the Components tab.</source>
 <context>
     <name>KeyboardShortcutManager</name>
     <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>Impossible d'enregistrer les raccourcis des applications. Vérifiez l'accès à votre profil utilisateur et l'espace disque disponible.</translation>
+    </message>
+    <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation>Windows n'a pas pu enregistrer un raccourci clavier (erreur %1). L'affectation précédente a été conservée lorsque cela était possible.</translation>
     </message>

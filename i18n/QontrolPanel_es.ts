@@ -970,6 +970,10 @@ Puedes activarla en la pestaña Componentes.</translation>
 <context>
     <name>KeyboardShortcutManager</name>
     <message>
+        <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
+        <translation>No se pudieron guardar los atajos de las aplicaciones. Comprueba el acceso a tu perfil de usuario y el espacio disponible en disco.</translation>
+    </message>
+    <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation>Windows no pudo registrar un atajo de teclado (error %1). Se conservó la asignación anterior siempre que fue posible.</translation>
     </message>
