@@ -968,6 +968,13 @@ You can enable it in the Components tab.</source>
     </message>
 </context>
 <context>
+    <name>KeyboardShortcutManager</name>
+    <message>
+        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LabeledSwitch</name>
     <message>
         <source>On</source>
@@ -1190,6 +1197,13 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Update available</source>
         <translation>업데이트 가능</translation>
+    </message>
+</context>
+<context>
+    <name>PowerBridge</name>
+    <message>
+        <source>Windows could not complete the power action (error %1).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1523,7 +1537,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Cannot start download</source>
-        <translation>다운로드를 시작할 수 없습니다</translation>
+        <translation type="vanished">다운로드를 시작할 수 없습니다</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
@@ -1579,20 +1593,6 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PowerBridge</name>
-    <message>
-        <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>KeyboardShortcutManager</name>
-    <message>
-        <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
