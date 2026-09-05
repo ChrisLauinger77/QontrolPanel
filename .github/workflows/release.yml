@@ -3,77 +3,98 @@ on:
   workflow_dispatch:
     inputs:
       workflow_run_id:
-        description: "Build workflow run ID (optional - will use latest successful run if not provided)"
-        required: false
-
+        description: "Successful Build run from main (push or manual)"
+        required: true
 permissions:
   actions: read
   contents: write
-
 jobs:
   release:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.cmake_version.outputs.version }}
+      version: ${{ steps.version.outputs.version }}
     steps:
-      - name: Checkout repository
+      - name: Resolve one trusted build
+        id: build
+        uses: actions/github-script@v9
+        env:
+          BUILD_RUN_ID: ${{ inputs.workflow_run_id }}
+        with:
+          script: |
+            const runId = Number(process.env.BUILD_RUN_ID);
+            if (!Number.isSafeInteger(runId) || runId <= 0) throw new Error('Invalid build run ID');
+            const { data: run } = await github.rest.actions.getWorkflowRun({ ...context.repo, run_id: runId });
+            const { data: workflow } = await github.rest.actions.getWorkflow({ ...context.repo, workflow_id: 'build.yml' });
+            if (run.workflow_id !== workflow.id || run.status !== 'completed' || run.conclusion !== 'success'
+                || run.head_branch !== 'main' || !['push', 'workflow_dispatch'].includes(run.event)
+                || run.head_repository.full_name !== `${context.repo.owner}/${context.repo.repo}`) {
+              throw new Error('Release requires a successful trusted Build run from main');
+            }
+            core.setOutput('sha', run.head_sha);
+            core.setOutput('run_id', String(runId));
+      - name: Checkout the source that produced the artifacts
         uses: actions/checkout@v7
-
-      - name: Get version from CMake
-        id: cmake_version
-        shell: pwsh
-        run: |
-          $content = Get-Content CMakeLists.txt -Raw
-          $match = [regex]::Match($content, 'project\s*\(\s*(?<project>[^\s\)]+)\s+VERSION\s+(?<version>[^\s\)]+)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-          if (-not $match.Success) {
-              throw "Unable to extract project version from CMakeLists.txt"
-          }
-
-          "project=$($match.Groups['project'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-          "version=$($match.Groups['version'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-
-      - name: Download Windows artifact
-        uses: dawidd6/action-download-artifact@v24
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: build.yml
-          workflow_conclusion: success
+          ref: ${{ steps.build.outputs.sha }}
+          submodules: recursive
+      - name: Download binaries from the selected run
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.build.outputs.run_id }}
           name: QontrolPanel_win64_msvc2022
-          run_id: ${{ inputs.workflow_run_id }}
-          if_no_artifact_found: fail
-
-      - name: Download Windows Installer
-        uses: dawidd6/action-download-artifact@v24
+      - name: Download installer from the selected run
+        uses: actions/download-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: build.yml
-          workflow_conclusion: success
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.build.outputs.run_id }}
           name: QontrolPanel_Installer
-          run_id: ${{ inputs.workflow_run_id }}
-          if_no_artifact_found: fail
-
-      - name: Create release and tag
+      - name: Download provenance from the selected run
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.build.outputs.run_id }}
+          name: QontrolPanel_Provenance
+      - name: Verify source, dependency, version and artifact digests
+        id: version
+        env:
+          SOURCE_SHA: ${{ steps.build.outputs.sha }}
+          BUILD_RUN_ID: ${{ steps.build.outputs.run_id }}
         run: |
-          VERSION="${{ steps.cmake_version.outputs.version }}"
-          echo "Creating release for version: $VERSION"
-
-          git tag $VERSION
-          git push origin $VERSION
-
-      - name: Create GitHub release
+          set -euo pipefail
+          version=$(python tools/release_provenance.py verify --manifest provenance.json --source "$SOURCE_SHA" --run "$BUILD_RUN_ID" --directory .)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Refuse an existing tag on a different commit
+        uses: actions/github-script@v9
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          SOURCE_SHA: ${{ steps.build.outputs.sha }}
+        with:
+          script: |
+            try {
+              let { data: ref } = await github.rest.git.getRef({ ...context.repo, ref: `tags/${process.env.RELEASE_VERSION}` });
+              let object = ref.object;
+              while (object.type === 'tag') {
+                const { data: tag } = await github.rest.git.getTag({ ...context.repo, tag_sha: object.sha });
+                object = tag.object;
+              }
+              if (object.sha !== process.env.SOURCE_SHA) throw new Error('Existing version tag points to different source');
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+      - name: Publish verified release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ steps.cmake_version.outputs.version }}
-          name: ${{ steps.cmake_version.outputs.version }}
-          body: ""
+          tag_name: ${{ steps.version.outputs.version }}
+          target_commitish: ${{ steps.build.outputs.sha }}
+          name: ${{ steps.version.outputs.version }}
           draft: false
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
             QontrolPanel_win64_msvc2022.zip
             QontrolPanel_Installer.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            provenance.json
 
   publish-winget:
     name: Publish to WinGet

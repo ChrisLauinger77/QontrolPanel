@@ -6,10 +6,7 @@ on:
     paths-ignore:
       - "*.md"
       - "**/*.md"
-      - "i18n/**"
       - "i18n_compiled/**"
-      - "dependencies/headsetcontrol/**"
-      - "**/*.yml"
       - ".assets/**"
       - "renovate.json"
 
@@ -19,17 +16,13 @@ on:
     paths-ignore:
       - "*.md"
       - "**/*.md"
-      - "i18n/**"
       - "i18n_compiled/**"
-      - "dependencies/headsetcontrol/**"
-      - "**/*.yml"
       - ".assets/**"
       - "renovate.json"
 
   workflow_dispatch:
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 env:
   QT_VERSION: "6.11.2"
   VCPKG_ROOT: "C:/vcpkg"
@@ -40,23 +33,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || github.ref }}
           submodules: recursive
-      - name: Update HeadsetControl submodule to latest master
+      - name: Verify pinned HeadsetControl revision
         shell: pwsh
         run: |
-          git submodule sync --recursive
-          git submodule update --init --recursive --remote --checkout
-          $headsetControlIsShallow = git -C dependencies/headsetcontrol rev-parse --is-shallow-repository
-          if ($headsetControlIsShallow -eq "true") {
-              git -C dependencies/headsetcontrol fetch --unshallow --tags
-          } else {
-              git -C dependencies/headsetcontrol fetch --tags
-          }
-          $headsetControlCommit = git -C dependencies/headsetcontrol rev-parse HEAD
-          $headsetControlVersion = git -C dependencies/headsetcontrol describe --tags --dirty=-modified
-          Write-Host "HeadsetControl submodule updated to $headsetControlCommit"
-          Write-Host "HeadsetControl version: $headsetControlVersion"
+          git submodule update --init --recursive --checkout
+          $expected = (git ls-tree HEAD dependencies/headsetcontrol).Split()[2]
+          $actual = git -C dependencies/headsetcontrol rev-parse HEAD
+          if ($actual -ne $expected) { throw "HeadsetControl does not match the recorded submodule revision" }
+          git -C dependencies/headsetcontrol fetch --tags
       - name: Get version from CMake
         id: cmake_version
         shell: pwsh
@@ -114,13 +99,20 @@ jobs:
             git clone https://github.com/microsoft/vcpkg.git $vcpkgRoot
           }
 
+          $baseline = (Get-Content cmake/vcpkg-baseline.txt -Raw).Trim()
+          git -C $vcpkgRoot fetch origin $baseline --depth=1
+          git -C $vcpkgRoot checkout --detach $baseline
+          if ($LASTEXITCODE -ne 0) { throw "Cannot check out pinned vcpkg revision" }
           cmd /c "$vcpkgRoot\bootstrap-vcpkg.bat"
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg bootstrap failed" }
       - name: Install dependencies with vcpkg
         shell: pwsh
         run: |
           C:/vcpkg/vcpkg version
           C:/vcpkg/vcpkg install hidapi:x64-windows getopt-win32:x64-windows `
-            --overlay-triplets="$env:GITHUB_WORKSPACE/cmake/triplets"
+            --overlay-triplets="$env:GITHUB_WORKSPACE/cmake/triplets" `
+            --x-install-root="$env:GITHUB_WORKSPACE/build/vcpkg_installed"
+          if ($LASTEXITCODE -ne 0) { throw "Dependency installation failed" }
       - name: Install Qt
         id: qt
         uses: jurplel/install-qt-action@v4
@@ -137,83 +129,21 @@ jobs:
           cmake -S . -B build `
             -G "Visual Studio 18 2026" `
             -T v143 `
+            -DBUILD_TESTING=ON `
             -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
-            -DVCPKG_TARGET_TRIPLET=x64-windows
+            -DVCPKG_TARGET_TRIPLET=x64-windows `
+            -DVCPKG_INSTALLED_DIR="$env:GITHUB_WORKSPACE/build/vcpkg_installed"
+          if ($LASTEXITCODE -ne 0) { throw "CMake configuration failed" }
           Select-String -Path build/CMakeCache.txt `
             -Pattern 'CMAKE_GENERATOR:|CMAKE_GENERATOR_TOOLSET:|CMAKE_CXX_COMPILER:|VCPKG_TARGET_TRIPLET:'
           cmake --build build --config Release
+          if ($LASTEXITCODE -ne 0) { throw "Release build failed" }
+          ctest --test-dir build -C Release --output-on-failure --no-tests=error
+          if ($LASTEXITCODE -ne 0) { throw "Reliability tests failed" }
           cmake --install build --config Release
-      - name: Remove obsolete entries from changed TS files
-        id: translation_updates
-        shell: pwsh
-        run: |
-          $changedFiles = git diff --name-only -- i18n/*.ts
-          if (-not $changedFiles) {
-              Write-Host "No translation source changes detected"
-              "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-              exit 0
-          }
-
-          foreach ($file in $changedFiles) {
-              if (Test-Path $file) {
-                  Write-Host "Cleaning obsolete entries in $file"
-                  lconvert -no-obsolete $file -o "$file.tmp"
-                  Move-Item -Force "$file.tmp" $file
-              }
-          }
-
-          "has_changes=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-
-      - name: Create pull request for translation source updates
-        if: steps.translation_updates.outputs.has_changes == 'true' && github.ref_name == 'main'
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Update translation source files [skip ci]"
-          committer: GitHub Action <action@github.com>
-          author: GitHub Action <action@github.com>
-          branch: automation/update-translation-sources
-          base: main
-          delete-branch: true
-          title: "Update translation source files"
-          body: |
-            Automated update for Qt translation source catalogs.
-
-            This PR was created by the translation source update workflow and includes:
-            - refreshed `.ts` files generated by the standard Release build
-            - removal of obsolete translation entries in changed files
-          add-paths: |
-            i18n
-      - name: Commit translation source updates to current branch
-        if: steps.translation_updates.outputs.has_changes == 'true' && github.event_name == 'push' && github.ref_name != 'main'
-        shell: pwsh
-        run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git add i18n
-
-          if (git diff --cached --quiet) {
-              Write-Host "No translation source changes staged"
-              exit 0
-          }
-
-          git commit -m "Update translation source files [skip ci]"
-          git push origin HEAD:${{ github.ref_name }}
-      - name: Commit translation source updates to PR branch
-        if: steps.translation_updates.outputs.has_changes == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.ref != 'main' && github.event.pull_request.head.repo.full_name == github.repository
-        shell: pwsh
-        run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git add i18n
-
-          if (git diff --cached --quiet) {
-              Write-Host "No translation source changes staged"
-              exit 0
-          }
-
-          git commit -m "Update translation source files [skip ci]"
-              git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          if ($LASTEXITCODE -ne 0) { throw "Install failed" }
+          git diff --exit-code -- dependencies/headsetcontrol i18n
+          if ($LASTEXITCODE -ne 0) { throw "Build changed dependency or translation sources" }
       - name: Rename release folder
         shell: pwsh
         run: |
@@ -236,12 +166,6 @@ jobs:
         with:
           name: QontrolPanel_win64_msvc2022
           path: build/QontrolPanel_win64_msvc2022.zip
-      - name: Update .iss version
-        shell: pwsh
-        run: |
-          $content = Get-Content tools/installer.iss
-          $new = $content -replace '(?<=#define AppVersion ")[^"]+', "${{ steps.cmake_version.outputs.version }}"
-          Set-Content tools/installer.iss -Value $new
       - name: Download VC++ Redistributable
         shell: pwsh
         run: |
@@ -255,8 +179,19 @@ jobs:
         run: |
           $env:Path += ";${env:ProgramFiles(x86)}\Inno Setup 6"
           iscc.exe tools/installer.iss
+          if ($LASTEXITCODE -ne 0) { throw "Installer build failed" }
       - name: Upload Installer
         uses: actions/upload-artifact@v7
         with:
           name: QontrolPanel_Installer
           path: tools/Output/QontrolPanel_Installer.exe
+      - name: Record artifact provenance
+        shell: pwsh
+        run: |
+          python tools/release_provenance.py create --output build/provenance.json --run "$env:GITHUB_RUN_ID" --qt "$env:QT_VERSION" --artifact build/QontrolPanel_win64_msvc2022.zip --artifact tools/Output/QontrolPanel_Installer.exe
+          if ($LASTEXITCODE -ne 0) { throw "Provenance generation failed" }
+      - name: Upload provenance
+        uses: actions/upload-artifact@v7
+        with:
+          name: QontrolPanel_Provenance
+          path: build/provenance.json

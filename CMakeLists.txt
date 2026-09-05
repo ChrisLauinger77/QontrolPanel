@@ -1,13 +1,27 @@
 cmake_minimum_required(VERSION 3.30)
 
-if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+option(QONTROLPANEL_CORE_TESTS_ONLY "Build hardware-independent reliability tests" OFF)
+if(QONTROLPANEL_CORE_TESTS_ONLY)
+    project(QontrolPanelCoreTests LANGUAGES CXX)
+    include(CTest)
+    add_subdirectory(tests)
+    return()
+endif()
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+    message(FATAL_ERROR "Use an out-of-source build directory.")
+endif()
+
+if(WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE "c:/vcpkg/scripts/buildsystems/vcpkg.cmake"
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
 project(QontrolPanel VERSION 2.2.3 LANGUAGES C CXX)
 
-set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
+endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -34,7 +48,18 @@ if(NOT EXISTS "${HEADSETCONTROL_SOURCE_DIR}/CMakeLists.txt")
     message(FATAL_ERROR "HeadsetControl submodule is missing. Run 'git submodule update --init --recursive'.")
 endif()
 
-add_subdirectory("${HEADSETCONTROL_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}/headsetcontrol" EXCLUDE_FROM_ALL)
+# Upstream generates lib/version.h in its source directory. Build a disposable
+# copy so configuration never writes into the pinned, read-only submodule.
+find_package(Git REQUIRED)
+execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --always
+    WORKING_DIRECTORY "${HEADSETCONTROL_SOURCE_DIR}"
+    OUTPUT_VARIABLE HEADSETCONTROL_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE
+    COMMAND_ERROR_IS_FATAL ANY)
+set(HEADSETCONTROL_BUILD_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/headsetcontrol-source")
+file(REMOVE_RECURSE "${HEADSETCONTROL_BUILD_SOURCE}")
+file(COPY "${HEADSETCONTROL_SOURCE_DIR}/" DESTINATION "${HEADSETCONTROL_BUILD_SOURCE}"
+    PATTERN ".git" EXCLUDE PATTERN "build*" EXCLUDE)
+add_subdirectory("${HEADSETCONTROL_BUILD_SOURCE}" "${CMAKE_CURRENT_BINARY_DIR}/headsetcontrol" EXCLUDE_FROM_ALL)
 
 if(MSVC AND TARGET headsetcontrol_lib)
     set_target_properties(headsetcontrol_lib PROPERTIES
@@ -266,7 +291,7 @@ qt_add_translations(${CMAKE_PROJECT_NAME}
     LUPDATE_OPTIONS "-locations none"
 )
 
-add_dependencies(${CMAKE_PROJECT_NAME} update_translations)
+# Translation extraction is explicit: cmake --build build --target update_translations
 
 install(TARGETS QontrolPanel
     BUNDLE DESTINATION .
@@ -300,3 +325,8 @@ qt_generate_deploy_qml_app_script(
 install(SCRIPT ${deploy_script})
 
 install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/i18n)
+
+include(CTest)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
