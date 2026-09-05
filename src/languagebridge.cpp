@@ -1,5 +1,7 @@
 #include "languagebridge.h"
 #include "languages.h"
+#include "updater.h"
+#include "usersettings.h"
 #include <QApplication>
 #include <QCoreApplication>
 
@@ -24,7 +26,8 @@ LanguageBridge::LanguageBridge(QObject *parent)
     : QObject(parent)
     , translator(new QTranslator(this))
 {
-
+    connect(Updater::instance(), &Updater::translationDownloadFinished, this,
+            [this](bool, const QString&) { changeApplicationLanguage(UserSettings::instance()->languageIndex()); });
 }
 
 QString LanguageBridge::getCurrentLanguageCode() const {
@@ -94,4 +97,10 @@ QStringList LanguageBridge::getLanguageNativeNames() const
 {
     auto names = ::getLanguageNativeNames();
     return names;
+}
+
+LanguageBridge::~LanguageBridge()
+{
+    qApp->removeTranslator(translator);
+    m_instance = nullptr;
 }

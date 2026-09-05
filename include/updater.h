@@ -8,6 +8,10 @@
 #include <QJsonArray>
 #include <QQmlEngine>
 #include <QTimer>
+#include <QSaveFile>
+#include <QTemporaryDir>
+#include <QCryptographicHash>
+#include <memory>
 
 class Updater : public QObject
 {
@@ -15,6 +19,7 @@ class Updater : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
+    Q_PROPERTY(bool translationDownloading READ translationDownloading NOTIFY translationDownloadingChanged)
     Q_PROPERTY(bool updateAvailable READ updateAvailable NOTIFY updateAvailableChanged)
     Q_PROPERTY(QString latestVersion READ latestVersion NOTIFY latestVersionChanged)
     Q_PROPERTY(QString currentVersion READ currentVersion CONSTANT)
@@ -25,8 +30,10 @@ class Updater : public QObject
     Q_PROPERTY(QString releaseNotes READ releaseNotes NOTIFY releaseNotesChanged)
 
 public:
+    ~Updater() override;
+    bool translationDownloading() const { return m_translationDownloading; }
     static Updater* instance();
-    static Updater* create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+    static Updater* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
 
     Q_INVOKABLE void checkForUpdates();
     Q_INVOKABLE void checkForAppUpdatesAuto();
@@ -53,6 +60,7 @@ public:
     QString releaseNotes() const { return m_releaseNotes; }
 
 signals:
+    void translationDownloadingChanged();
     void updateAvailableChanged();
     void latestVersionChanged();
     void isCheckingChanged();
@@ -90,6 +98,16 @@ private:
     QString m_downloadUrl;
     QString m_releaseNotes;
 
+    bool m_translationDownloading = false;
+    quint64 m_translationGeneration = 0;
+    QByteArray m_expectedSha256;
+    qint64 m_expectedSize = 0;
+    qint64 m_receivedSize = 0;
+    QString m_downloadError;
+    std::unique_ptr<QTemporaryDir> m_stagingDirectory;
+    std::unique_ptr<QSaveFile> m_installerFile;
+    QCryptographicHash m_downloadHash{QCryptographicHash::Sha256};
+    void writeDownloadChunk(QNetworkReply* reply);
     QList<QNetworkReply*> m_activeTranslationDownloads;
     int m_totalTranslationDownloads;
     int m_completedTranslationDownloads;

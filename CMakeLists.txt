@@ -77,6 +77,7 @@ set(HEADERS
     include/nativeimage.h
     include/sessionindices.h
     include/audiotypes.h
+    include/replybatch.h
     include/jsonstore.h
     include/nightlightdata.h
     include/workerthreads.h

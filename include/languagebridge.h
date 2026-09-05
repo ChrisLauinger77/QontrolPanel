@@ -11,8 +11,9 @@ class LanguageBridge : public QObject
     QML_SINGLETON
 
 public:
+    ~LanguageBridge() override;
     static LanguageBridge* instance();
-    static LanguageBridge* create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+    static LanguageBridge* create(QQmlEngine* qmlEngine, QJSEngine* jsEngine);
 
     Q_INVOKABLE void changeApplicationLanguage(int languageIndex);
     Q_INVOKABLE QString getLanguageCodeFromIndex(int index) const;
@@ -28,4 +29,3 @@ private:
     QTranslator *translator;
     QString getCurrentLanguageCode() const;
 };
-
