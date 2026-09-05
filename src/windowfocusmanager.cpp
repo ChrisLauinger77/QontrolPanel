@@ -26,7 +26,6 @@ WindowFocusManager::WindowFocusManager(QObject *parent)
 WindowFocusManager::~WindowFocusManager()
 {
     stopMonitoring();
-    saveSettings();
     s_instance = nullptr;
 }
 
@@ -116,14 +115,19 @@ bool WindowFocusManager::isApplicationMutedInBackground(const QString& executabl
     return m_backgroundMutedApps.contains(executableName.toCaseFolded());
 }
 
-void WindowFocusManager::setApplicationMutedInBackground(const QString& executableName, bool muted)
+bool WindowFocusManager::setApplicationMutedInBackground(const QString& executableName, bool muted)
 {
-    if (muted) {
-        m_backgroundMutedApps.insert(executableName.toCaseFolded());
-    } else {
-        m_backgroundMutedApps.remove(executableName.toCaseFolded());
-    }
-    saveSettings();
+    if (isApplicationMutedInBackground(executableName) == muted)
+        return true;
+    auto candidate = m_backgroundMutedApps;
+    if (muted)
+        candidate.insert(executableName.toCaseFolded());
+    else
+        candidate.remove(executableName.toCaseFolded());
+    if (!saveSettings(candidate))
+        return false;
+    m_backgroundMutedApps = candidate;
+    return true;
 }
 
 QStringList WindowFocusManager::getBackgroundMutedApplications() const
@@ -147,12 +151,12 @@ void WindowFocusManager::loadSettings()
     }
 }
 
-void WindowFocusManager::saveSettings()
+bool WindowFocusManager::saveSettings(const QSet<QString>& applications)
 {
     QString filePath = getSettingsFilePath();
 
     QJsonArray mutedAppsArray;
-    for (const QString& app : m_backgroundMutedApps) {
+    for (const QString& app : applications) {
         mutedAppsArray.append(app);
     }
 
@@ -160,7 +164,7 @@ void WindowFocusManager::saveSettings()
     root["backgroundMutedApps"] = mutedAppsArray;
 
     QJsonDocument doc(root);
-    JsonStore::save(filePath, doc);
+    return JsonStore::save(filePath, doc);
 }
 
 QString WindowFocusManager::getSettingsFilePath() const

@@ -141,6 +141,9 @@ ApplicationWindow {
 
     Connections {
         target: AudioBridge
+        function onSaveFailed(message) {
+            systemTray.showMessage(qsTr("Settings could not be saved"), message)
+        }
         function onOutputDeviceCountChanged() {
             if (AudioBridge.outputDevices.count <= 1) {
                 outputDevicesRect.expanded = false

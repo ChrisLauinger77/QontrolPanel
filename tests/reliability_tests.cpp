@@ -17,6 +17,9 @@
 #ifdef Q_OS_WIN
 #include "keyboardshortcutmanager.h"
 #include "usersettings.h"
+#ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+#include "audiobridge.h"
+#endif
 #include <QScopeGuard>
 #include <QStandardPaths>
 #include <QUuid>
@@ -53,6 +56,9 @@ class ReliabilityTests : public QObject
     Q_OBJECT
 #ifdef Q_OS_WIN
     std::unique_ptr<KeyboardShortcutManager> m_shortcuts;
+#ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+    std::unique_ptr<AudioBridge> m_audio;
+#endif
     QString m_originalApplicationName;
     QString m_shortcutDataDirectory;
     bool m_originalTestMode = false;
@@ -99,6 +105,9 @@ private slots:
     }
     void cleanup()
     {
+#ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+        m_audio.reset();
+#endif
         m_shortcuts.reset();
         if (QDir(m_shortcutDataDirectory).exists())
             QVERIFY(QDir(m_shortcutDataDirectory).removeRecursively());
@@ -109,6 +118,122 @@ private slots:
         QCoreApplication::setApplicationName(m_originalApplicationName);
         QStandardPaths::setTestModeEnabled(m_originalTestMode);
     }
+#ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+    void audioPolicySaveFailure_data()
+    {
+        QTest::addColumn<QString>("policy");
+        QTest::addColumn<QString>("operation");
+        for (const QString& policy : {"commApps", "appRenames", "executableRenames", "appLocks",
+                                      "deviceRenames", "deviceIcons", "backgroundMutedApps"}) {
+            for (const QString& operation : {"add", "replace", "remove"}) {
+                if (operation == "replace" && (policy == "commApps" || policy == "appLocks" || policy == "backgroundMutedApps"))
+                    continue;
+                QTest::newRow(qPrintable(policy + "-" + operation)) << policy << operation;
+            }
+        }
+    }
+    void audioPolicySaveFailure()
+    {
+        QFETCH(QString, policy);
+        QFETCH(QString, operation);
+        const QMap<QString, QString> files = {{"commApps", "commapps.json"}, {"appRenames", "apprenames.json"},
+            {"executableRenames", "executablenames.json"}, {"appLocks", "applocks.json"},
+            {"deviceRenames", "devicerenames.json"}, {"deviceIcons", "deviceicons.json"},
+            {"backgroundMutedApps", "backgroundmute.json"}};
+        QVERIFY(QDir().mkpath(m_shortcutDataDirectory));
+        const QString path = m_shortcutDataDirectory + "/" + files.value(policy);
+        QVERIFY(JsonStore::save(path, QJsonDocument(QJsonObject{{policy, QJsonArray{}}})));
+        m_shortcuts.reset(KeyboardShortcutManager::instance());
+        m_audio.reset(AudioBridge::instance());
+        QVERIFY(!m_audio->isReady()); // No Core Audio or HID workers are started by these tests.
+        AudioApplication app;
+        app.id = "session";
+        app.name = "Player";
+        app.executableName = "Player";
+        app.streamIndex = 0;
+        AudioManager::instance()->applicationsChanged({app});
+        AudioDevice device;
+        device.id = "endpoint";
+        device.name = "Player";
+        m_audio->outputDevices()->setDevices({device});
+        auto* sessions = m_audio->getSessionsForExecutable("Player");
+        auto edit = [&](const QString& value) {
+            if (policy == "commApps")
+                return value.isEmpty() ? m_audio->removeCommApp("Player") : m_audio->addCommApp("Player");
+            if (policy == "appRenames")
+                return m_audio->setCustomApplicationName("Player", 0, value);
+            if (policy == "executableRenames")
+                return m_audio->setCustomExecutableName("Player", value);
+            if (policy == "appLocks")
+                return m_audio->setApplicationLocked("Player", 0, !value.isEmpty());
+            if (policy == "deviceRenames")
+                return m_audio->setCustomDeviceName("Player", value);
+            if (policy == "deviceIcons")
+                return m_audio->setCustomDeviceIcon("Player", value);
+            return m_audio->setApplicationMutedInBackground("Player", !value.isEmpty());
+        };
+        auto state = [&]() -> QVariant {
+            if (policy == "commApps") return m_audio->isCommApp("Player");
+            if (policy == "appRenames") return m_audio->getCustomApplicationName("Player", 0);
+            if (policy == "executableRenames") return m_audio->getCustomExecutableName("Player");
+            if (policy == "appLocks") return m_audio->isApplicationLocked("Player", 0);
+            if (policy == "deviceRenames") return m_audio->getCustomDeviceName("Player");
+            if (policy == "deviceIcons") return m_audio->getCustomDeviceIcon("Player");
+            return m_audio->isApplicationMutedInBackground("Player");
+        };
+        if (operation != "add")
+            QVERIFY(edit("headset"));
+        const auto previous = state();
+        const auto saved = JsonStore::load(path, policy);
+        QVERIFY(!saved.isNull());
+        QSignalSpy failed(m_audio.get(), &AudioBridge::saveFailed);
+        QSignalSpy commChanged(m_audio.get(), &AudioBridge::commAppsListChanged);
+        QSignalSpy lockChanged(m_audio.get(), &AudioBridge::applicationLockChanged);
+        QSignalSpy renameChanged(m_audio.get(), &AudioBridge::deviceRenameUpdated);
+        QSignalSpy iconChanged(m_audio.get(), &AudioBridge::deviceIconUpdated);
+        QSignalSpy sessionChanged(sessions, &QAbstractItemModel::dataChanged);
+        QSignalSpy groupChanged(m_audio->groupedApplications(), &QAbstractItemModel::dataChanged);
+        QSignalSpy deviceChanged(m_audio->outputDevices(), &QAbstractItemModel::dataChanged);
+        const QString next = operation == "remove" ? QString{} : QString("speaker");
+        {
+            const HANDLE lock = CreateFileW(reinterpret_cast<LPCWSTR>(path.utf16()), GENERIC_READ,
+                                            FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+            QVERIFY(lock != INVALID_HANDLE_VALUE);
+            const auto unlock = qScopeGuard([&] { CloseHandle(lock); });
+            QVERIFY(!edit(next));
+            QCOMPARE(state(), previous);
+            QCOMPARE(JsonStore::load(path, policy), saved);
+            QCOMPARE(failed.size(), 1);
+            QCOMPARE(failed.first().first().toString(), m_audio->lastError());
+            QVERIFY(!m_audio->lastError().isEmpty());
+            QCOMPARE(commChanged.size() + lockChanged.size() + renameChanged.size() + iconChanged.size()
+                     + sessionChanged.size() + groupChanged.size() + deviceChanged.size(), 0);
+        }
+        QVERIFY(edit(next));
+        QVERIFY(m_audio->lastError().isEmpty());
+        const auto accepted = state();
+        QVERIFY(accepted != previous);
+        const auto acceptedFile = JsonStore::load(path, policy);
+        QVERIFY(acceptedFile != saved);
+        QVERIFY(edit(next)); // Repeated edits must not append duplicate rules.
+        QCOMPARE(JsonStore::load(path, policy), acceptedFile);
+        m_audio.reset();
+        m_audio.reset(AudioBridge::instance());
+        QCOMPARE(state(), accepted);
+    }
+    void firstAudioPolicySaveFailure()
+    {
+        m_shortcuts.reset(KeyboardShortcutManager::instance());
+        m_audio.reset(AudioBridge::instance());
+        const QString path = m_shortcutDataDirectory + "/commapps.json";
+        QVERIFY(QDir().mkpath(path));
+        QVERIFY(!m_audio->addCommApp("Player"));
+        QVERIFY(!m_audio->isCommApp("Player"));
+        QVERIFY(QDir().rmdir(path));
+        QVERIFY(m_audio->addCommApp("Player"));
+        QVERIFY(m_audio->isCommApp("Player"));
+    }
+#endif
     void globalShortcutChangesRequireSavedSettings()
     {
         auto* settings = UserSettings::instance();

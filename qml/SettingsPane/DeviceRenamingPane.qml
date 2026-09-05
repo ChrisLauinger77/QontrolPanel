@@ -15,6 +15,13 @@ ColumnLayout {
         Layout.bottomMargin: 15
     }
 
+    Label {
+        Layout.fillWidth: true
+        visible: AudioBridge.lastError.length > 0
+        text: AudioBridge.lastError
+        wrapMode: Text.Wrap
+    }
+
     RowLayout {
         Layout.fillWidth: true
         spacing: 10
@@ -58,9 +65,9 @@ ColumnLayout {
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomDeviceName(deviceCard.model.name || "")
 
-                        onTextChanged: {
-                            if (text !== AudioBridge.getCustomDeviceName(deviceCard.model.name || "")) {
-                                AudioBridge.setCustomDeviceName(deviceCard.model.name || "", text);
+                        onTextEdited: {
+                            if (!AudioBridge.setCustomDeviceName(deviceCard.model.name || "", text)) {
+                                text = Qt.binding(function() { return AudioBridge.getCustomDeviceName(deviceCard.model.name || "") })
                             }
                         }
                     }
@@ -82,9 +89,9 @@ ColumnLayout {
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomDeviceName(inDeviceCard.model.name || "")
 
-                        onTextChanged: {
-                            if (text !== AudioBridge.getCustomDeviceName(inDeviceCard.model.name || "")) {
-                                AudioBridge.setCustomDeviceName(inDeviceCard.model.name || "", text);
+                        onTextEdited: {
+                            if (!AudioBridge.setCustomDeviceName(inDeviceCard.model.name || "", text)) {
+                                text = Qt.binding(function() { return AudioBridge.getCustomDeviceName(inDeviceCard.model.name || "") })
                             }
                         }
                     }
@@ -106,9 +113,9 @@ ColumnLayout {
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomExecutableName(groupAppCard.model.executableName || "")
 
-                        onTextChanged: {
-                            if (text !== AudioBridge.getCustomExecutableName(groupAppCard.model.executableName || "")) {
-                                AudioBridge.setCustomExecutableName(groupAppCard.model.executableName || "", text);
+                        onTextEdited: {
+                            if (!AudioBridge.setCustomExecutableName(groupAppCard.model.executableName || "", text)) {
+                                text = Qt.binding(function() { return AudioBridge.getCustomExecutableName(groupAppCard.model.executableName || "") })
                             }
                         }
                     }
@@ -130,9 +137,9 @@ ColumnLayout {
                         placeholderText: qsTr("Custom name")
                         text: AudioBridge.getCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0)
 
-                        onTextChanged: {
-                            if (text !== AudioBridge.getCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0)) {
-                                AudioBridge.setCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0, text);
+                        onTextEdited: {
+                            if (!AudioBridge.setCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0, text)) {
+                                text = Qt.binding(function() { return AudioBridge.getCustomApplicationName(appCard.model.name || "", appCard.model.streamIndex || 0) })
                             }
                         }
                     }

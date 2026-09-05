@@ -174,12 +174,19 @@ Rectangle {
                 placeholderText: deviceRenameContextMenu.originalName
 
                 Keys.onReturnPressed: {
-                    AudioBridge.setCustomDeviceName(
+                    if (AudioBridge.setCustomDeviceName(
                         deviceRenameContextMenu.originalName,
                         deviceCustomNameField.text.trim()
-                        )
-                    deviceRenameDialog.close()
+                    ))
+                        deviceRenameDialog.close()
                 }
+            }
+
+            Label {
+                Layout.fillWidth: true
+                visible: AudioBridge.lastError.length > 0
+                text: AudioBridge.lastError
+                wrapMode: Text.Wrap
             }
 
             RowLayout {
@@ -197,11 +204,11 @@ Rectangle {
                     highlighted: true
                     Layout.fillWidth: true
                     onClicked: {
-                        AudioBridge.setCustomDeviceName(
+                        if (AudioBridge.setCustomDeviceName(
                             deviceRenameContextMenu.originalName,
                             deviceCustomNameField.text.trim()
-                            )
-                        deviceRenameDialog.close()
+                        ))
+                            deviceRenameDialog.close()
                     }
                 }
             }
@@ -227,6 +234,13 @@ Rectangle {
             anchors.fill: parent
             spacing: 15
 
+            Label {
+                Layout.fillWidth: true
+                visible: AudioBridge.lastError.length > 0
+                text: AudioBridge.lastError
+                wrapMode: Text.Wrap
+            }
+
             GridLayout {
                 columns: 4
                 rows: 2
@@ -250,8 +264,8 @@ Rectangle {
                         icon.height: 24
 
                         onClicked: {
-                            AudioBridge.setCustomDeviceIcon(deviceRenameContextMenu.originalName, modelData)
-                            deviceIconDialog.close()
+                            if (AudioBridge.setCustomDeviceIcon(deviceRenameContextMenu.originalName, modelData))
+                                deviceIconDialog.close()
                         }
 
                         ToolTip.text: modelData.charAt(0).toUpperCase() + modelData.slice(1).replace('-', ' ')
