@@ -22,6 +22,18 @@ if(Qt6_FOUND)
             ../src/usersettings.cpp ../include/usersettings.h)
         target_compile_definitions(reliability_tests PRIVATE UNICODE NOMINMAX)
         target_link_libraries(reliability_tests PRIVATE Qt6::Gui user32)
+        if(TARGET headsetcontrol_lib)
+            # Exercise the actual audio policy APIs with device workers disabled in the test preferences.
+            target_sources(reliability_tests PRIVATE
+                ../src/audiobridge.cpp ../include/audiobridge.h
+                ../src/audiomanager.cpp ../include/audiomanager.h
+                ../src/windowfocusmanager.cpp ../include/windowfocusmanager.h
+                ../src/nativeimage.cpp
+                ../src/headsetcontrolbridge.cpp ../include/headsetcontrolbridge.h
+                ../src/headsetcontrolmonitor.cpp ../include/headsetcontrolmonitor.h)
+            target_compile_definitions(reliability_tests PRIVATE QONTROLPANEL_AUDIO_POLICY_TESTS)
+            target_link_libraries(reliability_tests PRIVATE headsetcontrol_lib hidapi::hidapi Gdi32 Version Shell32)
+        endif()
     endif()
     add_test(NAME qt_reliability COMMAND reliability_tests)
 else()

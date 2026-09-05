@@ -36,12 +36,19 @@ Dialog {
             placeholderText: executableRenameDialog.originalName
 
             Keys.onReturnPressed: {
-                AudioBridge.setCustomExecutableName(
+                if (AudioBridge.setCustomExecutableName(
                     executableRenameDialog.originalName,
                     executableCustomNameField.text.trim()
-                    )
-                executableRenameDialog.close()
+                ))
+                    executableRenameDialog.close()
             }
+        }
+
+        Label {
+            Layout.fillWidth: true
+            visible: AudioBridge.lastError.length > 0
+            text: AudioBridge.lastError
+            wrapMode: Text.Wrap
         }
 
         RowLayout {
@@ -59,11 +66,11 @@ Dialog {
                 highlighted: true
                 Layout.fillWidth: true
                 onClicked: {
-                    AudioBridge.setCustomExecutableName(
+                    if (AudioBridge.setCustomExecutableName(
                         executableRenameDialog.originalName,
                         executableCustomNameField.text.trim()
-                        )
-                    executableRenameDialog.close()
+                    ))
+                        executableRenameDialog.close()
                 }
             }
         }

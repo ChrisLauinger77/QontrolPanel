@@ -215,6 +215,13 @@
     </message>
 </context>
 <context>
+    <name>AudioBridge</name>
+    <message>
+        <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
+        <translation>Die Audioeinstellungen konnten nicht gespeichert werden. Prüfen Sie die Zugriffsrechte für Ihr Benutzerprofil und den verfügbaren Speicherplatz.</translation>
+    </message>
+</context>
+<context>
     <name>AudioWorker</name>
     <message>
         <source>System sounds</source>

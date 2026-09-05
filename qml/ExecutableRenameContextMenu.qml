@@ -28,6 +28,9 @@ Menu {
         checked: AudioBridge.isApplicationMutedInBackground(executableRenameContextMenu.originalName)
         onTriggered: {
             AudioBridge.setApplicationMutedInBackground(executableRenameContextMenu.originalName, checked)
+            checked = Qt.binding(function() {
+                return AudioBridge.isApplicationMutedInBackground(executableRenameContextMenu.originalName)
+            })
         }
     }
 }

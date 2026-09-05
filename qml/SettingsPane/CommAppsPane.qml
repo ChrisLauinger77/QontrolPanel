@@ -12,6 +12,13 @@ ColumnLayout {
     signal cancelChatMixActivation
 
     Label {
+        Layout.fillWidth: true
+        visible: AudioBridge.lastError.length > 0
+        text: AudioBridge.lastError
+        wrapMode: Text.Wrap
+    }
+
+    Label {
         text: qsTr("Communication Apps")
         font.pixelSize: 22
         font.bold: true
@@ -248,6 +255,13 @@ ColumnLayout {
                 placeholderText: qsTr("Discord")
             }
 
+            Label {
+                Layout.fillWidth: true
+                visible: AudioBridge.lastError.length > 0
+                text: AudioBridge.lastError
+                wrapMode: Text.Wrap
+            }
+
             RowLayout {
                 spacing: 15
                 Button {
@@ -262,9 +276,10 @@ ColumnLayout {
                     Layout.fillWidth: true
                     highlighted: true
                     onClicked: {
-                        AudioBridge.addCommApp(executableField.text);
-                        executableField.text = "";
-                        addAppDialog.close();
+                        if (AudioBridge.addCommApp(executableField.text)) {
+                            executableField.text = "";
+                            addAppDialog.close();
+                        }
                     }
                 }
             }

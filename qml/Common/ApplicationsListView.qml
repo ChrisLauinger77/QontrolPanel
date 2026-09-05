@@ -284,13 +284,20 @@ Rectangle {
                 text: renameContextMenu.currentCustomName
 
                 Keys.onReturnPressed: {
-                    AudioBridge.setCustomApplicationName(
+                    if (AudioBridge.setCustomApplicationName(
                         renameContextMenu.originalName,
                         renameContextMenu.streamIndex,
                         customNameField.text.trim()
-                    )
-                    renameDialog.close()
+                    ))
+                        renameDialog.close()
                 }
+            }
+
+            Label {
+                Layout.fillWidth: true
+                visible: AudioBridge.lastError.length > 0
+                text: AudioBridge.lastError
+                wrapMode: Text.Wrap
             }
 
             RowLayout {
@@ -308,12 +315,12 @@ Rectangle {
                     highlighted: true
                     Layout.fillWidth: true
                     onClicked: {
-                        AudioBridge.setCustomApplicationName(
+                        if (AudioBridge.setCustomApplicationName(
                             renameContextMenu.originalName,
                             renameContextMenu.streamIndex,
                             customNameField.text.trim()
-                        )
-                        renameDialog.close()
+                        ))
+                            renameDialog.close()
                     }
                 }
             }
