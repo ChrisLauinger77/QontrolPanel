@@ -52,6 +52,10 @@ Item {
 
     function getTrayIcon(volume, muted) {
         if (UserSettings.iconStyle === 3) {
+            if (HeadsetControlBridge.anyDeviceFound) {
+                return "image://trayicon/icon.png"
+            }
+
             return "qrc:/icons/icon.png"
         }
 
