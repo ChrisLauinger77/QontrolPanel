@@ -29,7 +29,10 @@ ColumnLayout {
                     additionalControl: LabeledSwitch {
                         enabled: UserSettings.enableApplicationMixer || UserSettings.allowBrightnessControl
                         checked: UserSettings.enableDeviceManager
-                        onClicked: UserSettings.enableDeviceManager = checked
+                        onClicked: {
+                            UserSettings.enableDeviceManager = checked
+                            checked = Qt.binding(function() { return UserSettings.enableDeviceManager })
+                        }
                     }
                 }
 
@@ -41,7 +44,10 @@ ColumnLayout {
                     additionalControl: LabeledSwitch {
                         enabled: UserSettings.enableDeviceManager || UserSettings.allowBrightnessControl
                         checked: UserSettings.enableApplicationMixer
-                        onClicked: UserSettings.enableApplicationMixer = checked
+                        onClicked: {
+                            UserSettings.enableApplicationMixer = checked
+                            checked = Qt.binding(function() { return UserSettings.enableApplicationMixer })
+                        }
                     }
                 }
 
@@ -53,7 +59,10 @@ ColumnLayout {
                     additionalControl: LabeledSwitch {
                         enabled: UserSettings.enableDeviceManager || UserSettings.enableApplicationMixer
                         checked: UserSettings.allowBrightnessControl
-                        onClicked: UserSettings.allowBrightnessControl = checked
+                        onClicked: {
+                            UserSettings.allowBrightnessControl = checked
+                            checked = Qt.binding(function() { return UserSettings.allowBrightnessControl })
+                        }
                     }
                 }
 
@@ -63,7 +72,10 @@ ColumnLayout {
                     description: qsTr("Show power button in the panel footer")
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.enablePowerMenu
-                        onClicked: UserSettings.enablePowerMenu = checked
+                        onClicked: {
+                            UserSettings.enablePowerMenu = checked
+                            checked = Qt.binding(function() { return UserSettings.enablePowerMenu })
+                        }
                     }
                 }
 
@@ -73,7 +85,10 @@ ColumnLayout {
                     description: qsTr("Monitor battery using HeadsetControl for supported devices")
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.headsetcontrolMonitoring
-                        onClicked: UserSettings.headsetcontrolMonitoring = checked
+                        onClicked: {
+                            UserSettings.headsetcontrolMonitoring = checked
+                            checked = Qt.binding(function() { return UserSettings.headsetcontrolMonitoring })
+                        }
                     }
                 }
 
@@ -83,7 +98,10 @@ ColumnLayout {
                     description: qsTr("Display currently playing media from Windows known sources")
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.enableMediaSessionManager
-                        onClicked: UserSettings.enableMediaSessionManager = checked
+                        onClicked: {
+                            UserSettings.enableMediaSessionManager = checked
+                            checked = Qt.binding(function() { return UserSettings.enableMediaSessionManager })
+                        }
                     }
                 }
             }
