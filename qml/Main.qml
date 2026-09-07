@@ -1158,14 +1158,31 @@ ApplicationWindow {
                             Layout.preferredHeight: 40
                             spacing: 0
 
-                            NFToolButton {
+                            Item {
+                                id: nightLightControl
                                 Layout.preferredWidth: 40
                                 Layout.preferredHeight: 40
-                                enabled: MonitorManager.nightLightSupported
-                                onClicked: MonitorManager.toggleNightLight()
-                                icon.source: MonitorManager.nightLightEnabled ? "qrc:/icons/nightlight.svg" : "qrc:/icons/brightness.svg"
-                                icon.width: 22
-                                icon.height: 22
+                                readonly property string helpText: !MonitorManager.nightLightSupported
+                                    ? qsTr("Night Light control is unavailable. Brightness can still be adjusted.")
+                                    : MonitorManager.nightLightEnabled ? qsTr("Turn Night Light off") : qsTr("Turn Night Light on")
+
+                                // Keep hover help available when the Night Light button is disabled.
+                                HoverHandler {
+                                    id: nightLightHover
+                                }
+                                ToolTip.visible: nightLightHover.hovered
+                                ToolTip.delay: 1000
+                                ToolTip.text: helpText
+
+                                NFToolButton {
+                                    anchors.fill: parent
+                                    enabled: MonitorManager.nightLightSupported
+                                    onClicked: MonitorManager.toggleNightLight()
+                                    icon.source: MonitorManager.nightLightEnabled ? "qrc:/icons/nightlight.svg" : "qrc:/icons/brightness.svg"
+                                    icon.width: 22
+                                    icon.height: 22
+                                    Accessible.name: nightLightControl.helpText
+                                }
                             }
 
                             ColumnLayout {

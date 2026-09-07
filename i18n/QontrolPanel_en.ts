@@ -1108,6 +1108,18 @@ You can enable it in the Components tab.</source>
         <translation>ChatMix</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>Night Light control is unavailable. Brightness can still be adjusted.</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>Turn Night Light off</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>Turn Night Light on</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>Brightness</translation>
     </message>

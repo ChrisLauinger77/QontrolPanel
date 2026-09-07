@@ -1108,6 +1108,18 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>ChatMix</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>Upravljanje nočne svetlobe ni na voljo. Svetlost lahko še vedno prilagajate.</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>Izklopi nočno svetlobo</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>Vklopi nočno svetlobo</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>Svetlost</translation>
     </message>

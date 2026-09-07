@@ -1109,6 +1109,18 @@ You can enable it in the Components tab.</source>
         <translation>Системные звуки</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>Управление ночным светом недоступно. Яркость по-прежнему можно регулировать.</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>Выключить ночной свет</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>Включить ночной свет</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>Яркость</translation>
     </message>

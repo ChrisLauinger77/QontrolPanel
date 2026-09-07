@@ -1109,6 +1109,18 @@ Puedes activarla en la pestaña Componentes.</translation>
         <translation>ChatMix</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>El control de luz nocturna no está disponible. El brillo se puede seguir ajustando.</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>Desactivar luz nocturna</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>Activar luz nocturna</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>Brillo</translation>
     </message>

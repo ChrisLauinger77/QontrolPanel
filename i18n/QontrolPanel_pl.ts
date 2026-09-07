@@ -1101,6 +1101,18 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Dźwięki systemowe</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>Sterowanie wyświetlaniem nocnym jest niedostępne. Nadal można regulować jasność.</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>Wyłącz wyświetlanie nocne</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>Włącz wyświetlanie nocne</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>Jasność</translation>
     </message>

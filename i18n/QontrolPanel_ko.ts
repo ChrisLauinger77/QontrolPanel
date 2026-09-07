@@ -1109,6 +1109,18 @@ You can enable it in the Components tab.</source>
         <translation>채팅 믹스</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>야간 모드를 제어할 수 없습니다. 밝기는 계속 조절할 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>야간 모드 끄기</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>야간 모드 켜기</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>밝기</translation>
     </message>

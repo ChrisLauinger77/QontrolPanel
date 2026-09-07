@@ -1109,6 +1109,18 @@ Puoi abilitarlo nella scheda Componenti.</translation>
         <translation>ChatMix</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>Il controllo della luce notturna non è disponibile. È comunque possibile regolare la luminosità.</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>Disattiva luce notturna</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>Attiva luce notturna</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>Luminosità</translation>
     </message>

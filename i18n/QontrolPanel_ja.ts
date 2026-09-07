@@ -1108,6 +1108,18 @@ You can enable it in the Components tab.</source>
         <translation>ChatMix</translation>
     </message>
     <message>
+        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
+        <translation>夜間モードは操作できません。明るさは引き続き調整できます。</translation>
+    </message>
+    <message>
+        <source>Turn Night Light off</source>
+        <translation>夜間モードをオフにする</translation>
+    </message>
+    <message>
+        <source>Turn Night Light on</source>
+        <translation>夜間モードをオンにする</translation>
+    </message>
+    <message>
         <source>Brightness</source>
         <translation>明るさ</translation>
     </message>
