@@ -6,9 +6,13 @@ QtObject {
     property color cardColor: "#202020"
     property color cardBorderColor: "#404040"
     property color footerColor: "#202020"
+    property color footerBorderColor: "#404040"
     property bool darkMode: true
     property string lastError: ""
     property var commAppsList: []
+    property var groupedApplications: [{displayName: "Test app", executableName: "test-app"}]
+    property var appVolumeHotkeys: []
+    property bool globalShortcutsSuspended: false
     property int applyCount: 0
     property int restoreCount: 0
     property int appliedVolume: -1

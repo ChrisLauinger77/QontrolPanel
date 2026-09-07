@@ -183,6 +183,8 @@ ColumnLayout {
 
                     Keys.onPressed: function(event) {
                         if (!addHotkeyDialog.capturingUp) return
+                        event.accepted = true
+                        if (event.isAutoRepeat || event.key === Qt.Key_unknown || Context.isModifierKey(event.key)) return
                         let modifiers = 0
                         if (event.modifiers & Qt.ControlModifier) modifiers |= Qt.ControlModifier
                         if (event.modifiers & Qt.ShiftModifier) modifiers |= Qt.ShiftModifier
@@ -191,7 +193,6 @@ ColumnLayout {
                         addHotkeyDialog.volUpMods = modifiers
                         addHotkeyDialog.volUpKey = event.key
                         addHotkeyDialog.capturingUp = false
-                        event.accepted = true
                     }
                 }
 
@@ -245,6 +246,8 @@ ColumnLayout {
 
                     Keys.onPressed: function(event) {
                         if (!addHotkeyDialog.capturingDown) return
+                        event.accepted = true
+                        if (event.isAutoRepeat || event.key === Qt.Key_unknown || Context.isModifierKey(event.key)) return
                         let modifiers = 0
                         if (event.modifiers & Qt.ControlModifier) modifiers |= Qt.ControlModifier
                         if (event.modifiers & Qt.ShiftModifier) modifiers |= Qt.ShiftModifier
@@ -253,7 +256,6 @@ ColumnLayout {
                         addHotkeyDialog.volDownMods = modifiers
                         addHotkeyDialog.volDownKey = event.key
                         addHotkeyDialog.capturingDown = false
-                        event.accepted = true
                     }
                 }
 

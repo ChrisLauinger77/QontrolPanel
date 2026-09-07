@@ -230,6 +230,8 @@ ColumnLayout {
                     }
 
                     Keys.onPressed: function(event) {
+                        event.accepted = true
+                        if (event.isAutoRepeat || event.key === Qt.Key_unknown || Context.isModifierKey(event.key)) return
                         let modifiers = 0
                         if (event.modifiers & Qt.ControlModifier) modifiers |= Qt.ControlModifier
                         if (event.modifiers & Qt.ShiftModifier) modifiers |= Qt.ShiftModifier
@@ -237,7 +239,6 @@ ColumnLayout {
 
                         shortcutDialog.tempModifiers = modifiers
                         shortcutDialog.tempKey = event.key
-                        event.accepted = true
                     }
                 }
 

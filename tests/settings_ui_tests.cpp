@@ -1,7 +1,9 @@
 #include <QtTest>
 #include <QGuiApplication>
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QQmlEngine>
+#include <QKeyEvent>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QScopeGuard>
@@ -116,8 +118,9 @@ private slots:
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
-        for (const auto* name : {"Constants", "Utils", "StartupShortcutBridge", "HeadsetControlBridge", "Updater"})
+        for (const auto* name : {"Constants", "Utils", "StartupShortcutBridge", "HeadsetControlBridge", "Updater", "KeyboardShortcutManager"})
             qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, name);
+        qmlRegisterSingletonType(sourceUrl("qml/Singletons/Context.qml"), Module, 1, 0, "Context");
         m_audioType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "AudioBridge");
     }
 
@@ -135,6 +138,69 @@ private slots:
         m_pane.reset();
         m_engine.reset();
         m_window.reset();
+    }
+
+    void shortcutCaptureWaitsForKey_data()
+    {
+        QTest::addColumn<QString>("target");
+        QTest::addColumn<bool>("controlFirst");
+        for (const auto* target : {"volume-up", "volume-down", "global"}) {
+            QTest::newRow(qPrintable(QString(target) + "-control-first")) << QString(target) << true;
+            QTest::newRow(qPrintable(QString(target) + "-shift-first")) << QString(target) << false;
+        }
+    }
+
+    void shortcutCaptureWaitsForKey()
+    {
+        QFETCH(QString, target);
+        QFETCH(bool, controlFirst);
+        const bool global = target == "global";
+        const bool volumeUp = target == "volume-up";
+        QVERIFY(loadPane(global ? "ShortcutsPane" : "AppHotkeysPane"));
+        auto* context = qmlContext(m_pane.get());
+        QVERIFY(context);
+        auto* dialog = context->objectForName(global ? "shortcutDialog" : "addHotkeyDialog");
+        QVERIFY(dialog);
+        QVERIFY(QMetaObject::invokeMethod(dialog, global ? "openForPanel" : "open"));
+        QTRY_VERIFY(dialog->property("opened").toBool());
+        auto* input = qobject_cast<QQuickItem*>(context->objectForName(
+            global ? "inputRect" : volumeUp ? "volUpRect" : "volDownRect"));
+        QVERIFY(input);
+        const char* capturing = volumeUp ? "capturingUp" : "capturingDown";
+        const char* keyProperty = global ? "tempKey" : volumeUp ? "volUpKey" : "volDownKey";
+        const char* modsProperty = global ? "tempModifiers" : volumeUp ? "volUpMods" : "volDownMods";
+        if (!global)
+            QVERIFY(dialog->setProperty(capturing, true));
+        input->forceActiveFocus();
+        QTRY_VERIFY(input->hasActiveFocus());
+        const int initialKey = dialog->property(keyProperty).toInt();
+        const int initialMods = dialog->property(modsProperty).toInt();
+        auto press = [&](Qt::Key key, Qt::KeyboardModifiers modifiers, bool repeat = false) {
+            QKeyEvent event(QEvent::KeyPress, key, modifiers, QString{}, repeat);
+            QCoreApplication::sendEvent(m_window.get(), &event);
+        };
+        const auto modifiers = Qt::ControlModifier | Qt::ShiftModifier;
+        const QList<Qt::Key> modifierKeys = {
+            controlFirst ? Qt::Key_Control : Qt::Key_Shift,
+            controlFirst ? Qt::Key_Shift : Qt::Key_Control,
+            Qt::Key_Alt, Qt::Key_Meta, Qt::Key_AltGr, Qt::Key_unknown};
+        for (const auto key : modifierKeys) {
+            press(key, modifiers);
+            QCOMPARE(dialog->property(keyProperty).toInt(), initialKey);
+            QCOMPARE(dialog->property(modsProperty).toInt(), initialMods);
+            if (!global)
+                QVERIFY(dialog->property(capturing).toBool());
+        }
+        press(Qt::Key_Up, modifiers, true);
+        QCOMPARE(dialog->property(keyProperty).toInt(), initialKey);
+        press(Qt::Key_Up, modifiers);
+        QCOMPARE(dialog->property(keyProperty).toInt(), int(Qt::Key_Up));
+        QCOMPARE(dialog->property(modsProperty).toInt(), int(modifiers));
+        QVERIFY(findObject(dialog, "text", "Ctrl + Shift + Up"));
+        if (!global)
+            QVERIFY(!dialog->property(capturing).toBool());
+        QVERIFY(QMetaObject::invokeMethod(dialog, "close"));
+        QTRY_VERIFY(!dialog->property("visible").toBool());
     }
 
     void overlayPositionBounds_data()

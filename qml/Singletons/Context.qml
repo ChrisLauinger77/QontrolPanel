@@ -8,6 +8,11 @@ QtObject {
     property string chatMixShortcut: getShortcutText(UserSettings.chatMixShortcutModifiers, UserSettings.chatMixShortcutKey)
     property string micMuteShortcut: getShortcutText(UserSettings.micMuteShortcutModifiers, UserSettings.micMuteShortcutKey)
 
+    function isModifierKey(key) {
+        return key === Qt.Key_Control || key === Qt.Key_Shift || key === Qt.Key_Alt
+                || key === Qt.Key_Meta || key === Qt.Key_AltGr
+    }
+
     function getKeyText(key) {
         const keyMap = {
             [Qt.Key_A]: "A", [Qt.Key_B]: "B", [Qt.Key_C]: "C", [Qt.Key_D]: "D",
