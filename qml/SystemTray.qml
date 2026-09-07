@@ -72,7 +72,7 @@ Platform.SystemTrayIcon {
                         checked: UserSettings.headsetcontrolEqualizerPreset === index
                         onTriggered: {
                             UserSettings.headsetcontrolEqualizerPreset = index;
-                            HeadsetControlBridge.setEqualizerPreset(index);
+                            checked = Qt.binding(function() { return UserSettings.headsetcontrolEqualizerPreset === index })
                         }
                     }
 
@@ -93,7 +93,7 @@ Platform.SystemTrayIcon {
                 checked: UserSettings.headsetcontrolLights
                 onTriggered: {
                     UserSettings.headsetcontrolLights = !UserSettings.headsetcontrolLights;
-                    HeadsetControlBridge.setLights(UserSettings.headsetcontrolLights);
+                    checked = Qt.binding(function() { return UserSettings.headsetcontrolLights })
                 }
             }
 
@@ -104,7 +104,7 @@ Platform.SystemTrayIcon {
                 checked: UserSettings.headsetcontrolVoicePrompts
                 onTriggered: {
                     UserSettings.headsetcontrolVoicePrompts = !UserSettings.headsetcontrolVoicePrompts;
-                    HeadsetControlBridge.setVoicePrompts(UserSettings.headsetcontrolVoicePrompts);
+                    checked = Qt.binding(function() { return UserSettings.headsetcontrolVoicePrompts })
                 }
             }
 
@@ -115,7 +115,7 @@ Platform.SystemTrayIcon {
                 checked: UserSettings.headsetcontrolRotateToMute
                 onTriggered: {
                     UserSettings.headsetcontrolRotateToMute = !UserSettings.headsetcontrolRotateToMute;
-                    HeadsetControlBridge.setRotateToMute(UserSettings.headsetcontrolRotateToMute);
+                    checked = Qt.binding(function() { return UserSettings.headsetcontrolRotateToMute })
                 }
             }
         }

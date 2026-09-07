@@ -103,7 +103,10 @@ ColumnLayout {
                             to: 30
                             value: UserSettings.headsetcontrolLowBatteryThreshold
                             editable: true
-                            onValueModified: UserSettings.headsetcontrolLowBatteryThreshold = value
+                            onValueModified: {
+                                UserSettings.headsetcontrolLowBatteryThreshold = value
+                                value = Qt.binding(function() { return UserSettings.headsetcontrolLowBatteryThreshold })
+                            }
                         }
 
                         Label {
@@ -115,6 +118,7 @@ ColumnLayout {
                             checked: UserSettings.enableNotifications
                             onClicked: {
                                 UserSettings.enableNotifications = checked;
+                                checked = Qt.binding(function() { return UserSettings.enableNotifications })
                             }
                         }
                     }
@@ -128,6 +132,7 @@ ColumnLayout {
                         checked: UserSettings.displayBatteryFooter
                         onClicked: {
                             UserSettings.displayBatteryFooter = checked;
+                            checked = Qt.binding(function() { return UserSettings.displayBatteryFooter })
                         }
                     }
                 }
@@ -152,15 +157,17 @@ ColumnLayout {
                         Layout.preferredHeight: 35
                         model: HeadsetControlBridge.equalizerPresetNames
                         enabled: count > 0
-                        currentIndex: {
+                        function acceptedIndex() {
                             if (count <= 0) {
                                 return -1;
                             }
 
                             return Math.min(Math.max(0, UserSettings.headsetcontrolEqualizerPreset), count - 1);
                         }
+                        currentIndex: acceptedIndex()
                         onActivated: {
                             UserSettings.headsetcontrolEqualizerPreset = currentIndex;
+                            currentIndex = Qt.binding(acceptedIndex)
                         }
                     }
                 }
@@ -183,10 +190,12 @@ ColumnLayout {
                             onPressedChanged: {
                                 if (!pressed) {
                                     UserSettings.headsetcontrolInactiveTime = Math.round(value);
+                                    value = Qt.binding(function() { return Math.max(0, UserSettings.headsetcontrolInactiveTime) })
                                 }
                             }
                             onWheelChanged: {
                                 UserSettings.headsetcontrolInactiveTime = Math.round(value);
+                                value = Qt.binding(function() { return Math.max(0, UserSettings.headsetcontrolInactiveTime) })
                             }
                         }
 
@@ -208,6 +217,7 @@ ColumnLayout {
                         checked: UserSettings.headsetcontrolLights
                         onClicked: {
                             UserSettings.headsetcontrolLights = checked;
+                            checked = Qt.binding(function() { return UserSettings.headsetcontrolLights })
                         }
                     }
                 }
@@ -223,6 +233,7 @@ ColumnLayout {
                         checked: UserSettings.headsetcontrolRotateToMute
                         onClicked: {
                             UserSettings.headsetcontrolRotateToMute = checked;
+                            checked = Qt.binding(function() { return UserSettings.headsetcontrolRotateToMute })
                         }
                     }
                 }
@@ -245,10 +256,12 @@ ColumnLayout {
                             onPressedChanged: {
                                 if (!pressed) {
                                     UserSettings.headsetcontrolSidetone = Math.round(value);
+                                    value = Qt.binding(function() { return UserSettings.headsetcontrolSidetone })
                                 }
                             }
                             onWheelChanged: {
                                 UserSettings.headsetcontrolSidetone = Math.round(value);
+                                value = Qt.binding(function() { return UserSettings.headsetcontrolSidetone })
                             }
                         }
 
@@ -270,6 +283,7 @@ ColumnLayout {
                         checked: UserSettings.headsetcontrolVoicePrompts
                         onClicked: {
                             UserSettings.headsetcontrolVoicePrompts = checked;
+                            checked = Qt.binding(function() { return UserSettings.headsetcontrolVoicePrompts })
                         }
                     }
                 }
@@ -295,6 +309,7 @@ ColumnLayout {
                             stepSize: 5
                             onValueModified: {
                                 UserSettings.headsetcontrolFetchRate = value;
+                                value = Qt.binding(function() { return UserSettings.headsetcontrolFetchRate })
                             }
                         }
                     }

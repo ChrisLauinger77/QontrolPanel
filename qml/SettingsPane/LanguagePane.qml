@@ -77,7 +77,10 @@ ColumnLayout {
 
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.autoUpdateTranslations
-                        onClicked: UserSettings.autoUpdateTranslations = checked
+                        onClicked: {
+                            UserSettings.autoUpdateTranslations = checked
+                            checked = Qt.binding(function() { return UserSettings.autoUpdateTranslations })
+                        }
                     }
                 }
 

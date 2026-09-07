@@ -52,7 +52,10 @@ ColumnLayout {
                         qsTr("Debug")
                     ]
                     currentIndex: UserSettings.settingsStartupPage
-                    onActivated: UserSettings.settingsStartupPage = currentIndex
+                    onActivated: {
+                        UserSettings.settingsStartupPage = currentIndex
+                        currentIndex = Qt.binding(function() { return UserSettings.settingsStartupPage })
+                    }
                 }
             }
 
@@ -62,7 +65,10 @@ ColumnLayout {
                 description: qsTr("Show a confirmation dialog when selecting a power action from the system tray menu")
                 additionalControl: LabeledSwitch {
                     checked: UserSettings.showPowerDialogConfirmation
-                    onClicked: UserSettings.showPowerDialogConfirmation = checked
+                    onClicked: {
+                        UserSettings.showPowerDialogConfirmation = checked
+                        checked = Qt.binding(function() { return UserSettings.showPowerDialogConfirmation })
+                    }
                 }
             }
 
@@ -75,7 +81,10 @@ ColumnLayout {
                     from: 1
                     to: 120
                     value: UserSettings.powerDialogTimeout
-                    onValueChanged: UserSettings.powerDialogTimeout = value
+                    onValueModified: {
+                        UserSettings.powerDialogTimeout = value
+                        value = Qt.binding(function() { return UserSettings.powerDialogTimeout })
+                    }
                 }
             }
 
@@ -86,7 +95,10 @@ ColumnLayout {
                     from: 1
                     to: 10
                     value: UserSettings.sliderWheelSensivity
-                    onValueChanged: UserSettings.sliderWheelSensivity = value
+                    onValueModified: {
+                        UserSettings.sliderWheelSensivity = value
+                        value = Qt.binding(function() { return UserSettings.sliderWheelSensivity })
+                    }
                 }
             }
 
@@ -97,7 +109,7 @@ ColumnLayout {
                 additionalControl: CustomComboBox {
                     Layout.preferredHeight: 35
                     model: [qsTr("Normal"), qsTr("Fast"), qsTr("Faster"), qsTr("Lightspeed")]
-                    currentIndex: {
+                    function acceptedIndex() {
                         switch(UserSettings.ddcciQueueDelay) {
                             case 500: return 0
                             case 250: return 1
@@ -106,6 +118,7 @@ ColumnLayout {
                             default: return 0
                         }
                     }
+                    currentIndex: acceptedIndex()
                     onActivated: {
                         switch(currentIndex) {
                             case 0: UserSettings.ddcciQueueDelay = 500; break
@@ -113,6 +126,7 @@ ColumnLayout {
                             case 2: UserSettings.ddcciQueueDelay = 100; break
                             case 3: UserSettings.ddcciQueueDelay = 1; break
                         }
+                        currentIndex = Qt.binding(acceptedIndex)
                     }
                 }
             }

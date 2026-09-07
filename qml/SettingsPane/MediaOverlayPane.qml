@@ -27,7 +27,10 @@ ColumnLayout {
 
                 additionalControl: LabeledSwitch {
                     checked: UserSettings.enableMediaOverlay
-                    onClicked: UserSettings.enableMediaOverlay = checked
+                    onClicked: {
+                        UserSettings.enableMediaOverlay = checked
+                        checked = Qt.binding(function() { return UserSettings.enableMediaOverlay })
+                    }
                 }
             }
 
@@ -40,7 +43,10 @@ ColumnLayout {
                     Layout.preferredHeight: 35
                     model: [qsTr("Tiny"), qsTr("Normal"), qsTr("Big")]
                     currentIndex: UserSettings.mediaOverlaySize
-                    onActivated: UserSettings.mediaOverlaySize = currentIndex
+                    onActivated: {
+                        UserSettings.mediaOverlaySize = currentIndex
+                        currentIndex = Qt.binding(function() { return UserSettings.mediaOverlaySize })
+                    }
                     enabled: UserSettings.enableMediaOverlay
                 }
             }
@@ -99,8 +105,12 @@ ColumnLayout {
                             // Row 1: Top positions
                             RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 0
-                            onClicked: UserSettings.mediaOverlayPosition = 0
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 0
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 0 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Top Left")
@@ -108,8 +118,12 @@ ColumnLayout {
 
                         RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 1
-                            onClicked: UserSettings.mediaOverlayPosition = 1
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 1
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 1 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Top Center")
@@ -117,8 +131,12 @@ ColumnLayout {
 
                         RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 2
-                            onClicked: UserSettings.mediaOverlayPosition = 2
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 2
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 2 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Top Right")
@@ -127,8 +145,12 @@ ColumnLayout {
                         // Row 2: Middle positions
                         RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 3
-                            onClicked: UserSettings.mediaOverlayPosition = 3
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 3
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 3 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Left")
@@ -143,8 +165,12 @@ ColumnLayout {
 
                         RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 4
-                            onClicked: UserSettings.mediaOverlayPosition = 4
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 4
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 4 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Right")
@@ -153,8 +179,12 @@ ColumnLayout {
                         // Row 3: Bottom positions
                         RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 5
-                            onClicked: UserSettings.mediaOverlayPosition = 5
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 5
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 5 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Bottom Left")
@@ -162,8 +192,12 @@ ColumnLayout {
 
                         RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 6
-                            onClicked: UserSettings.mediaOverlayPosition = 6
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 6
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 6 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Bottom Center")
@@ -171,8 +205,12 @@ ColumnLayout {
 
                         RadioButton {
                             Layout.alignment: Qt.AlignCenter
+                            autoExclusive: false
                             checked: UserSettings.mediaOverlayPosition === 7
-                            onClicked: UserSettings.mediaOverlayPosition = 7
+                            onClicked: {
+                                UserSettings.mediaOverlayPosition = 7
+                                checked = Qt.binding(function() { return UserSettings.mediaOverlayPosition === 7 })
+                            }
                             enabled: UserSettings.enableMediaOverlay
                             ToolTip.visible: hovered
                             ToolTip.text: qsTr("Bottom Right")

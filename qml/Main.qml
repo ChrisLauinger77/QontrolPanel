@@ -1070,9 +1070,15 @@ ApplicationWindow {
                                 opacity: checked ? 0.3 : 1
                                 Component.onCompleted: palette.accent = palette.button
                                 onClicked: {
+                                    const wasEnabled = UserSettings.activateChatmix && UserSettings.chatMixEnabled
                                     UserSettings.chatMixEnabled = !checked
+                                    checked = Qt.binding(function() { return !UserSettings.chatMixEnabled })
+                                    const isEnabled = UserSettings.activateChatmix && UserSettings.chatMixEnabled
+                                    if (wasEnabled === isEnabled) {
+                                        return
+                                    }
 
-                                    if (!checked) {
+                                    if (isEnabled) {
                                         AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue)
                                     } else {
                                         AudioBridge.restoreOriginalVolumes()
@@ -1105,12 +1111,17 @@ ApplicationWindow {
                                         text: Math.round(chatMixSlider.value).toString()
                                     }
 
-                                    onValueChanged: {
-                                        UserSettings.chatMixValue = value
-                                        if (UserSettings.chatMixEnabled) {
+                                    function saveVolume() {
+                                        const previousValue = UserSettings.chatMixValue
+                                        UserSettings.chatMixValue = Math.round(value)
+                                        value = Qt.binding(function() { return UserSettings.chatMixValue })
+                                        if (UserSettings.activateChatmix && UserSettings.chatMixEnabled
+                                                && UserSettings.chatMixValue !== previousValue) {
                                             AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue)
                                         }
                                     }
+                                    onMoved: saveVolume()
+                                    onWheelChanged: saveVolume()
                                 }
                             }
 
@@ -1173,18 +1184,18 @@ ApplicationWindow {
                                     to: 100
                                     value: UserSettings.ddcciBrightness
                                     Layout.fillWidth: true
-                                    onValueChanged: {
-                                        if (pressed) {
-                                            MonitorManager.setWMIBrightness(Math.round(value))
-                                            MonitorManager.setDDCCIBrightness(Math.round(value), UserSettings.ddcciQueueDelay)
-                                            UserSettings.ddcciBrightness = Math.round(value)
+                                    function saveBrightness() {
+                                        const requestedValue = Math.round(value)
+                                        UserSettings.ddcciBrightness = requestedValue
+                                        value = Qt.binding(function() { return UserSettings.ddcciBrightness })
+                                        if (UserSettings.ddcciBrightness !== requestedValue) {
+                                            return
                                         }
+                                        MonitorManager.setWMIBrightness(UserSettings.ddcciBrightness)
+                                        MonitorManager.setDDCCIBrightness(UserSettings.ddcciBrightness, UserSettings.ddcciQueueDelay)
                                     }
-                                    onWheelChanged: {
-                                        MonitorManager.setWMIBrightness(Math.round(value))
-                                        MonitorManager.setDDCCIBrightness(Math.round(value), UserSettings.ddcciQueueDelay)
-                                        UserSettings.ddcciBrightness = Math.round(value)
-                                    }
+                                    onMoved: saveBrightness()
+                                    onWheelChanged: saveBrightness()
 
                                     ToolTip {
                                         parent: brightnessSlider.handle

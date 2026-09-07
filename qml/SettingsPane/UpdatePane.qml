@@ -94,7 +94,10 @@ ColumnLayout {
 
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.autoFetchForAppUpdates
-                        onClicked: UserSettings.autoFetchForAppUpdates = checked
+                        onClicked: {
+                            UserSettings.autoFetchForAppUpdates = checked
+                            checked = Qt.binding(function() { return UserSettings.autoFetchForAppUpdates })
+                        }
                     }
                 }
 

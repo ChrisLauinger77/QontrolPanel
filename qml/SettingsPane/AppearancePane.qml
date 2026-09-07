@@ -28,7 +28,10 @@ ColumnLayout {
                     Layout.preferredHeight: 35
                     model: [qsTr("Top"), qsTr("Bottom"), qsTr("Left"), qsTr("Right")]
                     currentIndex: UserSettings.panelPosition
-                    onActivated: UserSettings.panelPosition = currentIndex
+                    onActivated: {
+                        UserSettings.panelPosition = currentIndex
+                        currentIndex = Qt.binding(function() { return UserSettings.panelPosition })
+                    }
                 }
             }
 
@@ -44,7 +47,10 @@ ColumnLayout {
                     to: 200
                     editable: true
                     value: UserSettings.taskbarOffset
-                    onValueModified: UserSettings.taskbarOffset = value
+                    onValueModified: {
+                        UserSettings.taskbarOffset = value
+                        value = Qt.binding(function() { return UserSettings.taskbarOffset })
+                    }
                 }
             }
 
@@ -60,7 +66,10 @@ ColumnLayout {
                     to: 200
                     editable: true
                     value: UserSettings.xAxisMargin
-                    onValueModified: UserSettings.xAxisMargin = value
+                    onValueModified: {
+                        UserSettings.xAxisMargin = value
+                        value = Qt.binding(function() { return UserSettings.xAxisMargin })
+                    }
                 }
             }
 
@@ -76,7 +85,10 @@ ColumnLayout {
                     to: 200
                     editable: true
                     value: UserSettings.yAxisMargin
-                    onValueModified: UserSettings.yAxisMargin = value
+                    onValueModified: {
+                        UserSettings.yAxisMargin = value
+                        value = Qt.binding(function() { return UserSettings.yAxisMargin })
+                    }
                 }
             }
 
@@ -87,7 +99,10 @@ ColumnLayout {
 
                 additionalControl: LabeledSwitch {
                     checked: UserSettings.showAudioLevel
-                    onClicked: UserSettings.showAudioLevel = checked
+                    onClicked: {
+                        UserSettings.showAudioLevel = checked
+                        checked = Qt.binding(function() { return UserSettings.showAudioLevel })
+                    }
                 }
             }
 
@@ -98,7 +113,10 @@ ColumnLayout {
 
                 additionalControl: LabeledSwitch {
                     checked: UserSettings.settingsAnimationsEnabled
-                    onClicked: UserSettings.settingsAnimationsEnabled = checked
+                    onClicked: {
+                        UserSettings.settingsAnimationsEnabled = checked
+                        checked = Qt.binding(function() { return UserSettings.settingsAnimationsEnabled })
+                    }
                 }
             }
 
@@ -110,7 +128,10 @@ ColumnLayout {
                     Layout.preferredHeight: 35
                     model: [qsTr("Auto"), qsTr("Dark"), qsTr("Light")]
                     currentIndex: UserSettings.trayIconTheme
-                    onActivated: UserSettings.trayIconTheme = currentIndex
+                    onActivated: {
+                        UserSettings.trayIconTheme = currentIndex
+                        currentIndex = Qt.binding(function() { return UserSettings.trayIconTheme })
+                    }
                 }
             }
 
@@ -123,7 +144,8 @@ ColumnLayout {
                     currentIndex: UserSettings.panelStyle
                     onActivated: {
                         UserSettings.panelStyle = currentIndex
-                        Utils.setStyle(currentIndex)
+                        currentIndex = Qt.binding(function() { return UserSettings.panelStyle })
+                        Utils.setStyle(UserSettings.panelStyle)
                     }
                 }
             }
@@ -136,7 +158,10 @@ ColumnLayout {
                     Layout.preferredHeight: 35
                     model: [qsTr("Normal"), qsTr("Filled"), qsTr("Battery")]
                     currentIndex: UserSettings.iconStyle
-                    onActivated: UserSettings.iconStyle = currentIndex
+                    onActivated: {
+                        UserSettings.iconStyle = currentIndex
+                        currentIndex = Qt.binding(function() { return UserSettings.iconStyle })
+                    }
                 }
             }
         }

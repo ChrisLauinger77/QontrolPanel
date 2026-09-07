@@ -64,7 +64,10 @@ ApplicationWindow {
 
                 LabeledSwitch {
                     checked: UserSettings.autoFetchForAppUpdates
-                    onClicked: UserSettings.autoFetchForAppUpdates = checked
+                    onClicked: {
+                        UserSettings.autoFetchForAppUpdates = checked
+                        checked = Qt.binding(function() { return UserSettings.autoFetchForAppUpdates })
+                    }
                 }
             }
 
@@ -78,7 +81,10 @@ ApplicationWindow {
 
                 LabeledSwitch {
                     checked: UserSettings.autoUpdateTranslations
-                    onClicked: UserSettings.autoUpdateTranslations = checked
+                    onClicked: {
+                        UserSettings.autoUpdateTranslations = checked
+                        checked = Qt.binding(function() { return UserSettings.autoUpdateTranslations })
+                    }
                 }
             }
 

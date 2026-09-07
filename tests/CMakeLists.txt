@@ -49,6 +49,16 @@ if(Qt6_FOUND)
         endif()
     endif()
     add_test(NAME qt_reliability COMMAND reliability_tests)
+    if(WIN32 AND TARGET Qt6::Quick)
+        add_executable(settings_ui_tests settings_ui_tests.cpp
+            ../src/usersettings.cpp ../include/usersettings.h
+            ../src/logmanager.cpp ../include/logmanager.h)
+        target_include_directories(settings_ui_tests PRIVATE ../include)
+        target_compile_definitions(settings_ui_tests PRIVATE UNICODE NOMINMAX
+            QONTROLPANEL_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/..")
+        target_link_libraries(settings_ui_tests PRIVATE Qt6::Quick Qt6::Test)
+        add_test(NAME settings_ui COMMAND settings_ui_tests)
+    endif()
 else()
     if(WIN32)
         message(FATAL_ERROR "Qt Core/Qml/Network/Test are required for release validation")

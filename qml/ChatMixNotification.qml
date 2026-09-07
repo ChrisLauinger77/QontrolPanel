@@ -59,7 +59,11 @@ ApplicationWindow {
 
         function onChatMixToggleRequested() {
             if (UserSettings.activateChatmix) {
-                UserSettings.chatMixEnabled = !UserSettings.chatMixEnabled
+                const requestedEnabled = !UserSettings.chatMixEnabled
+                UserSettings.chatMixEnabled = requestedEnabled
+                if (UserSettings.chatMixEnabled !== requestedEnabled) {
+                    return
+                }
 
                 if (UserSettings.chatMixEnabled) {
                     AudioBridge.applyChatMixToApplications(UserSettings.chatMixValue)

@@ -52,7 +52,10 @@ ColumnLayout {
                     title: qsTr("Notification on ChatMix toggle")
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.chatMixShortcutNotification
-                        onClicked: UserSettings.chatMixShortcutNotification = checked
+                        onClicked: {
+                            UserSettings.chatMixShortcutNotification = checked
+                            checked = Qt.binding(function() { return UserSettings.chatMixShortcutNotification })
+                        }
                     }
                 }
 
