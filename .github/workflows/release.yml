@@ -38,19 +38,19 @@ jobs:
           ref: ${{ steps.build.outputs.sha }}
           submodules: recursive
       - name: Download binaries from the selected run
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.build.outputs.run_id }}
           name: QontrolPanel_win64_msvc2022
       - name: Download installer from the selected run
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.build.outputs.run_id }}
           name: QontrolPanel_Installer
       - name: Download provenance from the selected run
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.build.outputs.run_id }}
