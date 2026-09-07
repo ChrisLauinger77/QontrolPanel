@@ -14,6 +14,7 @@
 #include "logmanager.h"
 #include "workerthreads.h"
 #include "replybatch.h"
+#include "updatestaging.h"
 #ifdef Q_OS_WIN
 #include "keyboardshortcutmanager.h"
 #include "usersettings.h"
@@ -536,6 +537,69 @@ private slots:
         QVERIFY(!JsonStore::validate(QJsonDocument(QJsonObject{{"backgroundMutedApps", QJsonArray{17}}}),
                                      "backgroundMutedApps"));
     }
+    void expiredUpdateStagingIsRemoved()
+    {
+        QTemporaryDir temporaryDirectory;
+        QVERIFY(temporaryDirectory.isValid());
+        const QDateTime now = QDateTime::currentDateTimeUtc();
+        const QDir root(temporaryDirectory.path());
+        const QStringList names = {"QontrolPanel-update-ABC001", "QontrolPanel-update-ABC002",
+            "QontrolPanel-update-ABC003", "QontrolPanel-update-unrelated"};
+        for (const auto& name : names) {
+            QVERIFY(root.mkdir(name));
+            QFile installer(root.filePath(name + "/QontrolPanel_Installer.exe"));
+            QVERIFY(installer.open(QIODevice::WriteOnly));
+            QCOMPARE(installer.write("installer"), 9);
+            QVERIFY(installer.flush());
+            QVERIFY(installer.setFileTime(now.addDays(-2), QFileDevice::FileModificationTime));
+        }
+        QFile recent(root.filePath(names[1] + "/QontrolPanel_Installer.exe"));
+        QVERIFY(recent.open(QIODevice::ReadWrite));
+        QVERIFY(recent.setFileTime(now, QFileDevice::FileModificationTime));
+        recent.close();
+        QFile unexpected(root.filePath(names[2] + "/keep.txt"));
+        QVERIFY(unexpected.open(QIODevice::WriteOnly));
+        unexpected.close();
+
+        UpdateStaging::cleanup(root.path(), now);
+        QVERIFY(!root.exists(names[0]));
+        for (const auto& name : names.mid(1))
+            QVERIFY(root.exists(name + "/QontrolPanel_Installer.exe"));
+        QVERIFY(unexpected.exists());
+
+        // A later launch cleans up the previously recent installer.
+        UpdateStaging::cleanup(root.path(), now.addDays(2));
+        QVERIFY(!root.exists(names[1]));
+        QVERIFY(root.exists(names[2] + "/QontrolPanel_Installer.exe"));
+        QVERIFY(root.exists(names[3] + "/QontrolPanel_Installer.exe"));
+    }
+#ifdef Q_OS_WIN
+    void runningUpdateInstallerIsRetried()
+    {
+        QTemporaryDir temporaryDirectory;
+        QVERIFY(temporaryDirectory.isValid());
+        QTemporaryDir stagingDirectory(temporaryDirectory.filePath(UpdateStaging::DirectoryTemplate));
+        QVERIFY(stagingDirectory.isValid());
+        const QString installerPath = stagingDirectory.filePath(UpdateStaging::InstallerName);
+        QFile installer(installerPath);
+        QVERIFY(installer.open(QIODevice::WriteOnly));
+        QCOMPARE(installer.write("installer"), 9);
+        installer.close();
+        const HANDLE handle = CreateFileW(reinterpret_cast<LPCWSTR>(installerPath.utf16()), GENERIC_READ,
+            FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+        QVERIFY(handle != INVALID_HANDLE_VALUE);
+        auto releaseHandle = qScopeGuard([handle] { CloseHandle(handle); });
+        const QDateTime later = QDateTime::currentDateTimeUtc().addDays(2);
+        UpdateStaging::cleanup(temporaryDirectory.path(), later);
+        QVERIFY(QFile::exists(installerPath));
+
+        CloseHandle(handle);
+        releaseHandle.dismiss();
+        UpdateStaging::cleanup(temporaryDirectory.path(), later);
+        QVERIFY(!QFile::exists(installerPath));
+        QVERIFY(!QDir(stagingDirectory.path()).exists());
+    }
+#endif
     void reentrantCancellation()
     {
         QObject receiver;

@@ -108,9 +108,11 @@ private slots:
         QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, m_preferences.path());
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
         settings.setValue("chatMixEnabled", false);
+        settings.setValue("mediaOverlayPosition", 8);
         settings.sync();
         QCOMPARE(settings.status(), QSettings::NoError);
         m_preferencesPath = settings.fileName();
+        QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
@@ -133,6 +135,31 @@ private slots:
         m_pane.reset();
         m_engine.reset();
         m_window.reset();
+    }
+
+    void overlayPositionBounds_data()
+    {
+        QTest::addColumn<int>("requested");
+        QTest::addColumn<int>("accepted");
+        QTest::newRow("below-first") << -1 << 0;
+        QTest::newRow("first") << 0 << 0;
+        QTest::newRow("last") << 7 << 7;
+        QTest::newRow("off-by-one") << 8 << 7;
+        QTest::newRow("above-last") << 100 << 7;
+    }
+
+    void overlayPositionBounds()
+    {
+        QFETCH(int, requested);
+        QFETCH(int, accepted);
+        auto* settings = UserSettings::instance();
+        settings->setMediaOverlayPosition(1);
+        QSignalSpy changed(settings, &UserSettings::mediaOverlayPositionChanged);
+        settings->setMediaOverlayPosition(requested);
+        QCOMPARE(settings->mediaOverlayPosition(), accepted);
+        QCOMPARE(changed.size(), 1);
+        QSettings saved(m_preferencesPath, QSettings::IniFormat);
+        QCOMPARE(saved.value("mediaOverlayPosition").toInt(), accepted);
     }
 
     void rejectedEditor_data()

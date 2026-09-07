@@ -4,6 +4,7 @@
 
 namespace {
 constexpr int kMaxSettingsStartupPage = 11;
+constexpr int kMaxMediaOverlayPosition = 7;
 constexpr int kMinHeadsetcontrolLowBatteryThreshold = 1;
 constexpr int kMaxHeadsetcontrolLowBatteryThreshold = 30;
 constexpr int kMinHeadsetcontrolFetchRate = 60;
@@ -121,7 +122,7 @@ void UserSettings::initProperties()
         kMaxHeadsetcontrolLowBatteryThreshold);
 
     m_enableMediaOverlay = settings.value("enableMediaOverlay", false).toBool();
-    m_mediaOverlayPosition = qBound(0, settings.value("mediaOverlayPosition", 1).toInt(), 8); // Default: top-center
+    m_mediaOverlayPosition = qBound(0, settings.value("mediaOverlayPosition", 1).toInt(), kMaxMediaOverlayPosition); // Default: top-center
     m_mediaOverlaySize = qBound(0, settings.value("mediaOverlaySize", 1).toInt(), 2);         // Default: normal
 
     m_sliderWheelSensivity = qBound(1, settings.value("sliderWheelSensivity", 2).toInt(), 10);
@@ -636,7 +637,7 @@ void UserSettings::setEnableMediaOverlay(bool value)
 
 void UserSettings::setMediaOverlayPosition(int value)
 {
-    value = qBound(0, value, 8);
+    value = qBound(0, value, kMaxMediaOverlayPosition);
     if (m_mediaOverlayPosition != value) {
         if (!saveValue("mediaOverlayPosition", value))
             return;

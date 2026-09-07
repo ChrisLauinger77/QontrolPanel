@@ -1,5 +1,6 @@
 #include "updater.h"
 #include "replybatch.h"
+#include "updatestaging.h"
 #include <QApplication>
 #include <QDir>
 #include <QFile>
@@ -254,8 +255,8 @@ void Updater::downloadAndInstall()
         return;
     }
     m_installerFile.reset();
-    m_stagingDirectory = std::make_unique<QTemporaryDir>(QDir::tempPath() + "/QontrolPanel-update-XXXXXX");
-    m_installerFile = std::make_unique<QSaveFile>(m_stagingDirectory->filePath("QontrolPanel_Installer.exe"));
+    m_stagingDirectory = std::make_unique<QTemporaryDir>(QDir(QDir::tempPath()).filePath(UpdateStaging::DirectoryTemplate));
+    m_installerFile = std::make_unique<QSaveFile>(m_stagingDirectory->filePath(UpdateStaging::InstallerName));
     if (!m_stagingDirectory->isValid() || !m_installerFile->open(QIODevice::WriteOnly))
     {
         emit updateFinished(false, tr("Failed to save update file"));
@@ -319,7 +320,8 @@ void Updater::installExecutable(const QString& newExePath)
 {
     if (QProcess::startDetached(newExePath))
     {
-        // Windows needs the installer after this process exits.
+        // Windows needs the installer after this process exits. Startup cleanup
+        // removes old staging files once the installer no longer holds them open.
         m_stagingDirectory->setAutoRemove(false);
         emit updateFinished(true, tr("Update started."));
         QApplication::quit();
