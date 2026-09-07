@@ -39,8 +39,15 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        rememberCurrentMedia()
         positionWindow()
         Qt.callLater(updateNativeBackdrop)
+    }
+
+    function rememberCurrentMedia() {
+        previousTitle = MediaSessionBridge.mediaTitle || ""
+        previousArtist = MediaSessionBridge.mediaArtist || ""
+        hasReceivedFirstUpdate = hasReceivedFirstUpdate || previousTitle !== ""
     }
 
     function updateNativeBackdrop() {
@@ -57,6 +64,10 @@ ApplicationWindow {
 
     Connections {
         target: UserSettings
+
+        function onEnableMediaOverlayChanged() {
+            rememberCurrentMedia()
+        }
 
         function onMediaOverlayPositionChanged() {
             repositionWindow()
@@ -78,33 +89,29 @@ ApplicationWindow {
         }
 
         function onMediaInfoChanged() {
-            if (!UserSettings.enableMediaOverlay || !UserSettings.enableMediaSessionManager) {
-                return
-            }
-
             const newTitle = MediaSessionBridge.mediaTitle || ""
             const newArtist = MediaSessionBridge.mediaArtist || ""
+            const songChanged = newTitle !== previousTitle || newArtist !== previousArtist
+            const hadPreviousUpdate = hasReceivedFirstUpdate
+
+            // Keep the baseline current even while notifications are disabled.
+            previousTitle = newTitle
+            previousArtist = newArtist
+            hasReceivedFirstUpdate = true
 
             if (suppressNextMediaInfoOverlay) {
-                previousTitle = newTitle
-                previousArtist = newArtist
                 suppressNextMediaInfoOverlay = false
                 sourceSwitchSuppressionTimer.stop()
                 return
             }
 
-            // First update after component creation - just store the values, don't show overlay
-            if (!hasReceivedFirstUpdate) {
-                previousTitle = newTitle
-                previousArtist = newArtist
-                hasReceivedFirstUpdate = true
+            if (!UserSettings.enableMediaOverlay || !UserSettings.enableMediaSessionManager
+                    || !hadPreviousUpdate) {
                 return
             }
 
             // Only show overlay if song changed (title or artist is different)
-            if (newTitle !== "" && (newTitle !== previousTitle || newArtist !== previousArtist)) {
-                previousTitle = newTitle
-                previousArtist = newArtist
+            if (newTitle !== "" && songChanged) {
                 showOverlay()
             }
         }
