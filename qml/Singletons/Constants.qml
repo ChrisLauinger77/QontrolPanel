@@ -51,6 +51,10 @@ Item {
     }
 
     function getTrayIcon(volume, muted) {
+        if (UserSettings.iconStyle === 3) {
+            return "qrc:/icons/icon.png"
+        }
+
         // Check for battery icon style first
         if (UserSettings.iconStyle === 2 && HeadsetControlBridge.anyDeviceFound) {
             if (HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING") {

@@ -135,6 +135,10 @@
         <translation>Elige la apariencia del icono de la bandeja del sistema</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>Icono de la aplicación</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>Automático</translation>
     </message>

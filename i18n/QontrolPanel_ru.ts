@@ -131,6 +131,10 @@
         <translation>Выберите внешний вид значка в системном трее</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>Значок приложения</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>Авто</translation>
     </message>

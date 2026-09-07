@@ -135,6 +135,10 @@
         <translation>Wählen Sie das Aussehen des System-Tray-Symbols</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>App-Symbol</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>Automatisch</translation>
     </message>

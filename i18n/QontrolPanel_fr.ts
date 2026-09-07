@@ -139,6 +139,10 @@
         <translation>Thème de l&apos;icône</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>Icône de l’application</translation>
+    </message>
+    <message>
         <source>Appearance &amp; Position</source>
         <translation>Apparence et position</translation>
     </message>

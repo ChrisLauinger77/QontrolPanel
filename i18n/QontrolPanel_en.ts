@@ -135,6 +135,10 @@
         <translation>Choose the appearance of the system tray icon</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>AppIcon</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>

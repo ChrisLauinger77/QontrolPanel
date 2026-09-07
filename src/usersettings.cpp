@@ -5,6 +5,7 @@
 namespace {
 constexpr int kMaxSettingsStartupPage = 11;
 constexpr int kMaxMediaOverlayPosition = 7;
+constexpr int kAppIconStyle = 3;
 constexpr int kMinHeadsetcontrolLowBatteryThreshold = 1;
 constexpr int kMaxHeadsetcontrolLowBatteryThreshold = 30;
 constexpr int kMinHeadsetcontrolFetchRate = 60;
@@ -89,7 +90,7 @@ void UserSettings::initProperties()
     m_settingsAnimationsEnabled = settings.value("settingsAnimationsEnabled", true).toBool();
 
     m_trayIconTheme = qBound(0, settings.value("trayIconTheme", 0).toInt(), 2);
-    m_iconStyle = qBound(0, settings.value("iconStyle", 1).toInt(), 2);
+    m_iconStyle = qBound(0, settings.value("iconStyle", kAppIconStyle).toInt(), kAppIconStyle);
 
     m_autoFetchForAppUpdates = settings.value("autoFetchForAppUpdates", false).toBool();
     m_headsetcontrolMonitoring = settings.value("headsetcontrolMonitoring", true).toBool();
@@ -400,7 +401,7 @@ void UserSettings::setTrayIconTheme(int value)
 
 void UserSettings::setIconStyle(int value)
 {
-    value = qBound(0, value, 2);
+    value = qBound(0, value, kAppIconStyle);
     if (m_iconStyle != value) {
         if (!saveValue("iconStyle", value))
             return;

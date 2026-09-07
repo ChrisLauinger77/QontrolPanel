@@ -135,6 +135,10 @@
         <translation>Scegli l&apos;aspetto dell&apos;icona della barra sistema</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>Icona dell’app</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>Automatico</translation>
     </message>

@@ -131,6 +131,10 @@
         <translation>选择系统栏图标风格</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>应用图标</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>自动</translation>
     </message>

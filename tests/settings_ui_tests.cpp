@@ -115,6 +115,7 @@ private slots:
         QCOMPARE(settings.status(), QSettings::NoError);
         m_preferencesPath = settings.fileName();
         QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
+        QCOMPARE(UserSettings::instance()->iconStyle(), 3);
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
@@ -250,7 +251,7 @@ private slots:
         row("AppearancePane", "Panel position", "panelPosition", "currentIndex", "activated", 1, 2);
         row("AppearancePane", "Panel theme", "panelStyle", "currentIndex", "activated", 0, 1);
         row("AppearancePane", "Tray icon theme", "trayIconTheme", "currentIndex", "activated", 0, 1);
-        row("AppearancePane", "Tray icon style", "iconStyle", "currentIndex", "activated", 0, 1);
+        row("AppearancePane", "Tray icon style", "iconStyle", "currentIndex", "activated", 0, 3);
         row("AppearancePane", "Taskbar offset", "taskbarOffset", "value", "valueModified", 0, 20);
         row("AppearancePane", "Panel X margin", "xAxisMargin", "value", "valueModified", 12, 20);
         row("AppearancePane", "Panel Y margin", "yAxisMargin", "value", "valueModified", 12, 20);
@@ -281,6 +282,8 @@ private slots:
         QFETCH(QByteArray, property); QFETCH(QByteArray, signal);
         QFETCH(QVariant, before); QFETCH(QVariant, after); QFETCH(QVariant, beforeUi); QFETCH(QVariant, afterUi);
         auto* settings = UserSettings::instance();
+        if (setting == "trayIconTheme")
+            settings->setIconStyle(0);
         QVERIFY(settings->setProperty(setting.constData(), before));
         QVERIFY(loadPane(pane));
         auto* control = editor(m_pane.get(), title, property.constData());

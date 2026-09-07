@@ -135,6 +135,10 @@
         <translation>Motyw ikony pasku zadań</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>Ikona aplikacji</translation>
+    </message>
+    <message>
         <source>Appearance &amp; Position</source>
         <translation>Wygląd &amp; Pozycja</translation>
     </message>

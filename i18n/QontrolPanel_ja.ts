@@ -135,6 +135,10 @@
         <translation>システム トレイ アイコンの外観を選択できます。</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>アプリアイコン</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>自動</translation>
     </message>

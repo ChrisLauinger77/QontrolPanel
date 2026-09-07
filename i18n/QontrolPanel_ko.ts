@@ -135,6 +135,10 @@
         <translation>시스템 트레이 아이콘의 모양을 선택하세요</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>앱 아이콘</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>자동</translation>
     </message>

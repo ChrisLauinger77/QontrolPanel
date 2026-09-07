@@ -135,6 +135,10 @@
         <translation>Izberite videz ikone v sistemski vrstici</translation>
     </message>
     <message>
+        <source>AppIcon</source>
+        <translation>Ikona aplikacije</translation>
+    </message>
+    <message>
         <source>Auto</source>
         <translation>Samodejno</translation>
     </message>

@@ -123,6 +123,7 @@ ColumnLayout {
             Card {
                 Layout.fillWidth: true
                 title: qsTr("Tray icon theme")
+                enabled: UserSettings.iconStyle !== 3
                 description: qsTr("Choose the color of the system tray icon")
                 additionalControl: CustomComboBox {
                     Layout.preferredHeight: 35
@@ -156,7 +157,7 @@ ColumnLayout {
                 description: qsTr("Choose the appearance of the system tray icon")
                 additionalControl: CustomComboBox {
                     Layout.preferredHeight: 35
-                    model: [qsTr("Normal"), qsTr("Filled"), qsTr("Battery")]
+                    model: [qsTr("Normal"), qsTr("Filled"), qsTr("Battery"), qsTr("AppIcon")]
                     currentIndex: UserSettings.iconStyle
                     onActivated: {
                         UserSettings.iconStyle = currentIndex
