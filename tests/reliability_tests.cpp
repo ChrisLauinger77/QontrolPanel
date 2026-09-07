@@ -110,6 +110,23 @@ private slots:
         m_shortcutDataDirectory = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
         QVERIFY(!QDir(m_shortcutDataDirectory).exists());
     }
+    void init()
+    {
+        // The singleton survives individual tests, including failed assertions. Reset it before
+        // creating a manager, using keys separate from both the app defaults and F20-F23 below.
+        auto* settings = UserSettings::instance();
+        QSignalSpy failed(settings, &UserSettings::saveFailed);
+        constexpr int modifiers = Qt::ControlModifier | Qt::AltModifier | Qt::ShiftModifier;
+        settings->setPanelShortcutKey(Qt::Key_F17);
+        settings->setPanelShortcutModifiers(modifiers);
+        settings->setChatMixShortcutKey(Qt::Key_F18);
+        settings->setChatMixShortcutModifiers(modifiers);
+        settings->setMicMuteShortcutKey(Qt::Key_F19);
+        settings->setMicMuteShortcutModifiers(modifiers);
+        settings->setGlobalShortcutsEnabled(true);
+        settings->setLanguageIndex(0);
+        QCOMPARE(failed.size(), 0);
+    }
     void cleanup()
     {
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
@@ -302,6 +319,9 @@ private slots:
         settings->setGlobalShortcutsEnabled(true);
         constexpr int modifiers = Qt::ControlModifier | Qt::AltModifier | Qt::ShiftModifier;
         m_shortcuts.reset(KeyboardShortcutManager::instance());
+        QVERIFY2(m_shortcuts->lastError().isEmpty(), qPrintable(m_shortcuts->lastError()));
+        QVERIFY(!shortcutIsAvailable(VK_F17));
+        QVERIFY(shortcutIsAvailable(VK_F22));
         QVERIFY(m_shortcuts->addAppVolumeHotkey("player.exe", Qt::Key_F20, modifiers, Qt::Key_F21, modifiers));
         QVERIFY(!shortcutIsAvailable(VK_F20));
         QFile preferences(m_preferencesPath);
@@ -345,6 +365,9 @@ private slots:
         settings->setPanelShortcutKey(oldKey);
         settings->setPanelShortcutModifiers(oldModifiers);
         QTRY_VERIFY(shortcutIsAvailable(VK_F22));
+        QVERIFY(!shortcutIsAvailable(VK_F17));
+        QCOMPARE(settings->panelShortcutKey(), oldKey);
+        QCOMPARE(settings->panelShortcutModifiers(), oldModifiers);
     }
     void shortcutSaveFailure_data()
     {

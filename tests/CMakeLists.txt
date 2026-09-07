@@ -48,7 +48,8 @@ if(Qt6_FOUND)
             target_link_libraries(reliability_tests PRIVATE headsetcontrol_lib hidapi::hidapi Gdi32 Version Shell32)
         endif()
     endif()
-    add_test(NAME qt_reliability COMMAND reliability_tests)
+    # Keep assertion reports even when Windows CTest cannot capture Qt's console output.
+    add_test(NAME qt_reliability COMMAND reliability_tests -o -,txt -o qt_reliability.txt,txt)
     if(WIN32 AND TARGET Qt6::Quick)
         add_executable(settings_ui_tests settings_ui_tests.cpp
             ../src/usersettings.cpp ../include/usersettings.h
@@ -57,7 +58,7 @@ if(Qt6_FOUND)
         target_compile_definitions(settings_ui_tests PRIVATE UNICODE NOMINMAX
             QONTROLPANEL_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/..")
         target_link_libraries(settings_ui_tests PRIVATE Qt6::Quick Qt6::Test)
-        add_test(NAME settings_ui COMMAND settings_ui_tests)
+        add_test(NAME settings_ui COMMAND settings_ui_tests -o -,txt -o settings_ui.txt,txt)
     endif()
 else()
     if(WIN32)

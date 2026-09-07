@@ -375,7 +375,11 @@ private slots:
             QCOMPARE(audio()->property("applyCount").toInt(), 0);
             QCOMPARE(audio()->property("restoreCount").toInt(), 0);
         }
-        QVERIFY(edit(control, "checked", !before, "clicked"));
+        // Allow transient sharing locks to clear, as in rejectedEditor. Stop retrying once
+        // the switch accepts the edit, so a partial deactivation still fails the checks below.
+        QTRY_VERIFY((control->property("checked").toBool() != before
+                     || edit(control, "checked", !before, "clicked"))
+                    && control->property("checked").toBool() == !before);
         QCOMPARE(settings->chatMixEnabled(), !before);
         QCOMPARE(audio()->property("applyCount").toInt(), before ? 0 : 1);
         QCOMPARE(audio()->property("restoreCount").toInt(), before ? 1 : 0);
