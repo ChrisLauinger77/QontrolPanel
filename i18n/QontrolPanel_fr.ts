@@ -958,7 +958,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation>Certains paramètres du casque n'ont pas pu être appliqués. Actualisez pour réessayer.</translation>
+        <translation>Certains paramètres du casque n&apos;ont pas pu être appliqués. Actualisez pour réessayer.</translation>
     </message>
 </context>
 <context>
@@ -984,11 +984,11 @@ You can enable it in the Components tab.</source>
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
-        <translation>Impossible d'enregistrer les raccourcis des applications. Vérifiez l'accès à votre profil utilisateur et l'espace disque disponible.</translation>
+        <translation>Impossible d&apos;enregistrer les raccourcis des applications. Vérifiez l&apos;accès à votre profil utilisateur et l&apos;espace disque disponible.</translation>
     </message>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation>Windows n'a pas pu enregistrer un raccourci clavier (erreur %1). L'affectation précédente a été conservée lorsque cela était possible.</translation>
+        <translation>Windows n&apos;a pas pu enregistrer un raccourci clavier (erreur %1). L&apos;affectation précédente a été conservée lorsque cela était possible.</translation>
     </message>
 </context>
 <context>
@@ -1128,15 +1128,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation>Échec de l'action d'alimentation</translation>
+        <translation>Échec de l&apos;action d&apos;alimentation</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation>Échec de l'enregistrement du raccourci clavier</translation>
+        <translation>Échec de l&apos;enregistrement du raccourci clavier</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation>Impossible d'enregistrer les paramètres</translation>
+        <translation>Impossible d&apos;enregistrer les paramètres</translation>
     </message>
 </context>
 <context>
@@ -1232,7 +1232,7 @@ You can enable it in the Components tab.</source>
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation>Windows n'a pas pu effectuer l'action d'alimentation (erreur %1).</translation>
+        <translation>Windows n&apos;a pas pu effectuer l&apos;action d&apos;alimentation (erreur %1).</translation>
     </message>
 </context>
 <context>
@@ -1611,11 +1611,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation>Échec de la vérification de la mise à jour. Le programme d'installation a été supprimé.</translation>
+        <translation>Échec de la vérification de la mise à jour. Le programme d&apos;installation a été supprimé.</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation>Le téléchargement a dépassé la taille prévue ou n'a pas pu être enregistré.</translation>
+        <translation>Le téléchargement a dépassé la taille prévue ou n&apos;a pas pu être enregistré.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
@@ -1626,7 +1626,7 @@ You can enable it in the Components tab.</source>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation>Impossible d'enregistrer les paramètres. Vérifiez l'accès à votre profil utilisateur.</translation>
+        <translation>Impossible d&apos;enregistrer les paramètres. Vérifiez l&apos;accès à votre profil utilisateur.</translation>
     </message>
 </context>
 </TS>
