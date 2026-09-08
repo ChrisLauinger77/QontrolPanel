@@ -23,6 +23,7 @@ ApplicationWindow {
     property real restingY: 0
     property real mediaRestingX: 0
     property real mediaRestingY: 0
+    property bool pendingShowGeometryUpdate: false
     property alias mediaSurfaceWindow: mediaPanelWindow
     readonly property bool chatMixEffectiveEnabled: UserSettings.activateChatmix && UserSettings.chatMixEnabled
     // Preserve the original 24px spacer after the media content's 15px outer inset.
@@ -171,8 +172,13 @@ ApplicationWindow {
     SystemTray {
         id: systemTray
         onTogglePanelRequested: {
-            if (panel.visible && !panel.isAnimatingOut) {
-                panel.hidePanel()
+            // Losing focus may already have started hiding the panel before
+            // the tray activation reaches QML.
+            if (panel.visible) {
+                trayToggleTimer.stop()
+                if (!panel.isAnimatingOut) {
+                    panel.hidePanel()
+                }
             } else {
                 trayToggleTimer.restart()
             }
@@ -333,6 +339,7 @@ ApplicationWindow {
         }
 
         isAnimatingIn = true
+        pendingShowGeometryUpdate = false
         positionWindowsAtTarget(true)
         setInitialWindowPositions()
 
@@ -344,8 +351,16 @@ ApplicationWindow {
             Qt.callLater(function() {
                 positionWindowsAtTarget()
                 setInitialWindowPositions()
+                pendingShowGeometryUpdate = false
 
-                Qt.callLater(panel.startAnimation)
+                Qt.callLater(function() {
+                    if (panel.pendingShowGeometryUpdate) {
+                        panel.positionWindowsAtTarget()
+                        panel.setInitialWindowPositions()
+                        panel.pendingShowGeometryUpdate = false
+                    }
+                    panel.startAnimation()
+                })
             })
         })
     }
@@ -389,6 +404,13 @@ ApplicationWindow {
     }
 
     function repositionWindows() {
+        if (isAnimatingIn && !showAnimation.running) {
+            // The visible window can finish laying out before the staged show
+            // starts. Keep it offscreen until that pass consumes the final size.
+            pendingShowGeometryUpdate = true
+            return
+        }
+
         const wasAnimatingIn = showAnimation.running
         const wasAnimatingOut = hideAnimation.running
         const currentPanelX = panel.x
