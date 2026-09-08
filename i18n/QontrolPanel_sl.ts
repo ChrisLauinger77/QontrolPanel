@@ -163,6 +163,10 @@
         <translation>Velikost opravilne vrstice sistema Windows (nastavite samo, če uporabljate W11 in opravilna vrstica ni na dnu zaslona)</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Enobarvna ikona aplikacije</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Izberite barvo ikone v sistemski vrstici</translation>
     </message>

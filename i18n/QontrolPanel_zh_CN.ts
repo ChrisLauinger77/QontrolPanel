@@ -159,6 +159,10 @@
         <translation>Windows 任务栏尺寸（仅 W11 且任务栏不在底部可见）</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>单色应用图标</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>选择系统栏图标颜色</translation>
     </message>

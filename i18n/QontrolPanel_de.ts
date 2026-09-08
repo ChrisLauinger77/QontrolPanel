@@ -163,6 +163,10 @@
         <translation>Windows-Taskleiste Größe (nur einstellen, wenn W11 verwendet wird und die Taskleiste nicht unten ist)</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Monochromes App-Symbol</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Wählen Sie die Farbe des System-Tray-Symbols</translation>
     </message>

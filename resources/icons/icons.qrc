@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/icons">
         <file>icon.png</file>
+        <file>tray_appicon_dark.png</file>
+        <file>tray_appicon_light.png</file>
         <file>tray_light_0.png</file>
         <file>tray_dark_0.png</file>
         <file>tray_light_33.png</file>

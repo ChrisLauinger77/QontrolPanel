@@ -159,6 +159,10 @@
         <translation>Размер панели задач Windows (задавайте только в W11, если панель задач не внизу экрана)</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Монохромный значок приложения</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Выберите цвет значка в системном трее</translation>
     </message>

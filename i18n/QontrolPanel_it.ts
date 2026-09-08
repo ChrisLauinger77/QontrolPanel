@@ -163,6 +163,10 @@
         <translation>Dimensioni barra attività Windows (impostale solo se usando W11 la barra attività non è in basso nello schermo)</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Icona dell’app monocromatica</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Scegli il colore dell&apos;icona della barra sistema</translation>
     </message>

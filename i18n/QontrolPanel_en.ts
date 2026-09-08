@@ -163,6 +163,10 @@
         <translation>Windows taskbar size (Only set if using W11 and taskbar is not at screen bottom)</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Monochrome AppIcon</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Choose the color of the system tray icon</translation>
     </message>

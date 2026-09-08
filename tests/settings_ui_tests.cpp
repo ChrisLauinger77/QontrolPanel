@@ -143,6 +143,14 @@ private slots:
         m_window.reset();
     }
 
+    void monochromeAppIconStyleIsSupported()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setIconStyle(4);
+        QCOMPARE(settings->iconStyle(), 4);
+        settings->setIconStyle(3);
+    }
+
     void shortcutCaptureWaitsForKey_data()
     {
         QTest::addColumn<QString>("target");
@@ -282,7 +290,7 @@ private slots:
         row("AppearancePane", "Panel position", "panelPosition", "currentIndex", "activated", 1, 2);
         row("AppearancePane", "Panel theme", "panelStyle", "currentIndex", "activated", 0, 1);
         row("AppearancePane", "Tray icon theme", "trayIconTheme", "currentIndex", "activated", 0, 1);
-        row("AppearancePane", "Tray icon style", "iconStyle", "currentIndex", "activated", 0, 3);
+        row("AppearancePane", "Tray icon style", "iconStyle", "currentIndex", "activated", 0, 4);
         row("AppearancePane", "Taskbar offset", "taskbarOffset", "value", "valueModified", 0, 20);
         row("AppearancePane", "Panel X margin", "xAxisMargin", "value", "valueModified", 12, 20);
         row("AppearancePane", "Panel Y margin", "yAxisMargin", "value", "valueModified", 12, 20);

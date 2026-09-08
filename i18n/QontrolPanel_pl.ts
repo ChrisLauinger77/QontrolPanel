@@ -155,6 +155,10 @@
         <translation>Wybierz wygląd ikony zasobnika systemowego</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Monochromatyczna ikona aplikacji</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Wybierz kolor ikony w zasobniku systemowym</translation>
     </message>

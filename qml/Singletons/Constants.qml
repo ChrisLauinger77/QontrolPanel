@@ -59,6 +59,17 @@ Item {
             return "qrc:/icons/icon.png"
         }
 
+        if (UserSettings.iconStyle === 4) {
+            let appIconTheme = getTrayIconTheme()
+            let appIconName = `tray_appicon_${appIconTheme}.png`
+
+            if (HeadsetControlBridge.anyDeviceFound) {
+                return `image://trayicon/${appIconName}`
+            }
+
+            return `qrc:/icons/${appIconName}`
+        }
+
         // Check for battery icon style first
         if (UserSettings.iconStyle === 2 && HeadsetControlBridge.anyDeviceFound) {
             if (HeadsetControlBridge.batteryStatus === "BATTERY_CHARGING") {
@@ -68,18 +79,7 @@ Item {
             }
         }
 
-        let theme
-        if (UserSettings.trayIconTheme === 1) {
-            // Dark
-            theme = "dark"
-        } else if (UserSettings.trayIconTheme === 2) {
-            // Light
-            theme = "light"
-        } else {
-            // Auto
-            theme = darkMode ? "light" : "dark"
-        }
-
+        let theme = getTrayIconTheme()
         let volumeLevel
         if (muted || volume === 0) {
             volumeLevel = "0"
@@ -99,6 +99,19 @@ Item {
         }
 
         return `qrc:/icons/${trayIconName}`
+    }
+
+    function getTrayIconTheme() {
+        if (UserSettings.trayIconTheme === 1) {
+            // Dark
+            return "dark"
+        } else if (UserSettings.trayIconTheme === 2) {
+            // Light
+            return "light"
+        }
+
+        // Auto
+        return darkMode ? "light" : "dark"
     }
 
     function getBatteryIcon(batteryLevel) {

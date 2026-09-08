@@ -163,6 +163,10 @@
         <translation>Windows タスク バーのサイズを指定できます (W11 を使用中でタスク バーが画面の下部にない場合にのみ設定)。</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>モノクロのアプリアイコン</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>システム トレイ アイコンの色を選択できます。</translation>
     </message>

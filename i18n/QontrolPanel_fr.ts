@@ -159,6 +159,10 @@
         <translation>Choisir l&apos;apparence de l&apos;icône dans la barre des tâches</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Icône d’application monochrome</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Choisissez la couleur de l&apos;icône</translation>
     </message>

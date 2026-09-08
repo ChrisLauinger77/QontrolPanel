@@ -164,6 +164,10 @@
         <translation>Tamanho da barra de tarefas do Windows (defina apenas se estiver usando o Windows 11 e a barra de tarefas não estiver na parte inferior da tela)</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>Ícone monocromático do aplicativo</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>Escolha a cor do ícone da bandeja do sistema</translation>
     </message>

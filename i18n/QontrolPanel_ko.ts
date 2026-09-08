@@ -163,6 +163,10 @@
         <translation>Windows 작업 표시줄 크기 (W11을 사용하고 작업 표시줄이 화면 하단에 없는 경우에만 설정)</translation>
     </message>
     <message>
+        <source>Monochrome AppIcon</source>
+        <translation>단색 앱 아이콘</translation>
+    </message>
+    <message>
         <source>Choose the color of the system tray icon</source>
         <translation>시스템 트레이 아이콘의 색상 선택</translation>
     </message>
