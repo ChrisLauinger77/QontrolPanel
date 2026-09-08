@@ -127,6 +127,14 @@
         <translation>Style de l&apos;icône</translation>
     </message>
     <message>
+        <source>Panel animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animate panel opening and closing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Settings page animations</source>
         <translation>Animations des pages de paramètres</translation>
     </message>

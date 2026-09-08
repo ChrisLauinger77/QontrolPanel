@@ -37,6 +37,7 @@ class UserSettings : public QObject
     Q_PROPERTY(bool autoUpdateTranslations READ autoUpdateTranslations WRITE setAutoUpdateTranslations NOTIFY autoUpdateTranslationsChanged)
     Q_PROPERTY(bool firstRun READ firstRun WRITE setFirstRun NOTIFY firstRunChanged)
     Q_PROPERTY(int settingsStartupPage READ settingsStartupPage WRITE setSettingsStartupPage NOTIFY settingsStartupPageChanged)
+    Q_PROPERTY(bool panelAnimationsEnabled READ panelAnimationsEnabled WRITE setPanelAnimationsEnabled NOTIFY panelAnimationsEnabledChanged)
     Q_PROPERTY(bool settingsAnimationsEnabled READ settingsAnimationsEnabled WRITE setSettingsAnimationsEnabled NOTIFY settingsAnimationsEnabledChanged)
 
     Q_PROPERTY(int trayIconTheme READ trayIconTheme WRITE setTrayIconTheme NOTIFY trayIconThemeChanged)
@@ -103,6 +104,7 @@ public:
     bool autoUpdateTranslations() const { return m_autoUpdateTranslations; }
     bool firstRun() const { return m_firstRun; }
     int settingsStartupPage() const { return m_settingsStartupPage; }
+    bool panelAnimationsEnabled() const { return m_panelAnimationsEnabled; }
     bool settingsAnimationsEnabled() const { return m_settingsAnimationsEnabled; }
 
     int trayIconTheme() const { return m_trayIconTheme; }
@@ -164,6 +166,7 @@ public:
     void setAutoUpdateTranslations(bool value);
     void setFirstRun(bool value);
     void setSettingsStartupPage(int value);
+    void setPanelAnimationsEnabled(bool value);
     void setSettingsAnimationsEnabled(bool value);
 
     void setTrayIconTheme(int value);
@@ -227,6 +230,7 @@ signals:
     void autoUpdateTranslationsChanged();
     void firstRunChanged();
     void settingsStartupPageChanged();
+    void panelAnimationsEnabledChanged();
     void settingsAnimationsEnabledChanged();
 
     void trayIconThemeChanged();
@@ -295,6 +299,7 @@ private:
     bool m_autoUpdateTranslations;
     bool m_firstRun;
     int m_settingsStartupPage;
+    bool m_panelAnimationsEnabled;
     bool m_settingsAnimationsEnabled;
 
     int m_trayIconTheme;

@@ -32,6 +32,10 @@ ApplicationWindow {
         nativeBackdropActive = WindowsBackdrop.applyTransientBackdrop(mediaPanelWindow)
     }
 
+    function finishContentOpacityAnimation() {
+        mediaContent.finishOpacityAnimation()
+    }
+
     Connections {
         target: Qt.application.styleHints
 

@@ -87,6 +87,7 @@ void UserSettings::initProperties()
     m_autoUpdateTranslations = settings.value("autoUpdateTranslations", false).toBool();
     m_firstRun = settings.value("firstRun", true).toBool();
     m_settingsStartupPage = qBound(0, settings.value("settingsStartupPage", 0).toInt(), kMaxSettingsStartupPage);
+    m_panelAnimationsEnabled = settings.value("panelAnimationsEnabled", true).toBool();
     m_settingsAnimationsEnabled = settings.value("settingsAnimationsEnabled", true).toBool();
 
     m_trayIconTheme = qBound(0, settings.value("trayIconTheme", 0).toInt(), 2);
@@ -375,6 +376,16 @@ void UserSettings::setSettingsStartupPage(int value)
             return;
         m_settingsStartupPage = value;
         emit settingsStartupPageChanged();
+    }
+}
+
+void UserSettings::setPanelAnimationsEnabled(bool value)
+{
+    if (m_panelAnimationsEnabled != value) {
+        if (!saveValue("panelAnimationsEnabled", value))
+            return;
+        m_panelAnimationsEnabled = value;
+        emit panelAnimationsEnabledChanged();
     }
 }
 

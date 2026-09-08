@@ -9,8 +9,15 @@ ColumnLayout {
     opacity: 0
     spacing: 10
 
+    function finishOpacityAnimation() {
+        opacityAnimation.stop()
+        opacity = 1
+    }
+
     Behavior on opacity {
+        enabled: UserSettings.panelAnimationsEnabled
         NumberAnimation {
+            id: opacityAnimation
             duration: 300
             easing.type: Easing.OutQuad
         }

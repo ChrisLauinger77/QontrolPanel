@@ -115,6 +115,14 @@
         <translation>Mostrar el valor del nivel de audio en el control deslizante</translation>
     </message>
     <message>
+        <source>Panel animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animate panel opening and closing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Settings page animations</source>
         <translation>Animaciones de las páginas de ajustes</translation>
     </message>

@@ -115,6 +115,14 @@
         <translation>Visualizza livello audio nel cursore</translation>
     </message>
     <message>
+        <source>Panel animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animate panel opening and closing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Settings page animations</source>
         <translation>Animazioni pagina Impostazioni</translation>
     </message>

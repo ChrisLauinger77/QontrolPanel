@@ -108,6 +108,20 @@ ColumnLayout {
 
             Card {
                 Layout.fillWidth: true
+                title: qsTr("Panel animations")
+                description: qsTr("Animate panel opening and closing")
+
+                additionalControl: LabeledSwitch {
+                    checked: UserSettings.panelAnimationsEnabled
+                    onClicked: {
+                        UserSettings.panelAnimationsEnabled = checked
+                        checked = Qt.binding(function() { return UserSettings.panelAnimationsEnabled })
+                    }
+                }
+            }
+
+            Card {
+                Layout.fillWidth: true
                 title: qsTr("Settings page animations")
                 description: qsTr("Animate transitions between settings pages")
 
@@ -116,22 +130,6 @@ ColumnLayout {
                     onClicked: {
                         UserSettings.settingsAnimationsEnabled = checked
                         checked = Qt.binding(function() { return UserSettings.settingsAnimationsEnabled })
-                    }
-                }
-            }
-
-            Card {
-                Layout.fillWidth: true
-                title: qsTr("Tray icon theme")
-                enabled: UserSettings.iconStyle !== 3
-                description: qsTr("Choose the color of the system tray icon")
-                additionalControl: CustomComboBox {
-                    Layout.preferredHeight: 35
-                    model: [qsTr("Auto"), qsTr("Dark"), qsTr("Light")]
-                    currentIndex: UserSettings.trayIconTheme
-                    onActivated: {
-                        UserSettings.trayIconTheme = currentIndex
-                        currentIndex = Qt.binding(function() { return UserSettings.trayIconTheme })
                     }
                 }
             }
@@ -162,6 +160,22 @@ ColumnLayout {
                     onActivated: {
                         UserSettings.iconStyle = currentIndex
                         currentIndex = Qt.binding(function() { return UserSettings.iconStyle })
+                    }
+                }
+            }
+
+            Card {
+                Layout.fillWidth: true
+                title: qsTr("Tray icon theme")
+                enabled: UserSettings.iconStyle !== 3
+                description: qsTr("Choose the color of the system tray icon")
+                additionalControl: CustomComboBox {
+                    Layout.preferredHeight: 35
+                    model: [qsTr("Auto"), qsTr("Dark"), qsTr("Light")]
+                    currentIndex: UserSettings.trayIconTheme
+                    onActivated: {
+                        UserSettings.trayIconTheme = currentIndex
+                        currentIndex = Qt.binding(function() { return UserSettings.trayIconTheme })
                     }
                 }
             }

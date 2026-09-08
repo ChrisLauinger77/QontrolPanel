@@ -123,6 +123,14 @@
         <translation>Styl ikony zasobnika systemowego</translation>
     </message>
     <message>
+        <source>Panel animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animate panel opening and closing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Settings page animations</source>
         <translation>Animacje stron ustawień</translation>
     </message>

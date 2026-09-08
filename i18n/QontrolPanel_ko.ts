@@ -115,6 +115,14 @@
         <translation>슬라이더로 오디오 레벨 값 표시</translation>
     </message>
     <message>
+        <source>Panel animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animate panel opening and closing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Settings page animations</source>
         <translation>설정 페이지 애니메이션</translation>
     </message>

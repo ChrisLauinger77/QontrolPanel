@@ -113,9 +113,11 @@ private slots:
         settings.setValue("mediaOverlayPosition", 8);
         settings.sync();
         QCOMPARE(settings.status(), QSettings::NoError);
+        QVERIFY(!settings.contains("panelAnimationsEnabled"));
         m_preferencesPath = settings.fileName();
         QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
         QCOMPARE(UserSettings::instance()->iconStyle(), 3);
+        QVERIFY(UserSettings::instance()->panelAnimationsEnabled());
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
@@ -229,6 +231,35 @@ private slots:
         QCOMPARE(saved.value("mediaOverlayPosition").toInt(), accepted);
     }
 
+    void panelAnimationPreferenceIsIndependent()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setPanelAnimationsEnabled(true);
+        settings->setSettingsAnimationsEnabled(true);
+        const auto restore = qScopeGuard([&] {
+            settings->setPanelAnimationsEnabled(true);
+            settings->setSettingsAnimationsEnabled(true);
+        });
+        QSignalSpy panelChanged(settings, &UserSettings::panelAnimationsEnabledChanged);
+        QSignalSpy settingsChanged(settings, &UserSettings::settingsAnimationsEnabledChanged);
+
+        settings->setPanelAnimationsEnabled(false);
+
+        QVERIFY(!settings->panelAnimationsEnabled());
+        QVERIFY(settings->settingsAnimationsEnabled());
+        QCOMPARE(panelChanged.size(), 1);
+        QCOMPARE(settingsChanged.size(), 0);
+        QSettings saved(m_preferencesPath, QSettings::IniFormat);
+        QCOMPARE(saved.value("panelAnimationsEnabled").toBool(), false);
+
+        settings->setSettingsAnimationsEnabled(false);
+
+        QVERIFY(!settings->panelAnimationsEnabled());
+        QVERIFY(!settings->settingsAnimationsEnabled());
+        QCOMPARE(panelChanged.size(), 1);
+        QCOMPARE(settingsChanged.size(), 1);
+    }
+
     void rejectedEditor_data()
     {
         QTest::addColumn<QString>("pane");
@@ -256,6 +287,7 @@ private slots:
         row("AppearancePane", "Panel X margin", "xAxisMargin", "value", "valueModified", 12, 20);
         row("AppearancePane", "Panel Y margin", "yAxisMargin", "value", "valueModified", 12, 20);
         row("AppearancePane", "Show audio level", "showAudioLevel", "checked", "clicked", true, false);
+        row("AppearancePane", "Panel animations", "panelAnimationsEnabled", "checked", "clicked", true, false);
         row("AppearancePane", "Settings page animations", "settingsAnimationsEnabled", "checked", "clicked", true, false);
         row("GeneralPane", "Settings startup page", "settingsStartupPage", "currentIndex", "activated", 0, 2);
         row("GeneralPane", "Show power action confirmation", "showPowerDialogConfirmation", "checked", "clicked", true, false);
@@ -313,8 +345,10 @@ private slots:
         QCOMPARE(settings->property(setting.constData()), after);
         QCOMPARE(control->property(property.constData()), afterUi);
         QCOMPARE(changed.size(), 1);
-        QVERIFY(settings->setProperty(setting.constData(), before));
-        QCOMPARE(control->property(property.constData()), beforeUi);
+        QTRY_VERIFY((settings->property(setting.constData()) == before
+                     || settings->setProperty(setting.constData(), before))
+                    && settings->property(setting.constData()) == before);
+        QTRY_COMPARE(control->property(property.constData()), beforeUi);
     }
 
     void rejectedChatMixToggle_data()

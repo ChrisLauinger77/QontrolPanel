@@ -163,7 +163,7 @@ void CALLBACK PanelEngine::WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event
     if (event == EVENT_SYSTEM_FOREGROUND && instance && instance->panelWindow && instance->isPanelVisible) {
         if (!instance->isPanelWindow(hwnd)) {
             instance->stopFocusMonitoring();
-            QMetaObject::invokeMethod(instance->panelWindow, "hidePanel");
+            QMetaObject::invokeMethod(instance->panelWindow, "hidePanelForFocusLoss");
         }
     }
 }
