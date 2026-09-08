@@ -116,11 +116,11 @@
     </message>
     <message>
         <source>Panel animations</source>
-        <translation type="unfinished"></translation>
+        <translation>面板动画</translation>
     </message>
     <message>
         <source>Animate panel opening and closing</source>
-        <translation type="unfinished"></translation>
+        <translation>为面板的打开和关闭添加动画</translation>
     </message>
     <message>
         <source>Settings page animations</source>

@@ -116,11 +116,11 @@
     </message>
     <message>
         <source>Panel animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Анимации панели</translation>
     </message>
     <message>
         <source>Animate panel opening and closing</source>
-        <translation type="unfinished"></translation>
+        <translation>Анимировать открытие и закрытие панели</translation>
     </message>
     <message>
         <source>Settings page animations</source>

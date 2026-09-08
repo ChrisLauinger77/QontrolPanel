@@ -124,11 +124,11 @@
     </message>
     <message>
         <source>Panel animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Animacje panelu</translation>
     </message>
     <message>
         <source>Animate panel opening and closing</source>
-        <translation type="unfinished"></translation>
+        <translation>Animuj otwieranie i zamykanie panelu</translation>
     </message>
     <message>
         <source>Settings page animations</source>
