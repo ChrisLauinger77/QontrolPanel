@@ -146,10 +146,6 @@ ApplicationWindow {
                 panel.hidePanelImmediately()
             } else if (panel.visible) {
                 panel.showPanelImmediately(false)
-            } else {
-                panel.clearPanelAnimationState()
-                mediaPanelWindow.visible = false
-                panel.positionWindowsAtTarget(true)
             }
         }
     }
@@ -387,6 +383,12 @@ ApplicationWindow {
         isAnimatingIn = true
         const generation = ++showAnimationGeneration
         pendingShowGeometryUpdate = false
+
+        // A hidden native window can retain its last on-screen backing-store
+        // frame while Qt applies the new off-screen position. Keep the whole
+        // surface transparent until the staged geometry passes have completed.
+        panel.opacity = 0
+        mediaPanelWindow.opacity = 0
         positionWindowsAtTarget(true)
         setInitialWindowPositions()
 
@@ -421,6 +423,8 @@ ApplicationWindow {
                         panel.setInitialWindowPositions()
                         panel.pendingShowGeometryUpdate = false
                     }
+                    panel.opacity = 1
+                    mediaPanelWindow.opacity = 1
                     panel.startAnimation()
                 })
             })
@@ -438,6 +442,8 @@ ApplicationWindow {
         pendingShowGeometryUpdate = false
         isAnimatingIn = false
         isAnimatingOut = false
+        panel.opacity = 1
+        mediaPanelWindow.opacity = 1
         mainLayout.opacity = 1
         mediaPanelWindow.contentOpacity = 1
     }
