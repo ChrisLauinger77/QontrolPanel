@@ -21,6 +21,7 @@ public:
 
     Q_INVOKABLE void openLegacySoundSettings();
     Q_INVOKABLE void openModernSoundSettings();
+    Q_INVOKABLE void openNightLightSettings();
     Q_INVOKABLE int getAvailableDesktopWidth() const;
     Q_INVOKABLE int getAvailableDesktopHeight() const;
     Q_INVOKABLE QVariantMap getCursorScreenAvailableGeometry() const;

@@ -59,6 +59,10 @@ void Utils::openModernSoundSettings() {
     QProcess::startDetached("explorer", QStringList() << "ms-settings:sound");
 }
 
+void Utils::openNightLightSettings() {
+    QProcess::startDetached("explorer", QStringList() << "ms-settings:nightlight");
+}
+
 int Utils::getAvailableDesktopWidth() const
 {
     if (QGuiApplication::primaryScreen()) {

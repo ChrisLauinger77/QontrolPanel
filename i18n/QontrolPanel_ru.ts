@@ -1121,8 +1121,8 @@ You can enable it in the Components tab.</source>
         <translation>Системные звуки</translation>
     </message>
     <message>
-        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
-        <translation>Управление ночным светом недоступно. Яркость по-прежнему можно регулировать.</translation>
+        <source>Open Windows Night Light settings</source>
+        <translation>Открыть параметры ночного света Windows</translation>
     </message>
     <message>
         <source>Turn Night Light off</source>

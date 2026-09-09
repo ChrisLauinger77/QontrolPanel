@@ -1109,12 +1109,12 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>ChatMix</translation>
     </message>
     <message>
-        <source>System sounds</source>
-        <translation>Dźwięki systemowe</translation>
+        <source>Open Windows Night Light settings</source>
+        <translation>Otwórz ustawienia wyświetlania nocnego systemu Windows</translation>
     </message>
     <message>
-        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
-        <translation>Sterowanie wyświetlaniem nocnym jest niedostępne. Nadal można regulować jasność.</translation>
+        <source>System sounds</source>
+        <translation>Dźwięki systemowe</translation>
     </message>
     <message>
         <source>Turn Night Light off</source>

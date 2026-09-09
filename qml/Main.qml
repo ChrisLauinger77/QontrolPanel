@@ -1322,10 +1322,10 @@ ApplicationWindow {
                                 Layout.preferredWidth: 40
                                 Layout.preferredHeight: 40
                                 readonly property string helpText: !MonitorManager.nightLightSupported
-                                    ? qsTr("Night Light control is unavailable. Brightness can still be adjusted.")
+                                    ? qsTr("Open Windows Night Light settings")
                                     : MonitorManager.nightLightEnabled ? qsTr("Turn Night Light off") : qsTr("Turn Night Light on")
 
-                                // Keep hover help available when the Night Light button is disabled.
+                                // Describe whether the button toggles Night Light directly or opens Windows Settings.
                                 HoverHandler {
                                     id: nightLightHover
                                 }
@@ -1335,8 +1335,13 @@ ApplicationWindow {
 
                                 NFToolButton {
                                     anchors.fill: parent
-                                    enabled: MonitorManager.nightLightSupported
-                                    onClicked: MonitorManager.toggleNightLight()
+                                    onClicked: {
+                                        if (MonitorManager.nightLightSupported) {
+                                            MonitorManager.toggleNightLight()
+                                        } else {
+                                            Utils.openNightLightSettings()
+                                        }
+                                    }
                                     icon.source: MonitorManager.nightLightEnabled ? "qrc:/icons/nightlight.svg" : "qrc:/icons/brightness.svg"
                                     icon.width: 22
                                     icon.height: 22

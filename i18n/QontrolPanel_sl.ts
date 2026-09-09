@@ -1120,8 +1120,8 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>ChatMix</translation>
     </message>
     <message>
-        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
-        <translation>Upravljanje nočne svetlobe ni na voljo. Svetlost lahko še vedno prilagajate.</translation>
+        <source>Open Windows Night Light settings</source>
+        <translation>Odpri nastavitve nočne svetlobe sistema Windows</translation>
     </message>
     <message>
         <source>Turn Night Light off</source>

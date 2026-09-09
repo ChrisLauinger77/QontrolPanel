@@ -1115,8 +1115,8 @@ You can enable it in the Components tab.</source>
         <translation>La batterie du casque est presque vide</translation>
     </message>
     <message>
-        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
-        <translation>Le contrôle de l’éclairage nocturne est indisponible. La luminosité reste réglable.</translation>
+        <source>Open Windows Night Light settings</source>
+        <translation>Ouvrir les paramètres d’éclairage nocturne de Windows</translation>
     </message>
     <message>
         <source>Turn Night Light off</source>

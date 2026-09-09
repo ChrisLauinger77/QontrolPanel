@@ -1121,8 +1121,8 @@ You can enable it in the Components tab.</source>
         <translation>채팅 믹스</translation>
     </message>
     <message>
-        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
-        <translation>야간 모드를 제어할 수 없습니다. 밝기는 계속 조절할 수 있습니다.</translation>
+        <source>Open Windows Night Light settings</source>
+        <translation>Windows 야간 모드 설정 열기</translation>
     </message>
     <message>
         <source>Turn Night Light off</source>

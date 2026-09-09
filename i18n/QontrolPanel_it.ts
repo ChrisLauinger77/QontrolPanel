@@ -1121,8 +1121,8 @@ Puoi abilitarlo nella scheda Componenti.</translation>
         <translation>ChatMix</translation>
     </message>
     <message>
-        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
-        <translation>Il controllo della luce notturna non è disponibile. È comunque possibile regolare la luminosità.</translation>
+        <source>Open Windows Night Light settings</source>
+        <translation>Apri le impostazioni di luce notturna di Windows</translation>
     </message>
     <message>
         <source>Turn Night Light off</source>

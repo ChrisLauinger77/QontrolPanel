@@ -1121,8 +1121,8 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>ChatMix</translation>
     </message>
     <message>
-        <source>Night Light control is unavailable. Brightness can still be adjusted.</source>
-        <translation>Der Nachtmodus lässt sich hier nicht steuern. Die Helligkeit kann weiterhin angepasst werden.</translation>
+        <source>Open Windows Night Light settings</source>
+        <translation>Windows-Einstellungen für den Nachtmodus öffnen</translation>
     </message>
     <message>
         <source>Turn Night Light off</source>
