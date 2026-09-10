@@ -29,6 +29,19 @@ Click anywhere or left again on the tray icon to close the panel.<br>
 Double click on tray icon will open the settings pane.<br>
 Default section of settings pane is configurable in General section.
 
+## Highlights
+
+- **Tray-first controls:** Open the compact panel instantly from the Windows system tray.
+- **Output audio:** Adjust volume, mute audio, and switch between playback devices.
+- **Input audio:** Control microphone volume, mute state, and the active recording device.
+- **Per-application mixer:** Manage individual app volumes, names, icons, locks, and background muting.
+- **ChatMix:** Keep communication apps at a dedicated volume and restore their original levels afterward.
+- **Media controls:** View artwork and track details, switch media sources, control playback, and seek through supported media.
+- **Display controls:** Adjust internal and external monitor brightness and control Windows Night Light.
+- **HeadsetControl integration:** Monitor supported headsets and configure battery alerts, sidetone, lighting, equalizer presets, and more.
+- **Keyboard shortcuts:** Configure global controls and per-application volume hotkeys.
+- **Power and personalization:** Access Windows power actions and customize the panel layout, appearance, language, and behavior.
+
 ## Translations
 
 Translators should have a look [here](TRANSLATIONS.md).
