@@ -19,6 +19,14 @@ MediaSessionBridge::MediaSessionBridge(QObject* parent)
                     m_sourceName = info.sourceName;
                     m_sourceIcon = info.sourceIcon;
                     m_sourceCount = info.sourceCount;
+                    m_canPreviousTrack = info.canPreviousTrack;
+                    m_hasMediaTimeline = info.hasMediaTimeline;
+                    m_canSeek = info.canSeek;
+                    m_mediaPositionMs = info.mediaPositionMs;
+                    m_mediaDurationMs = info.mediaDurationMs;
+                    m_mediaMinimumSeekMs = info.mediaMinimumSeekMs;
+                    m_mediaMaximumSeekMs = info.mediaMaximumSeekMs;
+                    m_mediaPlaybackRate = info.mediaPlaybackRate;
                     emit mediaInfoChanged();
                 });
     }
@@ -85,6 +93,38 @@ int MediaSessionBridge::sourceCount() const {
     return m_sourceCount;
 }
 
+bool MediaSessionBridge::canPreviousTrack() const {
+    return m_canPreviousTrack;
+}
+
+bool MediaSessionBridge::hasMediaTimeline() const {
+    return m_hasMediaTimeline;
+}
+
+bool MediaSessionBridge::canSeek() const {
+    return m_canSeek;
+}
+
+qint64 MediaSessionBridge::mediaPositionMs() const {
+    return m_mediaPositionMs;
+}
+
+qint64 MediaSessionBridge::mediaDurationMs() const {
+    return m_mediaDurationMs;
+}
+
+qint64 MediaSessionBridge::mediaMinimumSeekMs() const {
+    return m_mediaMinimumSeekMs;
+}
+
+qint64 MediaSessionBridge::mediaMaximumSeekMs() const {
+    return m_mediaMaximumSeekMs;
+}
+
+double MediaSessionBridge::mediaPlaybackRate() const {
+    return m_mediaPlaybackRate;
+}
+
 void MediaSessionBridge::playPause() {
     MediaSessionManager::playPauseAsync();
 }
@@ -95,6 +135,10 @@ void MediaSessionBridge::nextTrack() {
 
 void MediaSessionBridge::previousTrack() {
     MediaSessionManager::previousTrackAsync();
+}
+
+void MediaSessionBridge::seekTo(qint64 positionMs) {
+    MediaSessionManager::seekToAsync(positionMs);
 }
 
 void MediaSessionBridge::nextSource() {

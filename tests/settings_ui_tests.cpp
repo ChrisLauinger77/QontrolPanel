@@ -74,6 +74,7 @@ class SettingsUiTests : public QObject
     std::unique_ptr<QQuickWindow> m_window;
     std::unique_ptr<QObject> m_pane;
     int m_audioType = -1;
+    int m_mediaType = -1;
 
     QObject* loadPane(const QString& name)
     {
@@ -93,6 +94,24 @@ class SettingsUiTests : public QObject
         return m_pane.get();
     }
 
+    QObject* loadMediaFlyout()
+    {
+        m_window = std::make_unique<QQuickWindow>();
+        m_window->resize(360, 220);
+        m_engine = std::make_unique<QQmlEngine>();
+        QQmlComponent component(m_engine.get(), sourceUrl("qml/MediaFlyoutContent.qml"));
+        if (component.isError())
+            qWarning().noquote() << component.errorString();
+        m_pane.reset(component.create());
+        if (auto* item = qobject_cast<QQuickItem*>(m_pane.get())) {
+            item->setParentItem(m_window->contentItem());
+            item->setSize(m_window->size());
+        }
+        m_window->show();
+        QCoreApplication::processEvents();
+        return m_pane.get();
+    }
+
     HANDLE lockPreferences()
     {
         return CreateFileW(reinterpret_cast<LPCWSTR>(m_preferencesPath.utf16()), GENERIC_READ,
@@ -100,6 +119,13 @@ class SettingsUiTests : public QObject
     }
 
     QObject* audio() { return m_engine->singletonInstance<QObject*>(m_audioType); }
+    QObject* media() { return m_engine->singletonInstance<QObject*>(m_mediaType); }
+
+    void publishMediaInfo()
+    {
+        QVERIFY(QMetaObject::invokeMethod(media(), "mediaInfoChanged"));
+        QCoreApplication::processEvents();
+    }
 
 private slots:
     void initTestCase()
@@ -125,6 +151,7 @@ private slots:
             qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, name);
         qmlRegisterSingletonType(sourceUrl("qml/Singletons/Context.qml"), Module, 1, 0, "Context");
         m_audioType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "AudioBridge");
+        m_mediaType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "MediaSessionBridge");
     }
 
     void init()
@@ -266,6 +293,109 @@ private slots:
         QVERIFY(!settings->settingsAnimationsEnabled());
         QCOMPARE(panelChanged.size(), 1);
         QCOMPARE(settingsChanged.size(), 1);
+    }
+
+    void mediaPreviousCapabilityControlsButton()
+    {
+        QVERIFY(loadMediaFlyout());
+        auto* previousButton = m_pane->findChild<QObject*>("mediaPreviousButton");
+        QVERIFY(previousButton);
+        QVERIFY(!previousButton->property("enabled").toBool());
+
+        media()->setProperty("canPreviousTrack", true);
+        QTRY_VERIFY(previousButton->property("enabled").toBool());
+        QVERIFY(QMetaObject::invokeMethod(previousButton, "click"));
+        QCOMPARE(media()->property("previousTrackCount").toInt(), 1);
+    }
+
+    void mediaTimelinePresentation()
+    {
+        QVERIFY(loadMediaFlyout());
+        auto* timelineRow = m_pane->findChild<QObject*>("mediaTimelineRow");
+        auto* slider = m_pane->findChild<QObject*>("mediaTimelineSlider");
+        auto* elapsed = m_pane->findChild<QObject*>("mediaElapsedTime");
+        auto* remaining = m_pane->findChild<QObject*>("mediaRemainingTime");
+        QVERIFY(timelineRow);
+        QVERIFY(slider);
+        QVERIFY(elapsed);
+        QVERIFY(remaining);
+        QVERIFY(!timelineRow->property("visible").toBool());
+
+        media()->setProperty("hasMediaTimeline", true);
+        media()->setProperty("canSeek", false);
+        media()->setProperty("mediaPositionMs", 65000);
+        media()->setProperty("mediaDurationMs", 200000);
+        publishMediaInfo();
+        QTRY_VERIFY(timelineRow->property("visible").toBool());
+        QVERIFY(!slider->property("enabled").toBool());
+        QCOMPARE(elapsed->property("text").toString(), QStringLiteral("1:05"));
+        QCOMPARE(remaining->property("text").toString(), QStringLiteral("-2:15"));
+
+        media()->setProperty("mediaPositionMs", 3661000);
+        media()->setProperty("mediaDurationMs", 7322000);
+        publishMediaInfo();
+        QCOMPARE(elapsed->property("text").toString(), QStringLiteral("1:01:01"));
+        QCOMPARE(remaining->property("text").toString(), QStringLiteral("-1:01:01"));
+
+        media()->setProperty("mediaDurationMs", 0);
+        publishMediaInfo();
+        QTRY_VERIFY(!timelineRow->property("visible").toBool());
+    }
+
+    void mediaTimelineClockFollowsPlayback()
+    {
+        QVERIFY(loadMediaFlyout());
+        media()->setProperty("hasMediaTimeline", true);
+        media()->setProperty("mediaPositionMs", 1000);
+        media()->setProperty("mediaDurationMs", 10000);
+        media()->setProperty("mediaPlaybackRate", 4.0);
+        media()->setProperty("isMediaPlaying", true);
+        publishMediaInfo();
+        QTRY_VERIFY(m_pane->property("displayedPositionMs").toDouble() > 1500);
+
+        media()->setProperty("isMediaPlaying", false);
+        publishMediaInfo();
+        const double pausedPosition = m_pane->property("displayedPositionMs").toDouble();
+        QTest::qWait(350);
+        QVERIFY(qAbs(m_pane->property("displayedPositionMs").toDouble() - pausedPosition) < 1.0);
+
+        media()->setProperty("mediaPositionMs", 9500);
+        media()->setProperty("mediaPlaybackRate", 100.0);
+        media()->setProperty("isMediaPlaying", true);
+        publishMediaInfo();
+        QTRY_COMPARE(m_pane->property("displayedPositionMs").toDouble(), 10000.0);
+    }
+
+    void mediaSeekCommitsOnceOnRelease()
+    {
+        QVERIFY(loadMediaFlyout());
+        media()->setProperty("hasMediaTimeline", true);
+        media()->setProperty("canSeek", true);
+        media()->setProperty("mediaPositionMs", 1000);
+        media()->setProperty("mediaDurationMs", 10000);
+        media()->setProperty("mediaMinimumSeekMs", 0);
+        media()->setProperty("mediaMaximumSeekMs", 10000);
+        publishMediaInfo();
+
+        auto* slider = qobject_cast<QQuickItem*>(m_pane->findChild<QObject*>("mediaTimelineSlider"));
+        QVERIFY(slider);
+        QVERIFY(slider->width() > 0);
+        QVERIFY(slider->height() > 0);
+        const QPoint pressPoint = slider->mapToScene(
+            QPointF(slider->width() * 0.1, slider->height() * 0.5)).toPoint();
+        const QPoint movePoint = slider->mapToScene(
+            QPointF(slider->width() * 0.75, slider->height() * 0.5)).toPoint();
+
+        QTest::mousePress(m_window.get(), Qt::LeftButton, Qt::NoModifier, pressPoint);
+        QTRY_VERIFY(slider->property("pressed").toBool());
+        QTest::mouseMove(m_window.get(), movePoint, 50);
+        QCOMPARE(media()->property("seekCount").toInt(), 0);
+        QTRY_VERIFY(m_pane->property("displayedPositionMs").toDouble() > 1000);
+        QTest::mouseRelease(m_window.get(), Qt::LeftButton, Qt::NoModifier, movePoint);
+        QTRY_COMPARE(media()->property("seekCount").toInt(), 1);
+        QVERIFY(media()->property("lastSeekPositionMs").toDouble() > 1000);
+        QTest::qWait(300);
+        QCOMPARE(media()->property("seekCount").toInt(), 1);
     }
 
     void rejectedEditor_data()

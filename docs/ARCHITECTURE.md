@@ -73,7 +73,7 @@ Audio runs in a COM MTA. Native callback targets are invalidated before callback
 
 ### Media Sessions
 
-`MediaSessionManager` handles Windows media session monitoring and transport control. `MediaSessionBridge` exposes title, artist, art, playback state, and play/pause/next/previous commands to QML. Media monitoring is gated by user settings because it uses Windows media-session APIs and may not be needed by every user.
+`MediaSessionManager` handles Windows media session monitoring and transport control. `MediaSessionBridge` exposes title, artist, art, playback state, source-reported transport capabilities, timeline state, and play/pause/next/previous/seek commands to QML. Timeline positions are normalized to the start of the current media item; seeking is limited to the source-reported seek range. Media monitoring is gated by user settings because it uses Windows media-session APIs and may not be needed by every user.
 
 ### Display and Brightness
 

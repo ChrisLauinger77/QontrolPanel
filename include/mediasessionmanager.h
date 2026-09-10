@@ -20,6 +20,14 @@ struct MediaInfo {
     QString artist;
     QString album;
     bool isPlaying = false;
+    bool canPreviousTrack = false;
+    bool hasMediaTimeline = false;
+    bool canSeek = false;
+    qint64 mediaPositionMs = 0;
+    qint64 mediaDurationMs = 0;
+    qint64 mediaMinimumSeekMs = 0;
+    qint64 mediaMaximumSeekMs = 0;
+    double mediaPlaybackRate = 1.0;
     QString albumArt;
     QString sourceName;
     QString sourceIcon;
@@ -52,6 +60,7 @@ public slots:
     void playPause();
     void nextTrack();
     void previousTrack();
+    void seekTo(qint64 positionMs);
     void nextSource();
 
 signals:
@@ -73,6 +82,7 @@ private:
     event_token m_currentSessionChangedToken{};
     event_token m_propertiesChangedToken{};
     event_token m_playbackInfoChangedToken{};
+    event_token m_timelinePropertiesChangedToken{};
 
     // Cache for album art to avoid reprocessing
     QByteArray m_cachedRawAlbumArt;
@@ -98,6 +108,7 @@ void stopMonitoringAsync();
 void playPauseAsync();
 void nextTrackAsync();
 void previousTrackAsync();
+void seekToAsync(qint64 positionMs);
 void nextSourceAsync();
 MediaWorker* getWorker();
 }

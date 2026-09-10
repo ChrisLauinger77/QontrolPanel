@@ -42,4 +42,29 @@ QtObject {
     function setTestModeEnabled(value) { testModeEnabled = value }
     function setTestProfile(value) { testProfile = value }
     function refreshNow() {}
+
+    property string mediaTitle: "Test title"
+    property string mediaArtist: "Test artist"
+    property bool isMediaPlaying: false
+    property string mediaArt: ""
+    property string sourceName: "Test player"
+    property string sourceIcon: ""
+    property int sourceCount: 1
+    property bool canPreviousTrack: false
+    property bool hasMediaTimeline: false
+    property bool canSeek: false
+    property real mediaPositionMs: 0
+    property real mediaDurationMs: 0
+    property real mediaMinimumSeekMs: 0
+    property real mediaMaximumSeekMs: 0
+    property real mediaPlaybackRate: 1
+    property int previousTrackCount: 0
+    property int seekCount: 0
+    property real lastSeekPositionMs: -1
+    signal mediaInfoChanged()
+    function previousTrack() { previousTrackCount++ }
+    function playPause() {}
+    function nextTrack() {}
+    function nextSource() {}
+    function seekTo(positionMs) { seekCount++; lastSeekPositionMs = positionMs }
 }

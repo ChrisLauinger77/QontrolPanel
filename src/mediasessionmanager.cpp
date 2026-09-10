@@ -2,6 +2,7 @@
 #include <shobjidl.h>
 #include <shlobj.h>
 #include <shellapi.h>
+#include <algorithm>
 #include "mediasessionmanager.h"
 #include "logmanager.h"
 #include "workerthreads.h"
@@ -23,6 +24,7 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <cstring>
+#include <cmath>
 #include <vector>
 
 using namespace winrt;
@@ -192,6 +194,11 @@ void resolveSourceIdentity(const QString& sourceId, QString& sourceName, QString
     }
 }
 
+qint64 timeSpanToMilliseconds(const TimeSpan& value)
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(value).count();
+}
+
 } // namespace
 
 QImage createRoundedImage(const QImage& source, int targetSize, int radius)
@@ -327,11 +334,52 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
                 }
             }
 
+            bool playbackPositionEnabled = false;
             auto playbackInfo = currentSession.GetPlaybackInfo();
             if (playbackInfo) {
                 info.isPlaying = (playbackInfo.PlaybackStatus() == GlobalSystemMediaTransportControlsSessionPlaybackStatus::Playing);
+                auto controls = playbackInfo.Controls();
+                if (controls) {
+                    info.canPreviousTrack = controls.IsPreviousEnabled();
+                    playbackPositionEnabled = controls.IsPlaybackPositionEnabled();
+                }
+                auto playbackRate = playbackInfo.PlaybackRate();
+                if (playbackRate && std::isfinite(playbackRate.Value())) {
+                    info.mediaPlaybackRate = playbackRate.Value();
+                }
                 LOG_INFO("MediaSessionManager",
                                                 QString("Playback status: %1").arg(info.isPlaying ? "Playing" : "Paused/Stopped"));
+            }
+
+            auto timeline = currentSession.GetTimelineProperties();
+            if (timeline) {
+                const qint64 startMs = timeSpanToMilliseconds(timeline.StartTime());
+                const qint64 endMs = timeSpanToMilliseconds(timeline.EndTime());
+                if (endMs > startMs) {
+                    info.hasMediaTimeline = true;
+                    info.mediaDurationMs = endMs - startMs;
+
+                    long double positionMs = timeSpanToMilliseconds(timeline.Position()) - startMs;
+                    const auto lastUpdatedTime = timeline.LastUpdatedTime();
+                    if (info.isPlaying && lastUpdatedTime.time_since_epoch().count() > 0) {
+                        const auto sinceUpdate = winrt::clock::now() - lastUpdatedTime;
+                        const qint64 sinceUpdateMs = qMax<qint64>(
+                            0, std::chrono::duration_cast<std::chrono::milliseconds>(sinceUpdate).count());
+                        positionMs += static_cast<long double>(sinceUpdateMs)
+                            * info.mediaPlaybackRate;
+                    }
+                    info.mediaPositionMs = static_cast<qint64>(std::clamp(
+                        positionMs, static_cast<long double>(0),
+                        static_cast<long double>(info.mediaDurationMs)));
+                    info.mediaMinimumSeekMs = std::clamp(
+                        timeSpanToMilliseconds(timeline.MinSeekTime()) - startMs,
+                        qint64{0}, info.mediaDurationMs);
+                    info.mediaMaximumSeekMs = std::clamp(
+                        timeSpanToMilliseconds(timeline.MaxSeekTime()) - startMs,
+                        qint64{0}, info.mediaDurationMs);
+                    info.canSeek = playbackPositionEnabled
+                        && info.mediaMaximumSeekMs > info.mediaMinimumSeekMs;
+                }
             }
         } else {
             LOG_INFO("MediaSessionManager", "No active media session found");
@@ -457,6 +505,8 @@ void MediaWorker::setupSessionNotifications() {
             [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target); });
         m_playbackInfoChangedToken = m_currentSession.PlaybackInfoChanged(
             [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target, false, true); });
+        m_timelinePropertiesChangedToken = m_currentSession.TimelinePropertiesChanged(
+            [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target); });
     }
     catch (const hresult_error& error)
     {
@@ -484,6 +534,8 @@ void MediaWorker::cleanupSessionNotifications() {
     };
     revoke(m_propertiesChangedToken, [&](auto token) { m_currentSession.MediaPropertiesChanged(token); });
     revoke(m_playbackInfoChangedToken, [&](auto token) { m_currentSession.PlaybackInfoChanged(token); });
+    revoke(m_timelinePropertiesChangedToken,
+           [&](auto token) { m_currentSession.TimelinePropertiesChanged(token); });
         }
 
 MediaWorker::MediaWorker()
@@ -637,6 +689,12 @@ void MediaWorker::previousTrack() {
 
     try {
         if (ensureCurrentSession() && m_currentSession) {
+            const auto playbackInfo = m_currentSession.GetPlaybackInfo();
+            if (!playbackInfo || !playbackInfo.Controls()
+                || !playbackInfo.Controls().IsPreviousEnabled()) {
+                LOG_WARN("MediaSessionManager", "Previous track is not available for the active session");
+                return;
+            }
             if (!awaitResult(m_currentSession.TrySkipPreviousAsync(), m_stopRequested))
             {
                 LOG_WARN("MediaSessionManager", "Media source rejected transport command");
@@ -654,6 +712,61 @@ void MediaWorker::previousTrack() {
                                             .arg(static_cast<qint32>(error.code()), 0, 16)
                                             .arg(QString::fromWCharArray(error.message().c_str())));
         LOG_CRITICAL("MediaSessionManager", "Failed to skip to previous track");
+    }
+}
+
+void MediaWorker::seekTo(qint64 positionMs) {
+    LOG_INFO("MediaSessionManager", QString("Seeking to %1ms").arg(positionMs));
+
+    bool refreshMediaInfo = false;
+    try {
+        if (ensureCurrentSession() && m_currentSession) {
+            const auto playbackInfo = m_currentSession.GetPlaybackInfo();
+            if (!playbackInfo || !playbackInfo.Controls()
+                || !playbackInfo.Controls().IsPlaybackPositionEnabled()) {
+                LOG_WARN("MediaSessionManager", "Seeking is not available for the active session");
+                return;
+            }
+
+            const auto timeline = m_currentSession.GetTimelineProperties();
+            if (!timeline || timeline.EndTime() <= timeline.StartTime()) {
+                LOG_WARN("MediaSessionManager", "Active session has no valid seekable timeline");
+                return;
+            }
+
+            const auto minimumSeekTime = std::max(timeline.StartTime(), timeline.MinSeekTime());
+            const auto maximumSeekTime = std::min(timeline.EndTime(), timeline.MaxSeekTime());
+            if (maximumSeekTime <= minimumSeekTime) {
+                LOG_WARN("MediaSessionManager", "Active session has no valid seekable range");
+                return;
+            }
+
+            const auto requestedOffset = std::chrono::duration_cast<TimeSpan>(
+                std::chrono::milliseconds(qMax<qint64>(0, positionMs)));
+            const auto requestedPosition = std::clamp(
+                timeline.StartTime() + requestedOffset,
+                minimumSeekTime, maximumSeekTime);
+            refreshMediaInfo = true;
+            if (awaitResult(m_currentSession.TryChangePlaybackPositionAsync(requestedPosition.count()),
+                            m_stopRequested)) {
+                LOG_INFO("MediaSessionManager", "Playback position changed successfully");
+            } else {
+                LOG_WARN("MediaSessionManager", "Media source rejected playback position change");
+            }
+        } else {
+            LOG_WARN("MediaSessionManager", "No active session for playback position change");
+        }
+    }
+    catch (const hresult_error& error)
+    {
+        LOG_WARN("MediaSessionManager", QString("WinRT error %1: %2")
+                                            .arg(static_cast<qint32>(error.code()), 0, 16)
+                                            .arg(QString::fromWCharArray(error.message().c_str())));
+        LOG_CRITICAL("MediaSessionManager", "Failed to change playback position");
+    }
+
+    if (refreshMediaInfo && m_running && !m_stopRequested.load()) {
+        queryMediaInfo();
     }
 }
 
@@ -756,6 +869,13 @@ void MediaSessionManager::nextTrackAsync() {
 void MediaSessionManager::previousTrackAsync() {
     if (g_mediaWorker) {
         QMetaObject::invokeMethod(g_mediaWorker, "previousTrack", Qt::QueuedConnection);
+    }
+}
+
+void MediaSessionManager::seekToAsync(qint64 positionMs) {
+    if (g_mediaWorker) {
+        QMetaObject::invokeMethod(g_mediaWorker, "seekTo", Qt::QueuedConnection,
+                                  Q_ARG(qint64, positionMs));
     }
 }
 
