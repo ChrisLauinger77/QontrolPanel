@@ -77,6 +77,29 @@ namespace {
             Qt::QueuedConnection);
 }
 
+    void queueMediaTimelineRefresh(const std::shared_ptr<MediaCallbackTarget>& target)
+    {
+        QMutexLocker guard(&target->mutex);
+        auto* worker = target->worker;
+        if (!worker || target->timelineRefreshPending)
+            return;
+        target->timelineRefreshPending = true;
+        const bool queued = QMetaObject::invokeMethod(
+            worker,
+            [target, worker] {
+                {
+                    QMutexLocker guard(&target->mutex);
+                    target->timelineRefreshPending = false;
+                    if (target->worker != worker)
+                        return;
+                }
+                worker->handleMediaEvent(false, false);
+            },
+            Qt::QueuedConnection);
+        if (!queued)
+            target->timelineRefreshPending = false;
+    }
+
     using namespace NativeImage;
 
 QString executableDisplayName(const QString& executablePath)
@@ -506,7 +529,7 @@ void MediaWorker::setupSessionNotifications() {
         m_playbackInfoChangedToken = m_currentSession.PlaybackInfoChanged(
             [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target, false, true); });
         m_timelinePropertiesChangedToken = m_currentSession.TimelinePropertiesChanged(
-            [target = m_callbackTarget](auto const&, auto const&) { queueMediaRefresh(target); });
+            [target = m_callbackTarget](auto const&, auto const&) { queueMediaTimelineRefresh(target); });
     }
     catch (const hresult_error& error)
     {

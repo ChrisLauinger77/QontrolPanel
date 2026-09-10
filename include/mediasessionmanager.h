@@ -41,6 +41,7 @@ struct MediaCallbackTarget
 {
     QMutex mutex;
     MediaWorker* worker = nullptr;
+    bool timelineRefreshPending = false;
 };
 
 class MediaWorker : public QObject

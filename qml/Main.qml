@@ -244,6 +244,11 @@ ApplicationWindow {
         transientParent: panel
 
         onAvailableChanged: panel.handleMediaAvailabilityChanged()
+        onHeightChanged: {
+            if (visible && panel.visible) {
+                panel.repositionWindows()
+            }
+        }
         onHideRequested: panel.hidePanel()
     }
 
