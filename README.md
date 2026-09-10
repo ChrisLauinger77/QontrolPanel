@@ -31,7 +31,7 @@ Default section of settings pane is configurable in General section.
 
 ## Translations
 
-Translators should have a look [here](.github/TRANSLATIONS.md).
+Translators should have a look [here](TRANSLATIONS.md).
 
 ## Installation / Upgrade
 
@@ -74,7 +74,7 @@ Use the provided installer or download the archive, extract it, and run `bin/Qon
 
 ## Build the project
 
-See [here](.github/BUILDING.md).
+See [here](BUILDING.md).
 
 ## Credits
 

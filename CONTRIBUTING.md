@@ -76,7 +76,7 @@ When changing user-visible text:
 3. Review changed `.ts` files for accidental churn.
 4. Do not hand-edit translations unless you are intentionally translating.
 
-Translator-specific notes live in `.github/TRANSLATIONS.md`.
+Translator-specific notes live in [`TRANSLATIONS.md`](TRANSLATIONS.md).
 
 ## HeadsetControl Changes
 

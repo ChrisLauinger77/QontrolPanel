@@ -19,7 +19,7 @@ Tick `Desktop development with C++`
 
 Tick the following:
 
-![image](../.assets/msvc_setup.png)
+![image](.assets/msvc_setup.png)
 
 Wait for installation to complete and close visual studio editor.
 
@@ -42,11 +42,11 @@ You can then start the install
 Open QtCreator, open project, and load QontrolPanel CMakeLists.txt.  
 In the kit configuration, you can just leave it to default and click on configure project.
 
-![image](../.assets/qt_kit.png)
+![image](.assets/qt_kit.png)
 
 In QtCrator, bottom left, you can click the Run button.
 
-![image](../.assets/build_run.png)
+![image](.assets/build_run.png)
 
 Be sure to have closed any previous instance of QontrolPanel, or the new one will refuse to open.
 

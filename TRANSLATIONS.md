@@ -8,7 +8,7 @@ More information can be found here: [Qt linguist](https://doc.qt.io/qt-6/linguis
 
 ### New languages
 
-For new languages we also need to add a new line in [cmake/languages.cmake](../cmake/languages.cmake).
+For new languages we also need to add a new line in [cmake/languages.cmake](cmake/languages.cmake).
 
 ### Testing your changes
 
