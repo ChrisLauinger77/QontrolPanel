@@ -366,6 +366,32 @@ private slots:
         QTRY_COMPARE(m_pane->property("displayedPositionMs").toDouble(), 10000.0);
     }
 
+    void mediaTimelineSuppressesSmallPlayingCorrections()
+    {
+        QVERIFY(loadMediaFlyout());
+        media()->setProperty("hasMediaTimeline", true);
+        media()->setProperty("mediaPositionMs", 1000);
+        media()->setProperty("mediaDurationMs", 10000);
+        media()->setProperty("mediaPlaybackRate", 1.0);
+        media()->setProperty("isMediaPlaying", true);
+        publishMediaInfo();
+        QTRY_VERIFY(m_pane->property("displayedPositionMs").toDouble() >= 1200.0);
+
+        const double beforeCorrection = m_pane->property("displayedPositionMs").toDouble();
+        media()->setProperty("mediaPositionMs", beforeCorrection - 500.0);
+        publishMediaInfo();
+        QVERIFY(m_pane->property("displayedPositionMs").toDouble() >= beforeCorrection);
+
+        media()->setProperty("mediaPositionMs", 7000);
+        publishMediaInfo();
+        QCOMPARE(m_pane->property("displayedPositionMs").toDouble(), 7000.0);
+
+        media()->setProperty("mediaPositionMs", 4000);
+        media()->setProperty("isMediaPlaying", false);
+        publishMediaInfo();
+        QCOMPARE(m_pane->property("displayedPositionMs").toDouble(), 4000.0);
+    }
+
     void mediaSeekCommitsOnceOnRelease()
     {
         QVERIFY(loadMediaFlyout());

@@ -13,6 +13,14 @@ ColumnLayout {
     property real displayedPositionMs: 0
     property real positionBaselineMs: 0
     property real positionBaselineTimestampMs: 0
+    property bool positionBaselinePlaying: false
+    property real positionBaselinePlaybackRate: 1
+    property bool timelineIdentityValid: false
+    property string timelineSourceName: ""
+    property string timelineTitle: ""
+    property string timelineArtist: ""
+    property real timelineDurationMs: 0
+    readonly property real timelineCorrectionToleranceMs: 1500
     property bool seekGestureActive: false
     property string seekSourceName: ""
     property string seekTitle: ""
@@ -44,12 +52,48 @@ ColumnLayout {
         return totalMinutes + ":" + paddedSeconds
     }
 
+    function projectedPosition(timestampMs) {
+        let projectedPosition = positionBaselineMs
+        if (positionBaselinePlaying) {
+            projectedPosition += (timestampMs - positionBaselineTimestampMs)
+                * positionBaselinePlaybackRate
+        }
+        return clampPosition(projectedPosition)
+    }
+
     function synchronizeTimeline() {
         if (seekGestureActive) {
             return
         }
-        positionBaselineMs = clampPosition(MediaSessionBridge.mediaPositionMs)
-        positionBaselineTimestampMs = Date.now()
+
+        const timestampMs = Date.now()
+        const nativePositionMs = clampPosition(MediaSessionBridge.mediaPositionMs)
+        const sameTimeline = timelineIdentityValid
+            && MediaSessionBridge.hasMediaTimeline
+            && MediaSessionBridge.sourceName === timelineSourceName
+            && MediaSessionBridge.mediaTitle === timelineTitle
+            && MediaSessionBridge.mediaArtist === timelineArtist
+            && MediaSessionBridge.mediaDurationMs === timelineDurationMs
+
+        let synchronizedPositionMs = nativePositionMs
+        if (sameTimeline && positionBaselinePlaying && MediaSessionBridge.isMediaPlaying) {
+            const projectedPositionMs = projectedPosition(timestampMs)
+            if (Math.abs(nativePositionMs - projectedPositionMs)
+                    <= timelineCorrectionToleranceMs) {
+                synchronizedPositionMs = projectedPositionMs
+            }
+        }
+
+        timelineIdentityValid = MediaSessionBridge.hasMediaTimeline
+        timelineSourceName = MediaSessionBridge.sourceName
+        timelineTitle = MediaSessionBridge.mediaTitle
+        timelineArtist = MediaSessionBridge.mediaArtist
+        timelineDurationMs = MediaSessionBridge.mediaDurationMs
+        positionBaselineMs = synchronizedPositionMs
+        positionBaselineTimestampMs = timestampMs
+        positionBaselinePlaying = MediaSessionBridge.isMediaPlaying
+        positionBaselinePlaybackRate = Number.isFinite(MediaSessionBridge.mediaPlaybackRate)
+            ? MediaSessionBridge.mediaPlaybackRate : 1
         setDisplayedPosition(positionBaselineMs)
     }
 
@@ -57,13 +101,7 @@ ColumnLayout {
         if (!MediaSessionBridge.hasMediaTimeline || seekGestureActive) {
             return
         }
-        let projectedPosition = positionBaselineMs
-        if (MediaSessionBridge.isMediaPlaying) {
-            const rate = Number.isFinite(MediaSessionBridge.mediaPlaybackRate)
-                ? MediaSessionBridge.mediaPlaybackRate : 1
-            projectedPosition += (Date.now() - positionBaselineTimestampMs) * rate
-        }
-        setDisplayedPosition(projectedPosition)
+        setDisplayedPosition(projectedPosition(Date.now()))
     }
 
     function beginSeek() {
@@ -95,6 +133,9 @@ ColumnLayout {
             Math.min(MediaSessionBridge.mediaMaximumSeekMs, positionMs))
         positionBaselineMs = targetPosition
         positionBaselineTimestampMs = Date.now()
+        positionBaselinePlaying = MediaSessionBridge.isMediaPlaying
+        positionBaselinePlaybackRate = Number.isFinite(MediaSessionBridge.mediaPlaybackRate)
+            ? MediaSessionBridge.mediaPlaybackRate : 1
         setDisplayedPosition(targetPosition)
         MediaSessionBridge.seekTo(Math.round(targetPosition))
     }

@@ -88,8 +88,15 @@ private:
     // Cache for album art to avoid reprocessing
     QByteArray m_cachedRawAlbumArt;
     QString m_cachedProcessedAlbumArt;
+    bool m_mediaIdentityLogged = false;
+    QString m_lastLoggedTitle;
+    QString m_lastLoggedArtist;
+    QString m_lastLoggedAlbum;
+    bool m_playbackStatusLogged = false;
+    bool m_lastLoggedPlaying = false;
 
     void resetSessionManager();
+    void resetRoutineLogState();
     void setupSessionManagerNotifications();
     void cleanupSessionManagerNotifications();
     void setupSessionNotifications();

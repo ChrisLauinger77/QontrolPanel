@@ -277,8 +277,17 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
                 info.artist = QString::fromWCharArray(properties.Artist().c_str());
                 info.album = QString::fromWCharArray(properties.AlbumTitle().c_str());
 
-                LOG_INFO("MediaSessionManager",
-                                                QString("Retrieved media info: %1 - %2").arg(info.artist, info.title));
+                if (!worker->m_mediaIdentityLogged
+                    || worker->m_lastLoggedTitle != info.title
+                    || worker->m_lastLoggedArtist != info.artist
+                    || worker->m_lastLoggedAlbum != info.album) {
+                    LOG_INFO("MediaSessionManager",
+                             QString("Retrieved media info: %1 - %2").arg(info.artist, info.title));
+                    worker->m_mediaIdentityLogged = true;
+                    worker->m_lastLoggedTitle = info.title;
+                    worker->m_lastLoggedArtist = info.artist;
+                    worker->m_lastLoggedAlbum = info.album;
+                }
 
                 // Fetch album art
                 try {
@@ -341,7 +350,6 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
                                     } else if (worker) {
                                         // Use cached processed album art
                                         info.albumArt = worker->m_cachedProcessedAlbumArt;
-                                        LOG_INFO("MediaSessionManager", "Using cached album art");
                                     }
                                 }
                             }
@@ -370,8 +378,14 @@ MediaInfo queryMediaInfoImpl(MediaWorker* worker) {
                 if (playbackRate && std::isfinite(playbackRate.Value())) {
                     info.mediaPlaybackRate = playbackRate.Value();
                 }
-                LOG_INFO("MediaSessionManager",
-                                                QString("Playback status: %1").arg(info.isPlaying ? "Playing" : "Paused/Stopped"));
+                if (!worker->m_playbackStatusLogged
+                    || worker->m_lastLoggedPlaying != info.isPlaying) {
+                    LOG_INFO("MediaSessionManager",
+                             QString("Playback status: %1")
+                                 .arg(info.isPlaying ? "Playing" : "Paused/Stopped"));
+                    worker->m_playbackStatusLogged = true;
+                    worker->m_lastLoggedPlaying = info.isPlaying;
+                }
             }
 
             auto timeline = currentSession.GetTimelineProperties();
@@ -497,6 +511,7 @@ bool MediaWorker::ensureCurrentSession() {
             // Clear cache when session changes
             m_cachedRawAlbumArt.clear();
             m_cachedProcessedAlbumArt.clear();
+            resetRoutineLogState();
             LOG_INFO("MediaSessionManager", "Album art cache cleared due to session change");
 
             cleanupSessionNotifications();
@@ -629,6 +644,7 @@ void MediaWorker::startMonitoring() {
     // Clear cache on start
     m_cachedRawAlbumArt.clear();
     m_cachedProcessedAlbumArt.clear();
+    resetRoutineLogState();
 
     setupSessionManagerNotifications();
     ensureCurrentSession();
@@ -944,4 +960,15 @@ void MediaWorker::resetSessionManager()
     m_currentSession = nullptr;
     m_sessionManager = nullptr;
     m_sourceSelectedManually = false;
+    resetRoutineLogState();
+}
+
+void MediaWorker::resetRoutineLogState()
+{
+    m_mediaIdentityLogged = false;
+    m_lastLoggedTitle.clear();
+    m_lastLoggedArtist.clear();
+    m_lastLoggedAlbum.clear();
+    m_playbackStatusLogged = false;
+    m_lastLoggedPlaying = false;
 }
