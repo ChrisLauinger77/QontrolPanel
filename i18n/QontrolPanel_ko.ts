@@ -640,7 +640,7 @@
     </message>
     <message>
         <source>This app is made with care by an independent developer and is not financed by ad revenue.
-If you'd like to support my work, any contribution would be greatly appreciated!</source>
+If you&apos;d like to support my work, any contribution would be greatly appreciated!</source>
         <translation>이 앱은 독립 개발자가 정성껏 제작했으며 광고 수익으로 운영되지 않습니다.
 제 작업을 후원하고 싶으시다면, 어떤 기부든 환영합니다!</translation>
     </message>
@@ -1516,7 +1516,7 @@ You can enable it in the Components tab.</source>
         <translation>릴리스 노트</translation>
     </message>
     <message>
-        <source>View what's new in version %1</source>
+        <source>View what&apos;s new in version %1</source>
         <translation>버전 %1의 새로운 기능 보기</translation>
     </message>
     <message>
