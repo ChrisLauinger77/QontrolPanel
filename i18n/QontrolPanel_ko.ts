@@ -116,11 +116,11 @@
     </message>
     <message>
         <source>Panel animations</source>
-        <translation type="unfinished"></translation>
+        <translation>패널 애니메이션</translation>
     </message>
     <message>
         <source>Animate panel opening and closing</source>
-        <translation type="unfinished"></translation>
+        <translation>패널 열림 및 닫힘에 애니메이션 적용</translation>
     </message>
     <message>
         <source>Settings page animations</source>
@@ -234,7 +234,7 @@
     <name>AudioBridge</name>
     <message>
         <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>오디오 설정을 저장할 수 없습니다. 사용자 프로필의 접근 권한과 사용 가능한 디스크 공간을 확인하세요.</translation>
     </message>
 </context>
 <context>
@@ -640,7 +640,7 @@
     </message>
     <message>
         <source>This app is made with care by an independent developer and is not financed by ad revenue.
-If you&apos;d like to support my work, any contribution would be greatly appreciated!</source>
+If you'd like to support my work, any contribution would be greatly appreciated!</source>
         <translation>이 앱은 독립 개발자가 정성껏 제작했으며 광고 수익으로 운영되지 않습니다.
 제 작업을 후원하고 싶으시다면, 어떤 기부든 환영합니다!</translation>
     </message>
@@ -968,7 +968,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>일부 헤드셋 설정을 적용할 수 없었습니다. 다시 시도하려면 새로 고침하세요.</translation>
     </message>
 </context>
 <context>
@@ -994,11 +994,11 @@ You can enable it in the Components tab.</source>
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>응용 프로그램 단축키를 저장할 수 없습니다. 사용자 프로필의 접근 권한과 사용 가능한 디스크 공간을 확인하세요.</translation>
     </message>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows에서 바로 가기를 등록할 수 없습니다 (오류 %1). 가능한 경우 이전 바인딩을 유지했습니다.</translation>
     </message>
 </context>
 <context>
@@ -1138,15 +1138,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation type="unfinished"></translation>
+        <translation>전원 동작 실패</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation type="unfinished"></translation>
+        <translation>단축키 등록에 실패했습니다</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation type="unfinished"></translation>
+        <translation>설정을 저장할 수 없습니다</translation>
     </message>
 </context>
 <context>
@@ -1242,7 +1242,7 @@ You can enable it in the Components tab.</source>
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows가 전원 동작을 완료할 수 없었습니다 (오류 %1).</translation>
     </message>
 </context>
 <context>
@@ -1516,7 +1516,7 @@ You can enable it in the Components tab.</source>
         <translation>릴리스 노트</translation>
     </message>
     <message>
-        <source>View what&apos;s new in version %1</source>
+        <source>View what's new in version %1</source>
         <translation>버전 %1의 새로운 기능 보기</translation>
     </message>
     <message>
@@ -1612,30 +1612,30 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Invalid release metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>잘못된 릴리스 메타데이터</translation>
     </message>
     <message>
         <source>The release has no valid SHA-256 checksum or file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>이 릴리스에는 유효한 SHA-256 체크섬 또는 파일 크기가 없습니다.</translation>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation type="unfinished"></translation>
+        <translation>업데이트 검증에 실패했습니다. 설치자는 폐기되었습니다.</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>다운로드 용량이 예상보다 커졌거나 저장할 수 없습니다.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>취소된 항목 다운로드</translation>
     </message>
 </context>
 <context>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>설정을 저장할 수 없습니다. 사용자 프로필에 대한 접근 권한을 확인하세요.</translation>
     </message>
 </context>
 </TS>
