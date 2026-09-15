@@ -390,23 +390,23 @@
     </message>
     <message>
         <source>Remember application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapamiętuj poziomy głośności aplikacji</translation>
     </message>
     <message>
         <source>Restore each application&apos;s last volume when it starts</source>
-        <translation type="unfinished"></translation>
+        <translation>Przywracaj ostatni poziom głośności każdej aplikacji po jej uruchomieniu</translation>
     </message>
     <message>
         <source>Clear remembered application volumes</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść zapamiętane poziomy głośności aplikacji</translation>
     </message>
     <message>
         <source>Forget all saved per-application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń wszystkie zapisane poziomy głośności poszczególnych aplikacji</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Wyczyść</translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
         <source>Monitor battery using HeadsetControl for supported devices</source>

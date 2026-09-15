@@ -402,23 +402,23 @@
     </message>
     <message>
         <source>Remember application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Recordar los niveles de volumen de las aplicaciones</translation>
     </message>
     <message>
         <source>Restore each application&apos;s last volume when it starts</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurar el último volumen de cada aplicación al iniciarla</translation>
     </message>
     <message>
         <source>Clear remembered application volumes</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpiar los volúmenes recordados de las aplicaciones</translation>
     </message>
     <message>
         <source>Forget all saved per-application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Olvidar todos los niveles de volumen guardados por aplicación</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Limpiar</translation>
+        <translation>Limpiar</translation>
     </message>
     <message>
         <source>Show brightness control in panel</source>
