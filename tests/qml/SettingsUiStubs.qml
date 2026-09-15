@@ -16,8 +16,10 @@ QtObject {
     property int applyCount: 0
     property int restoreCount: 0
     property int appliedVolume: -1
+    property int clearRememberedVolumesCount: 0
     function applyChatMixToApplications(value) { applyCount++; appliedVolume = value }
     function restoreOriginalVolumes() { restoreCount++ }
+    function clearRememberedApplicationVolumes() { clearRememberedVolumesCount++; return true }
     function getShortcutState() { return false }
     function setStartupShortcut(value) {}
     function setStyle(value) {}

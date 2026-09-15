@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QSet>
 #include <QTimer>
 #include "audiomanager.h"
 #include "audiomodels.h"
@@ -78,6 +79,8 @@ public:
     Q_INVOKABLE ExecutableSessionModel* getSessionsForExecutable(const QString& executableName);
     Q_INVOKABLE void setExecutableVolume(const QString& executableName, int volume);
     Q_INVOKABLE void setExecutableMute(const QString& executableName, bool muted);
+    Q_INVOKABLE int rememberedApplicationVolume(const QString& executableName) const;
+    Q_INVOKABLE bool clearRememberedApplicationVolumes();
 
     // ChatMix methods
     Q_INVOKABLE void applyChatMixToApplications(int value);
@@ -159,7 +162,7 @@ private slots:
     void onOutputMuteChanged(bool muted);
     void onInputMuteChanged(bool muted);
     void onApplicationsChanged(const QList<AudioApplication>& applications);
-    void onApplicationVolumeChanged(const QString& appId, int volume);
+    void onApplicationVolumeChanged(const QString& appId, int volume, bool policyGenerated);
     void onApplicationMuteChanged(const QString& appId, bool muted);
     void onDevicesChanged(const QList<AudioDevice>& devices);
     void onDeviceAdded(const AudioDevice& device);
@@ -205,6 +208,22 @@ private:
     void updateGroupedApplications();
 
     void queueVolumeRestoration();
+    void setApplicationVolumeFromPolicy(const QString& appId, int volume);
+    static QString normalizedExecutableName(const QString& executableName);
+    QString getApplicationVolumesFilePath() const;
+    void loadRememberedApplicationVolumes();
+    bool saveRememberedApplicationVolumes(const QMap<QString, int>& entries);
+    void scheduleRememberedApplicationVolumesSave();
+    void flushRememberedApplicationVolumes();
+    void rememberApplicationVolume(const QString& executableName, int volume);
+    void rememberCurrentApplicationVolumes(bool onlyMissing = false);
+    void applyRememberedApplicationVolumes(const QList<AudioApplication>& applications,
+                                           const QSet<QString>& previousSessionIds);
+
+    QMap<QString, int> m_rememberedApplicationVolumes;
+    QTimer m_rememberedApplicationVolumesSaveTimer;
+    bool m_rememberedApplicationVolumesDirty = false;
+    bool m_chatMixApplied = false;
 
     int m_outputAudioLevel = 0;
     int m_inputAudioLevel = 0;

@@ -401,6 +401,26 @@
         <translation>Mostrar el mezclador de volumen por aplicación en el panel</translation>
     </message>
     <message>
+        <source>Remember application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore each application&apos;s last volume when it starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear remembered application volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forget all saved per-application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Limpiar</translation>
+    </message>
+    <message>
         <source>Show brightness control in panel</source>
         <translation>Mostrar el control de brillo en el panel</translation>
     </message>

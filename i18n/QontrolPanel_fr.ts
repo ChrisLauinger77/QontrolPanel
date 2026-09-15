@@ -373,6 +373,26 @@
         <translation>Activer le mélangeur de volume de l&apos;application</translation>
     </message>
     <message>
+        <source>Remember application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore each application&apos;s last volume when it starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear remembered application volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forget all saved per-application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Effacer</translation>
+    </message>
+    <message>
         <source>Enable HeadsetControl integration</source>
         <translatorcomment>ne pas traduire &quot;HeadsetControl&quot;</translatorcomment>
         <translation>Activer l&apos;intégration HeadsetControl</translation>

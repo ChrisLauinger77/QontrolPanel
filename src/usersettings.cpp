@@ -64,6 +64,7 @@ void UserSettings::initProperties()
 
     m_enableDeviceManager = settings.value("enableDeviceManager", true).toBool();
     m_enableApplicationMixer = settings.value("enableApplicationMixer", true).toBool();
+    m_rememberApplicationVolumes = settings.value("rememberApplicationVolumes", false).toBool();
     m_enableMediaSessionManager = settings.value("enableMediaSessionManager", true).toBool();
     m_panelPosition = qBound(0, settings.value("panelPosition", 1).toInt(), 3);
     m_taskbarOffset = qBound(0, settings.value("taskbarOffset", 0).toInt(), 200);
@@ -149,6 +150,16 @@ void UserSettings::setEnableApplicationMixer(bool value)
             return;
         m_enableApplicationMixer = value;
         emit enableApplicationMixerChanged();
+    }
+}
+
+void UserSettings::setRememberApplicationVolumes(bool value)
+{
+    if (m_rememberApplicationVolumes != value) {
+        if (!saveValue("rememberApplicationVolumes", value))
+            return;
+        m_rememberApplicationVolumes = value;
+        emit rememberApplicationVolumesChanged();
     }
 }
 

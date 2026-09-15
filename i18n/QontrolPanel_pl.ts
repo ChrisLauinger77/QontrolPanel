@@ -389,6 +389,26 @@
         <translation>Wyświetl mikser głośności aplikacji w panelu</translation>
     </message>
     <message>
+        <source>Remember application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore each application&apos;s last volume when it starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear remembered application volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forget all saved per-application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Wyczyść</translation>
+    </message>
+    <message>
         <source>Monitor battery using HeadsetControl for supported devices</source>
         <translation>Monitoruj baterię używając Zestawu Słuchawkowego dla obsługiwanych urządzeń</translation>
     </message>

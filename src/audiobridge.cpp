@@ -69,6 +69,11 @@ AudioBridge::AudioBridge(QObject *parent)
     connect(KeyboardShortcutManager::instance(), &KeyboardShortcutManager::appVolumeHotkeyPressed,
             this, &AudioBridge::onAppVolumeHotkeyPressed);
 
+    m_rememberedApplicationVolumesSaveTimer.setSingleShot(true);
+    m_rememberedApplicationVolumesSaveTimer.setInterval(300);
+    connect(&m_rememberedApplicationVolumesSaveTimer, &QTimer::timeout,
+            this, &AudioBridge::flushRememberedApplicationVolumes);
+
     auto syncAudioComponents = [this] {
         auto* settings = UserSettings::instance();
         if (settings->enableDeviceManager() || settings->enableApplicationMixer())
@@ -78,6 +83,10 @@ AudioBridge::AudioBridge(QObject *parent)
     };
     connect(UserSettings::instance(), &UserSettings::enableDeviceManagerChanged, this, syncAudioComponents);
     connect(UserSettings::instance(), &UserSettings::enableApplicationMixerChanged, this, syncAudioComponents);
+    connect(UserSettings::instance(), &UserSettings::rememberApplicationVolumesChanged, this, [this] {
+        if (UserSettings::instance()->rememberApplicationVolumes() && !m_chatMixApplied)
+            rememberCurrentApplicationVolumes();
+    });
 
     loadCommAppsFromFile();
     loadAppRenamesFromFile();
@@ -85,6 +94,7 @@ AudioBridge::AudioBridge(QObject *parent)
     loadAppLocksFromFile();
     loadDeviceRenamesFromFile();
     loadDeviceIconsFromFile();
+    loadRememberedApplicationVolumes();
 
     bool enableDeviceManager = UserSettings::instance()->enableDeviceManager();
     bool enableApplicationMixer = UserSettings::instance()->enableApplicationMixer();
@@ -97,6 +107,7 @@ AudioBridge::AudioBridge(QObject *parent)
 }
 
 AudioBridge::~AudioBridge() {
+    flushRememberedApplicationVolumes();
     m_instance = nullptr;
     for (auto it = m_originalMuteStates.cbegin(); it != m_originalMuteStates.cend(); ++it)
         AudioManager::instance()->setApplicationMuteAsync(it.key(), it.value());
@@ -376,6 +387,11 @@ void AudioBridge::setApplicationVolume(const QString& appId, int volume)
     AudioManager::instance()->setApplicationVolumeAsync(appId, volume);
 }
 
+void AudioBridge::setApplicationVolumeFromPolicy(const QString& appId, int volume)
+{
+    AudioManager::instance()->setApplicationVolumeAsync(appId, volume, true);
+}
+
 void AudioBridge::setApplicationMute(const QString& appId, bool mute)
 {
     AudioManager::instance()->setApplicationMuteAsync(appId, mute);
@@ -416,6 +432,10 @@ void AudioBridge::setInputDevice(int deviceIndex)
 
 void AudioBridge::applyChatMixToApplications(int value)
 {
+    if (!m_chatMixApplied && UserSettings::instance()->rememberApplicationVolumes())
+        rememberCurrentApplicationVolumes(true);
+    m_chatMixApplied = true;
+
     for (int i = 0; i < m_applicationModel->rowCount(); ++i) {
         QModelIndex index = m_applicationModel->index(i, 0);
         QString appId = m_applicationModel->data(index, ApplicationModel::IdRole).toString();
@@ -433,13 +453,15 @@ void AudioBridge::applyChatMixToApplications(int value)
         }
 
         int targetVolume = isCommApp(appName) ? 100 : value;
-        setApplicationVolume(appId, targetVolume);
+        setApplicationVolumeFromPolicy(appId, targetVolume);
     }
 }
 
 void AudioBridge::restoreOriginalVolumes()
 {
     int restoreVolume = UserSettings::instance()->chatmixRestoreVolume();
+    const bool rememberVolumes = UserSettings::instance()->rememberApplicationVolumes();
+    m_chatMixApplied = false;
 
     if (!m_isReady) {
         return;
@@ -461,7 +483,9 @@ void AudioBridge::restoreOriginalVolumes()
             continue;
         }
 
-        setApplicationVolume(appId, restoreVolume);
+        const QString executableName = m_applicationModel->data(index, ApplicationModel::ExecutableNameRole).toString();
+        const int rememberedVolume = rememberVolumes ? rememberedApplicationVolume(executableName) : -1;
+        setApplicationVolumeFromPolicy(appId, rememberedVolume >= 0 ? rememberedVolume : restoreVolume);
     }
 }
 
@@ -473,6 +497,133 @@ void AudioBridge::applyChatMixIfEnabled()
     if (activateChatMix && chatMixEnabled) {
         applyChatMixToApplications(UserSettings::instance()->chatMixValue());
     }
+}
+
+QString AudioBridge::normalizedExecutableName(const QString& executableName)
+{
+    return executableName.trimmed().toCaseFolded();
+}
+
+QString AudioBridge::getApplicationVolumesFilePath() const
+{
+    const QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(appDataPath);
+    return appDataPath + "/applicationvolumes.json";
+}
+
+void AudioBridge::loadRememberedApplicationVolumes()
+{
+    const QJsonDocument document = JsonStore::load(getApplicationVolumesFilePath(), "applicationVolumes");
+    if (document.isNull())
+        return;
+
+    m_rememberedApplicationVolumes.clear();
+    const QJsonArray entries = document.object().value("applicationVolumes").toArray();
+    for (const auto& value : entries) {
+        const QJsonObject entry = value.toObject();
+        const QString executableName = normalizedExecutableName(entry.value("executableName").toString());
+        if (!executableName.isEmpty())
+            m_rememberedApplicationVolumes[executableName] = entry.value("volume").toInt();
+    }
+}
+
+bool AudioBridge::saveRememberedApplicationVolumes(const QMap<QString, int>& entries)
+{
+    QJsonArray volumes;
+    for (auto it = entries.cbegin(); it != entries.cend(); ++it) {
+        volumes.append(QJsonObject{{"executableName", it.key()}, {"volume", it.value()}});
+    }
+    return savePolicyFile(getApplicationVolumesFilePath(),
+                          QJsonDocument(QJsonObject{{"applicationVolumes", volumes}}));
+}
+
+void AudioBridge::scheduleRememberedApplicationVolumesSave()
+{
+    m_rememberedApplicationVolumesDirty = true;
+    m_rememberedApplicationVolumesSaveTimer.start();
+}
+
+void AudioBridge::flushRememberedApplicationVolumes()
+{
+    if (!m_rememberedApplicationVolumesDirty)
+        return;
+    m_rememberedApplicationVolumesSaveTimer.stop();
+    if (saveRememberedApplicationVolumes(m_rememberedApplicationVolumes))
+        m_rememberedApplicationVolumesDirty = false;
+}
+
+void AudioBridge::rememberApplicationVolume(const QString& executableName, int volume)
+{
+    const QString key = normalizedExecutableName(executableName);
+    if (key.isEmpty())
+        return;
+    volume = qBound(0, volume, 100);
+    if (m_rememberedApplicationVolumes.value(key, -1) == volume) {
+        if (m_rememberedApplicationVolumesDirty && !m_rememberedApplicationVolumesSaveTimer.isActive())
+            m_rememberedApplicationVolumesSaveTimer.start();
+        return;
+    }
+    m_rememberedApplicationVolumes[key] = volume;
+    scheduleRememberedApplicationVolumesSave();
+}
+
+void AudioBridge::rememberCurrentApplicationVolumes(bool onlyMissing)
+{
+    QMap<QString, int> volumeSums;
+    QMap<QString, int> sessionCounts;
+    for (int i = 0; i < m_applicationModel->rowCount(); ++i) {
+        const QModelIndex index = m_applicationModel->index(i, 0);
+        if (m_applicationModel->data(index, ApplicationModel::IsSystemSoundsRole).toBool())
+            continue;
+        const QString key = normalizedExecutableName(
+            m_applicationModel->data(index, ApplicationModel::ExecutableNameRole).toString());
+        if (key.isEmpty())
+            continue;
+        volumeSums[key] += m_applicationModel->data(index, ApplicationModel::VolumeRole).toInt();
+        ++sessionCounts[key];
+    }
+    for (auto it = volumeSums.cbegin(); it != volumeSums.cend(); ++it) {
+        if (!onlyMissing || rememberedApplicationVolume(it.key()) < 0)
+            rememberApplicationVolume(it.key(), it.value() / sessionCounts.value(it.key()));
+    }
+}
+
+void AudioBridge::applyRememberedApplicationVolumes(const QList<AudioApplication>& applications,
+                                                    const QSet<QString>& previousSessionIds)
+{
+    if (!UserSettings::instance()->rememberApplicationVolumes())
+        return;
+
+    const bool chatMixActive = UserSettings::instance()->activateChatmix()
+        && UserSettings::instance()->chatMixEnabled();
+    for (const auto& application : applications) {
+        if (application.isSystemSounds || previousSessionIds.contains(application.id))
+            continue;
+        const int rememberedVolume = rememberedApplicationVolume(application.executableName);
+        if (chatMixActive) {
+            if (rememberedVolume < 0)
+                rememberApplicationVolume(application.executableName, application.volume);
+            continue;
+        }
+        if (rememberedVolume >= 0 && rememberedVolume != application.volume)
+            setApplicationVolumeFromPolicy(application.id, rememberedVolume);
+    }
+}
+
+int AudioBridge::rememberedApplicationVolume(const QString& executableName) const
+{
+    return m_rememberedApplicationVolumes.value(normalizedExecutableName(executableName), -1);
+}
+
+bool AudioBridge::clearRememberedApplicationVolumes()
+{
+    const QMap<QString, int> empty;
+    if (!saveRememberedApplicationVolumes(empty))
+        return false;
+    m_rememberedApplicationVolumesSaveTimer.stop();
+    m_rememberedApplicationVolumesDirty = false;
+    m_rememberedApplicationVolumes.clear();
+    return true;
 }
 
 bool AudioBridge::isCommApp(const QString& name) const
@@ -610,10 +761,22 @@ void AudioBridge::onInputMuteChanged(bool muted)
     }
 }
 
-void AudioBridge::onApplicationVolumeChanged(const QString& appId, int volume)
+void AudioBridge::onApplicationVolumeChanged(const QString& appId, int volume, bool policyGenerated)
 {
+    QString executableName;
+    bool isSystemSounds = false;
+    for (int i = 0; i < m_applicationModel->rowCount(); ++i) {
+        const QModelIndex index = m_applicationModel->index(i, 0);
+        if (m_applicationModel->data(index, ApplicationModel::IdRole).toString() == appId) {
+            executableName = m_applicationModel->data(index, ApplicationModel::ExecutableNameRole).toString();
+            isSystemSounds = m_applicationModel->data(index, ApplicationModel::IsSystemSoundsRole).toBool();
+            break;
+        }
+    }
     m_applicationModel->updateApplicationVolume(appId, volume);
     updateGroupForApplication(appId); // Use targeted update instead of full rebuild
+    if (!policyGenerated && !isSystemSounds && UserSettings::instance()->rememberApplicationVolumes())
+        rememberApplicationVolume(executableName, volume);
 }
 
 void AudioBridge::onApplicationMuteChanged(const QString& appId, bool muted)
@@ -624,6 +787,10 @@ void AudioBridge::onApplicationMuteChanged(const QString& appId, bool muted)
 
 void AudioBridge::onApplicationsChanged(const QList<AudioApplication>& applications)
 {
+    QSet<QString> previousSessionIds;
+    for (int i = 0; i < m_applicationModel->rowCount(); ++i)
+        previousSessionIds.insert(m_applicationModel->data(m_applicationModel->index(i, 0),
+                                                           ApplicationModel::IdRole).toString());
     QSet<QString> liveIds;
     for (const auto& app : applications)
         liveIds.insert(app.id);
@@ -649,6 +816,7 @@ void AudioBridge::onApplicationsChanged(const QList<AudioApplication>& applicati
     {
         onApplicationFocusChanged(executable, m_windowFocusManager->isFocused(executable));
     }
+    applyRememberedApplicationVolumes(applications, previousSessionIds);
     QTimer::singleShot(0, this, &AudioBridge::applyChatMixIfEnabled);
 }
 
@@ -700,6 +868,7 @@ void AudioBridge::onInitializationComplete()
     emit inputMutedChanged();
     emit isReadyChanged();
 
+    applyRememberedApplicationVolumes(apps, {});
     applyChatMixIfEnabled();
     updateDeviceDisplayNames();
 }
@@ -707,6 +876,7 @@ void AudioBridge::onInitializationComplete()
 void AudioBridge::queueVolumeRestoration()
 {
     int restoreVolume = UserSettings::instance()->chatmixRestoreVolume();
+    const bool rememberVolumes = UserSettings::instance()->rememberApplicationVolumes();
 
     if (!m_isReady) {
         return;
@@ -719,6 +889,7 @@ void AudioBridge::queueVolumeRestoration()
         QModelIndex index = m_applicationModel->index(i, 0);
         QString appId = m_applicationModel->data(index, ApplicationModel::IdRole).toString();
         QString appName = m_applicationModel->data(index, ApplicationModel::NameRole).toString();
+        QString executableName = m_applicationModel->data(index, ApplicationModel::ExecutableNameRole).toString();
         int streamIndex = m_applicationModel->data(index, ApplicationModel::StreamIndexRole).toInt();
         bool isSystemSounds = m_applicationModel->data(index, ApplicationModel::IsSystemSoundsRole).toBool();
 
@@ -731,8 +902,10 @@ void AudioBridge::queueVolumeRestoration()
             continue;
         }
 
+        const int rememberedVolume = rememberVolumes ? rememberedApplicationVolume(executableName) : -1;
         QMetaObject::invokeMethod(worker, "setApplicationVolume", Qt::QueuedConnection, Q_ARG(QString, appId),
-                                  Q_ARG(int, restoreVolume));
+                                  Q_ARG(int, rememberedVolume >= 0 ? rememberedVolume : restoreVolume),
+                                  Q_ARG(bool, true));
     }
 }
 
@@ -756,8 +929,10 @@ void AudioBridge::initialize()
 void AudioBridge::cleanup()
 {
     LOG_INFO("AudioManager", "AudioBridge cleanup requested");
+    flushRememberedApplicationVolumes();
     if (UserSettings::instance()->activateChatmix() && UserSettings::instance()->chatMixEnabled())
         queueVolumeRestoration();
+    m_chatMixApplied = false;
     for (auto it = m_originalMuteStates.cbegin(); it != m_originalMuteStates.cend(); ++it)
         AudioManager::instance()->setApplicationMuteAsync(it.key(), it.value());
     m_originalMuteStates.clear();
