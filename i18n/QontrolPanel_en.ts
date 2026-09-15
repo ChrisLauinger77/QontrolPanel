@@ -401,6 +401,26 @@
         <translation>Display application volume mixer in panel</translation>
     </message>
     <message>
+        <source>Remember application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore each application&apos;s last volume when it starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear remembered application volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forget all saved per-application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Clear</translation>
+    </message>
+    <message>
         <source>Show brightness control in panel</source>
         <translation>Show brightness control in panel</translation>
     </message>

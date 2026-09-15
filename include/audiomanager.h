@@ -64,13 +64,13 @@ public slots:
     void setInputVolume(int volume);
     void setOutputMute(bool mute);
     void setInputMute(bool mute);
-    void setApplicationVolume(const QString& appId, int volume);
+    void setApplicationVolume(const QString& appId, int volume, bool policyGenerated = false);
     void setApplicationMute(const QString& appId, bool mute);
     void setDefaultDevice(const QString& deviceId, bool isInput, bool forCommunications = false);
     void onVolumeChanged(AudioWorker::DataFlow dataFlow, float volume, bool muted);
     void onSessionCreated();
     void onSessionDisconnected();
-    void onApplicationSessionVolumeChanged(const QString& appId, float volume, bool muted);
+    void onApplicationSessionVolumeChanged(const QString& appId, float volume, bool muted, bool policyGenerated);
     void onDeviceAdded(const QString& deviceId);
     void onDeviceRemoved(const QString& deviceId);
     void onDefaultDeviceChanged(DataFlow dataFlow, const QString& deviceId);
@@ -87,7 +87,7 @@ signals:
     void outputMuteChanged(bool muted);
     void inputMuteChanged(bool muted);
     void applicationsChanged(const QList<AudioApplication>& applications);
-    void applicationVolumeChanged(const QString& appId, int volume);
+    void applicationVolumeChanged(const QString& appId, int volume, bool policyGenerated);
     void applicationMuteChanged(const QString& appId, bool muted);
     void devicesChanged(const QList<AudioDevice>& devices);
     void deviceAdded(const AudioDevice& device);
@@ -288,7 +288,7 @@ public:
     void setInputVolumeAsync(int volume);
     void setOutputMuteAsync(bool mute);
     void setInputMuteAsync(bool mute);
-    void setApplicationVolumeAsync(const QString& appId, int volume);
+    void setApplicationVolumeAsync(const QString& appId, int volume, bool policyGenerated = false);
     void setApplicationMuteAsync(const QString& appId, bool mute);
     void setDefaultDeviceAsync(const QString& deviceId, bool isInput, bool forCommunications = false);
 
@@ -314,7 +314,7 @@ signals:
     void outputMuteChanged(bool muted);
     void inputMuteChanged(bool muted);
     void applicationsChanged(const QList<AudioApplication>& applications);
-    void applicationVolumeChanged(const QString& appId, int volume);
+    void applicationVolumeChanged(const QString& appId, int volume, bool policyGenerated);
     void applicationMuteChanged(const QString& appId, bool muted);
     void devicesChanged(const QList<AudioDevice>& devices);
     void deviceAdded(const AudioDevice& device);

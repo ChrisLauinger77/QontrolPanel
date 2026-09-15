@@ -161,6 +161,7 @@ private slots:
         settings->setChatMixEnabled(true);
         settings->setChatMixValue(50);
         settings->setEnableMediaOverlay(true);
+        settings->setRememberApplicationVolumes(false);
     }
 
     void cleanup()
@@ -451,6 +452,8 @@ private slots:
         row("AppearancePane", "Panel X margin", "xAxisMargin", "value", "valueModified", 12, 20);
         row("AppearancePane", "Panel Y margin", "yAxisMargin", "value", "valueModified", 12, 20);
         row("AppearancePane", "Show audio level", "showAudioLevel", "checked", "clicked", true, false);
+        row("ComponentsPane", "Remember application volume levels", "rememberApplicationVolumes",
+            "checked", "clicked", false, true);
         row("AppearancePane", "Panel animations", "panelAnimationsEnabled", "checked", "clicked", true, false);
         row("AppearancePane", "Settings page animations", "settingsAnimationsEnabled", "checked", "clicked", true, false);
         row("GeneralPane", "Settings startup page", "settingsStartupPage", "currentIndex", "activated", 0, 2);
@@ -522,6 +525,20 @@ private slots:
         QTest::newRow("enable") << false << false;
         QTest::newRow("disable") << false << true;
         QTest::newRow("deactivate") << true << true;
+    }
+
+    void rememberedApplicationVolumesCanBeCleared()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setRememberApplicationVolumes(true);
+        QVERIFY(loadPane("ComponentsPane"));
+        auto* card = findObject(m_pane.get(), "title", "Clear remembered application volumes");
+        QVERIFY(card);
+        auto* button = findObject(card, "text", "Clear");
+        QVERIFY(button);
+        QCOMPARE(audio()->property("clearRememberedVolumesCount").toInt(), 0);
+        QVERIFY(QMetaObject::invokeMethod(button, "click"));
+        QCOMPARE(audio()->property("clearRememberedVolumesCount").toInt(), 1);
     }
 
     void rejectedOverlayPosition()

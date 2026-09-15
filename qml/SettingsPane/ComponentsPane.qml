@@ -12,6 +12,12 @@ ColumnLayout {
         font.bold: true
         Layout.bottomMargin: 15
     }
+    Label {
+        Layout.fillWidth: true
+        visible: UserSettings.lastError.length > 0 || AudioBridge.lastError.length > 0
+        text: UserSettings.lastError.length > 0 ? UserSettings.lastError : AudioBridge.lastError
+        wrapMode: Text.Wrap
+    }
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
@@ -48,6 +54,32 @@ ColumnLayout {
                             UserSettings.enableApplicationMixer = checked
                             checked = Qt.binding(function() { return UserSettings.enableApplicationMixer })
                         }
+                    }
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    title: qsTr("Remember application volume levels")
+                    description: qsTr("Restore each application's last volume when it starts")
+                    enabled: UserSettings.enableApplicationMixer
+                    additionalControl: LabeledSwitch {
+                        enabled: UserSettings.enableApplicationMixer
+                        checked: UserSettings.rememberApplicationVolumes
+                        onClicked: {
+                            UserSettings.rememberApplicationVolumes = checked
+                            checked = Qt.binding(function() { return UserSettings.rememberApplicationVolumes })
+                        }
+                    }
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    show: UserSettings.rememberApplicationVolumes
+                    title: qsTr("Clear remembered application volumes")
+                    description: qsTr("Forget all saved per-application volume levels")
+                    additionalControl: Button {
+                        text: qsTr("Clear")
+                        onClicked: AudioBridge.clearRememberedApplicationVolumes()
                     }
                 }
 

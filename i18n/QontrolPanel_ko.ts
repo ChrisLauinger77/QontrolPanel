@@ -401,6 +401,26 @@
         <translation>패널에 응용 프로그램 볼륨 믹서 표시</translation>
     </message>
     <message>
+        <source>Remember application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore each application&apos;s last volume when it starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear remembered application volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forget all saved per-application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">지우기</translation>
+    </message>
+    <message>
         <source>Show brightness control in panel</source>
         <translation>패널에 밝기 제어 표시</translation>
     </message>

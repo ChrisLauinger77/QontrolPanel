@@ -401,6 +401,26 @@
         <translation>Prikaži mešalnik glasnosti aplikacije v plošči</translation>
     </message>
     <message>
+        <source>Remember application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore each application&apos;s last volume when it starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear remembered application volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forget all saved per-application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Počisti</translation>
+    </message>
+    <message>
         <source>Show brightness control in panel</source>
         <translation>Prikaži nadzor svetlosti na plošči</translation>
     </message>

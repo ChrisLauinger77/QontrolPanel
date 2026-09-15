@@ -401,6 +401,26 @@
         <translation>在面板中显示应用程序混音器</translation>
     </message>
     <message>
+        <source>Remember application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore each application&apos;s last volume when it starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear remembered application volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forget all saved per-application volume levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">清除</translation>
+    </message>
+    <message>
         <source>Show brightness control in panel</source>
         <translation>在面板中显示亮度控制条</translation>
     </message>

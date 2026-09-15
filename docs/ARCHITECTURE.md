@@ -71,6 +71,8 @@ Audio runs in a COM MTA. Native callback targets are invalidated before callback
 
 `AudioBridge` still owns grouping and ChatMix policy, while `JsonStore` handles bounded, schema-checked reads and atomic JSON writes. Background mute keys are case-folded and only mute changes owned by this feature are restored.
 
+Optional application-volume memory is also owned by `AudioBridge`. It stores one case-folded volume rule per executable group and applies it only when a new Core Audio session appears. Policy-generated writes carry a dedicated Core Audio event context so temporary ChatMix and restoration changes update the UI without replacing the remembered normal volume.
+
 ### Media Sessions
 
 `MediaSessionManager` handles Windows media session monitoring and transport control. `MediaSessionBridge` exposes title, artist, art, playback state, source-reported transport capabilities, timeline state, and play/pause/next/previous/seek commands to QML. Timeline positions are normalized to the start of the current media item; seeking is limited to the source-reported seek range. Media monitoring is gated by user settings because it uses Windows media-session APIs and may not be needed by every user.

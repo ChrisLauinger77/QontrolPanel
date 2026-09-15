@@ -60,6 +60,11 @@ bool JsonStore::validate(const QJsonDocument& document, const QString& arrayKey)
             if (!text("name") || !text("icon", true))
                 return false;
         }
+        else if (arrayKey == "applicationVolumes")
+        {
+            if (!text("executableName") || !number("volume", 100))
+                return false;
+        }
         else
         {
             if (!text("originalName"))

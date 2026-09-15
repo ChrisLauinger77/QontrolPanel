@@ -19,6 +19,14 @@
 #include <winver.h>
 #include <Functiondiscoverykeys_devpkey.h>
 
+namespace
+{
+    // Tags volume writes that apply an internal policy, so their callbacks do not
+    // replace the user's remembered normal application volume.
+    constexpr GUID kApplicationVolumePolicyContext =
+        {0xa2f3071b, 0xd1bf, 0x45a8, {0xb7, 0x68, 0x6c, 0xd4, 0x7d, 0x3b, 0x4e, 0x91}};
+}
+
 AudioManager* AudioManager::m_instance = nullptr;
 QMutex AudioManager::m_mutex;
 
@@ -269,13 +277,15 @@ ULONG STDMETHODCALLTYPE SessionEventsClient::Release()
 
 HRESULT STDMETHODCALLTYPE SessionEventsClient::OnSimpleVolumeChanged(float NewVolume, BOOL NewMute, LPCGUID EventContext)
 {
+    const bool policyGenerated = EventContext && IsEqualGUID(*EventContext, kApplicationVolumePolicyContext);
     QMutexLocker guard(&m_callbackTarget->mutex);
     auto* m_worker = m_callbackTarget->worker;
     if (m_worker) {
         QMetaObject::invokeMethod(m_worker, "onApplicationSessionVolumeChanged", Qt::QueuedConnection,
                                                  Q_ARG(QString, m_appId),
                                                  Q_ARG(float, NewVolume),
-                                                 Q_ARG(bool, NewMute));
+                                                 Q_ARG(bool, NewMute),
+                                                 Q_ARG(bool, policyGenerated));
     }
     return S_OK;
 }
@@ -1483,7 +1493,8 @@ bool AudioWorker::ensureValidSessionManager()
     }
 }
 
-void AudioWorker::onApplicationSessionVolumeChanged(const QString& appId, float volume, bool muted)
+void AudioWorker::onApplicationSessionVolumeChanged(const QString& appId, float volume, bool muted,
+                                                    bool policyGenerated)
 {
     if (appId == "system_sounds") {
         m_requestedSystemSoundsMute = muted;
@@ -1502,7 +1513,7 @@ void AudioWorker::onApplicationSessionVolumeChanged(const QString& appId, float 
                 m_applications[i].isMuted = muted;
 
                 if (volumeChanged) {
-                    emit applicationVolumeChanged(appId, volumePercent);
+                    emit applicationVolumeChanged(appId, volumePercent, policyGenerated);
                 }
                 if (muteChanged) {
                     emit applicationMuteChanged(appId, muted);
@@ -1538,12 +1549,12 @@ void AudioWorker::setInputMute(bool mute)
     setMuteForDevice(eCapture, mute);
 }
 
-void AudioWorker::setApplicationVolume(const QString& appId, int volume)
+void AudioWorker::setApplicationVolume(const QString& appId, int volume, bool policyGenerated)
 {
     auto it = m_sessionVolumeControls.find(appId);
     if (it != m_sessionVolumeControls.end()) {
         float volumeScalar = static_cast<float>(volume) / 100.0f;
-        it.value()->SetMasterVolume(volumeScalar, nullptr);
+        it.value()->SetMasterVolume(volumeScalar, policyGenerated ? &kApplicationVolumePolicyContext : nullptr);
     }
 }
 
@@ -1753,9 +1764,9 @@ void AudioManager::initialize()
 
     connect(
         m_worker, &AudioWorker::applicationVolumeChanged, this,
-        [this, generation](const QString& id, int value) {
+        [this, generation](const QString& id, int value, bool policyGenerated) {
             if (generation == m_generation)
-                emit applicationVolumeChanged(id, value);
+                emit applicationVolumeChanged(id, value, policyGenerated);
         },
         Qt::QueuedConnection);
     connect(
@@ -1975,11 +1986,11 @@ void AudioManager::setInputMuteAsync(bool mute)
     }
 }
 
-void AudioManager::setApplicationVolumeAsync(const QString& appId, int volume)
+void AudioManager::setApplicationVolumeAsync(const QString& appId, int volume, bool policyGenerated)
 {
     if (m_worker) {
         QMetaObject::invokeMethod(m_worker, "setApplicationVolume", Qt::QueuedConnection,
-                                  Q_ARG(QString, appId), Q_ARG(int, volume));
+                                  Q_ARG(QString, appId), Q_ARG(int, volume), Q_ARG(bool, policyGenerated));
     }
 }
 

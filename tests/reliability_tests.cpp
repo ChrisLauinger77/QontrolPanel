@@ -125,6 +125,7 @@ private slots:
         settings->setMicMuteShortcutModifiers(modifiers);
         settings->setGlobalShortcutsEnabled(true);
         settings->setLanguageIndex(0);
+        settings->setRememberApplicationVolumes(false);
         QCOMPARE(failed.size(), 0);
     }
     void cleanup()
@@ -256,6 +257,71 @@ private slots:
         QVERIFY(QDir().rmdir(path));
         QVERIFY(m_audio->addCommApp("Player"));
         QVERIFY(m_audio->isCommApp("Player"));
+    }
+    void rememberedApplicationVolumesPersistAndIgnorePolicyWrites()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setRememberApplicationVolumes(true);
+        m_audio.reset(AudioBridge::instance());
+        AudioApplication player;
+        player.id = "player-session";
+        player.name = "Player";
+        player.executableName = "Player";
+        player.volume = 30;
+        AudioApplication systemSounds;
+        systemSounds.id = "system_sounds";
+        systemSounds.name = "System sounds";
+        systemSounds.executableName = "System sounds";
+        systemSounds.volume = 80;
+        systemSounds.isSystemSounds = true;
+        AudioManager::instance()->applicationsChanged({player, systemSounds});
+
+        AudioManager::instance()->applicationVolumeChanged(player.id, 42, false);
+        AudioManager::instance()->applicationVolumeChanged(systemSounds.id, 15, false);
+        const QString path = m_shortcutDataDirectory + "/applicationvolumes.json";
+        QTRY_VERIFY(!JsonStore::load(path, "applicationVolumes").isNull());
+        QCOMPARE(m_audio->rememberedApplicationVolume("PLAYER"), 42);
+        QCOMPARE(m_audio->rememberedApplicationVolume("System sounds"), -1);
+
+        AudioManager::instance()->applicationVolumeChanged(player.id, 10, true);
+        m_audio->applyChatMixToApplications(50);
+        QTest::qWait(350);
+        QCOMPARE(m_audio->rememberedApplicationVolume("player"), 42);
+        const QJsonDocument saved = JsonStore::load(path, "applicationVolumes");
+        const QJsonArray entries = saved.object().value("applicationVolumes").toArray();
+        QCOMPARE(entries.size(), 1);
+        QCOMPARE(entries.first().toObject().value("executableName").toString(), QString("player"));
+        QCOMPARE(entries.first().toObject().value("volume").toInt(), 42);
+
+        m_audio.reset();
+        m_audio.reset(AudioBridge::instance());
+        QCOMPARE(m_audio->rememberedApplicationVolume("Player"), 42);
+        QVERIFY(m_audio->clearRememberedApplicationVolumes());
+        QCOMPARE(m_audio->rememberedApplicationVolume("Player"), -1);
+        QCOMPARE(JsonStore::load(path, "applicationVolumes").object()
+                     .value("applicationVolumes").toArray().size(), 0);
+    }
+    void rememberedApplicationVolumesClearRequiresDurableSave()
+    {
+        const QString path = m_shortcutDataDirectory + "/applicationvolumes.json";
+        const QJsonDocument saved(QJsonObject{{"applicationVolumes", QJsonArray{
+            QJsonObject{{"executableName", "player"}, {"volume", 37}}}}});
+        QVERIFY(JsonStore::save(path, saved));
+        m_audio.reset(AudioBridge::instance());
+        QCOMPARE(m_audio->rememberedApplicationVolume("Player"), 37);
+        QSignalSpy failed(m_audio.get(), &AudioBridge::saveFailed);
+        {
+            const HANDLE lock = CreateFileW(reinterpret_cast<LPCWSTR>(path.utf16()), GENERIC_READ,
+                                            FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+            QVERIFY(lock != INVALID_HANDLE_VALUE);
+            const auto unlock = qScopeGuard([&] { CloseHandle(lock); });
+            QVERIFY(!m_audio->clearRememberedApplicationVolumes());
+            QCOMPARE(m_audio->rememberedApplicationVolume("Player"), 37);
+            QCOMPARE(JsonStore::load(path, "applicationVolumes"), saved);
+            QCOMPARE(failed.size(), 1);
+        }
+        QVERIFY(m_audio->clearRememberedApplicationVolumes());
+        QCOMPARE(m_audio->rememberedApplicationVolume("Player"), -1);
     }
 #endif
 #ifdef QONTROLPANEL_LANGUAGE_TESTS
@@ -559,6 +625,10 @@ private slots:
         QVERIFY(!JsonStore::validate(QJsonDocument(QJsonObject{{"commApps", "wrong"}}), "commApps"));
         QVERIFY(!JsonStore::validate(QJsonDocument(QJsonObject{{"backgroundMutedApps", QJsonArray{17}}}),
                                      "backgroundMutedApps"));
+        QVERIFY(!JsonStore::validate(QJsonDocument(QJsonObject{{"applicationVolumes", QJsonArray{
+            QJsonObject{{"executableName", "Player"}, {"volume", 101}}}}}), "applicationVolumes"));
+        QVERIFY(!JsonStore::validate(QJsonDocument(QJsonObject{{"applicationVolumes", QJsonArray{
+            QJsonObject{{"executableName", ""}, {"volume", 50}}}}}), "applicationVolumes"));
     }
     void expiredUpdateStagingIsRemoved()
     {

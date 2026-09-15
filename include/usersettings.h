@@ -13,6 +13,7 @@ class UserSettings : public QObject
 
     Q_PROPERTY(bool enableDeviceManager READ enableDeviceManager WRITE setEnableDeviceManager NOTIFY enableDeviceManagerChanged)
     Q_PROPERTY(bool enableApplicationMixer READ enableApplicationMixer WRITE setEnableApplicationMixer NOTIFY enableApplicationMixerChanged)
+    Q_PROPERTY(bool rememberApplicationVolumes READ rememberApplicationVolumes WRITE setRememberApplicationVolumes NOTIFY rememberApplicationVolumesChanged)
     Q_PROPERTY(bool enableMediaSessionManager READ enableMediaSessionManager WRITE setEnableMediaSessionManager NOTIFY enableMediaSessionManagerChanged)
     Q_PROPERTY(int panelPosition READ panelPosition WRITE setPanelPosition NOTIFY panelPositionChanged)
     Q_PROPERTY(int taskbarOffset READ taskbarOffset WRITE setTaskbarOffset NOTIFY taskbarOffsetChanged)
@@ -80,6 +81,7 @@ public:
     // Getters
     bool enableDeviceManager() const { return m_enableDeviceManager; }
     bool enableApplicationMixer() const { return m_enableApplicationMixer; }
+    bool rememberApplicationVolumes() const { return m_rememberApplicationVolumes; }
     bool enableMediaSessionManager() const { return m_enableMediaSessionManager; }
     int panelPosition() const { return m_panelPosition; }
     int taskbarOffset() const { return m_taskbarOffset; }
@@ -142,6 +144,7 @@ public:
     // Setters
     void setEnableDeviceManager(bool value);
     void setEnableApplicationMixer(bool value);
+    void setRememberApplicationVolumes(bool value);
     void setEnableMediaSessionManager(bool value);
     void setPanelPosition(int value);
     void setTaskbarOffset(int value);
@@ -206,6 +209,7 @@ signals:
     void saveFailed(const QString& error);
     void enableDeviceManagerChanged();
     void enableApplicationMixerChanged();
+    void rememberApplicationVolumesChanged();
     void enableMediaSessionManagerChanged();
     void panelPositionChanged();
     void taskbarOffsetChanged();
@@ -275,6 +279,7 @@ private:
 
     bool m_enableDeviceManager;
     bool m_enableApplicationMixer;
+    bool m_rememberApplicationVolumes;
     bool m_enableMediaSessionManager;
     int m_panelPosition;
     int m_taskbarOffset;
