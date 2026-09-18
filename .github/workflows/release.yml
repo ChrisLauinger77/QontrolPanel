@@ -101,7 +101,7 @@ jobs:
     needs: release
     permissions:
       contents: read
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Publish to WinGet
         uses: vedantmgoyal9/winget-releaser@v2
