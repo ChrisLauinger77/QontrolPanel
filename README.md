@@ -1,6 +1,6 @@
 # QontrolPanel
 
-[![Github Latest Releases](https://img.shields.io/github/downloads/ChrisLauinger77/QontrolPanel/latest/total)](<>)
+[![Desktop checks](https://github.com/ChrisLauinger77/QontrolPanel/actions/workflows/build.yml/badge.svg)](https://github.com/ChrisLauinger77/QontrolPanel/actions/workflows/build.yml)
 [![Version](https://img.shields.io/github/v/release/ChrisLauinger77/qontrolpanel)](<>)
 [![Github All Releases](https://img.shields.io/github/downloads/ChrisLauinger77/qontrolpanel/total.svg)](<>)
 [![license](https://img.shields.io/github/license/ChrisLauinger77/qontrolpanel)](<>)
