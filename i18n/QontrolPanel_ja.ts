@@ -116,11 +116,11 @@
     </message>
     <message>
         <source>Panel animations</source>
-        <translation type="unfinished"></translation>
+        <translation>パネルのアニメーション</translation>
     </message>
     <message>
         <source>Animate panel opening and closing</source>
-        <translation type="unfinished"></translation>
+        <translation>パネルの開閉時にアニメーションで表示します。</translation>
     </message>
     <message>
         <source>Settings page animations</source>
@@ -128,7 +128,7 @@
     </message>
     <message>
         <source>Animate transitions between settings pages</source>
-        <translation>設定ページの遷移アニメーションを設定します。</translation>
+        <translation>設定ページの遷移をアニメーションで表示します。</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
@@ -234,7 +234,7 @@
     <name>AudioBridge</name>
     <message>
         <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>オーディオの設定を保存できませんでした。ユーザー プロファイルへのアクセス権と利用可能なディスク容量を確認してください。</translation>
     </message>
 </context>
 <context>
@@ -402,23 +402,23 @@
     </message>
     <message>
         <source>Remember application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリの音量を記憶</translation>
     </message>
     <message>
         <source>Restore each application&apos;s last volume when it starts</source>
-        <translation type="unfinished"></translation>
+        <translation>各アプリの起動時に前回の音量を復元します。</translation>
     </message>
     <message>
         <source>Clear remembered application volumes</source>
-        <translation type="unfinished"></translation>
+        <translation>記憶したアプリの音量を消去</translation>
     </message>
     <message>
         <source>Forget all saved per-application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>保存されているアプリごとの音量レベルをすべて消去します。</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">消去</translation>
+        <translation>消去</translation>
     </message>
     <message>
         <source>Show brightness control in panel</source>
@@ -666,7 +666,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Support</source>
-        <translation>サポート</translation>
+        <translation>支援する</translation>
     </message>
     <message>
         <source>Maybe later</source>
@@ -823,7 +823,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Show power action confirmation</source>
-        <translation>電源アクションの確認を表示</translation>
+        <translation>電源操作の確認を表示</translation>
     </message>
 </context>
 <context>
@@ -987,7 +987,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>一部のヘッドセットの設定を適用できませんでした。更新して再試行してください。</translation>
     </message>
 </context>
 <context>
@@ -1013,11 +1013,11 @@ You can enable it in the Components tab.</source>
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリのショートカットを保存できませんでした。ユーザー プロファイルへのアクセス権と、利用可能なディスク容量を確認してください。</translation>
     </message>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows のショートカットを登録できませんでした (エラー %1)。可能な場合は、以前のバインドが保持されています。</translation>
     </message>
 </context>
 <context>
@@ -1157,15 +1157,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation type="unfinished"></translation>
+        <translation>電源の操作に失敗しました</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation type="unfinished"></translation>
+        <translation>ショートカットの登録に失敗しました</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation type="unfinished"></translation>
+        <translation>設定を保存できませんでした</translation>
     </message>
 </context>
 <context>
@@ -1261,7 +1261,7 @@ You can enable it in the Components tab.</source>
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows の電源操作を完了できませんでした (エラー %1)。</translation>
     </message>
 </context>
 <context>
@@ -1631,30 +1631,30 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Invalid release metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>無効なリリース メタデータ</translation>
     </message>
     <message>
         <source>The release has no valid SHA-256 checksum or file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>このリリースには、有効な SHA-256 チェックサムやファイル サイズが含まれていません。</translation>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation type="unfinished"></translation>
+        <translation>更新の検証に失敗しました。インストーラーが破棄されました。</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロードが予想されるサイズを超過したか、保存できませんでした。</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロードをキャンセルしました</translation>
     </message>
 </context>
 <context>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>設定を保存できませんでした。ユーザー プロファイルへのアクセス権を確認してください。</translation>
     </message>
 </context>
 </TS>
