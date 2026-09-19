@@ -779,7 +779,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation>システム トレイ メニューから電源の操作を行うときに確認ダイアログを表示します。</translation>
+        <translation>システム トレイ メニューから電源操作を行うときに確認ダイアログを表示します。</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
@@ -1157,7 +1157,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation>電源の操作に失敗しました</translation>
+        <translation>電源操作に失敗しました</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
