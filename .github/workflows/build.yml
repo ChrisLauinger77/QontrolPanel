@@ -8,6 +8,8 @@ on:
       - "**/*.md"
       - "i18n_compiled/**"
       - ".assets/**"
+      - "site/**"
+      - ".github/workflows/pages.yml"
       - "renovate.json"
 
   pull_request:
@@ -18,6 +20,8 @@ on:
       - "**/*.md"
       - "i18n_compiled/**"
       - ".assets/**"
+      - "site/**"
+      - ".github/workflows/pages.yml"
       - "renovate.json"
 
   workflow_dispatch:
