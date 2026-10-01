@@ -1,8 +1,8 @@
 #include <QtTest>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QGuiApplication>
-#include <QLibraryInfo>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -27,13 +27,15 @@ QUrl sourceUrl(const QString& path)
 std::unique_ptr<QQmlEngine> createEngine()
 {
     auto engine = std::make_unique<QQmlEngine>();
-    // App types are registered from source files and fixtures. The generated app
-    // qmldir refers to resources embedded only in QontrolPanel.exe.
-    engine->setImportPathList({
-        QStringLiteral("qrc:/qt-project.org/imports"),
-        QStringLiteral("qrc:/qt/qml"),
-        QLibraryInfo::path(QLibraryInfo::QmlImportsPath)
+    // Preserve Qt's runtime/environment paths, which can differ from QLibraryInfo
+    // when DLLs are copied beside the test executable. Exclude the app's generated
+    // module, whose resources are embedded only in QontrolPanel.exe.
+    auto importPaths = engine->importPathList();
+    importPaths.removeIf([](const QString& path) {
+        const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+        return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
     });
+    engine->setImportPathList(importPaths);
     return engine;
 }
 
@@ -199,7 +201,8 @@ private slots:
     {
         QTemporaryDir imports;
         QVERIFY(imports.isValid());
-        const auto modulePath = imports.filePath("ChrisLauinger77/QontrolPanel");
+        const auto appImports = imports.filePath("app");
+        const auto modulePath = appImports + "/ChrisLauinger77/QontrolPanel";
         QVERIFY(QDir().mkpath(modulePath));
         QFile qmldir(modulePath + "/qmldir");
         QVERIFY(qmldir.open(QIODevice::WriteOnly));
@@ -210,6 +213,23 @@ private slots:
         QCOMPARE(qmldir.write(contents), qint64(contents.size()));
         qmldir.close();
 
+        const auto runtimeImports = imports.filePath("runtime");
+        const auto runtimeModulePath = runtimeImports + "/RuntimeImportsFixture";
+        QVERIFY(QDir().mkpath(runtimeModulePath));
+        QFile runtimeQmldir(runtimeModulePath + "/qmldir");
+        QVERIFY(runtimeQmldir.open(QIODevice::WriteOnly));
+        const QByteArray runtimeContents =
+            "module RuntimeImportsFixture\n"
+            "singleton RuntimeImportProbe 1.0 RuntimeImportProbe.qml\n";
+        QCOMPARE(runtimeQmldir.write(runtimeContents), qint64(runtimeContents.size()));
+        runtimeQmldir.close();
+        QFile runtimeType(runtimeModulePath + "/RuntimeImportProbe.qml");
+        QVERIFY(runtimeType.open(QIODevice::WriteOnly));
+        const QByteArray runtimeSource =
+            "pragma Singleton\nimport QtQml\nQtObject { readonly property int value: 42 }\n";
+        QCOMPARE(runtimeType.write(runtimeSource), qint64(runtimeSource.size()));
+        runtimeType.close();
+
         const bool hadImportPath = qEnvironmentVariableIsSet("QML_IMPORT_PATH");
         const auto oldImportPath = qgetenv("QML_IMPORT_PATH");
         const auto restore = qScopeGuard([&] {
@@ -218,19 +238,25 @@ private slots:
             else
                 qunsetenv("QML_IMPORT_PATH");
         });
-        QVERIFY(qputenv("QML_IMPORT_PATH", QFile::encodeName(imports.path())));
+        QVERIFY(qputenv("QML_IMPORT_PATH", QFile::encodeName(
+            runtimeImports + QDir::listSeparator() + appImports)));
 
         auto engine = createEngine();
         QQmlComponent component(engine.get());
         component.setData(
             "import QtQuick\n"
             "import ChrisLauinger77.QontrolPanel\n"
-            "CustomScrollView { property string shortcut: Context.getShortcutText(Qt.ControlModifier, Qt.Key_A) }",
+            "import RuntimeImportsFixture\n"
+            "CustomScrollView {\n"
+            "    property string shortcut: Context.getShortcutText(Qt.ControlModifier, Qt.Key_A)\n"
+            "    property int runtimeValue: RuntimeImportProbe.value\n"
+            "}",
             QUrl());
         QVERIFY2(component.isReady(), qPrintable(component.errorString()));
         std::unique_ptr<QObject> control(component.create());
         QVERIFY2(control != nullptr, qPrintable(component.errorString()));
         QCOMPARE(control->property("shortcut").toString(), QStringLiteral("Ctrl + A"));
+        QCOMPARE(control->property("runtimeValue").toInt(), 42);
     }
 
     void shortcutCaptureWaitsForKey_data()
