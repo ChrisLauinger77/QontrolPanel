@@ -148,6 +148,32 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Install failed" }
           git diff --exit-code -- dependencies/headsetcontrol i18n
           if ($LASTEXITCODE -ne 0) { throw "Build changed dependency or translation sources" }
+      - name: Print test reports
+        if: ${{ always() }}
+        shell: pwsh
+        run: |
+          $reports = @(
+            "build/tests/qt_reliability.txt"
+            "build/tests/settings_ui.txt"
+            "build/Testing/Temporary/LastTest.log"
+          )
+          foreach ($report in $reports) {
+            if (Test-Path -LiteralPath $report -PathType Leaf) {
+              Write-Host "::group::$report"
+              Get-Content -LiteralPath $report
+              Write-Host "::endgroup::"
+            }
+          }
+      - name: Upload test reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: QontrolPanel_Test_Reports
+          path: |
+            build/tests/qt_reliability.txt
+            build/tests/settings_ui.txt
+            build/Testing/Temporary/*.log
+          if-no-files-found: ignore
       - name: Rename release folder
         shell: pwsh
         run: |
