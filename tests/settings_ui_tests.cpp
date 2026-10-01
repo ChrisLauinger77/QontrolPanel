@@ -1,5 +1,8 @@
 #include <QtTest>
+#include <QDir>
+#include <QFile>
 #include <QGuiApplication>
+#include <QLibraryInfo>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -19,6 +22,19 @@ constexpr auto Module = "ChrisLauinger77.QontrolPanel";
 QUrl sourceUrl(const QString& path)
 {
     return QUrl::fromLocalFile(QStringLiteral(QONTROLPANEL_SOURCE_DIR "/") + path);
+}
+
+std::unique_ptr<QQmlEngine> createEngine()
+{
+    auto engine = std::make_unique<QQmlEngine>();
+    // App types are registered from source files and fixtures. The generated app
+    // qmldir refers to resources embedded only in QontrolPanel.exe.
+    engine->setImportPathList({
+        QStringLiteral("qrc:/qt-project.org/imports"),
+        QStringLiteral("qrc:/qt/qml"),
+        QLibraryInfo::path(QLibraryInfo::QmlImportsPath)
+    });
+    return engine;
 }
 
 QObject* findObject(QObject* root, const char* property, const QVariant& value)
@@ -80,7 +96,7 @@ class SettingsUiTests : public QObject
     {
         m_window = std::make_unique<QQuickWindow>();
         m_window->resize(1100, 1000);
-        m_engine = std::make_unique<QQmlEngine>();
+        m_engine = createEngine();
         QQmlComponent component(m_engine.get(), sourceUrl("qml/SettingsPane/" + name + ".qml"));
         if (component.isError())
             qWarning().noquote() << component.errorString();
@@ -98,7 +114,7 @@ class SettingsUiTests : public QObject
     {
         m_window = std::make_unique<QQuickWindow>();
         m_window->resize(360, 220);
-        m_engine = std::make_unique<QQmlEngine>();
+        m_engine = createEngine();
         QQmlComponent component(m_engine.get(), sourceUrl("qml/MediaFlyoutContent.qml"));
         if (component.isError())
             qWarning().noquote() << component.errorString();
@@ -177,6 +193,44 @@ private slots:
         settings->setIconStyle(4);
         QCOMPARE(settings->iconStyle(), 4);
         settings->setIconStyle(3);
+    }
+
+    void qmlFixturesIgnoreApplicationModule()
+    {
+        QTemporaryDir imports;
+        QVERIFY(imports.isValid());
+        const auto modulePath = imports.filePath("ChrisLauinger77/QontrolPanel");
+        QVERIFY(QDir().mkpath(modulePath));
+        QFile qmldir(modulePath + "/qmldir");
+        QVERIFY(qmldir.open(QIODevice::WriteOnly));
+        const QByteArray contents =
+            "module ChrisLauinger77.QontrolPanel\n"
+            "prefer :/qt/qml/ChrisLauinger77/QontrolPanel/\n"
+            "singleton LogBridge 1.0 qml/Singletons/LogBridge.qml\n";
+        QCOMPARE(qmldir.write(contents), qint64(contents.size()));
+        qmldir.close();
+
+        const bool hadImportPath = qEnvironmentVariableIsSet("QML_IMPORT_PATH");
+        const auto oldImportPath = qgetenv("QML_IMPORT_PATH");
+        const auto restore = qScopeGuard([&] {
+            if (hadImportPath)
+                qputenv("QML_IMPORT_PATH", oldImportPath);
+            else
+                qunsetenv("QML_IMPORT_PATH");
+        });
+        QVERIFY(qputenv("QML_IMPORT_PATH", QFile::encodeName(imports.path())));
+
+        auto engine = createEngine();
+        QQmlComponent component(engine.get());
+        component.setData(
+            "import QtQuick\n"
+            "import ChrisLauinger77.QontrolPanel\n"
+            "CustomScrollView { property string shortcut: Context.getShortcutText(Qt.ControlModifier, Qt.Key_A) }",
+            QUrl());
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> control(component.create());
+        QVERIFY2(control != nullptr, qPrintable(component.errorString()));
+        QCOMPARE(control->property("shortcut").toString(), QStringLiteral("Ctrl + A"));
     }
 
     void shortcutCaptureWaitsForKey_data()
