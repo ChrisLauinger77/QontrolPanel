@@ -28,7 +28,7 @@ on:
 permissions:
   contents: read
 env:
-  QT_VERSION: "6.11.2"
+  QT_VERSION: "6.12.0"
   VCPKG_ROOT: "C:/vcpkg"
 jobs:
   build:
