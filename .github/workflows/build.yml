@@ -45,7 +45,18 @@ jobs:
           $expected = (git ls-tree HEAD dependencies/headsetcontrol).Split()[2]
           $actual = git -C dependencies/headsetcontrol rev-parse HEAD
           if ($actual -ne $expected) { throw "HeadsetControl does not match the recorded submodule revision" }
-          git -C dependencies/headsetcontrol fetch --tags
+          # git describe needs the history connecting the pinned commit to its tag.
+          $isShallow = git -C dependencies/headsetcontrol rev-parse --is-shallow-repository
+          if ($LASTEXITCODE -ne 0) { throw "Cannot inspect HeadsetControl history" }
+          if ($isShallow -eq "true") {
+              git -C dependencies/headsetcontrol fetch --unshallow --tags
+          } else {
+              git -C dependencies/headsetcontrol fetch --tags
+          }
+          if ($LASTEXITCODE -ne 0) { throw "Cannot fetch HeadsetControl version history" }
+          $headsetControlVersion = git -C dependencies/headsetcontrol describe --tags
+          if ($LASTEXITCODE -ne 0) { throw "Cannot determine HeadsetControl version from tags" }
+          Write-Host "HeadsetControl version: $headsetControlVersion"
       - name: Get version from CMake
         id: cmake_version
         shell: pwsh
