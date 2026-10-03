@@ -110,3 +110,23 @@ jobs:
           release-tag: ${{ needs.release.outputs.version }}
           installers-regex: 'QontrolPanel_Installer\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
+
+  update-scoop-repository:
+    name: Request Scoop repository update
+    permissions:
+      contents: read
+    if: ${{ !cancelled() && needs.release.result == 'success' }}
+    needs: release
+    runs-on: ubuntu-26.04
+    env:
+      GH_TOKEN: ${{ secrets.PACKAGE_REPOSITORIES_TOKEN }}
+    steps:
+      - name: Use scheduled fallback when no cross-repository token exists
+        if: ${{ env.GH_TOKEN == '' }}
+        run: |
+          echo "PACKAGE_REPOSITORIES_TOKEN is not configured; leaving the Scoop update to its scheduled updater."
+      - name: Dispatch Scoop update
+        if: ${{ env.GH_TOKEN != '' }}
+        shell: bash
+        run: |
+          gh api --method POST repos/ChrisLauinger77/scoop-bucket/dispatches -f event_type=update-scoop
