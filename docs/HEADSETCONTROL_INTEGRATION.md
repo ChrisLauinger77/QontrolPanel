@@ -164,7 +164,7 @@ The active device key uses VID/PID/name rather than enumeration index. Battery m
 
 ## Updating the Vendored Dependency
 
-The build workflow uses the recorded submodule revision. The scheduled updater proposes a pin change and dispatches a validation build. For intentional local dependency evaluation:
+The release candidate build uses the recorded submodule revision. The scheduled updater proposes a pin change and dispatches `ci.yml` for validation without artifact uploads. Release candidates are built manually after merging the update. For intentional local dependency evaluation:
 
 ```pwsh
 git submodule update --init --recursive --remote --checkout dependencies/headsetcontrol
