@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  actions: write
 
 jobs:
   update-headsetcontrol:
@@ -245,11 +244,3 @@ jobs:
           add-paths: |
             CMakeLists.txt
             dependencies/headsetcontrol
-      - name: Validate dependency update branch
-        if: steps.submodule.outputs.needs_update == 'true'
-        uses: actions/github-script@v9
-        with:
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              ...context.repo, workflow_id: 'build.yml', ref: 'automation/update-headsetcontrol'
-            });

@@ -167,7 +167,7 @@ Run the install step. The project uses Qt deployment helpers during install; run
 
 ## CI Build
 
-The main build workflow:
+The Release workflow builds a candidate only when manually dispatched from `main`; main pushes and pull requests do not trigger package builds. The candidate build:
 
 1. Checks out the repository with submodules.
 2. Verifies the exact recorded HeadsetControl revision and builds a disposable copy, leaving the submodule source untouched.
@@ -178,9 +178,11 @@ The main build workflow:
 7. Checks that dependency and translation sources did not change.
 8. Produces ZIP and installer artifacts, plus provenance containing source/dependency revisions, versions, sizes, and SHA-256 digests.
 
-Local builds use the checked-out submodule revision. The scheduled dependency-update workflow proposes a reviewed pin update and explicitly dispatches its validation build.
+Local builds use the checked-out submodule revision. The scheduled dependency-update workflow proposes a reviewed pin update without dispatching a package build.
 
-The Release workflow requires a successful main-branch Build run ID. It checks out that run's source, downloads all artifacts from that one run, verifies provenance and file hashes, and refuses a version tag pointing to different source.
+After a successful candidate build, download the complete `release-assets` artifact, install the application, and test it. The run summary prints commands to create and push an annotated version tag at the candidate's exact source commit, with a `Candidate-Run: <run ID>` annotation. Artifacts are retained for 30 days, subject to repository limits; start a new manual run for another candidate instead of rerunning an existing one.
+
+Pushing that tag runs only publication. The workflow requires a successful original manual run of `release.yml` from `main` at the tagged commit, downloads that run's existing `release-assets` artifact, and verifies provenance and file hashes without rebuilding. The tag must match the CMake version, optionally prefixed with `v`. WinGet publication and the Scoop update request follow successful release publication.
 
 ## Reliability tests
 

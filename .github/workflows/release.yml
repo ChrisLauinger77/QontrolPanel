@@ -1,130 +1,473 @@
 name: Release
 on:
+  push:
+    # Existing numeric tags and v-prefixed tags are validated against CMake.
+    tags: ["*"]
   workflow_dispatch:
-    inputs:
-      workflow_run_id:
-        description: "Successful Build run from main (push or manual)"
-        required: true
+
 permissions:
-  actions: read
-  contents: write
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  QT_VERSION: "6.12.0"
+  VCPKG_ROOT: "C:/vcpkg"
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: windows-2025-vs2026
     outputs:
-      version: ${{ steps.version.outputs.version }}
+      sha: ${{ steps.cmake_version.outputs.sha }}
     steps:
-      - name: Resolve one trusted build
-        id: build
-        uses: actions/github-script@v9
-        env:
-          BUILD_RUN_ID: ${{ inputs.workflow_run_id }}
-        with:
-          script: |
-            const runId = Number(process.env.BUILD_RUN_ID);
-            if (!Number.isSafeInteger(runId) || runId <= 0) throw new Error('Invalid build run ID');
-            const { data: run } = await github.rest.actions.getWorkflowRun({ ...context.repo, run_id: runId });
-            const { data: workflow } = await github.rest.actions.getWorkflow({ ...context.repo, workflow_id: 'build.yml' });
-            if (run.workflow_id !== workflow.id || run.status !== 'completed' || run.conclusion !== 'success'
-                || run.head_branch !== 'main' || !['push', 'workflow_dispatch'].includes(run.event)
-                || run.head_repository.full_name !== `${context.repo.owner}/${context.repo.repo}`) {
-              throw new Error('Release requires a successful trusted Build run from main');
-            }
-            core.setOutput('sha', run.head_sha);
-            core.setOutput('run_id', String(runId));
-      - name: Checkout the source that produced the artifacts
+      - name: Require a fresh candidate run from main
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF -ne "refs/heads/main") {
+              throw "Release candidates must be built from main"
+          }
+          if ($env:GITHUB_RUN_ATTEMPT -ne "1") {
+              throw "Start a new manual workflow run instead of rerunning a candidate"
+          }
+      - name: Checkout code
         uses: actions/checkout@v7
         with:
-          ref: ${{ steps.build.outputs.sha }}
           submodules: recursive
-      - name: Download binaries from the selected run
-        uses: actions/download-artifact@v8
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.build.outputs.run_id }}
+          python-version: "3.14"
+      - name: Verify pinned HeadsetControl revision
+        shell: pwsh
+        run: |
+          git submodule update --init --recursive --checkout
+          $expected = (git ls-tree HEAD dependencies/headsetcontrol).Split()[2]
+          $actual = git -C dependencies/headsetcontrol rev-parse HEAD
+          if ($actual -ne $expected) { throw "HeadsetControl does not match the recorded submodule revision" }
+          # git describe needs the history connecting the pinned commit to its tag.
+          $isShallow = git -C dependencies/headsetcontrol rev-parse --is-shallow-repository
+          if ($LASTEXITCODE -ne 0) { throw "Cannot inspect HeadsetControl history" }
+          if ($isShallow -eq "true") {
+              git -C dependencies/headsetcontrol fetch --unshallow --tags
+          } else {
+              git -C dependencies/headsetcontrol fetch --tags
+          }
+          if ($LASTEXITCODE -ne 0) { throw "Cannot fetch HeadsetControl version history" }
+          $headsetControlVersion = git -C dependencies/headsetcontrol describe --tags
+          if ($LASTEXITCODE -ne 0) { throw "Cannot determine HeadsetControl version from tags" }
+          Write-Host "HeadsetControl version: $headsetControlVersion"
+      - name: Get version from CMake
+        id: cmake_version
+        shell: pwsh
+        run: |
+          $content = Get-Content CMakeLists.txt -Raw
+          $match = [regex]::Match($content, 'project\s*\(\s*(?<project>[^\s\)]+)\s+VERSION\s+(?<version>[^\s\)]+)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+          if (-not $match.Success) {
+              throw "Unable to extract project version from CMakeLists.txt"
+          }
+
+          $sha = git rev-parse HEAD
+          if ($LASTEXITCODE -ne 0) { throw "Cannot determine candidate source revision" }
+          "sha=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "project=$($match.Groups['project'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "version=$($match.Groups['version'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - name: Show runner and Visual Studio versions
+        shell: pwsh
+        run: |
+          Write-Host "Image OS: $env:ImageOS"
+          Write-Host "Image version: $env:ImageVersion"
+          & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
+            -latest -products * -format json
+          cmake --version
+      - name: Install ATL for the v143 toolset
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsPath = & $vswhere -latest -products * -property installationPath
+          $installer = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\setup.exe"
+          $arguments = @(
+            "modify"
+            "--installPath", "`"$vsPath`""
+            "--add", "Microsoft.VisualStudio.Component.VC.14.44.17.14.ATL"
+            "--quiet"
+            "--norestart"
+            "--nocache"
+          )
+          $process = Start-Process -FilePath $installer -ArgumentList $arguments -Wait -PassThru
+          if ($process.ExitCode -notin @(0, 3010)) {
+            throw "Visual Studio Installer failed with exit code $($process.ExitCode)"
+          }
+
+          $atlHeader = Get-ChildItem "$vsPath/VC/Tools/MSVC/14.44.*/atlmfc/include/atlbase.h" |
+            Select-Object -First 1
+          if (-not $atlHeader) {
+            throw "ATL header for the v143 toolset was not installed"
+          }
+          Write-Host "ATL header: $($atlHeader.FullName)"
+      - name: Setup vcpkg
+        shell: pwsh
+        run: |
+          $vcpkgRoot = "C:/vcpkg"
+
+          if (-not (Test-Path "$vcpkgRoot/.git")) {
+            if (Test-Path $vcpkgRoot) {
+              Remove-Item -Recurse -Force $vcpkgRoot
+            }
+            git clone https://github.com/microsoft/vcpkg.git $vcpkgRoot
+          }
+
+          $baseline = (Get-Content cmake/vcpkg-baseline.txt -Raw).Trim()
+          git -C $vcpkgRoot fetch origin $baseline --depth=1
+          git -C $vcpkgRoot checkout --detach $baseline
+          if ($LASTEXITCODE -ne 0) { throw "Cannot check out pinned vcpkg revision" }
+          cmd /c "$vcpkgRoot\bootstrap-vcpkg.bat"
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg bootstrap failed" }
+      - name: Install dependencies with vcpkg
+        shell: pwsh
+        run: |
+          C:/vcpkg/vcpkg version
+          C:/vcpkg/vcpkg install hidapi:x64-windows getopt-win32:x64-windows `
+            --overlay-triplets="$env:GITHUB_WORKSPACE/cmake/triplets" `
+            --x-install-root="$env:GITHUB_WORKSPACE/build/vcpkg_installed"
+          if ($LASTEXITCODE -ne 0) { throw "Dependency installation failed" }
+      - name: Install Qt
+        id: qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          arch: "win64_msvc2022_64"
+          # aqtinstall 3.3.0 cannot resolve Qt 6.11+ Windows repositories.
+          aqtsource: "git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b"
+          add-tools-to-path: true
+          cache: true
+      - name: Generate and Build with CMake
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -G "Visual Studio 18 2026" `
+            -T v143 `
+            -DBUILD_TESTING=ON `
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
+            -DVCPKG_TARGET_TRIPLET=x64-windows `
+            -DVCPKG_INSTALLED_DIR="$env:GITHUB_WORKSPACE/build/vcpkg_installed"
+          if ($LASTEXITCODE -ne 0) { throw "CMake configuration failed" }
+          Select-String -Path build/CMakeCache.txt `
+            -Pattern 'CMAKE_GENERATOR:|CMAKE_GENERATOR_TOOLSET:|CMAKE_CXX_COMPILER:|VCPKG_TARGET_TRIPLET:'
+          cmake --build build --config Release
+          if ($LASTEXITCODE -ne 0) { throw "Release build failed" }
+          ctest --test-dir build -C Release --output-on-failure --no-tests=error
+          if ($LASTEXITCODE -ne 0) { throw "Reliability tests failed" }
+          cmake --install build --config Release
+          if ($LASTEXITCODE -ne 0) { throw "Install failed" }
+          git diff --exit-code -- dependencies/headsetcontrol i18n
+          if ($LASTEXITCODE -ne 0) { throw "Build changed dependency or translation sources" }
+      - name: Print test reports
+        if: ${{ always() }}
+        shell: pwsh
+        run: |
+          $reports = @(
+            "build/tests/qt_reliability.txt"
+            "build/tests/settings_ui.txt"
+            "build/Testing/Temporary/LastTest.log"
+          )
+          foreach ($report in $reports) {
+            if (Test-Path -LiteralPath $report -PathType Leaf) {
+              Write-Host "::group::$report"
+              Get-Content -LiteralPath $report
+              Write-Host "::endgroup::"
+            }
+          }
+      - name: Upload test reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: QontrolPanel_Test_Reports
+          path: |
+            build/tests/qt_reliability.txt
+            build/tests/settings_ui.txt
+            build/Testing/Temporary/*.log
+          if-no-files-found: ignore
+      - name: Rename release folder
+        shell: pwsh
+        run: |
+          $releaseDir = "build/install"
+          $newDir = "QontrolPanel"
+          if (Test-Path $releaseDir) {
+              Rename-Item -Path $releaseDir -NewName $newDir
+          } else {
+              Write-Error "Release folder not found!"
+              exit 1
+          }
+      - name: Zip binaries folder
+        shell: pwsh
+        run: |
+          $zipFile = "build/QontrolPanel_win64_msvc2022.zip"
+          $folder = "build/QontrolPanel"
+          Compress-Archive -Path $folder -DestinationPath $zipFile
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
           name: QontrolPanel_win64_msvc2022
-      - name: Download installer from the selected run
-        uses: actions/download-artifact@v8
+          path: build/QontrolPanel_win64_msvc2022.zip
+          if-no-files-found: error
+      - name: Download VC++ Redistributable
+        shell: pwsh
+        run: |
+          $vcRedistUrl = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+          $vcRedistPath = "build/vc_redist.x64.exe"
+          Write-Host "Downloading VC++ Redistributable..."
+          Invoke-WebRequest -Uri $vcRedistUrl -OutFile $vcRedistPath
+          Write-Host "VC++ Redistributable downloaded successfully"
+      - name: Create Installer
+        shell: pwsh
+        run: |
+          $env:Path += ";${env:ProgramFiles(x86)}\Inno Setup 6"
+          iscc.exe tools/installer.iss
+          if ($LASTEXITCODE -ne 0) { throw "Installer build failed" }
+      - name: Upload Installer
+        uses: actions/upload-artifact@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.build.outputs.run_id }}
           name: QontrolPanel_Installer
-      - name: Download provenance from the selected run
-        uses: actions/download-artifact@v8
+          path: tools/Output/QontrolPanel_Installer.exe
+          if-no-files-found: error
+      - name: Record artifact provenance
+        shell: pwsh
+        run: |
+          python tools/release_provenance.py create --output build/provenance.json --run "$env:GITHUB_RUN_ID" --qt "$env:QT_VERSION" --artifact build/QontrolPanel_win64_msvc2022.zip --artifact tools/Output/QontrolPanel_Installer.exe
+          if ($LASTEXITCODE -ne 0) { throw "Provenance generation failed" }
+      - name: Upload provenance
+        uses: actions/upload-artifact@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.build.outputs.run_id }}
           name: QontrolPanel_Provenance
-      - name: Verify source, dependency, version and artifact digests
+          path: build/provenance.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: build
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout the candidate source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.build.outputs.sha }}
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@v8
+        with:
+          name: QontrolPanel_win64_msvc2022
+          path: dist
+      - uses: actions/download-artifact@v8
+        with:
+          name: QontrolPanel_Installer
+          path: dist
+      - uses: actions/download-artifact@v8
+        with:
+          name: QontrolPanel_Provenance
+          path: dist
+      - name: Verify complete candidate assets
         id: version
         env:
-          SOURCE_SHA: ${{ steps.build.outputs.sha }}
-          BUILD_RUN_ID: ${{ steps.build.outputs.run_id }}
+          SOURCE_SHA: ${{ needs.build.outputs.sha }}
+          BUILD_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          version=$(python tools/release_provenance.py verify --manifest provenance.json --source "$SOURCE_SHA" --run "$BUILD_RUN_ID" --directory .)
+          version=$(python tools/release_provenance.py verify --manifest dist/provenance.json --source "$SOURCE_SHA" --run "$BUILD_RUN_ID" --directory dist)
           echo "version=$version" >> "$GITHUB_OUTPUT"
-      - name: Refuse an existing tag on a different commit
-        uses: actions/github-script@v9
+      - name: Upload the complete candidate for testing and publication
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-assets
+          path: |
+            dist/QontrolPanel_win64_msvc2022.zip
+            dist/QontrolPanel_Installer.exe
+            dist/provenance.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Print the exact commands to publish this candidate
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
-          SOURCE_SHA: ${{ steps.build.outputs.sha }}
+          SOURCE_SHA: ${{ needs.build.outputs.sha }}
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+
+          if os.environ["GITHUB_RUN_ATTEMPT"] != "1":
+              raise ValueError("Start a new manual workflow run instead of rerunning a candidate")
+          version = os.environ["RELEASE_VERSION"]
+          commit = os.environ["SOURCE_SHA"]
+          run_id = os.environ["GITHUB_RUN_ID"]
+          summary = (
+              "After this run succeeds, download its complete release-assets artifact "
+              "and install and test QontrolPanel_Installer.exe.\n"
+              "When testing succeeds, run these commands in your local checkout:\n\n"
+              "```sh\n"
+              f'git tag -a {version} {commit} -m "QontrolPanel {version}" '
+              f'-m "Candidate-Run: {run_id}"\n'
+              f"git push origin {version}\n"
+              "```\n\n"
+              "Pushing the tag publishes these existing packages without rebuilding. "
+              "Publish before the artifact expires (retention: 30 days, subject to repository limits). "
+              "For another candidate, start a new manual run; do not rerun this run.\n"
+          )
+          print(summary, end="")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as output:
+              output.write(summary)
+
+  publish:
+    # Independent of the dispatch-only jobs: a tag never starts another build.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      tag: ${{ github.ref_name }}
+    steps:
+      - name: Resolve the tested candidate from the annotated tag
+        id: candidate
+        uses: actions/github-script@v9
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
         with:
           script: |
-            try {
-              let { data: ref } = await github.rest.git.getRef({ ...context.repo, ref: `tags/${process.env.RELEASE_VERSION}` });
-              let object = ref.object;
-              while (object.type === 'tag') {
-                const { data: tag } = await github.rest.git.getTag({ ...context.repo, tag_sha: object.sha });
-                object = tag.object;
-              }
-              if (object.sha !== process.env.SOURCE_SHA) throw new Error('Existing version tag points to different source');
-            } catch (error) {
-              if (error.status !== 404) throw error;
+            const repository = `${context.repo.owner}/${context.repo.repo}`;
+            const { data: ref } = await github.rest.git.getRef({
+              ...context.repo, ref: `tags/${process.env.RELEASE_TAG}`
+            });
+            if (ref.object.type !== 'tag') {
+              throw new Error('Release requires an annotated tag containing Candidate-Run: <run ID>');
             }
-      - name: Publish verified release
+            const { data: tag } = await github.rest.git.getTag({
+              ...context.repo, tag_sha: ref.object.sha
+            });
+            if (tag.object.type !== 'commit' || tag.object.sha !== context.sha) {
+              throw new Error('Release tag must point directly to the pushed source commit');
+            }
+            const trailers = tag.message.split(/\r?\n/).filter(line => line.startsWith('Candidate-Run:'));
+            if (trailers.length !== 1 || !/^Candidate-Run: [1-9][0-9]*$/.test(trailers[0])) {
+              throw new Error('Tag must contain exactly one Candidate-Run: <positive run ID> line');
+            }
+            const runId = Number(trailers[0].slice('Candidate-Run: '.length));
+            if (!Number.isSafeInteger(runId)) throw new Error('Invalid candidate run ID');
+            const { data: run } = await github.rest.actions.getWorkflowRun({
+              ...context.repo, run_id: runId
+            });
+            const { data: workflow } = await github.rest.actions.getWorkflow({
+              ...context.repo, workflow_id: 'release.yml'
+            });
+            if (run.workflow_id !== workflow.id || run.event !== 'workflow_dispatch'
+                || run.status !== 'completed' || run.conclusion !== 'success'
+                || run.head_branch !== 'main' || run.head_sha !== tag.object.sha
+                || run.run_attempt !== 1 || run.repository?.full_name !== repository
+                || run.head_repository?.full_name !== repository) {
+              throw new Error('Candidate must be a successful original manual release.yml run from main at the tagged commit');
+            }
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              ...context.repo, run_id: runId, per_page: 100
+            });
+            const matches = artifacts.filter(artifact => artifact.name === 'release-assets');
+            if (matches.length !== 1 || matches[0].expired || matches[0].size_in_bytes <= 0) {
+              throw new Error('Candidate requires one nonexpired release-assets artifact; build and test a new candidate');
+            }
+            core.setOutput('sha', tag.object.sha);
+            core.setOutput('run_id', String(runId));
+            core.setOutput('artifact_id', String(matches[0].id));
+      - name: Checkout the source that produced the candidate
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.candidate.outputs.sha }}
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+      - name: Download the existing tested candidate
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ steps.candidate.outputs.artifact_id }}
+          run-id: ${{ steps.candidate.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: dist
+      - name: Verify source, dependency, version and artifact digests
+        env:
+          SOURCE_SHA: ${{ steps.candidate.outputs.sha }}
+          BUILD_RUN_ID: ${{ steps.candidate.outputs.run_id }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: python
+        run: |
+          import os
+          import subprocess
+          import sys
+
+          version = subprocess.check_output([
+              sys.executable, "tools/release_provenance.py", "verify",
+              "--manifest", "dist/provenance.json", "--source", os.environ["SOURCE_SHA"],
+              "--run", os.environ["BUILD_RUN_ID"], "--directory", "dist"
+          ], text=True).strip()
+          if os.environ["RELEASE_TAG"] not in (version, f"v{version}"):
+              raise ValueError("Release tag must match the candidate CMake version, optionally prefixed with v")
+      - name: Refuse a tag moved away from the tested source
+        uses: actions/github-script@v9
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          SOURCE_SHA: ${{ steps.candidate.outputs.sha }}
+        with:
+          script: |
+            const { data: ref } = await github.rest.git.getRef({
+              ...context.repo, ref: `tags/${process.env.RELEASE_TAG}`
+            });
+            if (ref.object.type !== 'tag') throw new Error('Release tag is no longer annotated');
+            const { data: tag } = await github.rest.git.getTag({
+              ...context.repo, tag_sha: ref.object.sha
+            });
+            if (tag.object.type !== 'commit' || tag.object.sha !== process.env.SOURCE_SHA) {
+              throw new Error('Release tag moved away from the tested source');
+            }
+      - name: Publish the verified candidate without rebuilding
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          target_commitish: ${{ steps.build.outputs.sha }}
-          name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref_name }}
+          target_commitish: ${{ steps.candidate.outputs.sha }}
+          name: ${{ github.ref_name }}
           draft: false
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            QontrolPanel_win64_msvc2022.zip
-            QontrolPanel_Installer.exe
-            provenance.json
+            dist/QontrolPanel_win64_msvc2022.zip
+            dist/QontrolPanel_Installer.exe
+            dist/provenance.json
 
   publish-winget:
     name: Publish to WinGet
-    needs: release
-    permissions:
-      contents: read
+    needs: publish
     runs-on: ubuntu-26.04
     steps:
       - name: Publish to WinGet
         uses: vedantmgoyal9/winget-releaser@v2
         with:
           identifier: ChrisLauinger77.QontrolPanel
-          release-tag: ${{ needs.release.outputs.version }}
+          release-tag: ${{ needs.publish.outputs.tag }}
           installers-regex: 'QontrolPanel_Installer\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
 
   update-scoop-repository:
     name: Request Scoop repository update
-    permissions:
-      contents: read
-    if: ${{ !cancelled() && needs.release.result == 'success' }}
-    needs: release
+    if: ${{ !cancelled() && needs.publish.result == 'success' }}
+    needs: publish
     runs-on: ubuntu-26.04
     env:
       GH_TOKEN: ${{ secrets.PACKAGE_REPOSITORIES_TOKEN }}
     steps:
       - name: Use scheduled fallback when no cross-repository token exists
         if: ${{ env.GH_TOKEN == '' }}
-        run: |
-          echo "PACKAGE_REPOSITORIES_TOKEN is not configured; leaving the Scoop update to its scheduled updater."
+        run: echo 'PACKAGE_REPOSITORIES_TOKEN is not configured; leaving the Scoop update to its scheduled updater.'
       - name: Dispatch Scoop update
         if: ${{ env.GH_TOKEN != '' }}
         shell: bash
