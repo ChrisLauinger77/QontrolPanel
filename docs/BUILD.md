@@ -167,6 +167,10 @@ Run the install step. The project uses Qt deployment helpers during install; run
 
 ## CI Build
 
+`ci.yml` validates pull requests targeting `main` and supports manual validation. It runs the same build, tests, installation, packaging, and provenance checks as the main build, but uploads no artifacts. Test reports remain available in the workflow logs.
+
+`build.yml` runs on pushes to `main` (including merged pull requests), subject to its path filters, and can be dispatched manually on `main`. It does not run on pull requests and produces the artifacts used for releases.
+
 The main build workflow:
 
 1. Checks out the repository with submodules.
@@ -178,7 +182,7 @@ The main build workflow:
 7. Checks that dependency and translation sources did not change.
 8. Produces ZIP and installer artifacts, plus provenance containing source/dependency revisions, versions, sizes, and SHA-256 digests.
 
-Local builds use the checked-out submodule revision. The scheduled dependency-update workflow proposes a reviewed pin update and explicitly dispatches its validation build.
+Local builds use the checked-out submodule revision. The scheduled dependency-update workflow proposes a reviewed pin update and explicitly dispatches `ci.yml` on the dependency-update branch for validation without artifact uploads.
 
 The Release workflow requires a successful main-branch Build run ID. It checks out that run's source, downloads all artifacts from that one run, verifies provenance and file hashes, and refuses a version tag pointing to different source.
 

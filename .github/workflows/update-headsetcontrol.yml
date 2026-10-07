@@ -251,5 +251,5 @@ jobs:
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
-              ...context.repo, workflow_id: 'build.yml', ref: 'automation/update-headsetcontrol'
+              ...context.repo, workflow_id: 'ci.yml', ref: 'automation/update-headsetcontrol'
             });
