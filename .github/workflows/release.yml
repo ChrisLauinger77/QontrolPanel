@@ -19,8 +19,6 @@ jobs:
   build:
     if: github.event_name == 'workflow_dispatch'
     runs-on: windows-2025-vs2026
-    outputs:
-      sha: ${{ steps.cmake_version.outputs.sha }}
     steps:
       - name: Require a fresh candidate run from main
         shell: pwsh
@@ -69,9 +67,6 @@ jobs:
               throw "Unable to extract project version from CMakeLists.txt"
           }
 
-          $sha = git rev-parse HEAD
-          if ($LASTEXITCODE -ne 0) { throw "Cannot determine candidate source revision" }
-          "sha=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "project=$($match.Groups['project'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "version=$($match.Groups['version'].Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
       - name: Show runner and Visual Studio versions
@@ -252,7 +247,8 @@ jobs:
       - name: Checkout the candidate source
         uses: actions/checkout@v7
         with:
-          ref: ${{ needs.build.outputs.sha }}
+          # Use the workflow commit directly; build outputs must not select executable code.
+          ref: ${{ github.sha }}
           persist-credentials: false
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -273,7 +269,7 @@ jobs:
       - name: Verify complete candidate assets
         id: version
         env:
-          SOURCE_SHA: ${{ needs.build.outputs.sha }}
+          SOURCE_SHA: ${{ github.sha }}
           BUILD_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
@@ -292,7 +288,7 @@ jobs:
       - name: Print the exact commands to publish this candidate
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
-          SOURCE_SHA: ${{ needs.build.outputs.sha }}
+          SOURCE_SHA: ${{ github.sha }}
         shell: python
         run: |
           import os
