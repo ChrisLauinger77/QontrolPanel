@@ -37,7 +37,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.14"
+          python-version: "3.15"
       - name: Verify pinned HeadsetControl revision
         shell: pwsh
         run: |
@@ -253,7 +253,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.14"
+          python-version: "3.15"
       - uses: actions/download-artifact@v8
         with:
           name: QontrolPanel_win64_msvc2022
@@ -383,7 +383,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.14"
+          python-version: "3.15"
       - name: Download the existing tested candidate
         uses: actions/download-artifact@v8
         with:
