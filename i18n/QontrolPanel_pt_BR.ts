@@ -1445,6 +1445,22 @@ You can enable it in the Components tab.</source>
         <translation>Entrada: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Anterior</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pausar</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Reproduzir</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Próximo</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation type="unfinished">HeadsetControl</translation>
     </message>

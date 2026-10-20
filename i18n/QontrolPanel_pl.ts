@@ -1453,6 +1453,22 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Ładowanie...</translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Poprzedni</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pauza</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Odtwórz</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Następny</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>Zestaw Słuchawkowy</translation>
     </message>

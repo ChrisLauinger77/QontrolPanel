@@ -1444,6 +1444,22 @@ You can enable it in the Components tab.</source>
         <translation>输入: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>上一首</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>暂停</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>下一首</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>耳机控制</translation>
     </message>

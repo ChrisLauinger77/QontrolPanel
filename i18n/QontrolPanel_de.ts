@@ -1445,6 +1445,22 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <translation>Eingabe: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Vorheriger Titel</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pause</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Wiedergabe</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Nächster Titel</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>HeadsetControl</translation>
     </message>

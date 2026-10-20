@@ -12,6 +12,9 @@ Platform.SystemTrayIcon {
     icon.source: Constants.getTrayIcon(AudioBridge.outputVolume, AudioBridge.outputMuted)
     tooltip: getTooltip()
 
+    readonly property bool mediaControlsEnabled: UserSettings.enableMediaSessionManager
+                                                && MediaSessionBridge.sourceCount > 0
+
     onActivated: function (reason) {
         if (reason === Platform.SystemTrayIcon.DoubleClick) {
             systemTray.settingsWindowRequested();
@@ -31,6 +34,33 @@ Platform.SystemTrayIcon {
         Platform.MenuItem {
             enabled: false
             text: systemTray.truncateText(qsTr("Input: ") + (AudioBridge.isReady ? systemTray.getInputDeviceInfo() : qsTr("Loading...")), 50)
+        }
+        Platform.MenuSeparator {
+            visible: UserSettings.enableMediaSessionManager
+        }
+        Platform.MenuItem {
+            text: qsTr("Previous")
+            icon.source: "qrc:/icons/prev.png"
+            icon.mask: true
+            visible: UserSettings.enableMediaSessionManager
+            enabled: systemTray.mediaControlsEnabled && MediaSessionBridge.canPreviousTrack
+            onTriggered: MediaSessionBridge.previousTrack()
+        }
+        Platform.MenuItem {
+            text: MediaSessionBridge.isMediaPlaying ? qsTr("Pause") : qsTr("Play")
+            icon.source: MediaSessionBridge.isMediaPlaying ? "qrc:/icons/pause.png" : "qrc:/icons/play.png"
+            icon.mask: true
+            visible: UserSettings.enableMediaSessionManager
+            enabled: systemTray.mediaControlsEnabled
+            onTriggered: MediaSessionBridge.playPause()
+        }
+        Platform.MenuItem {
+            text: qsTr("Next")
+            icon.source: "qrc:/icons/next.png"
+            icon.mask: true
+            visible: UserSettings.enableMediaSessionManager
+            enabled: systemTray.mediaControlsEnabled
+            onTriggered: MediaSessionBridge.nextTrack()
         }
         Platform.MenuSeparator {}
         Platform.MenuItem {

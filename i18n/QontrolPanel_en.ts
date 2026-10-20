@@ -1444,6 +1444,22 @@ You can enable it in the Components tab.</source>
         <translation>Input: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Previous</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pause</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Play</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Next</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation type="unfinished">HeadsetControl</translation>
     </message>

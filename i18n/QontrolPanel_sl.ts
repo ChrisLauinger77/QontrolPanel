@@ -1444,6 +1444,22 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <translation>Vnos: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Prejšnja skladba</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Premor</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Predvajaj</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Naslednja skladba</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>Nadzor slušalk</translation>
     </message>

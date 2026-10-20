@@ -1445,6 +1445,22 @@ You can enable it in the Components tab.</source>
         <translation>입력: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>이전</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>일시 정지</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>재생</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>다음</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>헤드셋 제어</translation>
     </message>

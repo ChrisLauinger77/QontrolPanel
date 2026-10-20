@@ -1445,6 +1445,22 @@ Puedes activarla en la pestaña Componentes.</translation>
         <translation>Entrada: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Anterior</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pausar</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Reproducir</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Siguiente</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>HeadsetControl</translation>
     </message>

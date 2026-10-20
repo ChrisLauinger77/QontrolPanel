@@ -1444,6 +1444,22 @@ You can enable it in the Components tab.</source>
         <translation>入力: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>前へ</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>一時停止</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>再生</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>次へ</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>ヘッドセット コントロール</translation>
     </message>

@@ -1445,6 +1445,22 @@ You can enable it in the Components tab.</source>
         <translation>Ввод: </translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Предыдущий</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Пауза</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Воспроизвести</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Следующий</translation>
+    </message>
+    <message>
         <source>HeadsetControl</source>
         <translation>HeadsetControl</translation>
     </message>

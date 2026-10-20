@@ -1460,6 +1460,22 @@ You can enable it in the Components tab.</source>
         <translation>Chargement...</translation>
     </message>
     <message>
+        <source>Previous</source>
+        <translation>Précédent</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pause</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Lire</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Suivant</translation>
+    </message>
+    <message>
         <source>QontrolPanel settings</source>
         <translation>Paramètres de QontrolPanel</translation>
     </message>
