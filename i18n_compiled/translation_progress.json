@@ -1,27 +1,27 @@
 {
-  "en": {
-    "percentage": 100,
-    "last_updated": "2026-09-15 11:20:57",
-    "contributor": "ChrisLauinger77"
-  },
   "pt_BR": {
     "percentage": 62,
     "last_updated": "2026-04-13 16:21:29",
     "contributor": "Felipe Ribeiro"
+  },
+  "de": {
+    "percentage": 100,
+    "last_updated": "2026-08-23 10:51:11",
+    "contributor": "Christian Lauinger"
   },
   "zh_CN": {
     "percentage": 100,
     "last_updated": "2025-10-05 23:26:29",
     "contributor": "rampageX"
   },
-  "it": {
-    "percentage": 94,
-    "last_updated": "2026-08-20 16:34:46",
-    "contributor": "bovirus"
-  },
-  "pl": {
+  "en": {
     "percentage": 100,
-    "last_updated": "2026-05-21 16:09:48",
+    "last_updated": "2026-10-20 19:30:19",
+    "contributor": "ChrisLauinger77"
+  },
+  "es": {
+    "percentage": 100,
+    "last_updated": "2026-04-14 16:11:20",
     "contributor": "Christian Lauinger"
   },
   "ja": {
@@ -29,14 +29,9 @@
     "last_updated": "2026-09-19 14:50:25",
     "contributor": "Re*Index. (ot_inc)"
   },
-  "fr": {
+  "pl": {
     "percentage": 100,
-    "last_updated": "2026-09-07 14:52:39",
-    "contributor": "Odizinne"
-  },
-  "de": {
-    "percentage": 100,
-    "last_updated": "2026-08-23 10:51:11",
+    "last_updated": "2026-05-21 16:09:48",
     "contributor": "Christian Lauinger"
   },
   "sl": {
@@ -49,10 +44,15 @@
     "last_updated": "2025-05-11 09:46:00",
     "contributor": "Steve"
   },
-  "es": {
+  "fr": {
     "percentage": 100,
-    "last_updated": "2026-04-14 16:11:20",
-    "contributor": "Christian Lauinger"
+    "last_updated": "2026-09-07 14:52:39",
+    "contributor": "Odizinne"
+  },
+  "it": {
+    "percentage": 94,
+    "last_updated": "2026-08-20 16:34:46",
+    "contributor": "bovirus"
   },
   "ko": {
     "percentage": 98,
