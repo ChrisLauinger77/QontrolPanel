@@ -1,11 +1,14 @@
 #pragma once
 
 #include <QObject>
+#include <QCache>
+#include <QIcon>
 #include <QVariantList>
 #include <QtQml/qqmlregistration.h>
 #include <memory>
 
 class QMenu;
+class QPalette;
 class QStyle;
 
 // QML supplies presentation and action IDs; this owns the independent tray popup.
@@ -37,9 +40,11 @@ private:
     bool syncMenu(QMenu* menu, const QVariantList& entries);
     void applyTheme();
     void updateIcons(QMenu* menu);
+    QIcon cachedIcon(const QString& source, const QPalette& palette, int size, qreal dpr);
 
     QVariantList m_entries;
     Qt::ColorScheme m_colorScheme = Qt::ColorScheme::Unknown;
+    QCache<QByteArray, QIcon> m_iconCache{64};
     std::unique_ptr<QStyle> m_style;
     std::unique_ptr<QMenu> m_menu;
 };

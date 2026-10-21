@@ -8,6 +8,7 @@
 #include <QQmlEngine>
 #include <QQmlExpression>
 #include <QSignalSpy>
+#include <QScopeGuard>
 #include "traymenu.h"
 
 namespace {
@@ -114,6 +115,8 @@ private slots:
         auto* menu = popupMenu();
         QVERIFY(menu);
         auto* play = actionFor(menu, "play");
+        const auto playIcon = play->icon().cacheKey();
+        const auto headsetIcon = actionFor(menu, "headset")->icon().cacheKey();
         QSignalSpy triggered(&tray, &TrayMenu::triggered);
         auto playing = entries[0].toMap();
         playing["text"] = "Pause";
@@ -122,6 +125,8 @@ private slots:
         tray.setEntries(entries);
         QVERIFY(menu->isVisible());
         QCOMPARE(actionFor(menu, "play"), play);
+        QCOMPARE(play->icon().cacheKey(), playIcon);
+        QCOMPARE(actionFor(menu, "headset")->icon().cacheKey(), headsetIcon);
         QCOMPARE(play->text(), QStringLiteral("Pause"));
         QVERIFY(!play->isEnabled());
         auto* lights = actionFor(actionFor(menu, "headset")->menu(), "lights");
@@ -141,6 +146,74 @@ private slots:
         menu->close();
         tray.popup();
         QCOMPARE(menu->findChildren<QMenu*>(QString(), Qt::FindDirectChildrenOnly).size(), 1);
+    }
+
+    void forcedThemePreservesSelectionColors_data()
+    {
+        QTest::addColumn<bool>("darkSystemPalette");
+        QTest::newRow("light-menu-dark-system") << true;
+        QTest::newRow("dark-menu-light-system") << false;
+    }
+
+    void forcedThemePreservesSelectionColors()
+    {
+        QFETCH(bool, darkSystemPalette);
+        const auto original = QGuiApplication::palette();
+        const auto restore = qScopeGuard([&] { QApplication::setPalette(original); });
+        QPalette systemPalette = original;
+        systemPalette.setColor(QPalette::All, QPalette::Window,
+                               darkSystemPalette ? QColor("#161616") : QColor("#f8f8f8"));
+        systemPalette.setColor(QPalette::All, QPalette::WindowText,
+                               darkSystemPalette ? Qt::white : Qt::black);
+        systemPalette.setColor(QPalette::All, QPalette::Highlight, QColor("#0078d4"));
+        systemPalette.setColor(QPalette::All, QPalette::HighlightedText, Qt::white);
+        QApplication::setPalette(systemPalette);
+        TrayMenu tray;
+        tray.setEntries(testEntries());
+        tray.setColorScheme(darkSystemPalette ? Qt::ColorScheme::Light : Qt::ColorScheme::Dark);
+        tray.popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        QCOMPARE(menu->palette().window().color().lightness() > 128, darkSystemPalette);
+        QCOMPARE(menu->palette().highlight(), systemPalette.highlight());
+        QCOMPARE(menu->palette().highlightedText(), systemPalette.highlightedText());
+        auto* play = actionFor(menu, "play");
+        QVERIFY(play);
+        menu->setActiveAction(play);
+        for (const auto mode : {QIcon::Active, QIcon::Selected})
+            QCOMPARE(iconColor(play->icon(), mode), systemPalette.color(QPalette::HighlightedText));
+        QCOMPARE(iconColor(play->icon(), QIcon::Normal), menu->palette().color(QPalette::WindowText));
+        auto* submenu = actionFor(menu, "headset")->menu();
+        QCOMPARE(submenu->palette(), menu->palette());
+    }
+
+    void autoRestoresAndTracksApplicationPalette()
+    {
+        const auto original = QGuiApplication::palette();
+        const auto restore = qScopeGuard([&] { QApplication::setPalette(original); });
+        TrayMenu tray;
+        tray.setEntries(testEntries());
+        tray.setColorScheme(Qt::ColorScheme::Dark);
+        tray.popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        QSignalSpy changed(&tray, &TrayMenu::colorSchemeChanged);
+
+        tray.setColorScheme(Qt::ColorScheme::Unknown);
+
+        QCOMPARE(changed.size(), 1);
+        QCOMPARE(menu->palette().window(), original.window());
+        QCOMPARE(menu->palette().windowText(), original.windowText());
+        auto* play = actionFor(menu, "play");
+        QCOMPARE(iconColor(play->icon(), QIcon::Normal), original.color(QPalette::WindowText));
+        QPalette updated = original;
+        updated.setColor(QPalette::All, QPalette::Window, QColor("#313331"));
+        updated.setColor(QPalette::All, QPalette::WindowText, QColor("#deedee"));
+        QApplication::setPalette(updated);
+        QTRY_COMPARE(menu->palette().window(), updated.window());
+        QCOMPARE(iconColor(play->icon(), QIcon::Normal), updated.color(QPalette::WindowText));
+        tray.setColorScheme(Qt::ColorScheme::Unknown);
+        QCOMPARE(changed.size(), 1);
     }
 
     void actualTrayBindingsAndActions()

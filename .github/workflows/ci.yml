@@ -152,6 +152,7 @@ jobs:
         shell: pwsh
         run: |
           $reports = @(
+            "build/tests/tray_menu.txt"
             "build/tests/qt_reliability.txt"
             "build/tests/settings_ui.txt"
             "build/Testing/Temporary/LastTest.log"

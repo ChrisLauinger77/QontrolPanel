@@ -3,6 +3,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QCursor>
+#include <QDataStream>
 #include <QEvent>
 #include <QImageReader>
 #include <QMenu>
@@ -180,9 +181,29 @@ void TrayMenu::updateIcons(QMenu* menu)
     menu->setPalette(m_menu->palette());
     const int size = m_style->pixelMetric(QStyle::PM_SmallIconSize, nullptr, menu);
     for (auto* action : menu->actions()) {
-        action->setIcon(menuIcon(action->data().toMap().value("icon").toString(),
-                                 menu->palette(), size, menu->devicePixelRatioF()));
+        action->setIcon(cachedIcon(action->data().toMap().value("icon").toString(),
+                                   menu->palette(), size, menu->devicePixelRatioF()));
         if (action->menu())
             updateIcons(action->menu());
     }
+}
+
+QIcon TrayMenu::cachedIcon(const QString& source, const QPalette& palette, int size, qreal dpr)
+{
+    if (source.isEmpty())
+        return {};
+    // Key the colors actually used to tint the icon. Equivalent palettes can
+    // have different cacheKey() values after a theme or application-palette event.
+    QByteArray key;
+    QDataStream stream(&key, QIODevice::WriteOnly);
+    stream << source << palette.color(QPalette::Active, QPalette::WindowText).rgba()
+           << palette.color(QPalette::Disabled, QPalette::WindowText).rgba()
+           << palette.color(QPalette::Active, QPalette::HighlightedText).rgba()
+           << size << dpr;
+    if (const auto* icon = m_iconCache.object(key))
+        return *icon;
+    const QIcon icon = menuIcon(source, palette, size, dpr);
+    if (!icon.isNull())
+        m_iconCache.insert(key, new QIcon(icon));
+    return icon;
 }

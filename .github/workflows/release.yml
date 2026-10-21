@@ -164,6 +164,7 @@ jobs:
         shell: pwsh
         run: |
           $reports = @(
+            "build/tests/tray_menu.txt"
             "build/tests/qt_reliability.txt"
             "build/tests/settings_ui.txt"
             "build/Testing/Temporary/LastTest.log"
@@ -181,6 +182,7 @@ jobs:
         with:
           name: QontrolPanel_Test_Reports
           path: |
+            build/tests/tray_menu.txt
             build/tests/qt_reliability.txt
             build/tests/settings_ui.txt
             build/Testing/Temporary/*.log

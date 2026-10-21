@@ -75,7 +75,7 @@ When possible, validate changes with:
 
 - a CMake configure;
 - a Release build;
-- CTest with all three Windows suites passing: `nightlight_data`, `release_provenance`, and `qt_reliability`;
+- CTest with all five Windows suites passing: `nightlight_data`, `release_provenance`, `tray_menu`, `qt_reliability`, and `settings_ui`;
 - before manually testing the executable, build the `INSTALL` target and run `build/install/bin/QontrolPanel.exe`; the executable in the raw build directory may not have its required runtime files;
 - manual launch from Qt Creator or the installed output;
 - affected settings pane interaction;
