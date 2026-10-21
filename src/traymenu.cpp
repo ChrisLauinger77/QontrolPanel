@@ -101,6 +101,8 @@ void TrayMenu::popup()
     applyTheme();
     // A QWidget popup works even while all Qt Quick windows are hidden.
     m_menu->popup(position);
+    // Activate after showing: Windows relies on this for keyboard focus and
+    // dismissing the tray popup when the user clicks outside it.
     m_menu->activateWindow();
 }
 

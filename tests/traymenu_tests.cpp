@@ -9,6 +9,7 @@
 #include <QQmlExpression>
 #include <QSignalSpy>
 #include <QScopeGuard>
+#include <cmath>
 #include "traymenu.h"
 
 namespace {
@@ -42,6 +43,21 @@ QColor iconColor(const QIcon& icon, QIcon::Mode mode)
         }
     }
     return {};
+}
+
+qreal contrastRatio(const QColor& foreground, const QColor& background)
+{
+    const auto luminance = [](const QColor& color) {
+        const auto linear = [](qreal channel) {
+            return channel <= 0.04045 ? channel / 12.92
+                                     : std::pow((channel + 0.055) / 1.055, 2.4);
+        };
+        return 0.2126 * linear(color.redF()) + 0.7152 * linear(color.greenF())
+             + 0.0722 * linear(color.blueF());
+    };
+    const auto first = luminance(foreground);
+    const auto second = luminance(background);
+    return (qMax(first, second) + 0.05) / (qMin(first, second) + 0.05);
 }
 
 QVariantList testEntries()
@@ -151,13 +167,23 @@ private slots:
     void forcedThemePreservesSelectionColors_data()
     {
         QTest::addColumn<bool>("darkSystemPalette");
-        QTest::newRow("light-menu-dark-system") << true;
-        QTest::newRow("dark-menu-light-system") << false;
+        QTest::addColumn<QColor>("highlight");
+        QTest::addColumn<QColor>("highlightedText");
+        QTest::newRow("light-menu-dark-system-blue-accent")
+            << true << QColor("#0078d4") << QColor(Qt::white);
+        QTest::newRow("dark-menu-light-system-blue-accent")
+            << false << QColor("#0078d4") << QColor(Qt::white);
+        QTest::newRow("light-menu-dark-system-dark-accent")
+            << true << QColor("#00316f") << QColor(Qt::white);
+        QTest::newRow("dark-menu-light-system-light-accent")
+            << false << QColor("#a6d8ff") << QColor(Qt::black);
     }
 
     void forcedThemePreservesSelectionColors()
     {
         QFETCH(bool, darkSystemPalette);
+        QFETCH(QColor, highlight);
+        QFETCH(QColor, highlightedText);
         const auto original = QGuiApplication::palette();
         const auto restore = qScopeGuard([&] { QApplication::setPalette(original); });
         QPalette systemPalette = original;
@@ -165,8 +191,8 @@ private slots:
                                darkSystemPalette ? QColor("#161616") : QColor("#f8f8f8"));
         systemPalette.setColor(QPalette::All, QPalette::WindowText,
                                darkSystemPalette ? Qt::white : Qt::black);
-        systemPalette.setColor(QPalette::All, QPalette::Highlight, QColor("#0078d4"));
-        systemPalette.setColor(QPalette::All, QPalette::HighlightedText, Qt::white);
+        systemPalette.setColor(QPalette::All, QPalette::Highlight, highlight);
+        systemPalette.setColor(QPalette::All, QPalette::HighlightedText, highlightedText);
         QApplication::setPalette(systemPalette);
         TrayMenu tray;
         tray.setEntries(testEntries());
@@ -177,6 +203,9 @@ private slots:
         QCOMPARE(menu->palette().window().color().lightness() > 128, darkSystemPalette);
         QCOMPARE(menu->palette().highlight(), systemPalette.highlight());
         QCOMPARE(menu->palette().highlightedText(), systemPalette.highlightedText());
+        const auto contrast = contrastRatio(menu->palette().color(QPalette::HighlightedText),
+                                            menu->palette().color(QPalette::Highlight));
+        QVERIFY2(contrast >= 4.5, qPrintable(QString("Selected text contrast is %1:1").arg(contrast)));
         auto* play = actionFor(menu, "play");
         QVERIFY(play);
         menu->setActiveAction(play);
