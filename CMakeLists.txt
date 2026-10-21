@@ -94,6 +94,7 @@ set(SOURCES
     src/languagebridge.cpp
     src/keyboardshortcutmanager.cpp
     src/trayiconprovider.cpp
+    src/traymenu.cpp
     src/windowsbackdrop.cpp
     src/windowchrome.cpp
 )
@@ -127,6 +128,7 @@ set(HEADERS
     include/languagebridge.h
     include/keyboardshortcutmanager.h
     include/trayiconprovider.h
+    include/traymenu.h
     include/windowsbackdrop.h
     include/windowchrome.h
 )

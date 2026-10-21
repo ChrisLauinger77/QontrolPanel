@@ -40,6 +40,7 @@ The UI is QML-first. Native behavior enters QML through C++ classes marked with 
 
 - `PanelEngine` owns the QML engine and coordinates the main controls and media panel windows as one focus group.
 - `SystemTray.qml` and related tray icon support expose the app as a tray utility.
+- `TrayMenu` renders the tray context menu with a scoped Qt Widgets Fusion style and the app's effective color scheme. QML supplies the labels, capability flags, checked states, icons, and action IDs; the native tray icon requests this independent popup on a context activation. Icon masks are tinted for normal, selected, and disabled states, and data-only updates preserve menu actions and keyboard selection.
 - `StartupShortcutBridge` manages startup shortcut behavior.
 - `LanguageBridge` applies the selected Qt translation and asks the QML engine to retranslate.
 - `LogManager` keeps a mutex-protected 500-entry history and coalesces UI snapshots, including before the debug pane has been opened.

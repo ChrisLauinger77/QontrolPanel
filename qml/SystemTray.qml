@@ -1,6 +1,5 @@
 import QtQuick
 import Qt.labs.platform as Platform
-import QtQml.Models
 import ChrisLauinger77.QontrolPanel
 
 Platform.SystemTrayIcon {
@@ -16,6 +15,11 @@ Platform.SystemTrayIcon {
                                                 && MediaSessionBridge.sourceCount > 0
 
     onActivated: function (reason) {
+        if (reason === Platform.SystemTrayIcon.Context) {
+            systemTray.contextMenu.popup();
+            return;
+        }
+
         if (reason === Platform.SystemTrayIcon.DoubleClick) {
             systemTray.settingsWindowRequested();
             return;
@@ -26,133 +30,69 @@ Platform.SystemTrayIcon {
         }
     }
 
-    menu: Platform.Menu {
-        Platform.MenuItem {
-            enabled: false
-            text: systemTray.truncateText(qsTr("Output: ") + (AudioBridge.isReady ? systemTray.getOutputDeviceInfo() : qsTr("Loading...")), 50)
-        }
-        Platform.MenuItem {
-            enabled: false
-            text: systemTray.truncateText(qsTr("Input: ") + (AudioBridge.isReady ? systemTray.getInputDeviceInfo() : qsTr("Loading...")), 50)
-        }
-        Platform.MenuSeparator {
-            visible: UserSettings.enableMediaSessionManager
-        }
-        Platform.MenuItem {
-            text: qsTr("Previous")
-            icon.source: "qrc:/icons/prev.png"
-            icon.mask: true
-            visible: UserSettings.enableMediaSessionManager
-            enabled: systemTray.mediaControlsEnabled && MediaSessionBridge.canPreviousTrack
-            onTriggered: MediaSessionBridge.previousTrack()
-        }
-        Platform.MenuItem {
-            text: MediaSessionBridge.isMediaPlaying ? qsTr("Pause") : qsTr("Play")
-            icon.source: MediaSessionBridge.isMediaPlaying ? "qrc:/icons/pause.png" : "qrc:/icons/play.png"
-            icon.mask: true
-            visible: UserSettings.enableMediaSessionManager
-            enabled: systemTray.mediaControlsEnabled
-            onTriggered: MediaSessionBridge.playPause()
-        }
-        Platform.MenuItem {
-            text: qsTr("Next")
-            icon.source: "qrc:/icons/next.png"
-            icon.mask: true
-            visible: UserSettings.enableMediaSessionManager
-            enabled: systemTray.mediaControlsEnabled
-            onTriggered: MediaSessionBridge.nextTrack()
-        }
-        Platform.MenuSeparator {}
-        Platform.MenuItem {
-            text: qsTr("Windows sound settings (Legacy)")
-            onTriggered: Utils.openLegacySoundSettings()
-        }
-        Platform.MenuItem {
-            text: qsTr("Windows sound settings (Modern)")
-            onTriggered: Utils.openModernSoundSettings()
-        }
-        Platform.MenuItem {
-            text: qsTr("QontrolPanel settings")
-            onTriggered: systemTray.settingsWindowRequested()
-        }
-        Platform.Menu {
-            title: qsTr("HeadsetControl")
-            visible: HeadsetControlBridge.anyDeviceFound && systemTray.hasHeadsetControlMenuEntries()
+    // The native Windows menu ignores the app's color scheme. Keep the tray
+    // icon native and render its menu independently of the hidden panel window.
+    property TrayMenu contextMenu: TrayMenu {
+        colorScheme: Qt.application.styleHints.colorScheme
+        entries: [
+            { text: systemTray.truncateText(qsTr("Output: ") + (AudioBridge.isReady ? systemTray.getOutputDeviceInfo() : qsTr("Loading...")), 50),
+              icon: "qrc:/icons/panel_volume_100.svg", enabled: false },
+            { text: systemTray.truncateText(qsTr("Input: ") + (AudioBridge.isReady ? systemTray.getInputDeviceInfo() : qsTr("Loading...")), 50),
+              icon: "qrc:/icons/mic.svg", enabled: false },
+            { separator: true, visible: UserSettings.enableMediaSessionManager },
+            { id: "previous", text: qsTr("Previous"), icon: "qrc:/icons/prev.png",
+              visible: UserSettings.enableMediaSessionManager,
+              enabled: systemTray.mediaControlsEnabled && MediaSessionBridge.canPreviousTrack },
+            { id: "playPause", text: MediaSessionBridge.isMediaPlaying ? qsTr("Pause") : qsTr("Play"),
+              icon: MediaSessionBridge.isMediaPlaying ? "qrc:/icons/pause.png" : "qrc:/icons/play.png",
+              visible: UserSettings.enableMediaSessionManager, enabled: systemTray.mediaControlsEnabled },
+            { id: "next", text: qsTr("Next"), icon: "qrc:/icons/next.png",
+              visible: UserSettings.enableMediaSessionManager, enabled: systemTray.mediaControlsEnabled },
+            { separator: true },
+            { id: "legacySound", text: qsTr("Windows sound settings (Legacy)"), icon: "qrc:/icons/general.svg" },
+            { id: "modernSound", text: qsTr("Windows sound settings (Modern)"), icon: "qrc:/icons/panel_volume_100.svg" },
+            { id: "settings", text: qsTr("QontrolPanel settings"), icon: "qrc:/icons/settings.svg" },
+            { id: "headset", text: qsTr("HeadsetControl"), icon: "qrc:/icons/headsetcontrol.svg",
+              visible: HeadsetControlBridge.anyDeviceFound && systemTray.hasHeadsetControlMenuEntries(),
+              children: [
+                  { id: "fetch", text: qsTr("Fetch"), icon: "qrc:/icons/update.svg",
+                    visible: systemTray.isHeadsetBatteryAvailable() },
+                  { id: "equalizer", text: qsTr("Equalizer Preset"), icon: "qrc:/icons/general.svg",
+                    visible: HeadsetControlBridge.hasEqualizerPresetsCapability && HeadsetControlBridge.equalizerPresetNames.length > 0,
+                    children: HeadsetControlBridge.hasEqualizerPresetsCapability
+                        ? HeadsetControlBridge.equalizerPresetNames.map(function(name, index) {
+                            return { id: "equalizer:" + index, text: name,
+                                     checked: UserSettings.headsetcontrolEqualizerPreset === index };
+                          }) : [] },
+                  { id: "lights", text: qsTr("Lights"), icon: "qrc:/icons/brightness.svg",
+                    visible: HeadsetControlBridge.hasLightsCapability, checked: UserSettings.headsetcontrolLights },
+                  { id: "voicePrompts", text: qsTr("Voice Prompts"), icon: "qrc:/icons/music.svg",
+                    visible: HeadsetControlBridge.hasVoicePromptsCapability, checked: UserSettings.headsetcontrolVoicePrompts },
+                  { id: "rotateToMute", text: qsTr("Rotate-to-Mute"), icon: "qrc:/icons/mic_muted.svg",
+                    visible: HeadsetControlBridge.hasRotateToMuteCapability, checked: UserSettings.headsetcontrolRotateToMute }
+              ] },
+            { separator: true },
+            { id: "exit", text: qsTr("Exit"), icon: "qrc:/icons/signout.svg" }
+        ]
 
-            Platform.MenuItem {
-                text: qsTr("Fetch")
-                visible: systemTray.isHeadsetBatteryAvailable()
-                onTriggered: HeadsetControlBridge.refreshNow()
+        onTriggered: function(actionId) {
+            switch (actionId) {
+            case "previous": MediaSessionBridge.previousTrack(); break;
+            case "playPause": MediaSessionBridge.playPause(); break;
+            case "next": MediaSessionBridge.nextTrack(); break;
+            case "legacySound": Utils.openLegacySoundSettings(); break;
+            case "modernSound": Utils.openModernSoundSettings(); break;
+            case "settings": systemTray.settingsWindowRequested(); break;
+            case "fetch": HeadsetControlBridge.refreshNow(); break;
+            case "lights": UserSettings.headsetcontrolLights = !UserSettings.headsetcontrolLights; break;
+            case "voicePrompts": UserSettings.headsetcontrolVoicePrompts = !UserSettings.headsetcontrolVoicePrompts; break;
+            case "rotateToMute": UserSettings.headsetcontrolRotateToMute = !UserSettings.headsetcontrolRotateToMute; break;
+            case "exit": Qt.quit(); break;
+            default:
+                if (actionId.startsWith("equalizer:"))
+                    UserSettings.headsetcontrolEqualizerPreset = Number(actionId.substring(10));
+                break;
             }
-
-            Platform.Menu {
-                id: equalizerPresetMenu
-                title: qsTr("Equalizer Preset")
-                visible: HeadsetControlBridge.hasEqualizerPresetsCapability && equalizerPresetInstantiator.count > 0
-
-                Instantiator {
-                    id: equalizerPresetInstantiator
-                    model: HeadsetControlBridge.hasEqualizerPresetsCapability ? HeadsetControlBridge.equalizerPresetNames : []
-                    delegate: Platform.MenuItem {
-                        required property string modelData
-                        required property int index
-
-                        text: modelData
-                        checkable: true
-                        checked: UserSettings.headsetcontrolEqualizerPreset === index
-                        onTriggered: {
-                            UserSettings.headsetcontrolEqualizerPreset = index;
-                            checked = Qt.binding(function() { return UserSettings.headsetcontrolEqualizerPreset === index })
-                        }
-                    }
-
-                    onObjectAdded: function (index, object) {
-                        equalizerPresetMenu.insertItem(index, object);
-                    }
-
-                    onObjectRemoved: function (index, object) {
-                        equalizerPresetMenu.removeItem(object);
-                    }
-                }
-            }
-
-            Platform.MenuItem {
-                text: qsTr("Lights")
-                visible: HeadsetControlBridge.hasLightsCapability
-                checkable: true
-                checked: UserSettings.headsetcontrolLights
-                onTriggered: {
-                    UserSettings.headsetcontrolLights = !UserSettings.headsetcontrolLights;
-                    checked = Qt.binding(function() { return UserSettings.headsetcontrolLights })
-                }
-            }
-
-            Platform.MenuItem {
-                text: qsTr("Voice Prompts")
-                visible: HeadsetControlBridge.hasVoicePromptsCapability
-                checkable: true
-                checked: UserSettings.headsetcontrolVoicePrompts
-                onTriggered: {
-                    UserSettings.headsetcontrolVoicePrompts = !UserSettings.headsetcontrolVoicePrompts;
-                    checked = Qt.binding(function() { return UserSettings.headsetcontrolVoicePrompts })
-                }
-            }
-
-            Platform.MenuItem {
-                text: qsTr("Rotate-to-Mute")
-                visible: HeadsetControlBridge.hasRotateToMuteCapability
-                checkable: true
-                checked: UserSettings.headsetcontrolRotateToMute
-                onTriggered: {
-                    UserSettings.headsetcontrolRotateToMute = !UserSettings.headsetcontrolRotateToMute;
-                    checked = Qt.binding(function() { return UserSettings.headsetcontrolRotateToMute })
-                }
-            }
-        }
-        Platform.MenuSeparator {}
-        Platform.MenuItem {
-            text: qsTr("Exit")
-            onTriggered: Qt.quit()
         }
     }
 

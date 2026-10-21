@@ -10,6 +10,18 @@ add_test(NAME release_provenance COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURREN
 find_package(Qt6 QUIET COMPONENTS Core Qml Network Test)
 if(Qt6_FOUND)
     set(CMAKE_AUTOMOC ON)
+    find_package(Qt6 QUIET COMPONENTS Widgets)
+    if(TARGET Qt6::Widgets)
+        add_executable(traymenu_tests traymenu_tests.cpp
+            ../src/traymenu.cpp ../include/traymenu.h ../resources/icons/icons.qrc)
+        set_target_properties(traymenu_tests PROPERTIES AUTORCC ON)
+        target_include_directories(traymenu_tests PRIVATE ../include)
+        target_compile_definitions(traymenu_tests PRIVATE
+            QONTROLPANEL_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/..")
+        target_link_libraries(traymenu_tests PRIVATE Qt6::Qml Qt6::Widgets Qt6::Test)
+        add_test(NAME tray_menu COMMAND traymenu_tests -o -,txt -o tray_menu.txt,txt)
+        set_tests_properties(tray_menu PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+    endif()
     add_executable(reliability_tests reliability_tests.cpp
         ../src/jsonstore.cpp ../src/logmanager.cpp ../src/workerthreads.cpp
         ../include/logmanager.h ../src/audiomodels.cpp ../include/audiomodels.h)

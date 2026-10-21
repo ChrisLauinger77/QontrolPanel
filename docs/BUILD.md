@@ -202,6 +202,8 @@ ctest --test-dir /tmp/qontrol-tests --output-on-failure
 
 Night Light binary-format and release-provenance tests require C++20 and Python 3.11 or newer. Qt Core/Qml/Network/Test development packages enable the logging, storage, model, cancellation, and worker-lifecycle tests as well. Windows release validation requires those Qt tests. These tests do not exercise real power actions or hardware.
 
+With Qt Widgets available, `tray_menu` also tests the tray popup's light/dark palette, icon tinting, live action updates, submenu cleanup, and the actual QML tray bindings with value-only service fixtures. It runs offscreen without showing a tray icon or changing user preferences. Windows tray activation, dismissal, keyboard navigation, and placement on monitors with different scaling still require an installed-runtime smoke test.
+
 Full Windows builds also run `settings_ui`. This suite loads the actual settings panes with native-service fixtures and locks an isolated INI preferences file. It checks rejected edits, retained bindings, successful retries, overlay-position selection, and ChatMix activation failures. It uses the offscreen Qt platform and does not change user preferences or device volumes.
 
 The portable ZIP requires a compatible MSVC runtime. The installer checks the installed runtime against the actual bundled redistributable version and installs it when missing or older. Always install/deploy before launching `build/install/bin/QontrolPanel.exe` for manual testing.
