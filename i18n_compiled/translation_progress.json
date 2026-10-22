@@ -4,59 +4,59 @@
     "last_updated": "2026-04-13 16:21:29",
     "contributor": "Felipe Ribeiro"
   },
-  "de": {
+  "pl": {
     "percentage": 100,
-    "last_updated": "2026-08-23 10:51:11",
+    "last_updated": "2026-05-21 16:09:48",
     "contributor": "Christian Lauinger"
+  },
+  "en": {
+    "percentage": 100,
+    "last_updated": "2026-10-20 19:35:38",
+    "contributor": "ChrisLauinger77"
   },
   "zh_CN": {
     "percentage": 100,
     "last_updated": "2025-10-05 23:26:29",
     "contributor": "rampageX"
   },
-  "en": {
+  "ko": {
     "percentage": 100,
-    "last_updated": "2026-10-20 19:30:19",
-    "contributor": "ChrisLauinger77"
-  },
-  "es": {
-    "percentage": 100,
-    "last_updated": "2026-04-14 16:11:20",
-    "contributor": "Christian Lauinger"
-  },
-  "ja": {
-    "percentage": 100,
-    "last_updated": "2026-09-19 14:50:25",
-    "contributor": "Re*Index. (ot_inc)"
-  },
-  "pl": {
-    "percentage": 100,
-    "last_updated": "2026-05-21 16:09:48",
-    "contributor": "Christian Lauinger"
-  },
-  "sl": {
-    "percentage": 94,
-    "last_updated": "2026-08-22 21:34:15",
-    "contributor": "Andrew Poženel - SloDevTeam"
-  },
-  "ru": {
-    "percentage": 100,
-    "last_updated": "2025-05-11 09:46:00",
-    "contributor": "Steve"
-  },
-  "fr": {
-    "percentage": 100,
-    "last_updated": "2026-09-07 14:52:39",
-    "contributor": "Odizinne"
+    "last_updated": "2026-10-22 06:57:07",
+    "contributor": "VenusGirl❤"
   },
   "it": {
     "percentage": 94,
     "last_updated": "2026-08-20 16:34:46",
     "contributor": "bovirus"
   },
-  "ko": {
-    "percentage": 98,
-    "last_updated": "2026-09-12 08:03:15",
-    "contributor": "VenusGirl❤"
+  "ja": {
+    "percentage": 100,
+    "last_updated": "2026-09-19 14:50:25",
+    "contributor": "Re*Index. (ot_inc)"
+  },
+  "es": {
+    "percentage": 100,
+    "last_updated": "2026-04-14 16:11:20",
+    "contributor": "Christian Lauinger"
+  },
+  "de": {
+    "percentage": 100,
+    "last_updated": "2026-08-23 10:51:11",
+    "contributor": "Christian Lauinger"
+  },
+  "ru": {
+    "percentage": 100,
+    "last_updated": "2025-05-11 09:46:00",
+    "contributor": "Steve"
+  },
+  "sl": {
+    "percentage": 94,
+    "last_updated": "2026-08-22 21:34:15",
+    "contributor": "Andrew Poženel - SloDevTeam"
+  },
+  "fr": {
+    "percentage": 100,
+    "last_updated": "2026-09-07 14:52:39",
+    "contributor": "Odizinne"
   }
 }
