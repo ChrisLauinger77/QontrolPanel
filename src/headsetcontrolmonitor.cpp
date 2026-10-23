@@ -109,6 +109,8 @@ void HeadsetControlMonitor::setSidetone(int value, quint64 requestRevision)
     m_sidetoneWriteRequested = true;
     m_sidetoneRequestRevision = requestRevision;
     setDesiredSettings({{"sidetone", qBound(0, value, 128)}});
+    // Acknowledge completion even for failed/skipped writes so optimistic UI can settle.
+    emit snapshotReady(snapshot());
 }
 
 void HeadsetControlMonitor::setInactiveTime(int value)
@@ -616,6 +618,7 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.batteryLevel = batteryLevel();
     state.chatMix = chatMix();
     state.sidetoneLevel = sidetoneLevel();
+    state.sidetoneRequestRevision = m_sidetoneRequestRevision;
     state.equalizerPresetNames = equalizerPresetNames();
     state.anyDeviceFound = anyDeviceFound();
     state.testModeEnabled = testModeEnabled();

@@ -22,6 +22,7 @@
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
 #include "audiobridge.h"
 #include "headsetcontrolmonitor.h"
+#include "headsetcontrolbridge.h"
 #endif
 #ifdef QONTROLPANEL_LANGUAGE_TESTS
 #include "languagebridge.h"
@@ -178,6 +179,48 @@ private slots:
         QStandardPaths::setTestModeEnabled(m_originalTestMode);
     }
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+    void sidetoneBridgeRetainsLatestRequestUntilAcknowledged()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolMonitoring(false);
+        settings->setHeadsetcontrolSidetone(64);
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto cleanup = qScopeGuard([&] {
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        // Keep queued worker replies pending while simulating a burst of user input.
+        for (int level = 65; level <= 69; ++level)
+            bridge->setSidetone(level);
+        QCOMPARE(bridge->pendingSidetoneLevel(), 69);
+        HeadsetControlState state;
+        state.anyDeviceFound = true;
+        state.sidetoneLevel = 65;
+        state.sidetoneRequestRevision = 1;
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingSidetoneLevel(), 69);
+        state.sidetoneLevel = 69;
+        state.sidetoneRequestRevision = 5;
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingSidetoneLevel(), -1);
+        QCOMPARE(bridge->sidetoneLevel(), 69);
+        bridge->setSidetone(70);
+        state.sidetoneRequestRevision = 6; // Latest command failed; reported level stays at 69.
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingSidetoneLevel(), -1);
+        QCOMPARE(bridge->sidetoneLevel(), 69);
+        bridge->setSidetone(71);
+        state.sidetoneRequestRevision = 7;
+        state.sidetoneLevel = 72; // Device quantisation wins once the command completes.
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingSidetoneLevel(), -1);
+        QCOMPARE(bridge->sidetoneLevel(), 72);
+    }
+
     void sidetoneTestDeviceAdoptsAndStillAcceptsWrites()
     {
         const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();

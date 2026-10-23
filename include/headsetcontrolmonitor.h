@@ -43,6 +43,7 @@ struct HeadsetControlState
     int batteryLevel = -1;
     int chatMix = -1;
     int sidetoneLevel = -1;
+    quint64 sidetoneRequestRevision = 0;
     QStringList equalizerPresetNames;
     bool anyDeviceFound = false;
     bool testModeEnabled = false;

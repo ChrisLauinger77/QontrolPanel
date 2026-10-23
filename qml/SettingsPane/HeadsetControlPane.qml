@@ -251,8 +251,10 @@ ColumnLayout {
                             id: sidetoneSlider
                             from: 0
                             to: 128
-                            readonly property int currentLevel: HeadsetControlBridge.sidetoneLevel >= 0
-                                ? HeadsetControlBridge.sidetoneLevel : UserSettings.headsetcontrolSidetone
+                            readonly property int currentLevel: HeadsetControlBridge.pendingSidetoneLevel >= 0
+                                ? HeadsetControlBridge.pendingSidetoneLevel
+                                : HeadsetControlBridge.sidetoneLevel >= 0
+                                    ? HeadsetControlBridge.sidetoneLevel : UserSettings.headsetcontrolSidetone
                             value: currentLevel
                             Layout.preferredWidth: 180
                             onPressedChanged: {

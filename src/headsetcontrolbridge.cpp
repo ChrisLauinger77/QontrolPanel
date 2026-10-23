@@ -195,6 +195,8 @@ void HeadsetControlBridge::requestSidetone(int value)
     if (!m_monitor)
         return;
     const quint64 revision = ++m_sidetoneRequestRevision;
+    m_pendingSidetoneLevel = value;
+    emit pendingSidetoneLevelChanged();
     QMetaObject::invokeMethod(m_monitor, [monitor = m_monitor, value, revision] {
         monitor->setSidetone(value, revision);
     }, Qt::QueuedConnection);
@@ -339,6 +341,12 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
 {
     const HeadsetControlState previous = m_cachedState;
     m_cachedState = state;
+    // Earlier command acknowledgements must not reset a newer wheel/drag target.
+    if (m_pendingSidetoneLevel >= 0 && state.sidetoneRequestRevision >= m_sidetoneRequestRevision)
+    {
+        m_pendingSidetoneLevel = -1;
+        emit pendingSidetoneLevelChanged();
+    }
 
     const bool capabilitiesChangedNow =
         previous.hasSidetoneCapability != m_cachedState.hasSidetoneCapability ||

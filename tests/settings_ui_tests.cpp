@@ -214,6 +214,35 @@ private slots:
         QTRY_COMPARE(slider->property("value").toInt(), 40);
     }
 
+    void sidetoneWheelEditsAccumulateWhileRepliesAreDelayed()
+    {
+        UserSettings::instance()->setHeadsetcontrolSidetone(64);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* slider = editor(pane, "Sidetone", "value");
+        QVERIFY(slider);
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("sidetoneLevel", 64));
+        QVERIFY(headset->setProperty("deferSidetoneWrites", true));
+        for (int expected = 65; expected <= 69; ++expected) {
+            QVERIFY(edit(slider, "value", slider->property("value").toInt() + 1, "wheelChanged"));
+            QCOMPARE(slider->property("value").toInt(), expected);
+        }
+        QCOMPARE(headset->property("sidetoneWriteCount").toInt(), 5);
+        QCOMPARE(UserSettings::instance()->headsetcontrolSidetone(), 69);
+        QVERIFY(headset->setProperty("sidetoneLevel", 65)); // An earlier reply arrives.
+        QCOMPARE(slider->property("value").toInt(), 69);
+        QVERIFY(headset->setProperty("sidetoneLevel", 69));
+        QVERIFY(headset->setProperty("pendingSidetoneLevel", -1));
+        QCOMPARE(slider->property("value").toInt(), 69);
+        QVERIFY(headset->setProperty("sidetoneLevel", 85)); // Later external update.
+        QCOMPARE(slider->property("value").toInt(), 85);
+        QVERIFY(edit(slider, "value", 86, "wheelChanged"));
+        QCOMPARE(slider->property("value").toInt(), 86);
+        QVERIFY(headset->setProperty("pendingSidetoneLevel", -1)); // Failed latest write.
+        QCOMPARE(slider->property("value").toInt(), 85);
+    }
+
     void monochromeAppIconStyleIsSupported()
     {
         auto* settings = UserSettings::instance();

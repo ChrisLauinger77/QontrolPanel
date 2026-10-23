@@ -35,12 +35,18 @@ QtObject {
     property int chatMix: 50
     property int sidetoneLevel: -1
     property int sidetoneWriteCount: 0
+    property int pendingSidetoneLevel: -1
+    property bool deferSidetoneWrites: false
     function setSidetone(value) {
         UserSettings.headsetcontrolSidetone = value
         if (UserSettings.headsetcontrolSidetone === value) {
             sidetoneWriteCount++
-            if (sidetoneLevel >= 0)
-                sidetoneLevel = value
+            pendingSidetoneLevel = value
+            if (!deferSidetoneWrites) {
+                if (sidetoneLevel >= 0)
+                    sidetoneLevel = value
+                pendingSidetoneLevel = -1
+            }
         }
     }
     property bool testModeEnabled: true
