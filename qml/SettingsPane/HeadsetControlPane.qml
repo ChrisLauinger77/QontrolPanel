@@ -251,17 +251,19 @@ ColumnLayout {
                             id: sidetoneSlider
                             from: 0
                             to: 128
-                            value: UserSettings.headsetcontrolSidetone
+                            readonly property int currentLevel: HeadsetControlBridge.sidetoneLevel >= 0
+                                ? HeadsetControlBridge.sidetoneLevel : UserSettings.headsetcontrolSidetone
+                            value: currentLevel
                             Layout.preferredWidth: 180
                             onPressedChanged: {
                                 if (!pressed) {
-                                    UserSettings.headsetcontrolSidetone = Math.round(value);
-                                    value = Qt.binding(function() { return UserSettings.headsetcontrolSidetone })
+                                    HeadsetControlBridge.setSidetone(Math.round(value));
+                                    value = Qt.binding(function() { return sidetoneSlider.currentLevel })
                                 }
                             }
                             onWheelChanged: {
-                                UserSettings.headsetcontrolSidetone = Math.round(value);
-                                value = Qt.binding(function() { return UserSettings.headsetcontrolSidetone })
+                                HeadsetControlBridge.setSidetone(Math.round(value));
+                                value = Qt.binding(function() { return sidetoneSlider.currentLevel })
                             }
                         }
 

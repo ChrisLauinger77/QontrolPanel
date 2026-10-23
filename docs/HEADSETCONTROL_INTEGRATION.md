@@ -152,6 +152,16 @@ Battery level uses `-1` when unavailable.
 
 ChatMix uses `-1` when unavailable and otherwise follows the HeadsetControl value range. Application-side ChatMix behavior is coordinated with `AudioBridge`, which applies volume changes to configured communication apps and restores original volumes when needed.
 
+## Sidetone read-back
+
+The device cache, state snapshot, and bridge expose `sidetoneLevel` on the normalised 0–128 scale, or `-1` when unknown. Reachable devices advertising `CAP_SIDETONE_STATUS` are queried during polling, before pending settings are applied. The slider uses the reported level when available and the saved setting otherwise.
+
+On the first successful read for the active headset, or when the read differs from the last applied level, the monitor adopts the device value as both its desired value and its new baseline. It clears sidetone retries and signals the bridge to update `UserSettings`. The bridge suppresses write feedback during adoption; unrelated settings snapshots omit sidetone. A request revision prevents an older adoption from overwriting a newer slider edit. Failed initial reads leave the level unknown and do not restore the default zero; explicit user edits can still write.
+
+A successful slider write updates the reported level from the library's acknowledgement. Subsequent polls adopt changes made on the headset or in another application. The baseline resets when monitoring stops or the active headset changes. Devices without read-back retain saved-level restoration and bounded write retries.
+
+The upstream test device reads back a fixed level of `85`. Slider edits still call `setSidetone`; the next fetch returns to `85`, simulating an external change. Reliability tests filter discovery to this synthetic device before any queries or writes, and cover first-read adoption, explicit writes, external changes, reset, and unrelated settings updates. Policy tests additionally cover failed reads, retries, and write-only headsets.
+
 ## Error Handling
 
 HeadsetControl API calls return result objects. App code should:

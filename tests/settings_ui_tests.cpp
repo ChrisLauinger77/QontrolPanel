@@ -93,6 +93,7 @@ class SettingsUiTests : public QObject
     std::unique_ptr<QObject> m_pane;
     int m_audioType = -1;
     int m_mediaType = -1;
+    int m_headsetType = -1;
 
     QObject* loadPane(const QString& name)
     {
@@ -165,9 +166,10 @@ private slots:
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
-        for (const auto* name : {"Constants", "Utils", "StartupShortcutBridge", "HeadsetControlBridge", "Updater", "KeyboardShortcutManager"})
+        for (const auto* name : {"Constants", "Utils", "StartupShortcutBridge", "Updater", "KeyboardShortcutManager"})
             qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, name);
         qmlRegisterSingletonType(sourceUrl("qml/Singletons/Context.qml"), Module, 1, 0, "Context");
+        m_headsetType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "HeadsetControlBridge");
         m_audioType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "AudioBridge");
         m_mediaType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "MediaSessionBridge");
     }
@@ -187,6 +189,29 @@ private slots:
         m_pane.reset();
         m_engine.reset();
         m_window.reset();
+    }
+
+    void sidetoneSliderFollowsReadbackAndAcceptsAnEdit()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolSidetone(0);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* slider = editor(pane, "Sidetone", "value");
+        QVERIFY(slider);
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("sidetoneLevel", 85));
+        QTRY_COMPARE(slider->property("value").toInt(), 85);
+        QVERIFY(headset->setProperty("sidetoneLevel", 64));
+        QTRY_COMPARE(slider->property("value").toInt(), 64);
+        // Editing to the already-saved value still sends a command to the bridge.
+        QVERIFY(edit(slider, "value", 0, "wheelChanged"));
+        QCOMPARE(headset->property("sidetoneWriteCount").toInt(), 1);
+        QCOMPARE(headset->property("sidetoneLevel").toInt(), 0);
+        QTRY_COMPARE(slider->property("value").toInt(), 0);
+        QVERIFY(headset->setProperty("sidetoneLevel", -1));
+        settings->setHeadsetcontrolSidetone(40);
+        QTRY_COMPARE(slider->property("value").toInt(), 40);
     }
 
     void monochromeAppIconStyleIsSupported()

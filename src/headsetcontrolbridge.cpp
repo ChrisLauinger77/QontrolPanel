@@ -3,6 +3,7 @@
 #include "audiomanager.h"
 #include "usersettings.h"
 #include <QPointer>
+#include <QScopedValueRollback>
 #include <QTimer>
 #include <QCoreApplication>
 #include "workerthreads.h"
@@ -33,7 +34,11 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
             &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolEqualizerPresetChanged, this,
             &HeadsetControlBridge::syncDesiredSettings);
-    connect(settings, &UserSettings::headsetcontrolSidetoneChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolSidetoneChanged, this, [this, settings] {
+        if (m_adoptingSidetone || !m_monitor)
+            return;
+        requestSidetone(settings->headsetcontrolSidetone());
+    });
     connect(settings, &UserSettings::headsetcontrolInactiveTimeChanged, this,
             &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolFetchRateChanged, this,
@@ -81,9 +86,21 @@ void HeadsetControlBridge::connectToMonitor()
         m_lastError = error;
         emit lastErrorChanged();
                 });
+    connect(m_monitor, &HeadsetControlMonitor::sidetoneAdopted, this,
+            [this](int value, quint64 revision) {
+                // Do not overwrite a slider edit made after this poll started.
+                if (revision != m_sidetoneRequestRevision)
+                    return;
+                QScopedValueRollback<bool> adopting(m_adoptingSidetone, true);
+                UserSettings::instance()->setHeadsetcontrolSidetone(value);
+            });
     m_thread->start();
     QMetaObject::invokeMethod(
         m_monitor, [monitor = m_monitor] { emit monitor->snapshotReady(monitor->snapshot()); }, Qt::QueuedConnection);
+    const int savedSidetone = UserSettings::instance()->headsetcontrolSidetone();
+    QMetaObject::invokeMethod(m_monitor, [monitor = m_monitor, savedSidetone] {
+        monitor->setDesiredSettings({{"sidetone", savedSidetone}});
+    }, Qt::QueuedConnection);
     syncDesiredSettings();
     setFetchRate(UserSettings::instance()->headsetcontrolFetchRate());
     setMonitoringEnabled(UserSettings::instance()->headsetcontrolMonitoring());
@@ -119,7 +136,6 @@ void HeadsetControlBridge::syncDesiredSettings()
                               {"rotateToMute", settings->headsetcontrolRotateToMute()},
                               {"voicePrompts", settings->headsetcontrolVoicePrompts()},
                               {"equalizerPreset", settings->headsetcontrolEqualizerPreset()},
-                              {"sidetone", settings->headsetcontrolSidetone()},
                               {"inactiveTime", settings->headsetcontrolInactiveTime()}};
     QMetaObject::invokeMethod(
         m_monitor, [monitor = m_monitor, desired] { monitor->setDesiredSettings(desired); }, Qt::QueuedConnection);
@@ -164,7 +180,24 @@ void HeadsetControlBridge::setEqualizerPreset(int preset)
 
 void HeadsetControlBridge::setSidetone(int value)
 {
-    UserSettings::instance()->setHeadsetcontrolSidetone(value);
+    auto* settings = UserSettings::instance();
+    value = qBound(0, value, 128);
+    const int previous = settings->headsetcontrolSidetone();
+    settings->setHeadsetcontrolSidetone(value);
+    // An adopted level may not have been saved. A deliberate edit to the saved
+    // value still needs a command, even when UserSettings emits no change signal.
+    if (previous == value)
+        requestSidetone(value);
+}
+
+void HeadsetControlBridge::requestSidetone(int value)
+{
+    if (!m_monitor)
+        return;
+    const quint64 revision = ++m_sidetoneRequestRevision;
+    QMetaObject::invokeMethod(m_monitor, [monitor = m_monitor, value, revision] {
+        monitor->setSidetone(value, revision);
+    }, Qt::QueuedConnection);
 }
 
 void HeadsetControlBridge::setInactiveTime(int value)
@@ -259,6 +292,11 @@ int HeadsetControlBridge::chatMix() const
     return m_cachedState.chatMix;
 }
 
+int HeadsetControlBridge::sidetoneLevel() const
+{
+    return m_cachedState.sidetoneLevel;
+}
+
 QStringList HeadsetControlBridge::equalizerPresetNames() const
 {
     return m_cachedState.equalizerPresetNames;
@@ -337,6 +375,8 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
     {
         emit chatMixChanged();
     }
+    if (previous.sidetoneLevel != m_cachedState.sidetoneLevel)
+        emit sidetoneLevelChanged();
     if (previous.equalizerPresetNames != m_cachedState.equalizerPresetNames)
     {
         emit equalizerPresetNamesChanged();

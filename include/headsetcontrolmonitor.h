@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <headsetcontrol.hpp>
 #include <memory>
+#include <functional>
 #include <vector>
 
 struct HeadsetControlDevice {
@@ -20,6 +21,7 @@ struct HeadsetControlDevice {
     QString batteryStatus;  // "BATTERY_AVAILABLE", "BATTERY_CHARGING", "BATTERY_UNAVAILABLE"
     int batteryLevel;       // -1 - 100
     int chatMix;            // -1 when unavailable, otherwise 0 - 128
+    int sidetoneLevel = -1; // Normalised 0 - 128, -1 when unknown
     QStringList capabilities;
 
     HeadsetControlDevice() : batteryLevel(-1), chatMix(-1) {}
@@ -40,6 +42,7 @@ struct HeadsetControlState
     QString batteryStatus = "BATTERY_UNAVAILABLE";
     int batteryLevel = -1;
     int chatMix = -1;
+    int sidetoneLevel = -1;
     QStringList equalizerPresetNames;
     bool anyDeviceFound = false;
     bool testModeEnabled = false;
@@ -52,7 +55,8 @@ class HeadsetControlMonitor : public QObject
 {
     Q_OBJECT
 public:
-    explicit HeadsetControlMonitor(QObject *parent = nullptr);
+    using HeadsetDiscovery = std::function<std::vector<headsetcontrol::Headset>()>;
+    explicit HeadsetControlMonitor(QObject *parent = nullptr, HeadsetDiscovery discover = headsetcontrol::discover);
     ~HeadsetControlMonitor();
 
     bool isMonitoring() const;
@@ -70,6 +74,7 @@ public:
     QString batteryStatus() const { return m_batteryStatus; }
     int batteryLevel() const { return m_batteryLevel; }
     int chatMix() const { return m_chatMix; }
+    int sidetoneLevel() const { return m_sidetoneLevel; }
     bool hasEqualizerPresetsCapability() const { return m_hasEqualizerPresetsCapability; }
     QStringList equalizerPresetNames() const { return m_equalizerPresetNames; }
     bool anyDeviceFound() const { return m_anyDeviceFound; }
@@ -85,7 +90,7 @@ public slots:
     void setRotateToMute(bool enabled);
     void setVoicePrompts(bool enabled);
     void setEqualizerPreset(int preset);
-    void setSidetone(int value);
+    void setSidetone(int value, quint64 requestRevision = 0);
     void setInactiveTime(int value);
     void setFetchInterval(int intervalMs);
     void setTestModeEnabled(bool enabled);
@@ -102,6 +107,8 @@ signals:
     void batteryStatusChanged();
     void batteryLevelChanged();
     void chatMixChanged();
+    void sidetoneLevelChanged();
+    void sidetoneAdopted(int value, quint64 requestRevision);
     void equalizerPresetNamesChanged();
     void anyDeviceFoundChanged();
     void testModeEnabledChanged();
@@ -118,6 +125,7 @@ private:
     void updateFetchTimerInterval(bool deviceFound);
     void updateDeviceCache();
     void updateCapabilities();
+    void updateSidetoneFromDevice();
     void applyPendingSettings();
     void clearDeviceState();
     QVariantMap m_desiredSettings;
@@ -129,6 +137,7 @@ private:
     QString batteryStatusFromError(const headsetcontrol::DeviceError& error) const;
     QStringList getCapabilityList(const headsetcontrol::Headset& headset) const;
 
+    HeadsetDiscovery m_discoverHeadsets;
     QTimer* m_fetchTimer;
     QList<HeadsetControlDevice> m_cachedDevices;
     std::vector<headsetcontrol::Headset> m_headsets;
@@ -148,6 +157,9 @@ private:
     QString m_batteryStatus;
     int m_batteryLevel;
     int m_chatMix;
+    int m_sidetoneLevel = -1;
+    bool m_sidetoneWriteRequested = false;
+    quint64 m_sidetoneRequestRevision = 0;
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;

@@ -3,6 +3,7 @@
 #include <QAbstractItemModelTester>
 #include "audiomodels.h"
 #include "sessionindices.h"
+#include "sidetonepolicy.h"
 #include <QTemporaryDir>
 #include <QFile>
 #include <QJsonObject>
@@ -20,6 +21,7 @@
 #include "usersettings.h"
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
 #include "audiobridge.h"
+#include "headsetcontrolmonitor.h"
 #endif
 #ifdef QONTROLPANEL_LANGUAGE_TESTS
 #include "languagebridge.h"
@@ -84,6 +86,38 @@ class ReliabilityTests : public QObject
     }
 #endif
 private slots:
+    void sidetoneAdoptVersusApply_data()
+    {
+        QTest::addColumn<bool>("readable");
+        QTest::addColumn<int>("observed");
+        QTest::addColumn<int>("lastApplied");
+        QTest::addColumn<int>("desired");
+        QTest::addColumn<bool>("userRequested");
+        QTest::addColumn<int>("action");
+        using A = SidetonePolicy::Action;
+        QTest::newRow("first-read-keeps-device-level") << true << 85 << -1 << 0 << false << int(A::Adopt);
+        QTest::newRow("external-change-wins") << true << 32 << 85 << 85 << false << int(A::Adopt);
+        QTest::newRow("external-change-cancels-pending-retry") << true << 32 << 85 << 64 << true << int(A::Adopt);
+        QTest::newRow("matching-read-allows-user-edit") << true << 85 << 85 << 64 << true << int(A::Apply);
+        QTest::newRow("matching-level-needs-no-write") << true << 85 << 85 << 85 << false << int(A::None);
+        QTest::newRow("failed-initial-read-does-not-restore-zero") << true << -1 << -1 << 0 << false << int(A::None);
+        QTest::newRow("invalid-read-does-not-restore-zero") << true << 129 << -1 << 0 << false << int(A::None);
+        QTest::newRow("explicit-edit-without-read") << true << -1 << -1 << 64 << true << int(A::Apply);
+        QTest::newRow("write-only-retains-restoration") << false << -1 << -1 << 0 << false << int(A::Apply);
+        QTest::newRow("write-only-skips-duplicate") << false << -1 << 64 << 64 << false << int(A::None);
+        QTest::newRow("device-muted-to-zero") << true << 0 << 85 << 85 << false << int(A::Adopt);
+    }
+
+    void sidetoneAdoptVersusApply()
+    {
+        QFETCH(bool, readable);
+        QFETCH(int, observed);
+        QFETCH(int, lastApplied);
+        QFETCH(int, desired);
+        QFETCH(bool, userRequested);
+        QFETCH(int, action);
+        QCOMPARE(int(SidetonePolicy::decide(readable, observed, lastApplied, desired, userRequested)), action);
+    }
 #ifdef Q_OS_WIN
     void initTestCase()
     {
@@ -144,6 +178,50 @@ private slots:
         QStandardPaths::setTestModeEnabled(m_originalTestMode);
     }
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+    void sidetoneTestDeviceAdoptsAndStillAcceptsWrites()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        // Discovery may enumerate USB IDs, but only the synthetic device is queried or written.
+        HeadsetControlMonitor monitor(nullptr, [] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        monitor.setDesiredSettings({{"sidetone", 0}});
+        QSignalSpy adopted(&monitor, &HeadsetControlMonitor::sidetoneAdopted);
+        monitor.startMonitoring();
+        QCOMPARE(monitor.snapshot().sidetoneLevel, 85);
+        QCOMPARE(adopted.size(), 1);
+        QCOMPARE(adopted.last().at(0).toInt(), 85);
+        monitor.setDesiredSettings({{"lights", true}});
+        QCOMPARE(monitor.snapshot().sidetoneLevel, 85);
+        QCOMPARE(adopted.size(), 1);
+        monitor.setSidetone(32, 4);
+        QCOMPARE(monitor.snapshot().sidetoneLevel, 32); // Successful library write acknowledgement.
+        QCOMPARE(adopted.size(), 1);
+        monitor.setDesiredSettings({{"lights", false}});
+        QCOMPARE(monitor.snapshot().sidetoneLevel, 32);
+        monitor.requestRefresh(); // The upstream test device always reads back 85.
+        QCOMPARE(monitor.snapshot().sidetoneLevel, 85);
+        QCOMPARE(adopted.size(), 2);
+        QCOMPARE(adopted.last().at(1).toULongLong(), quint64(4));
+        monitor.stopMonitoring();
+        QCOMPARE(monitor.snapshot().sidetoneLevel, -1);
+        monitor.startMonitoring();
+        QCOMPARE(monitor.snapshot().sidetoneLevel, 85);
+        QCOMPARE(adopted.size(), 3);
+    }
+
     void audioPolicySaveFailure_data()
     {
         QTest::addColumn<QString>("policy");
