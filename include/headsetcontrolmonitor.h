@@ -36,6 +36,7 @@ struct HeadsetControlState
     bool hasEqualizerPresetsCapability = false;
     bool hasInactiveTimeCapability = false;
     QString deviceName;
+    QString displayName;
     QString batteryStatus = "BATTERY_UNAVAILABLE";
     int batteryLevel = -1;
     int chatMix = -1;
@@ -65,6 +66,7 @@ public:
     bool hasVoicePromptsCapability() const { return m_hasVoicePromptsCapability; }
     bool hasInactiveTimeCapability() const { return m_hasInactiveTimeCapability; }
     QString deviceName() const { return m_deviceName; }
+    QString displayName() const { return m_displayName; }
     QString batteryStatus() const { return m_batteryStatus; }
     int batteryLevel() const { return m_batteryLevel; }
     int chatMix() const { return m_chatMix; }
@@ -96,6 +98,7 @@ signals:
     void monitoringStateChanged(bool enabled);
     void capabilitiesChanged();
     void deviceNameChanged();
+    void displayNameChanged();
     void batteryStatusChanged();
     void batteryLevelChanged();
     void chatMixChanged();
@@ -141,6 +144,7 @@ private:
     bool m_hasEqualizerPresetsCapability;
     bool m_hasInactiveTimeCapability;
     QString m_deviceName;
+    QString m_displayName;
     QString m_batteryStatus;
     int m_batteryLevel;
     int m_chatMix;

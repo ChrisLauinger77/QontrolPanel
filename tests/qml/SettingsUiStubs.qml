@@ -27,6 +27,7 @@ QtObject {
 
     property bool anyDeviceFound: true
     property string deviceName: "Test headset"
+    property string displayName: "HeadsetControl Test device"
     property int batteryLevel: 50
     property string batteryStatus: "BATTERY_AVAILABLE"
     property string batteryIcon: ""

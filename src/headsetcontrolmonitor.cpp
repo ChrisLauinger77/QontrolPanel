@@ -231,8 +231,6 @@ void HeadsetControlMonitor::updateDeviceCache()
         device.deviceName = QString::fromStdString(std::string(headset.name()));
         device.vendorId = QString("0x%1").arg(headset.vendorId(), 4, 16, QChar('0')).toUpper();
         device.productId = QString("0x%1").arg(headset.productId(), 4, 16, QChar('0')).toUpper();
-        device.vendor = device.vendorId; // Could be enhanced with vendor name lookup
-        device.product = device.productId;
 
         device.capabilities = getCapabilityList(headset);
 
@@ -290,6 +288,15 @@ void HeadsetControlMonitor::updateDeviceCache()
         {
             device.chatMix = -1;
         }
+
+        // Opening a device can refine its product name (e.g. a paired Jabra headset).
+        // Read the names after the battery and ChatMix queries have opened it.
+        const auto vendorName = headset.vendorName();
+        const auto productName = headset.productName();
+        device.vendor = vendorName.empty() ? device.vendorId
+            : QString::fromUtf8(vendorName.data(), static_cast<qsizetype>(vendorName.size()));
+        device.product = productName.empty() ? device.productId
+            : QString::fromUtf8(productName.data(), static_cast<qsizetype>(productName.size()));
 
         LOG_INFO("HeadsetControlManager",
                  QString("Found headset device: %1 with %2 capabilities")
@@ -368,6 +375,7 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newEqualizerPresetsCapability = false;
     bool newInactivetimeCapability = false;
     QString newDeviceName = "";
+    QString newDisplayName;
     QString newActiveHeadsetSettingsKey = "";
     QStringList newEqualizerPresetNames;
     bool newAnyDeviceFound = m_activeHeadsetIndex >= 0;
@@ -376,6 +384,9 @@ void HeadsetControlMonitor::updateCapabilities()
     {
         const headsetcontrol::Headset &headset = *active;
         newDeviceName = QString::fromStdString(std::string(headset.name()));
+        const auto productName = headset.productName();
+        newDisplayName = productName.empty() ? newDeviceName
+            : QString::fromUtf8(productName.data(), static_cast<qsizetype>(productName.size()));
         newActiveHeadsetSettingsKey = activeHeadsetSettingsKey(headset);
 
         newSidetoneCapability = headset.supports(CAP_SIDETONE);
@@ -439,6 +450,12 @@ void HeadsetControlMonitor::updateCapabilities()
     {
         m_deviceName = newDeviceName;
         emit deviceNameChanged();
+    }
+
+    if (newDisplayName != m_displayName)
+    {
+        m_displayName = newDisplayName;
+        emit displayNameChanged();
     }
 
     if (newAnyDeviceFound != m_anyDeviceFound)
@@ -542,6 +559,7 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.hasEqualizerPresetsCapability = hasEqualizerPresetsCapability();
     state.hasInactiveTimeCapability = hasInactiveTimeCapability();
     state.deviceName = deviceName();
+    state.displayName = displayName();
     state.batteryStatus = batteryStatus();
     state.batteryLevel = batteryLevel();
     state.chatMix = chatMix();
@@ -683,6 +701,7 @@ void HeadsetControlMonitor::clearDeviceState()
     m_hasEqualizerPresetsCapability = false;
     m_hasInactiveTimeCapability = false;
     m_deviceName = "";
+    m_displayName.clear();
     m_batteryStatus = "BATTERY_UNAVAILABLE";
     m_batteryLevel = -1;
     m_chatMix = -1;
@@ -698,6 +717,7 @@ void HeadsetControlMonitor::clearDeviceState()
 
     emit capabilitiesChanged();
     emit deviceNameChanged();
+    emit displayNameChanged();
     emit batteryStatusChanged();
     emit batteryLevelChanged();
     emit chatMixChanged();

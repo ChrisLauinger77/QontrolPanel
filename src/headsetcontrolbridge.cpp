@@ -220,6 +220,11 @@ QString HeadsetControlBridge::deviceName() const
     return m_cachedState.deviceName;
 }
 
+QString HeadsetControlBridge::displayName() const
+{
+    return m_cachedState.displayName;
+}
+
 QString HeadsetControlBridge::batteryStatus() const
 {
     return m_cachedState.batteryStatus;
@@ -313,6 +318,10 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
     if (previous.deviceName != m_cachedState.deviceName)
     {
         emit deviceNameChanged();
+    }
+    if (previous.displayName != m_cachedState.displayName)
+    {
+        emit displayNameChanged();
     }
     if (previous.batteryStatus != m_cachedState.batteryStatus)
     {

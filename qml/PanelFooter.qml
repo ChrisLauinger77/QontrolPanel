@@ -45,7 +45,7 @@ Rectangle {
             visible: UserSettings.displayBatteryFooter && UserSettings.headsetcontrolMonitoring &&
                      HeadsetControlBridge.anyDeviceFound &&
                      HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE"
-            ToolTip.text: HeadsetControlBridge.deviceName
+            ToolTip.text: HeadsetControlBridge.displayName
             ToolTip.visible: hovered
             ToolTip.delay: 1000
             contentItem: RowLayout {

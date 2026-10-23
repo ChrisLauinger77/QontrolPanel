@@ -117,7 +117,7 @@ Platform.SystemTrayIcon {
             return baseTooltip;
         }
 
-        var batteryText = "\n" + "🎧" + HeadsetControlBridge.deviceName + "\n";
+        var batteryText = "\n" + "🎧" + HeadsetControlBridge.displayName + "\n";
         batteryText += HeadsetControlBridge.batteryIcon;
         if (HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE") {
             batteryText += HeadsetControlBridge.batteryLevel + "%";

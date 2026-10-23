@@ -22,6 +22,7 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(bool hasEqualizerPresetsCapability READ hasEqualizerPresetsCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasInactiveTimeCapability READ hasInactiveTimeCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString deviceName READ deviceName NOTIFY deviceNameChanged)
+    Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
     Q_PROPERTY(QString batteryStatus READ batteryStatus NOTIFY batteryStatusChanged)
     Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
     Q_PROPERTY(QString batteryIcon READ batteryIcon NOTIFY batteryIconChanged)
@@ -63,6 +64,7 @@ public:
     bool hasEqualizerPresetsCapability() const;
     bool hasInactiveTimeCapability() const;
     QString deviceName() const;
+    QString displayName() const;
     QString batteryStatus() const;
     int batteryLevel() const;
     QString batteryIcon() const;
@@ -76,6 +78,7 @@ public:
 signals:
     void capabilitiesChanged();
     void deviceNameChanged();
+    void displayNameChanged();
     void batteryStatusChanged();
     void batteryLevelChanged();
     void batteryIconChanged();

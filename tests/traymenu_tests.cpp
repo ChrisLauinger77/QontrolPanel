@@ -260,6 +260,12 @@ private slots:
         QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
         auto* tray = qobject_cast<TrayMenu*>(systemTray->property("contextMenu").value<QObject*>());
         QVERIFY(tray);
+        auto* headset = engine.singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(systemTray->property("tooltip").toString().contains(QStringLiteral("HeadsetControl Test device")));
+        // A newly paired headset changes the display name without changing the driver name.
+        headset->setProperty("displayName", QStringLiteral("Jabra Evolve2 85"));
+        QTRY_VERIFY(systemTray->property("tooltip").toString().contains(QStringLiteral("Jabra Evolve2 85")));
+        QCOMPARE(headset->property("deviceName").toString(), QStringLiteral("Test headset"));
         // Exercise the actual right-click handler, with no Qt Quick window.
         QQmlExpression contextRequest(qmlContext(systemTray.get()), systemTray.get(),
                                      "activated(Platform.SystemTrayIcon.Context)");
@@ -295,7 +301,8 @@ private slots:
 
         settings->setProperty("enableMediaSessionManager", false);
         QVERIFY(!previous->isVisible());
-        engine.singletonInstance<QObject*>(m_headsetType)->setProperty("anyDeviceFound", false);
+        headset->setProperty("anyDeviceFound", false);
+        QCOMPARE(systemTray->property("tooltip").toString(), QStringLiteral("QontrolPanel"));
         QVERIFY(!actionFor(menu, "headset")->isVisible());
         QSignalSpy showSettings(systemTray.get(), SIGNAL(settingsWindowRequested()));
         actionFor(menu, "settings")->trigger();

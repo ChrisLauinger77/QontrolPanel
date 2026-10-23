@@ -88,6 +88,10 @@ QML should use the bridge rather than holding a monitor pointer directly.
 
 It represents app-facing data and should not grow protocol-specific behavior.
 
+`vendor` and `product` use HeadsetControl's UTF-8 vendor and product names, falling back to the hexadecimal USB IDs when unavailable. Read the product name after device queries such as `getBattery()`: opening a dongle can refine it to the paired headset's name.
+
+The state snapshot and bridge expose `displayName` for the tray tooltip, panel footer tooltip, and settings heading. It uses the product name, falling back to the generic driver `deviceName`. The driver name and VID/PID-based matching and settings identity remain unchanged. In test mode, the display name is `HeadsetControl Test device`.
+
 ## Settings
 
 Relevant settings live in `UserSettings`:

@@ -10,7 +10,7 @@ ColumnLayout {
     readonly property var testProfiles: [qsTr("1 - Error conditions"), qsTr("2 - Charging battery"), qsTr("3 - Basic battery"), qsTr("4 - Battery unavailable"), qsTr("5 - Timeout"), qsTr("6 - Full battery"), qsTr("7 - Low battery")]
 
     Label {
-        text: HeadsetControlBridge.deviceName
+        text: HeadsetControlBridge.displayName
         font.pixelSize: 22
         font.bold: true
         visible: HeadsetControlBridge.anyDeviceFound
