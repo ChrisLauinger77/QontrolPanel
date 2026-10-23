@@ -249,7 +249,27 @@ private slots:
         monitor.setDesiredSettings({{"lights", true}});
         QCOMPARE(monitor.snapshot().sidetoneLevel, 85);
         QCOMPARE(adopted.size(), 1);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        // Fail only the synthetic device's writes after connection, keeping its cached reachability.
+        headsetcontrol::setTestProfile(1);
+        monitor.setSidetone(32, 1);
+        for (bool lights : {false, true})
+            monitor.setDesiredSettings({{"lights", lights}});
+        monitor.setDesiredSettings({{"lights", false}});
+        QVERIFY(errors.last().at(0).toString().contains("sidetone: retry limit reached"));
+        QCOMPARE(monitor.snapshot().sidetoneLevel, 85);
+        // A new user action retries the same desired value, even after its budget is exhausted.
+        monitor.setSidetone(32, 2);
+        QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
+        QVERIFY(!errors.last().at(0).toString().contains("retry limit reached"));
+        for (bool lights : {false, true})
+            monitor.setDesiredSettings({{"lights", lights}});
+        monitor.setDesiredSettings({{"lights", false}});
+        QVERIFY(errors.last().at(0).toString().contains("sidetone: retry limit reached"));
+        // Recovery also succeeds without selecting a different value or doing a refresh.
+        headsetcontrol::setTestProfile(3);
         monitor.setSidetone(32, 4);
+        QVERIFY(errors.last().at(0).toString().isEmpty());
         QCOMPARE(monitor.snapshot().sidetoneLevel, 32); // Successful library write acknowledgement.
         QCOMPARE(adopted.size(), 1);
         monitor.setDesiredSettings({{"lights", false}});

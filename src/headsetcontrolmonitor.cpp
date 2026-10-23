@@ -106,6 +106,7 @@ void HeadsetControlMonitor::setEqualizerPreset(int preset)
 
 void HeadsetControlMonitor::setSidetone(int value, quint64 requestRevision)
 {
+    m_settingAttempts.remove("sidetone");
     m_sidetoneWriteRequested = true;
     m_sidetoneRequestRevision = requestRevision;
     setDesiredSettings({{"sidetone", qBound(0, value, 128)}});
