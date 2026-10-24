@@ -48,6 +48,21 @@ QObject* findObject(QObject* root, const char* property, const QVariant& value)
     return nullptr;
 }
 
+QQuickItem* findVisualItem(QQuickItem* root, const QString& objectName)
+{
+    if (!root)
+        return nullptr;
+    if (root->objectName() == objectName)
+        return root;
+    // Repeater delegates belong to the visual parent, which can differ from
+    // their QObject owner. Traverse the items shown by the actual pane.
+    for (auto* child : root->childItems()) {
+        if (auto* match = findVisualItem(child, objectName))
+            return match;
+    }
+    return nullptr;
+}
+
 QObject* editor(QObject* pane, const QString& title, const char* property)
 {
     auto* card = findObject(pane, "title", title);
@@ -692,7 +707,7 @@ private slots:
         QVERIFY(card && card->property("visible").toBool());
         QList<QObject*> checkboxes;
         for (int bit : {1, 2, 4}) {
-            auto* checkbox = pane->findChild<QObject*>(QString("ancButtonMode%1").arg(bit));
+            auto* checkbox = findVisualItem(qobject_cast<QQuickItem*>(pane), QString("ancButtonMode%1").arg(bit));
             QVERIFY(checkbox);
             checkboxes.append(checkbox);
             QVERIFY(!checkbox->property("checked").toBool());
@@ -716,7 +731,7 @@ private slots:
             settings->setHeadsetcontrolAncButtonModes(invalid);
             QCOMPARE(settings->headsetcontrolAncButtonModes(), 2);
         }
-        auto* unset = pane->findChild<QObject*>("ancButtonModesUnset");
+        auto* unset = findVisualItem(qobject_cast<QQuickItem*>(pane), "ancButtonModesUnset");
         QVERIFY(unset);
         QVERIFY(QMetaObject::invokeMethod(unset, "click"));
         QCOMPARE(settings->headsetcontrolAncButtonModes(), -1);
@@ -737,7 +752,7 @@ private slots:
         settings->setHeadsetcontrolAncButtonModes(-1);
         auto* pane = loadPane("HeadsetControlPane");
         QVERIFY(pane);
-        auto* checkbox = pane->findChild<QObject*>("ancButtonMode2");
+        auto* checkbox = findVisualItem(qobject_cast<QQuickItem*>(pane), "ancButtonMode2");
         QVERIFY(checkbox);
         QSignalSpy changed(settings, &UserSettings::headsetcontrolAncButtonModesChanged);
         QSignalSpy failed(settings, &UserSettings::saveFailed);
