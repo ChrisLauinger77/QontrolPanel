@@ -595,6 +595,80 @@ private slots:
         QCOMPARE(empty.size(), 2);
     }
 
+    void limitedHeadsetTestProfile()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        int discoveries = 0;
+        HeadsetControlMonitor monitor(nullptr, [&] {
+            ++discoveries;
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        QCOMPARE(monitor.snapshot().testProfile, 3);
+        monitor.setTestModeEnabled(true);
+        monitor.startMonitoring();
+        QVERIFY(monitor.snapshot().hasEqualizerCapability);
+        QVERIFY(monitor.snapshot().hasHeadsetVolumeCapability);
+        QCOMPARE(monitor.snapshot().equalizerLayout.count, 10);
+        QSignalSpy profileChanged(&monitor, &HeadsetControlMonitor::testProfileChanged);
+        monitor.setTestProfile(10);
+        const auto state = monitor.snapshot();
+        QCOMPARE(state.testProfile, 10);
+        QCOMPARE(headsetcontrol::getTestProfile(), 10);
+        QCOMPARE(profileChanged.size(), 1);
+        QVERIFY(state.anyDeviceFound);
+        QVERIFY(state.hasSidetoneCapability);
+        QVERIFY(state.hasLightsCapability);
+        QCOMPARE(state.batteryLevel, 42);
+        QCOMPARE(state.batteryStatus, QString("BATTERY_AVAILABLE"));
+        const auto devices = monitor.getCachedDevices();
+        QCOMPARE(devices.size(), 1);
+        QCOMPARE(devices.first().capabilities.size(), 3);
+        QVERIFY(devices.first().capabilities.contains("CAP_SIDETONE"));
+        QVERIFY(devices.first().capabilities.contains("CAP_LIGHTS"));
+        QVERIFY(devices.first().capabilities.contains("CAP_BATTERY_STATUS"));
+        QVERIFY(!state.hasEqualizerCapability);
+        QVERIFY(!state.hasEqualizerPresetsCapability);
+        QVERIFY(!state.hasHeadsetVolumeCapability);
+        QVERIFY(!state.canReadHeadsetVolume);
+        QVERIFY(!state.hasAncCapability);
+        QVERIFY(!state.hasChatMixCapability);
+        QVERIFY(!state.hasVoicePromptsCapability);
+        QVERIFY(!state.hasInactiveTimeCapability);
+        QCOMPARE(state.equalizerLayout.count, 0);
+        QVERIFY(state.equalizerPresetNames.isEmpty());
+        QCOMPARE(state.sidetoneLevel, -1);
+        QCOMPARE(state.headsetVolumeLevel, -1);
+        QCOMPARE(state.micMuted, -1);
+        QCOMPARE(state.micAttached, -1);
+        QCOMPARE(state.chatMix, -1);
+        const int previousDiscoveries = discoveries;
+        monitor.setTestProfile(10);
+        QCOMPARE(discoveries, previousDiscoveries);
+        QCOMPARE(profileChanged.size(), 1);
+        monitor.setTestProfile(3);
+        QVERIFY(monitor.snapshot().hasEqualizerCapability);
+        QVERIFY(monitor.snapshot().hasHeadsetVolumeCapability);
+        QCOMPARE(monitor.snapshot().equalizerLayout.count, 10);
+        QCOMPARE(profileChanged.size(), 2);
+        monitor.stopMonitoring();
+        for (int unsupported : {8, 9, 11}) {
+            monitor.setTestProfile(unsupported);
+            QCOMPARE(monitor.snapshot().testProfile, 7);
+        }
+        monitor.setTestProfile(0);
+        QCOMPARE(monitor.snapshot().testProfile, 1);
+    }
+
     void batteryTimeTestProfilesAndReset()
     {
         const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();

@@ -217,6 +217,30 @@ private slots:
         m_window.reset();
     }
 
+    void testHeadsetProfileUsesExplicitIds()
+    {
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* selector = editor(pane, "Test headset profile", "currentIndex");
+        QVERIFY(selector);
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("testProfile", 3));
+        QCOMPARE(selector->property("count").toInt(), 8);
+        QCOMPARE(selector->property("currentIndex").toInt(), 2);
+        QCOMPARE(selector->property("currentValue").toInt(), 3);
+        QVERIFY(edit(selector, "currentIndex", 7, "activated"));
+        QCOMPARE(headset->property("testProfile").toInt(), 10);
+        QCOMPARE(selector->property("currentValue").toInt(), 10);
+        QCOMPARE(selector->property("currentText").toString(), QString("10 - Limited capabilities"));
+        // External bridge updates keep the non-consecutive selection in sync.
+        QVERIFY(headset->setProperty("testProfile", 7));
+        QCOMPARE(selector->property("currentIndex").toInt(), 6);
+        QVERIFY(headset->setProperty("testProfile", 10));
+        QCOMPARE(selector->property("currentIndex").toInt(), 7);
+        QVERIFY(edit(selector, "currentIndex", 0, "activated"));
+        QCOMPARE(headset->property("testProfile").toInt(), 1);
+    }
+
     void equalizerSlidersUseDeviceLayoutAndCommitOnRelease()
     {
         auto* settings = UserSettings::instance();

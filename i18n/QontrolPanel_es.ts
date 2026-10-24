@@ -968,6 +968,10 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation>7 - Batería baja</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
         <translation>Notificar cuando los auriculares conectados alcancen %1 % o menos.</translation>
     </message>

@@ -100,6 +100,8 @@ If the device already works in HeadsetControl but not in QontrolPanel, inspect t
 - `setTestModeEnabled(bool enabled)`
 - `setTestProfile(int profile)`
 
+The selector offers profiles 1–7 and 10, with profile 3 as the default. Profile 10 limits the synthetic device to sidetone, lights and battery so capability-gated controls can be tested. Profiles 8 and 9 remain reserved.
+
 Use test mode for UI and settings work when a physical supported headset is not available. Do not treat test mode as proof that USB HID communication works; it only validates the app-side behavior.
 
 ## Troubleshooting

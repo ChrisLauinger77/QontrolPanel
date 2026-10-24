@@ -880,6 +880,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>7 - Низкий заряд батареи</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Включите тестовый режим ниже, чтобы имитировать поддерживаемую гарнитуру и проверить интерфейс HeadsetControl.</translation>
     </message>

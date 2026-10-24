@@ -880,6 +880,10 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
         <translation>7 - Batteria scarica</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Abilita la modalità test di seguito per simulare una cuffia supportata e convalidare l&apos;interfaccia utente di Controllo cuffie</translation>
     </message>

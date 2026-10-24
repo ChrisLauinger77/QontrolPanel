@@ -197,7 +197,7 @@ Battery level uses `-1` when unavailable. The cache, snapshot, and bridge also c
 
 `HeadsetBattery.formatTime()` is shared by the tray tooltip and settings battery label. Charging uses only time to full; available/discharging uses only time to empty. Unknown estimates and other battery states produce no text. Values below 60 minutes use minutes, and longer values round to the nearest whole hour, for example "about 1 h to full" or "about 5 h left". These are the last device estimates, refreshed at the existing fetch rate.
 
-The pinned test device's profile 2 reports 50% charging with 60 minutes to full. Selectable profiles 6 and 7 report 720 and 72 minutes to empty. Upstream profile 0 additionally reports 302 minutes to empty, but QontrolPanel's profile selector supports 1–7. Profile 3 omits both estimates; profiles 1, 4, and 5 fail the battery query.
+The pinned test device's profile 2 reports 50% charging with 60 minutes to full. Selectable profiles 6 and 7 report 720 and 72 minutes to empty. Upstream profile 0 additionally reports 302 minutes to empty, but QontrolPanel's profile selector supports 1–7 and 10 (default 3). Profile 10 exposes only sidetone, lights and battery, with no sidetone or headset-volume read-back; profiles 8 and 9 remain reserved and unavailable. Profile 3 omits both estimates; profiles 1, 4, and 5 fail the battery query.
 
 ChatMix uses `-1` when unavailable and otherwise follows the HeadsetControl value range. Application-side ChatMix behavior is coordinated with `AudioBridge`, which applies volume changes to configured communication apps and restores original volumes when needed.
 

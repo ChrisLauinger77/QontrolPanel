@@ -881,6 +881,10 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
         <translation>7 - Bateria fraca</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Ative o modo de teste abaixo para simular um headset compatível e validar a interface do HeadsetControl.</translation>
     </message>

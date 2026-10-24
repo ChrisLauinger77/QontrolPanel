@@ -880,6 +880,10 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>7 – Batterie schwach</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Aktivieren Sie unten den Testmodus, um ein unterstütztes Headset zu simulieren und die Benutzeroberfläche von HeadsetControl zu überprüfen.</translation>
     </message>

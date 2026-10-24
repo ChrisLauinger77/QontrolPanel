@@ -1034,6 +1034,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Wył.</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
         <translation type="unfinished"></translation>
     </message>

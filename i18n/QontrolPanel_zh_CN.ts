@@ -879,6 +879,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>7 - 电量低</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>启用下方测试模式，以模拟受支持的耳机并验证 HeadsetControl 界面。</translation>
     </message>

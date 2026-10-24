@@ -7,7 +7,16 @@ import ChrisLauinger77.QontrolPanel
 
 ColumnLayout {
     spacing: 3
-    readonly property var testProfiles: [qsTr("1 - Error conditions"), qsTr("2 - Charging battery"), qsTr("3 - Basic battery"), qsTr("4 - Battery unavailable"), qsTr("5 - Timeout"), qsTr("6 - Full battery"), qsTr("7 - Low battery")]
+    readonly property var testProfiles: [
+        { text: qsTr("1 - Error conditions"), value: 1 },
+        { text: qsTr("2 - Charging battery"), value: 2 },
+        { text: qsTr("3 - Basic battery"), value: 3 },
+        { text: qsTr("4 - Battery unavailable"), value: 4 },
+        { text: qsTr("5 - Timeout"), value: 5 },
+        { text: qsTr("6 - Full battery"), value: 6 },
+        { text: qsTr("7 - Low battery"), value: 7 },
+        { text: qsTr("10 - Limited capabilities"), value: 10 }
+    ]
 
     Label {
         text: HeadsetControlBridge.displayName
@@ -72,9 +81,19 @@ ColumnLayout {
                     additionalControl: CustomComboBox {
                         Layout.preferredHeight: 35
                         model: testProfiles
-                        currentIndex: Math.max(0, HeadsetControlBridge.testProfile - 1)
+                        textRole: "text"
+                        valueRole: "value"
+                        function acceptedIndex() {
+                            return testProfiles.findIndex(function(profile) {
+                                return profile.value === HeadsetControlBridge.testProfile
+                            })
+                        }
+                        currentIndex: acceptedIndex()
                         enabled: HeadsetControlBridge.testModeEnabled
-                        onActivated: HeadsetControlBridge.setTestProfile(currentIndex + 1)
+                        onActivated: {
+                            HeadsetControlBridge.setTestProfile(currentValue)
+                            currentIndex = Qt.binding(acceptedIndex)
+                        }
                     }
                 }
 

@@ -968,6 +968,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>7 - 배터리 부족</translation>
     </message>
     <message>
+        <source>10 - Limited capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
         <translation>연결된 헤드셋이 %1% 이하에 도달하면 알려줍니다.</translation>
     </message>
