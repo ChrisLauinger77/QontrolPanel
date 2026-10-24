@@ -55,6 +55,7 @@ QtObject {
     property bool hasChatMixCapability: true
     property bool hasEqualizerPresetsCapability: true
     property bool hasInactiveTimeCapability: true
+    property bool hasBluetoothCallVolumeCapability: true
     property bool hasBluetoothWhenPoweredOnCapability: true
     property bool hasMicMuteLedBrightnessCapability: true
     property bool hasVolumeLimiterCapability: true

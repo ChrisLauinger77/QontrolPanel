@@ -238,7 +238,8 @@ private slots:
             << QByteArray("setMicMuteLedBrightness") << QByteArray("headsetcontrolMicMuteLedBrightness");
         QTest::newRow("bluetoothWhenPoweredOn") << QString("bluetoothWhenPoweredOn") << 1 << QByteArray("hasBluetoothWhenPoweredOnCapability")
             << QByteArray("setBluetoothWhenPoweredOn") << QByteArray("headsetcontrolBluetoothWhenPoweredOn");
-        // Additional write-only settings add rows here.
+        QTest::newRow("bluetoothCallVolume") << QString("bluetoothCallVolume") << 100 << QByteArray("hasBluetoothCallVolumeCapability")
+            << QByteArray("setBluetoothCallVolume") << QByteArray("headsetcontrolBluetoothCallVolume");
     }
 
     void writeOnlyHeadsetSettings()
@@ -261,7 +262,7 @@ private slots:
         state.hasVolumeLimiterCapability = key == "volumeLimiter";
         state.hasMicMuteLedBrightnessCapability = key == "micMuteLedBrightness";
         state.hasBluetoothWhenPoweredOnCapability = key == "bluetoothWhenPoweredOn";
-        // Capability assignments are inserted below.
+        state.hasBluetoothCallVolumeCapability = key == "bluetoothCallVolume";
         QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
                                          Q_ARG(HeadsetControlState, state)));
         QVERIFY(bridge->property(capability.constData()).toBool());
@@ -302,7 +303,7 @@ private slots:
         if (key == "volumeLimiter") QVERIFY(snapshot.hasVolumeLimiterCapability);
         if (key == "micMuteLedBrightness") QVERIFY(snapshot.hasMicMuteLedBrightnessCapability);
         if (key == "bluetoothWhenPoweredOn") QVERIFY(snapshot.hasBluetoothWhenPoweredOnCapability);
-        // Snapshot capability checks are inserted below.
+        if (key == "bluetoothCallVolume") QVERIFY(snapshot.hasBluetoothCallVolumeCapability);
         monitor.setDesiredSettings({{key, 0}}); // Explicit zero/off is a valid choice.
         QVERIFY(errors.last().at(0).toString().isEmpty());
         monitor.setDesiredSettings({{key, maximum}});
@@ -317,7 +318,7 @@ private slots:
         if (key == "volumeLimiter") QVERIFY(!monitor.snapshot().hasVolumeLimiterCapability);
         if (key == "micMuteLedBrightness") QVERIFY(!monitor.snapshot().hasMicMuteLedBrightnessCapability);
         if (key == "bluetoothWhenPoweredOn") QVERIFY(!monitor.snapshot().hasBluetoothWhenPoweredOnCapability);
-        // Reset capability checks are inserted below.
+        if (key == "bluetoothCallVolume") QVERIFY(!monitor.snapshot().hasBluetoothCallVolumeCapability);
         QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
                                          Q_ARG(HeadsetControlState, monitor.snapshot())));
         QVERIFY(!bridge->property(capability.constData()).toBool());

@@ -1025,6 +1025,14 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Bluetooth call volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the Bluetooth call volume (0–100)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Con qué frecuencia se obtiene el estado de tus auriculares. Los valores más bajos pueden aumentar el uso de batería.</translation>
     </message>

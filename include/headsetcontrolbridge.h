@@ -21,6 +21,7 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(bool hasVoicePromptsCapability READ hasVoicePromptsCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasEqualizerPresetsCapability READ hasEqualizerPresetsCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasInactiveTimeCapability READ hasInactiveTimeCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasBluetoothCallVolumeCapability READ hasBluetoothCallVolumeCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasBluetoothWhenPoweredOnCapability READ hasBluetoothWhenPoweredOnCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasMicMuteLedBrightnessCapability READ hasMicMuteLedBrightnessCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasVolumeLimiterCapability READ hasVolumeLimiterCapability NOTIFY capabilitiesChanged)
@@ -58,6 +59,7 @@ public:
     Q_INVOKABLE void setEqualizerPreset(int preset);
     Q_INVOKABLE void setSidetone(int value);
     Q_INVOKABLE void setInactiveTime(int value);
+    Q_INVOKABLE void setBluetoothCallVolume(int value);
     Q_INVOKABLE void setBluetoothWhenPoweredOn(int value);
     Q_INVOKABLE void setMicMuteLedBrightness(int value);
     Q_INVOKABLE void setVolumeLimiter(int value);
@@ -75,6 +77,7 @@ public:
     bool hasVoicePromptsCapability() const;
     bool hasEqualizerPresetsCapability() const;
     bool hasInactiveTimeCapability() const;
+    bool hasBluetoothCallVolumeCapability() const;
     bool hasBluetoothWhenPoweredOnCapability() const;
     bool hasMicMuteLedBrightnessCapability() const;
     bool hasVolumeLimiterCapability() const;

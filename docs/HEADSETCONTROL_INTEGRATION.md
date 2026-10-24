@@ -58,6 +58,7 @@ Important state includes:
 - `m_hasVoicePromptsCapability`
 - `m_hasEqualizerPresetsCapability`
 - `m_hasInactiveTimeCapability`
+- `m_hasBluetoothCallVolumeCapability`
 - `m_hasBluetoothWhenPoweredOnCapability`
 - `m_hasMicMuteLedBrightnessCapability`
 - `m_hasVolumeLimiterCapability`
@@ -108,6 +109,7 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolEqualizerPreset`
 - `headsetcontrolInactiveTime`
 - `headsetcontrolSidetone`
+- `headsetcontrolBluetoothCallVolume` (-1: not set; 0–100)
 - `headsetcontrolBluetoothWhenPoweredOn` (-1: not set; 0–1)
 - `headsetcontrolMicMuteLedBrightness` (-1: not set; 0–3)
 - `headsetcontrolVolumeLimiter` (-1: not set; 0–1)
@@ -116,6 +118,8 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolFetchRate`
 - `headsetcontrolLowBatteryThreshold`
 - `enableNotifications`
+
+Microphone volume, microphone noise filter, volume limiter, mic mute LED brightness, Bluetooth at power-on, and Bluetooth call volume are write-only preferences. They default to `-1` ("Not set") and are omitted from hardware writes until the user chooses a value. On/off preferences use `0` for off and `1` for on; the first tray toggle from "Not set" explicitly selects on. Choosing "Not set" again stops future restoration without changing the headset's current value. The UI displays saved desired values because these preferences cannot be read back.
 
 When adding a headset preference, keep persisted settings, bridge state, monitor behavior, and QML controls in sync.
 

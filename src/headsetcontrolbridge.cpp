@@ -28,6 +28,7 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
     connect(settings, &UserSettings::enableNotificationsChanged, this,
             &HeadsetControlBridge::updateLowBatteryNotificationState);
     connect(settings, &UserSettings::headsetcontrolLightsChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolBluetoothCallVolumeChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolBluetoothWhenPoweredOnChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolMicMuteLedBrightnessChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolVolumeLimiterChanged, this, &HeadsetControlBridge::syncDesiredSettings);
@@ -146,6 +147,7 @@ void HeadsetControlBridge::syncDesiredSettings()
                               {"volumeLimiter", settings->headsetcontrolVolumeLimiter()},
                               {"micMuteLedBrightness", settings->headsetcontrolMicMuteLedBrightness()},
                               {"bluetoothWhenPoweredOn", settings->headsetcontrolBluetoothWhenPoweredOn()},
+                              {"bluetoothCallVolume", settings->headsetcontrolBluetoothCallVolume()},
                               {"inactiveTime", settings->headsetcontrolInactiveTime()}};
     QMetaObject::invokeMethod(
         m_monitor, [monitor = m_monitor, desired] { monitor->setDesiredSettings(desired); }, Qt::QueuedConnection);
@@ -237,6 +239,11 @@ void HeadsetControlBridge::setBluetoothWhenPoweredOn(int value)
     UserSettings::instance()->setHeadsetcontrolBluetoothWhenPoweredOn(value);
 }
 
+void HeadsetControlBridge::setBluetoothCallVolume(int value)
+{
+    UserSettings::instance()->setHeadsetcontrolBluetoothCallVolume(value);
+}
+
 void HeadsetControlBridge::setInactiveTime(int value)
 {
     UserSettings::instance()->setHeadsetcontrolInactiveTime(value);
@@ -308,6 +315,11 @@ bool HeadsetControlBridge::hasMicMuteLedBrightnessCapability() const
 bool HeadsetControlBridge::hasBluetoothWhenPoweredOnCapability() const
 {
     return m_cachedState.hasBluetoothWhenPoweredOnCapability;
+}
+
+bool HeadsetControlBridge::hasBluetoothCallVolumeCapability() const
+{
+    return m_cachedState.hasBluetoothCallVolumeCapability;
 }
 
 QString HeadsetControlBridge::deviceName() const
@@ -420,6 +432,7 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         previous.hasVolumeLimiterCapability != m_cachedState.hasVolumeLimiterCapability ||
         previous.hasMicMuteLedBrightnessCapability != m_cachedState.hasMicMuteLedBrightnessCapability ||
         previous.hasBluetoothWhenPoweredOnCapability != m_cachedState.hasBluetoothWhenPoweredOnCapability ||
+        previous.hasBluetoothCallVolumeCapability != m_cachedState.hasBluetoothCallVolumeCapability ||
         previous.hasInactiveTimeCapability != m_cachedState.hasInactiveTimeCapability;
 
     if (capabilitiesChangedNow)

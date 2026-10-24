@@ -37,6 +37,7 @@ struct HeadsetControlState
     bool hasVoicePromptsCapability = false;
     bool hasEqualizerPresetsCapability = false;
     bool hasInactiveTimeCapability = false;
+    bool hasBluetoothCallVolumeCapability = false;
     bool hasBluetoothWhenPoweredOnCapability = false;
     bool hasMicMuteLedBrightnessCapability = false;
     bool hasVolumeLimiterCapability = false;
@@ -75,6 +76,7 @@ public:
     bool hasChatMixCapability() const { return m_hasChatMixCapability; }
     bool hasVoicePromptsCapability() const { return m_hasVoicePromptsCapability; }
     bool hasInactiveTimeCapability() const { return m_hasInactiveTimeCapability; }
+    bool hasBluetoothCallVolumeCapability() const { return m_hasBluetoothCallVolumeCapability; }
     bool hasBluetoothWhenPoweredOnCapability() const { return m_hasBluetoothWhenPoweredOnCapability; }
     bool hasMicMuteLedBrightnessCapability() const { return m_hasMicMuteLedBrightnessCapability; }
     bool hasVolumeLimiterCapability() const { return m_hasVolumeLimiterCapability; }
@@ -163,6 +165,7 @@ private:
     bool m_hasVoicePromptsCapability;
     bool m_hasEqualizerPresetsCapability;
     bool m_hasInactiveTimeCapability;
+    bool m_hasBluetoothCallVolumeCapability = false;
     bool m_hasBluetoothWhenPoweredOnCapability = false;
     bool m_hasMicMuteLedBrightnessCapability = false;
     bool m_hasVolumeLimiterCapability = false;

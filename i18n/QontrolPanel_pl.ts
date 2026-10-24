@@ -1027,6 +1027,14 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Bluetooth call volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the Bluetooth call volume (0–100)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>Wersja</translation>
     </message>

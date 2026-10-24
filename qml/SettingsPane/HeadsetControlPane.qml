@@ -386,6 +386,31 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasBluetoothCallVolumeCapability
+                    enabled: HeadsetControlBridge.hasBluetoothCallVolumeCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Bluetooth call volume")
+                    description: qsTr("Adjust the Bluetooth call volume (0–100)")
+
+                    additionalControl: SpinBox {
+                        from: -1
+                        to: 100
+                        value: UserSettings.headsetcontrolBluetoothCallVolume
+                        editable: true
+                        textFromValue: function(value, locale) {
+                            return value < 0 ? qsTr("Not set") : value.toLocaleString(locale, "f", 0)
+                        }
+                        valueFromText: function(text, locale) {
+                            return text === qsTr("Not set") ? -1 : Number.fromLocaleString(locale, text)
+                        }
+                        onValueModified: {
+                            UserSettings.headsetcontrolBluetoothCallVolume = value;
+                            value = Qt.binding(function() { return UserSettings.headsetcontrolBluetoothCallVolume })
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")
