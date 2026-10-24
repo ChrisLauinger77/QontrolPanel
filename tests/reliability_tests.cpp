@@ -361,10 +361,17 @@ private slots:
         QCOMPARE(writes.first().at(0).toBool(), false);
         if (custom) QCOMPARE(writes.last().at(0).toBool(), true);
         else {
-            // Also cover choosing a preset first, then switching to custom mode.
+            monitor.requestRefresh();
+            QCOMPARE(monitor.snapshot().equalizerLayout.count, 10); // Preset mode retains editor access.
+            monitor.setDesiredSettings({{"equalizers", QVariantMap{{key, QVariantMap{
+                {"custom", false}, {"preset", 1}, {"bands", bands}}}}}});
+            QCOMPARE(monitor.snapshot().equalizerLayout.count, 10); // Reselecting the preset is harmless.
+            QCOMPARE(writes.size(), 1);
+            // Also cover choosing a preset first, then switching to custom mode
+            // on a replacement handle that has not learned its layout yet.
             monitor.setDesiredSettings({{"equalizers", QVariantMap{{key, QVariantMap{
                 {"custom", true}, {"preset", 1}, {"bands", bands}}}}}});
-            QCOMPARE(writes.size(), 2);
+            QCOMPARE(writes.size(), 3);
             QCOMPARE(writes.last().at(0).toBool(), true);
         }
         for (int poll = 0; poll < 2; ++poll) {
@@ -372,9 +379,13 @@ private slots:
             monitor.requestRefresh();
             QVERIFY(sameDevice);
             QCOMPARE(monitor.snapshot().equalizerLayout.count, 10);
+            QCOMPARE(writes.size(), previousWrites); // Metadata retention requires no polling writes.
+            bands[0] = 0.5 * (poll + 1);
+            monitor.setDesiredSettings({{"equalizers", QVariantMap{{key, QVariantMap{
+                {"custom", true}, {"preset", 1}, {"bands", bands}}}}}});
             QCOMPARE(writes.size(), previousWrites + 2);
             QCOMPARE(writes.at(previousWrites).at(0).toBool(), false);
-            QCOMPARE(writes.last().at(0).toBool(), true); // Bootstrap must always restore the curve.
+            QCOMPARE(writes.last().at(0).toBool(), true); // Bootstrap always restores the pending curve.
             monitor.setDesiredSettings({});
             QCOMPARE(writes.size(), previousWrites + 2); // Same-handle echoes remain deduplicated.
         }

@@ -631,14 +631,22 @@ void HeadsetControlMonitor::updateCapabilities()
 
 void HeadsetControlMonitor::updateEqualizerInfo()
 {
-    m_equalizerLayout = {};
-    if (auto* headset = activeHeadset(); headset && m_hasEqualizerCapability) {
+    auto* headset = activeHeadset();
+    const QString key = headset ? activeHeadsetSettingsKey(*headset) : QString{};
+    // Keep validated presentation metadata across same-device rediscovery. A new
+    // handle can still need initialization before writing, tracked separately.
+    if (key != m_activeHeadsetSettingsKey || !m_hasEqualizerCapability)
+        m_equalizerLayout = {};
+    m_currentEqualizerLayoutReady = false;
+    if (headset && m_hasEqualizerCapability) {
         // Metadata only, including immediately after a command on this same handle.
         if (const auto info = m_readEqualizerInfo(*headset)) {
             const HeadsetEqualizer::Layout layout{info->bands_count, double(info->bands_baseline),
                 double(info->bands_step), double(info->bands_min), double(info->bands_max)};
-            if (layout.valid())
+            if (layout.valid()) {
                 m_equalizerLayout = layout;
+                m_currentEqualizerLayoutReady = true;
+            }
         }
     }
 }
@@ -801,7 +809,11 @@ void HeadsetControlMonitor::applyPendingSettings()
         emit snapshotReady(snapshot());
         return result;
     };
-    if (custom && !m_equalizerLayout.valid()) {
+    const auto knownCurve = HeadsetEqualizer::clamp(entry.value("bands").toList(), m_equalizerLayout);
+    const QVariant knownSelection = QVariantMap{{"custom", true}, {"bands", knownCurve}};
+    if (custom && !m_currentEqualizerLayoutReady && m_appliedSettings.value("equalizer") != knownSelection) {
+        // An acknowledged curve needs no new write merely to recover metadata.
+        // Initialize this handle only when a pending curve must reach hardware.
         stageEqualizer("equalizerBootstrap", preset);
         apply("equalizerBootstrap", canSetPreset, writePreset);
     }
@@ -810,7 +822,8 @@ void HeadsetControlMonitor::applyPendingSettings()
     // compares snapped curves before acknowledging or retrying hardware writes.
     stageEqualizer("equalizer", custom ? QVariantMap{{"custom", true}, {"bands", curve}}
                                       : QVariantMap{{"custom", false}, {"preset", preset}});
-    apply("equalizer", custom ? !curve.isEmpty() : canSetPreset,
+    const bool canWriteCurve = m_currentEqualizerLayoutReady && !curve.isEmpty();
+    apply("equalizer", custom ? canWriteCurve : canSetPreset,
           [&](const QVariant&) -> headsetcontrol::Result<headsetcontrol::EqualizerResult> {
         if (!custom) {
             const auto result = writePreset({});
@@ -826,8 +839,8 @@ void HeadsetControlMonitor::applyPendingSettings()
             emit equalizerApplied(true);
         return result;
     });
-    if (custom && curve.isEmpty())
-        errors.append("equalizerCurve: saved curve does not match an available equalizer layout");
+    if (custom && !canWriteCurve && m_appliedSettings.value("equalizer") != m_desiredSettings.value("equalizer"))
+        errors.append("equalizerCurve: current headset layout is unavailable or incompatible with the saved curve");
     apply("inactiveTime", m_hasInactiveTimeCapability && m_desiredSettings.value("inactiveTime", -1).toInt() >= 0,
           [&](const QVariant& v) { return headset->setInactiveTime(static_cast<uint8_t>(qBound(0, v.toInt(), 255))); });
     apply("micVolume", m_hasMicVolumeCapability && m_desiredSettings.value("micVolume", -1).toInt() >= 0,
@@ -1027,6 +1040,7 @@ void HeadsetControlMonitor::clearDeviceState()
 {
     m_hasEqualizerCapability = false;
     m_equalizerLayout = {};
+    m_currentEqualizerLayoutReady = false;
     m_equalizerPresetCurves.clear();
     m_cachedDevices.clear();
     m_headsets.clear();

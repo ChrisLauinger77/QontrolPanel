@@ -237,6 +237,7 @@ private:
     quint64 m_headsetVolumeRequestRevision = 0;
     bool m_hasEqualizerCapability = false;
     HeadsetEqualizer::Layout m_equalizerLayout;
+    bool m_currentEqualizerLayoutReady = false;
     QVariantList m_equalizerPresetCurves;
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
