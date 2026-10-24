@@ -905,6 +905,18 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>ヘッドセットのイコライザー プリセットを設定します。</translation>
     </message>
     <message>
+        <source>Microphone volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the headset microphone volume (0–128)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>ヘッドセットの状態情報を取得する頻度です。値を低く設定するとバッテリーの消費量が増加する可能性があります。</translation>
     </message>

@@ -905,6 +905,18 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>Stellen Sie die Equalizer-Voreinstellung für Ihr Headset ein</translation>
     </message>
     <message>
+        <source>Microphone volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the headset microphone volume (0–128)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Wie oft der Status Ihres Headsets abgerufen wird. Niedrigere Werte können den Akkuverbrauch erhöhen.</translation>
     </message>

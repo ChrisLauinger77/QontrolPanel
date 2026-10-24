@@ -28,6 +28,7 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
     connect(settings, &UserSettings::enableNotificationsChanged, this,
             &HeadsetControlBridge::updateLowBatteryNotificationState);
     connect(settings, &UserSettings::headsetcontrolLightsChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolMicVolumeChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolRotateToMuteChanged, this,
             &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolVoicePromptsChanged, this,
@@ -136,6 +137,7 @@ void HeadsetControlBridge::syncDesiredSettings()
                               {"rotateToMute", settings->headsetcontrolRotateToMute()},
                               {"voicePrompts", settings->headsetcontrolVoicePrompts()},
                               {"equalizerPreset", settings->headsetcontrolEqualizerPreset()},
+                              {"micVolume", settings->headsetcontrolMicVolume()},
                               {"inactiveTime", settings->headsetcontrolInactiveTime()}};
     QMetaObject::invokeMethod(
         m_monitor, [monitor = m_monitor, desired] { monitor->setDesiredSettings(desired); }, Qt::QueuedConnection);
@@ -202,6 +204,11 @@ void HeadsetControlBridge::requestSidetone(int value)
     }, Qt::QueuedConnection);
 }
 
+void HeadsetControlBridge::setMicVolume(int value)
+{
+    UserSettings::instance()->setHeadsetcontrolMicVolume(value);
+}
+
 void HeadsetControlBridge::setInactiveTime(int value)
 {
     UserSettings::instance()->setHeadsetcontrolInactiveTime(value);
@@ -248,6 +255,11 @@ bool HeadsetControlBridge::hasEqualizerPresetsCapability() const
 bool HeadsetControlBridge::hasInactiveTimeCapability() const
 {
     return m_cachedState.hasInactiveTimeCapability;
+}
+
+bool HeadsetControlBridge::hasMicVolumeCapability() const
+{
+    return m_cachedState.hasMicVolumeCapability;
 }
 
 QString HeadsetControlBridge::deviceName() const
@@ -355,6 +367,7 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         previous.hasChatMixCapability != m_cachedState.hasChatMixCapability ||
         previous.hasVoicePromptsCapability != m_cachedState.hasVoicePromptsCapability ||
         previous.hasEqualizerPresetsCapability != m_cachedState.hasEqualizerPresetsCapability ||
+        previous.hasMicVolumeCapability != m_cachedState.hasMicVolumeCapability ||
         previous.hasInactiveTimeCapability != m_cachedState.hasInactiveTimeCapability;
 
     if (capabilitiesChangedNow)

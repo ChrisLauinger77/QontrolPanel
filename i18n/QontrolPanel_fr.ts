@@ -915,6 +915,18 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Définissez le préréglage de l&apos;égaliseur pour votre casque</translation>
     </message>
     <message>
+        <source>Microphone volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the headset microphone volume (0–128)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Fréquence de récupération de l&apos;état du casque. Des valeurs plus faibles peuvent augmenter l&apos;utilisation de la batterie.</translation>
     </message>

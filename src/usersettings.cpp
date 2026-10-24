@@ -103,6 +103,7 @@ void UserSettings::initProperties()
     m_headsetcontrolEqualizerPreset = qMax(0, settings.value("headsetcontrolEqualizerPreset", 0).toInt());
     m_headsetcontrolInactiveTime = qBound(0, settings.value("headsetcontrolInactiveTime", 30).toInt(), 90);
     m_headsetcontrolSidetone = qBound(0, settings.value("headsetcontrolSidetone", 0).toInt(), 128);
+    m_headsetcontrolMicVolume = qBound(-1, settings.value("headsetcontrolMicVolume", -1).toInt(), 128);
     m_allowBrightnessControl = settings.value("allowBrightnessControl", true).toBool();
     m_avoidApplicationsOverflow = settings.value("avoidApplicationsOverflow", false).toBool();
     m_ddcciQueueDelay = qBound(1, settings.value("ddcciQueueDelay", 500).toInt(), 5000);
@@ -505,6 +506,17 @@ void UserSettings::setHeadsetcontrolInactiveTime(int value)
             return;
         m_headsetcontrolInactiveTime = value;
         emit headsetcontrolInactiveTimeChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolMicVolume(int value)
+{
+    value = qBound(-1, value, 128);
+    if (m_headsetcontrolMicVolume != value) {
+        if (!saveValue("headsetcontrolMicVolume", value))
+            return;
+        m_headsetcontrolMicVolume = value;
+        emit headsetcontrolMicVolumeChanged();
     }
 }
 

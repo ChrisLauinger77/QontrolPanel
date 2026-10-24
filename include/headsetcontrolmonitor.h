@@ -37,6 +37,7 @@ struct HeadsetControlState
     bool hasVoicePromptsCapability = false;
     bool hasEqualizerPresetsCapability = false;
     bool hasInactiveTimeCapability = false;
+    bool hasMicVolumeCapability = false;
     QString deviceName;
     QString displayName;
     QString batteryStatus = "BATTERY_UNAVAILABLE";
@@ -70,6 +71,7 @@ public:
     bool hasChatMixCapability() const { return m_hasChatMixCapability; }
     bool hasVoicePromptsCapability() const { return m_hasVoicePromptsCapability; }
     bool hasInactiveTimeCapability() const { return m_hasInactiveTimeCapability; }
+    bool hasMicVolumeCapability() const { return m_hasMicVolumeCapability; }
     QString deviceName() const { return m_deviceName; }
     QString displayName() const { return m_displayName; }
     QString batteryStatus() const { return m_batteryStatus; }
@@ -153,6 +155,7 @@ private:
     bool m_hasVoicePromptsCapability;
     bool m_hasEqualizerPresetsCapability;
     bool m_hasInactiveTimeCapability;
+    bool m_hasMicVolumeCapability = false;
     QString m_deviceName;
     QString m_displayName;
     QString m_batteryStatus;

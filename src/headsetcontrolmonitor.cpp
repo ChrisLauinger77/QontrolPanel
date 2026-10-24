@@ -392,6 +392,7 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newVoicePromptsCapability = false;
     bool newEqualizerPresetsCapability = false;
     bool newInactivetimeCapability = false;
+    bool newMicVolumeCapability = false;
     QString newDeviceName = "";
     QString newDisplayName;
     QString newActiveHeadsetSettingsKey = "";
@@ -414,6 +415,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newVoicePromptsCapability = headset.supports(CAP_VOICE_PROMPTS);
         newEqualizerPresetsCapability = headset.supports(CAP_EQUALIZER_PRESET);
         newInactivetimeCapability = headset.supports(CAP_INACTIVE_TIME);
+        newMicVolumeCapability = headset.supports(CAP_MICROPHONE_VOLUME);
 
         if (newEqualizerPresetsCapability)
         {
@@ -446,6 +448,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newChatMixCapability != m_hasChatMixCapability ||
         newVoicePromptsCapability != m_hasVoicePromptsCapability ||
         newEqualizerPresetsCapability != m_hasEqualizerPresetsCapability ||
+        newMicVolumeCapability != m_hasMicVolumeCapability ||
         newInactivetimeCapability != m_hasInactiveTimeCapability)
     {
         m_hasSidetoneCapability = newSidetoneCapability;
@@ -455,6 +458,7 @@ void HeadsetControlMonitor::updateCapabilities()
         m_hasVoicePromptsCapability = newVoicePromptsCapability;
         m_hasEqualizerPresetsCapability = newEqualizerPresetsCapability;
         m_hasInactiveTimeCapability = newInactivetimeCapability;
+        m_hasMicVolumeCapability = newMicVolumeCapability;
         emit capabilitiesChanged();
     }
 
@@ -597,6 +601,8 @@ void HeadsetControlMonitor::applyPendingSettings()
           });
     apply("inactiveTime", m_hasInactiveTimeCapability && m_desiredSettings.value("inactiveTime", -1).toInt() >= 0,
           [&](const QVariant& v) { return headset->setInactiveTime(static_cast<uint8_t>(qBound(0, v.toInt(), 255))); });
+    apply("micVolume", m_hasMicVolumeCapability && m_desiredSettings.value("micVolume", -1).toInt() >= 0,
+          [&](const QVariant& v) { return headset->setMicVolume(static_cast<uint8_t>(qBound(0, v.toInt(), 128))); });
     const QString error = errors.join("\n");
     if (!error.isEmpty())
         LOG_WARN("HeadsetControlManager", error);
@@ -613,6 +619,7 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.hasVoicePromptsCapability = hasVoicePromptsCapability();
     state.hasEqualizerPresetsCapability = hasEqualizerPresetsCapability();
     state.hasInactiveTimeCapability = hasInactiveTimeCapability();
+    state.hasMicVolumeCapability = hasMicVolumeCapability();
     state.deviceName = deviceName();
     state.displayName = displayName();
     state.batteryStatus = batteryStatus();
@@ -757,6 +764,7 @@ void HeadsetControlMonitor::clearDeviceState()
     m_hasVoicePromptsCapability = false;
     m_hasEqualizerPresetsCapability = false;
     m_hasInactiveTimeCapability = false;
+    m_hasMicVolumeCapability = false;
     m_deviceName = "";
     m_displayName.clear();
     m_batteryStatus = "BATTERY_UNAVAILABLE";

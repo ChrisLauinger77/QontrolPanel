@@ -293,6 +293,31 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasMicVolumeCapability
+                    enabled: HeadsetControlBridge.hasMicVolumeCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Microphone volume")
+                    description: qsTr("Adjust the headset microphone volume (0–128)")
+
+                    additionalControl: SpinBox {
+                        from: -1
+                        to: 128
+                        value: UserSettings.headsetcontrolMicVolume
+                        editable: true
+                        textFromValue: function(value, locale) {
+                            return value < 0 ? qsTr("Not set") : value.toLocaleString(locale, "f", 0)
+                        }
+                        valueFromText: function(text, locale) {
+                            return text === qsTr("Not set") ? -1 : Number.fromLocaleString(locale, text)
+                        }
+                        onValueModified: {
+                            UserSettings.headsetcontrolMicVolume = value;
+                            value = Qt.binding(function() { return UserSettings.headsetcontrolMicVolume })
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")

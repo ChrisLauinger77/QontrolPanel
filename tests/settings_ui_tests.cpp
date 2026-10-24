@@ -163,6 +163,7 @@ private slots:
         QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
         QCOMPARE(UserSettings::instance()->iconStyle(), 3);
         QVERIFY(UserSettings::instance()->panelAnimationsEnabled());
+        QCOMPARE(UserSettings::instance()->headsetcontrolMicVolume(), -1);
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
@@ -559,6 +560,42 @@ private slots:
         QCOMPARE(media()->property("seekCount").toInt(), 1);
     }
 
+    void writeOnlyHeadsetControlsFollowCapabilities_data()
+    {
+        QTest::addColumn<QString>("title");
+        QTest::addColumn<QByteArray>("capability");
+        QTest::addColumn<QByteArray>("setting");
+        QTest::addColumn<QByteArray>("property");
+        QTest::addColumn<int>("unsetUi");
+        QTest::newRow("micVolume") << QString("Microphone volume") << QByteArray("hasMicVolumeCapability")
+            << QByteArray("headsetcontrolMicVolume") << QByteArray("value") << -1;
+        // Additional settings add rows here.
+    }
+
+    void writeOnlyHeadsetControlsFollowCapabilities()
+    {
+        QFETCH(QString, title); QFETCH(QByteArray, capability); QFETCH(QByteArray, setting);
+        QFETCH(QByteArray, property); QFETCH(int, unsetUi);
+        auto* settings = UserSettings::instance();
+        QVERIFY(settings->setProperty(setting.constData(), -1));
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* card = findObject(pane, "title", title);
+        QVERIFY(card);
+        auto* control = editor(pane, title, property.constData());
+        QVERIFY(control);
+        QVERIFY(card->property("visible").toBool());
+        QCOMPARE(control->property(property.constData()).toInt(), unsetUi);
+        QCOMPARE(settings->property(setting.constData()).toInt(), -1); // Opening the pane never chooses a value.
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty(capability.constData(), false));
+        QTRY_VERIFY(!card->property("visible").toBool());
+        QVERIFY(headset->setProperty(capability.constData(), true));
+        QTRY_VERIFY(card->property("visible").toBool());
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
+        QTRY_VERIFY(!card->property("visible").toBool());
+    }
+
     void rejectedEditor_data()
     {
         QTest::addColumn<QString>("pane");
@@ -606,6 +643,7 @@ private slots:
         row("HeadsetControlPane", "Rotate-to-Mute", "headsetcontrolRotateToMute", "checked", "clicked", true, false);
         row("HeadsetControlPane", "Sidetone", "headsetcontrolSidetone", "value", "wheelChanged", 0, 40);
         row("HeadsetControlPane", "Voice Prompts", "headsetcontrolVoicePrompts", "checked", "clicked", true, false);
+        row("HeadsetControlPane", "Microphone volume", "headsetcontrolMicVolume", "value", "valueModified", -1, 0, -1, 0);
         row("HeadsetControlPane", "Fetch rate (seconds)", "headsetcontrolFetchRate", "value", "valueModified", 60, 120);
     }
 

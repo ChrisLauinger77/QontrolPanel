@@ -221,6 +221,89 @@ private slots:
         QCOMPARE(bridge->sidetoneLevel(), 72);
     }
 
+    void writeOnlyHeadsetSettings_data()
+    {
+        QTest::addColumn<QString>("key");
+        QTest::addColumn<int>("maximum");
+        QTest::addColumn<QByteArray>("capability");
+        QTest::addColumn<QByteArray>("setter");
+        QTest::addColumn<QByteArray>("setting");
+        QTest::newRow("micVolume") << QString("micVolume") << 128 << QByteArray("hasMicVolumeCapability")
+            << QByteArray("setMicVolume") << QByteArray("headsetcontrolMicVolume");
+        // Additional write-only settings add rows here.
+    }
+
+    void writeOnlyHeadsetSettings()
+    {
+        QFETCH(QString, key); QFETCH(int, maximum); QFETCH(QByteArray, capability);
+        QFETCH(QByteArray, setter); QFETCH(QByteArray, setting);
+        auto* settings = UserSettings::instance();
+        QVERIFY(settings->setProperty(setting.constData(), -1));
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto bridgeCleanup = qScopeGuard([&] {
+            bridge->shutdown();
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        QSignalSpy capabilities(bridge, &HeadsetControlBridge::capabilitiesChanged);
+        // Deliver capability snapshots without starting native monitoring.
+        HeadsetControlState state;
+        state.hasMicVolumeCapability = key == "micVolume";
+        // Capability assignments are inserted below.
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QVERIFY(bridge->property(capability.constData()).toBool());
+        QCOMPARE(capabilities.size(), 1);
+        QVERIFY(QMetaObject::invokeMethod(bridge, setter.constData(), Q_ARG(int, maximum + 1)));
+        QCOMPARE(settings->property(setting.constData()).toInt(), maximum);
+        QSettings persisted(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
+        QCOMPARE(persisted.value(setting.constData()).toInt(), maximum);
+        QVERIFY(settings->setProperty(setting.constData(), -2));
+        QCOMPARE(settings->property(setting.constData()).toInt(), -1);
+        persisted.sync();
+        QCOMPARE(persisted.value(setting.constData()).toInt(), -1);
+
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        HeadsetControlMonitor monitor(nullptr, [] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        monitor.setDesiredSettings({{key, -1}});
+        monitor.startMonitoring();
+        QVERIFY(monitor.snapshot().anyDeviceFound);
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        const auto snapshot = monitor.snapshot();
+        if (key == "micVolume") QVERIFY(snapshot.hasMicVolumeCapability);
+        // Snapshot capability checks are inserted below.
+        monitor.setDesiredSettings({{key, 0}}); // Explicit zero/off is a valid choice.
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.setDesiredSettings({{key, maximum}});
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.setDesiredSettings({{key, maximum + 1000}}); // Clamp before uint8 conversion/library validation.
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.setDesiredSettings({{key, -1}});
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.stopMonitoring();
+        if (key == "micVolume") QVERIFY(!monitor.snapshot().hasMicVolumeCapability);
+        // Reset capability checks are inserted below.
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, monitor.snapshot())));
+        QVERIFY(!bridge->property(capability.constData()).toBool());
+        QCOMPARE(capabilities.size(), 2);
+    }
+
     void sidetoneTestDeviceAdoptsAndStillAcceptsWrites()
     {
         const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();

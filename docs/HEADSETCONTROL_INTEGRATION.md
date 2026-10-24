@@ -58,6 +58,7 @@ Important state includes:
 - `m_hasVoicePromptsCapability`
 - `m_hasEqualizerPresetsCapability`
 - `m_hasInactiveTimeCapability`
+- `m_hasMicVolumeCapability`
 
 ### `HeadsetControlBridge`
 
@@ -103,6 +104,7 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolEqualizerPreset`
 - `headsetcontrolInactiveTime`
 - `headsetcontrolSidetone`
+- `headsetcontrolMicVolume` (-1: not set; 0–128)
 - `headsetcontrolFetchRate`
 - `headsetcontrolLowBatteryThreshold`
 - `enableNotifications`
