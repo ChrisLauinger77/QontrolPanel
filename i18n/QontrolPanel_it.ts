@@ -949,6 +949,18 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
         <translation type="unfinished">ON</translation>
     </message>
     <message>
+        <source>Mic mute LED brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the microphone mute indicator brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>La frequenza con cui viene verificato lo stato dalle cuffie. Valori inferiori potrebbero aumentare l&apos;uso della batteria.</translation>
     </message>

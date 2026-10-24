@@ -1007,6 +1007,18 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation type="unfinished">Wł.</translation>
     </message>
     <message>
+        <source>Mic mute LED brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the microphone mute indicator brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>Wersja</translation>
     </message>

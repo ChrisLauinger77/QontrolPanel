@@ -949,6 +949,18 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation type="unfinished">An</translation>
     </message>
     <message>
+        <source>Mic mute LED brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the microphone mute indicator brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Wie oft der Status Ihres Headsets abgerufen wird. Niedrigere Werte können den Akkuverbrauch erhöhen.</translation>
     </message>

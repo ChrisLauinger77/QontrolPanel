@@ -948,6 +948,18 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished">Vklopljeno</translation>
     </message>
     <message>
+        <source>Mic mute LED brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the microphone mute indicator brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Kako pogosto se pridobi stanje iz slušalk. Nižje vrednosti lahko povečajo porabo baterije.</translation>
     </message>

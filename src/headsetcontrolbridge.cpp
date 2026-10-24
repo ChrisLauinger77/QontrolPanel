@@ -28,6 +28,7 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
     connect(settings, &UserSettings::enableNotificationsChanged, this,
             &HeadsetControlBridge::updateLowBatteryNotificationState);
     connect(settings, &UserSettings::headsetcontrolLightsChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolMicMuteLedBrightnessChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolVolumeLimiterChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolNoiseFilterChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolMicVolumeChanged, this, &HeadsetControlBridge::syncDesiredSettings);
@@ -142,6 +143,7 @@ void HeadsetControlBridge::syncDesiredSettings()
                               {"micVolume", settings->headsetcontrolMicVolume()},
                               {"noiseFilter", settings->headsetcontrolNoiseFilter()},
                               {"volumeLimiter", settings->headsetcontrolVolumeLimiter()},
+                              {"micMuteLedBrightness", settings->headsetcontrolMicMuteLedBrightness()},
                               {"inactiveTime", settings->headsetcontrolInactiveTime()}};
     QMetaObject::invokeMethod(
         m_monitor, [monitor = m_monitor, desired] { monitor->setDesiredSettings(desired); }, Qt::QueuedConnection);
@@ -223,6 +225,11 @@ void HeadsetControlBridge::setVolumeLimiter(int value)
     UserSettings::instance()->setHeadsetcontrolVolumeLimiter(value);
 }
 
+void HeadsetControlBridge::setMicMuteLedBrightness(int value)
+{
+    UserSettings::instance()->setHeadsetcontrolMicMuteLedBrightness(value);
+}
+
 void HeadsetControlBridge::setInactiveTime(int value)
 {
     UserSettings::instance()->setHeadsetcontrolInactiveTime(value);
@@ -284,6 +291,11 @@ bool HeadsetControlBridge::hasNoiseFilterCapability() const
 bool HeadsetControlBridge::hasVolumeLimiterCapability() const
 {
     return m_cachedState.hasVolumeLimiterCapability;
+}
+
+bool HeadsetControlBridge::hasMicMuteLedBrightnessCapability() const
+{
+    return m_cachedState.hasMicMuteLedBrightnessCapability;
 }
 
 QString HeadsetControlBridge::deviceName() const
@@ -394,6 +406,7 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         previous.hasMicVolumeCapability != m_cachedState.hasMicVolumeCapability ||
         previous.hasNoiseFilterCapability != m_cachedState.hasNoiseFilterCapability ||
         previous.hasVolumeLimiterCapability != m_cachedState.hasVolumeLimiterCapability ||
+        previous.hasMicMuteLedBrightnessCapability != m_cachedState.hasMicMuteLedBrightnessCapability ||
         previous.hasInactiveTimeCapability != m_cachedState.hasInactiveTimeCapability;
 
     if (capabilitiesChangedNow)

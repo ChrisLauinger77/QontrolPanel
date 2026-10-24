@@ -959,6 +959,18 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation type="unfinished">Activé</translation>
     </message>
     <message>
+        <source>Mic mute LED brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the microphone mute indicator brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Fréquence de récupération de l&apos;état du casque. Des valeurs plus faibles peuvent augmenter l&apos;utilisation de la batterie.</translation>
     </message>

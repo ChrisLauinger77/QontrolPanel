@@ -234,6 +234,8 @@ private slots:
             << QByteArray("setNoiseFilter") << QByteArray("headsetcontrolNoiseFilter");
         QTest::newRow("volumeLimiter") << QString("volumeLimiter") << 1 << QByteArray("hasVolumeLimiterCapability")
             << QByteArray("setVolumeLimiter") << QByteArray("headsetcontrolVolumeLimiter");
+        QTest::newRow("micMuteLedBrightness") << QString("micMuteLedBrightness") << 3 << QByteArray("hasMicMuteLedBrightnessCapability")
+            << QByteArray("setMicMuteLedBrightness") << QByteArray("headsetcontrolMicMuteLedBrightness");
         // Additional write-only settings add rows here.
     }
 
@@ -255,6 +257,7 @@ private slots:
         state.hasMicVolumeCapability = key == "micVolume";
         state.hasNoiseFilterCapability = key == "noiseFilter";
         state.hasVolumeLimiterCapability = key == "volumeLimiter";
+        state.hasMicMuteLedBrightnessCapability = key == "micMuteLedBrightness";
         // Capability assignments are inserted below.
         QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
                                          Q_ARG(HeadsetControlState, state)));
@@ -294,6 +297,7 @@ private slots:
         if (key == "micVolume") QVERIFY(snapshot.hasMicVolumeCapability);
         if (key == "noiseFilter") QVERIFY(snapshot.hasNoiseFilterCapability);
         if (key == "volumeLimiter") QVERIFY(snapshot.hasVolumeLimiterCapability);
+        if (key == "micMuteLedBrightness") QVERIFY(snapshot.hasMicMuteLedBrightnessCapability);
         // Snapshot capability checks are inserted below.
         monitor.setDesiredSettings({{key, 0}}); // Explicit zero/off is a valid choice.
         QVERIFY(errors.last().at(0).toString().isEmpty());
@@ -307,6 +311,7 @@ private slots:
         if (key == "micVolume") QVERIFY(!monitor.snapshot().hasMicVolumeCapability);
         if (key == "noiseFilter") QVERIFY(!monitor.snapshot().hasNoiseFilterCapability);
         if (key == "volumeLimiter") QVERIFY(!monitor.snapshot().hasVolumeLimiterCapability);
+        if (key == "micMuteLedBrightness") QVERIFY(!monitor.snapshot().hasMicMuteLedBrightnessCapability);
         // Reset capability checks are inserted below.
         QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
                                          Q_ARG(HeadsetControlState, monitor.snapshot())));

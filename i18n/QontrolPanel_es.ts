@@ -1005,6 +1005,18 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation type="unfinished">Activado</translation>
     </message>
     <message>
+        <source>Mic mute LED brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the microphone mute indicator brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Con qué frecuencia se obtiene el estado de tus auriculares. Los valores más bajos pueden aumentar el uso de batería.</translation>
     </message>

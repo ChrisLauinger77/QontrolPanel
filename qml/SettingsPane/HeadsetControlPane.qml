@@ -352,6 +352,23 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasMicMuteLedBrightnessCapability
+                    enabled: HeadsetControlBridge.hasMicMuteLedBrightnessCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Mic mute LED brightness")
+                    description: qsTr("Adjust the microphone mute indicator brightness")
+
+                    additionalControl: CustomComboBox {
+                        model: [qsTr("Not set"), qsTr("Off"), qsTr("Low"), qsTr("Medium"), qsTr("High")]
+                        currentIndex: UserSettings.headsetcontrolMicMuteLedBrightness + 1
+                        onActivated: {
+                            UserSettings.headsetcontrolMicMuteLedBrightness = currentIndex - 1;
+                            currentIndex = Qt.binding(function() { return UserSettings.headsetcontrolMicMuteLedBrightness + 1 })
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")

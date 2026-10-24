@@ -163,6 +163,7 @@ private slots:
         QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
         QCOMPARE(UserSettings::instance()->iconStyle(), 3);
         QVERIFY(UserSettings::instance()->panelAnimationsEnabled());
+        QCOMPARE(UserSettings::instance()->headsetcontrolMicMuteLedBrightness(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolVolumeLimiter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolNoiseFilter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolMicVolume(), -1);
@@ -575,6 +576,8 @@ private slots:
             << QByteArray("headsetcontrolNoiseFilter") << QByteArray("currentIndex") << 0;
         QTest::newRow("volumeLimiter") << QString("Volume limiter") << QByteArray("hasVolumeLimiterCapability")
             << QByteArray("headsetcontrolVolumeLimiter") << QByteArray("currentIndex") << 0;
+        QTest::newRow("micMuteLedBrightness") << QString("Mic mute LED brightness") << QByteArray("hasMicMuteLedBrightnessCapability")
+            << QByteArray("headsetcontrolMicMuteLedBrightness") << QByteArray("currentIndex") << 0;
         // Additional settings add rows here.
     }
 
@@ -667,6 +670,7 @@ private slots:
         row("HeadsetControlPane", "Microphone volume", "headsetcontrolMicVolume", "value", "valueModified", -1, 0, -1, 0);
         row("HeadsetControlPane", "Microphone noise filter", "headsetcontrolNoiseFilter", "currentIndex", "activated", -1, 0, 0, 1);
         row("HeadsetControlPane", "Volume limiter", "headsetcontrolVolumeLimiter", "currentIndex", "activated", -1, 0, 0, 1);
+        row("HeadsetControlPane", "Mic mute LED brightness", "headsetcontrolMicMuteLedBrightness", "currentIndex", "activated", -1, 0, 0, 1);
         row("HeadsetControlPane", "Fetch rate (seconds)", "headsetcontrolFetchRate", "value", "valueModified", 60, 120);
     }
 
