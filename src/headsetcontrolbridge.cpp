@@ -48,6 +48,11 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
             return;
         requestSidetone(settings->headsetcontrolSidetone());
     });
+    connect(settings, &UserSettings::headsetcontrolHeadsetVolumeChanged, this, [this, settings] {
+        if (m_adoptingHeadsetVolume || !m_monitor)
+            return;
+        requestHeadsetVolume(settings->headsetcontrolHeadsetVolume());
+    });
     connect(settings, &UserSettings::headsetcontrolInactiveTimeChanged, this,
             &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolFetchRateChanged, this,
@@ -103,12 +108,20 @@ void HeadsetControlBridge::connectToMonitor()
                 QScopedValueRollback<bool> adopting(m_adoptingSidetone, true);
                 UserSettings::instance()->setHeadsetcontrolSidetone(value);
             });
+    connect(m_monitor, &HeadsetControlMonitor::headsetVolumeAdopted, this,
+            [this](int value, quint64 revision) {
+                if (revision != m_headsetVolumeRequestRevision)
+                    return;
+                QScopedValueRollback<bool> adopting(m_adoptingHeadsetVolume, true);
+                UserSettings::instance()->setHeadsetcontrolHeadsetVolume(value);
+            });
     m_thread->start();
     QMetaObject::invokeMethod(
         m_monitor, [monitor = m_monitor] { emit monitor->snapshotReady(monitor->snapshot()); }, Qt::QueuedConnection);
     const int savedSidetone = UserSettings::instance()->headsetcontrolSidetone();
-    QMetaObject::invokeMethod(m_monitor, [monitor = m_monitor, savedSidetone] {
-        monitor->setDesiredSettings({{"sidetone", savedSidetone}});
+    const int savedHeadsetVolume = UserSettings::instance()->headsetcontrolHeadsetVolume();
+    QMetaObject::invokeMethod(m_monitor, [monitor = m_monitor, savedSidetone, savedHeadsetVolume] {
+        monitor->setDesiredSettings({{"sidetone", savedSidetone}, {"headsetVolume", savedHeadsetVolume}});
     }, Qt::QueuedConnection);
     syncDesiredSettings();
     setFetchRate(UserSettings::instance()->headsetcontrolFetchRate());
@@ -196,6 +209,29 @@ void HeadsetControlBridge::setEqualizerPreset(int preset)
     UserSettings::instance()->setHeadsetcontrolEqualizerPreset(preset);
 }
 
+void HeadsetControlBridge::setHeadsetVolume(int value)
+{
+    auto* settings = UserSettings::instance();
+    value = qBound(-1, value, 128);
+    const int previous = settings->headsetcontrolHeadsetVolume();
+    settings->setHeadsetcontrolHeadsetVolume(value);
+    // A deliberate same-value edit still retries after an adoption or failed write.
+    if (previous == value)
+        requestHeadsetVolume(value);
+}
+
+void HeadsetControlBridge::requestHeadsetVolume(int value)
+{
+    if (!m_monitor)
+        return;
+    const quint64 revision = ++m_headsetVolumeRequestRevision;
+    m_pendingHeadsetVolumeLevel = value;
+    emit pendingHeadsetVolumeLevelChanged();
+    QMetaObject::invokeMethod(m_monitor, [monitor = m_monitor, value, revision] {
+        monitor->setHeadsetVolume(value, revision);
+    }, Qt::QueuedConnection);
+}
+
 void HeadsetControlBridge::setSidetone(int value)
 {
     auto* settings = UserSettings::instance();
@@ -276,6 +312,21 @@ void HeadsetControlBridge::refreshNow()
     if (monitor) {
         QMetaObject::invokeMethod(monitor, "requestRefresh", Qt::QueuedConnection);
     }
+}
+
+bool HeadsetControlBridge::hasHeadsetVolumeCapability() const
+{
+    return m_cachedState.hasHeadsetVolumeCapability;
+}
+
+bool HeadsetControlBridge::canReadHeadsetVolume() const
+{
+    return m_cachedState.canReadHeadsetVolume;
+}
+
+int HeadsetControlBridge::headsetVolumeLevel() const
+{
+    return m_cachedState.headsetVolumeLevel;
 }
 
 bool HeadsetControlBridge::hasSidetoneCapability() const
@@ -476,8 +527,16 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         emit pendingSidetoneLevelChanged();
     }
 
+    if (m_pendingHeadsetVolumeLevel >= 0 && state.headsetVolumeRequestRevision >= m_headsetVolumeRequestRevision)
+    {
+        m_pendingHeadsetVolumeLevel = -1;
+        emit pendingHeadsetVolumeLevelChanged();
+    }
+
     const bool capabilitiesChangedNow =
         previous.hasSidetoneCapability != m_cachedState.hasSidetoneCapability ||
+        previous.hasHeadsetVolumeCapability != m_cachedState.hasHeadsetVolumeCapability ||
+        previous.canReadHeadsetVolume != m_cachedState.canReadHeadsetVolume ||
         previous.hasLightsCapability != m_cachedState.hasLightsCapability ||
         previous.hasRotateToMuteCapability != m_cachedState.hasRotateToMuteCapability ||
         previous.hasChatMixCapability != m_cachedState.hasChatMixCapability ||
@@ -528,6 +587,8 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         emit micMutedChanged();
     if (previous.micAttached != m_cachedState.micAttached)
         emit micAttachedChanged();
+    if (previous.headsetVolumeLevel != m_cachedState.headsetVolumeLevel)
+        emit headsetVolumeLevelChanged();
     if (previous.sidetoneLevel != m_cachedState.sidetoneLevel)
         emit sidetoneLevelChanged();
     if (previous.equalizerPresetNames != m_cachedState.equalizerPresetNames)

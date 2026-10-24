@@ -262,6 +262,60 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasHeadsetVolumeCapability
+                    enabled: HeadsetControlBridge.hasHeadsetVolumeCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Headset volume")
+                    description: qsTr("Adjust the headset's hardware volume, separately from Windows volume")
+                    implicitHeight: 110
+
+                    additionalControl: ColumnLayout {
+                        RowLayout {
+                            NFSlider {
+                                id: headsetVolumeSlider
+                                from: 0
+                                to: 128
+                                readonly property int currentLevel: HeadsetControlBridge.pendingHeadsetVolumeLevel >= 0
+                                    ? HeadsetControlBridge.pendingHeadsetVolumeLevel
+                                    : HeadsetControlBridge.headsetVolumeLevel >= 0
+                                        ? HeadsetControlBridge.headsetVolumeLevel : UserSettings.headsetcontrolHeadsetVolume
+                                value: Math.max(0, currentLevel)
+                                Layout.preferredWidth: 180
+                                onPressedChanged: {
+                                    if (!pressed) {
+                                        HeadsetControlBridge.setHeadsetVolume(Math.round(value));
+                                        value = Qt.binding(function() { return Math.max(0, headsetVolumeSlider.currentLevel) })
+                                    }
+                                }
+                                onWheelChanged: {
+                                    HeadsetControlBridge.setHeadsetVolume(Math.round(value));
+                                    value = Qt.binding(function() { return Math.max(0, headsetVolumeSlider.currentLevel) })
+                                }
+                            }
+                            Label {
+                                text: headsetVolumeSlider.currentLevel < 0 ? qsTr("Not set")
+                                    : Math.round(headsetVolumeSlider.value).toString()
+                            }
+                            Button {
+                                objectName: "headsetVolumeUnset"
+                                text: qsTr("Not set")
+                                enabled: UserSettings.headsetcontrolHeadsetVolume >= 0
+                                onClicked: HeadsetControlBridge.setHeadsetVolume(-1)
+                            }
+                        }
+                        Label {
+                            objectName: "headsetVolumeReadback"
+                            text: HeadsetControlBridge.headsetVolumeLevel >= 0
+                                ? qsTr("Device level (last reading): %1 / 128").arg(HeadsetControlBridge.headsetVolumeLevel)
+                                : HeadsetControlBridge.canReadHeadsetVolume
+                                    ? qsTr("No headset volume reading yet")
+                                    : qsTr("Read-back unavailable; showing your saved choice")
+                            opacity: 0.7
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasSidetoneCapability
                     enabled: HeadsetControlBridge.hasSidetoneCapability
                     Layout.fillWidth: true

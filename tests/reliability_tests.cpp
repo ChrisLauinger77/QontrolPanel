@@ -3,7 +3,7 @@
 #include <QAbstractItemModelTester>
 #include "audiomodels.h"
 #include "sessionindices.h"
-#include "sidetonepolicy.h"
+#include "headsetlevelpolicy.h"
 #include <QTemporaryDir>
 #include <QFile>
 #include <QJsonObject>
@@ -87,7 +87,7 @@ class ReliabilityTests : public QObject
     }
 #endif
 private slots:
-    void sidetoneAdoptVersusApply_data()
+    void headsetLevelAdoptVersusApply_data()
     {
         QTest::addColumn<bool>("readable");
         QTest::addColumn<int>("observed");
@@ -95,7 +95,7 @@ private slots:
         QTest::addColumn<int>("desired");
         QTest::addColumn<bool>("userRequested");
         QTest::addColumn<int>("action");
-        using A = SidetonePolicy::Action;
+        using A = HeadsetLevelPolicy::Action;
         QTest::newRow("first-read-keeps-device-level") << true << 85 << -1 << 0 << false << int(A::Adopt);
         QTest::newRow("external-change-wins") << true << 32 << 85 << 85 << false << int(A::Adopt);
         QTest::newRow("external-change-cancels-pending-retry") << true << 32 << 85 << 64 << true << int(A::Adopt);
@@ -107,9 +107,13 @@ private slots:
         QTest::newRow("write-only-retains-restoration") << false << -1 << -1 << 0 << false << int(A::Apply);
         QTest::newRow("write-only-skips-duplicate") << false << -1 << 64 << 64 << false << int(A::None);
         QTest::newRow("device-muted-to-zero") << true << 0 << 85 << 85 << false << int(A::Adopt);
+        QTest::newRow("readable-unset-adopts") << true << 77 << -1 << -1 << false << int(A::Adopt);
+        QTest::newRow("write-only-unset-skips") << false << -1 << -1 << -1 << false << int(A::None);
+        QTest::newRow("unset-cancels-pending-write") << true << -1 << 77 << -1 << true << int(A::None);
+        QTest::newRow("write-only-unset-with-baseline") << false << -1 << 77 << -1 << false << int(A::None);
     }
 
-    void sidetoneAdoptVersusApply()
+    void headsetLevelAdoptVersusApply()
     {
         QFETCH(bool, readable);
         QFETCH(int, observed);
@@ -117,7 +121,7 @@ private slots:
         QFETCH(int, desired);
         QFETCH(bool, userRequested);
         QFETCH(int, action);
-        QCOMPARE(int(SidetonePolicy::decide(readable, observed, lastApplied, desired, userRequested)), action);
+        QCOMPARE(int(HeadsetLevelPolicy::decide(readable, observed, lastApplied, desired, userRequested)), action);
     }
 #ifdef Q_OS_WIN
     void initTestCase()
@@ -219,6 +223,48 @@ private slots:
                                          Q_ARG(HeadsetControlState, state)));
         QCOMPARE(bridge->pendingSidetoneLevel(), -1);
         QCOMPARE(bridge->sidetoneLevel(), 72);
+    }
+
+    void headsetVolumeBridgeRetainsLatestRequestUntilAcknowledged()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolMonitoring(false);
+        settings->setHeadsetcontrolHeadsetVolume(64);
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto cleanup = qScopeGuard([&] {
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        // Keep queued worker replies pending while simulating a burst of user input.
+        for (int level = 65; level <= 69; ++level)
+            bridge->setHeadsetVolume(level);
+        QCOMPARE(bridge->pendingHeadsetVolumeLevel(), 69);
+        HeadsetControlState state;
+        state.anyDeviceFound = true;
+        state.headsetVolumeLevel = 65;
+        state.headsetVolumeRequestRevision = 1;
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingHeadsetVolumeLevel(), 69);
+        state.headsetVolumeLevel = 69;
+        state.headsetVolumeRequestRevision = 5;
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingHeadsetVolumeLevel(), -1);
+        QCOMPARE(bridge->headsetVolumeLevel(), 69);
+        bridge->setHeadsetVolume(70);
+        state.headsetVolumeRequestRevision = 6; // Latest command failed; reported level stays at 69.
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingHeadsetVolumeLevel(), -1);
+        QCOMPARE(bridge->headsetVolumeLevel(), 69);
+        bridge->setHeadsetVolume(71);
+        state.headsetVolumeRequestRevision = 7;
+        state.headsetVolumeLevel = 72; // Device quantisation wins once the command completes.
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QCOMPARE(bridge->pendingHeadsetVolumeLevel(), -1);
+        QCOMPARE(bridge->headsetVolumeLevel(), 72);
     }
 
     void batteryTimeSnapshotsNotifyOnChanges()
@@ -774,6 +820,148 @@ private slots:
         monitor.startMonitoring();
         QCOMPARE(monitor.snapshot().sidetoneLevel, 85);
         QCOMPARE(adopted.size(), 3);
+    }
+
+    void headsetVolumeReadableAdoptsWheelChanges()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        bool connected = true;
+        HeadsetControlMonitor monitor(nullptr, [&] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [&](const auto& headset) {
+                return !connected || headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        monitor.setDesiredSettings({{"headsetVolume", 0}});
+        QSignalSpy adopted(&monitor, &HeadsetControlMonitor::headsetVolumeAdopted);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        monitor.startMonitoring();
+        QVERIFY(monitor.snapshot().hasHeadsetVolumeCapability);
+        QVERIFY(monitor.snapshot().canReadHeadsetVolume);
+        constexpr int reported = 77; // Pinned test device: native step 15 of 0–21.
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, reported);
+        QCOMPARE(monitor.getCachedDevices().first().headsetVolumeLevel, reported);
+        QCOMPARE(adopted.size(), 1); // Saved zero was adopted, not restored over the device.
+        monitor.setDesiredSettings({{"lights", true}});
+        QCOMPARE(adopted.size(), 1);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, reported);
+        // A failed command retains the last reading and is retried only three times.
+        headsetcontrol::setTestProfile(1);
+        monitor.setHeadsetVolume(32, 1);
+        for (bool lights : {false, true})
+            monitor.setDesiredSettings({{"lights", lights}});
+        monitor.setDesiredSettings({{"lights", false}});
+        QVERIFY(errors.last().at(0).toString().contains("headsetVolume: retry limit reached"));
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, reported);
+        // Manual refresh resets the retry budget before applying pending settings.
+        headsetcontrol::setTestProfile(3);
+        monitor.requestRefresh();
+        // The reading still matches the original baseline, so the pending explicit edit applies.
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, 32);
+        monitor.requestRefresh();
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, reported);
+        QCOMPARE(adopted.size(), 2);
+        QCOMPARE(adopted.last().at(1).toULongLong(), quint64(1));
+        monitor.setHeadsetVolume(64, 2);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, 64);
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.requestRefresh();
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, reported);
+        QCOMPARE(adopted.size(), 3);
+        // A failed poll clears the reading. A later successful poll recovers it.
+        monitor.setTestProfile(1);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, -1);
+        QCOMPARE(monitor.getCachedDevices().first().headsetVolumeLevel, -1);
+        monitor.setTestProfile(3);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, reported);
+        connected = false;
+        monitor.requestRefresh();
+        QVERIFY(!monitor.snapshot().hasHeadsetVolumeCapability);
+        QVERIFY(!monitor.snapshot().canReadHeadsetVolume);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, -1);
+        connected = true;
+        monitor.requestRefresh();
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, reported);
+        monitor.stopMonitoring();
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, -1);
+        QVERIFY(!monitor.snapshot().canReadHeadsetVolume);
+    }
+
+    void headsetVolumeWriteOnlyWritesWithoutReadback()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        HeadsetControlMonitor monitor(nullptr, [] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(6);
+        monitor.setTestModeEnabled(true);
+        monitor.setDesiredSettings({{"headsetVolume", -1}});
+        QSignalSpy adopted(&monitor, &HeadsetControlMonitor::headsetVolumeAdopted);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        monitor.startMonitoring();
+        QVERIFY(monitor.snapshot().hasHeadsetVolumeCapability);
+        QVERIFY(!monitor.snapshot().canReadHeadsetVolume);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, -1);
+        for (int level : {0, 64, 128, 1000}) {
+            monitor.setHeadsetVolume(level);
+            QVERIFY(errors.last().at(0).toString().isEmpty());
+            QCOMPARE(monitor.snapshot().headsetVolumeLevel, -1); // A write ack is not a reading.
+        }
+        monitor.requestRefresh();
+        QCOMPARE(monitor.getCachedDevices().first().headsetVolumeLevel, -1);
+        QCOMPARE(adopted.size(), 0);
+        monitor.setTestProfile(1); // Failed writes make acknowledgement and unset guards observable.
+        monitor.setDesiredSettings({{"headsetVolume", 128}});
+        QVERIFY(errors.last().at(0).toString().isEmpty()); // Already acknowledged; no duplicate write.
+        monitor.setHeadsetVolume(-1);
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.setHeadsetVolume(128);
+        QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
+        monitor.setHeadsetVolume(-1);
+        monitor.setTestProfile(6);
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        // A saved level is restored for write-only hardware without an explicit command flag.
+        monitor.setDesiredSettings({{"headsetVolume", 48}});
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.stopMonitoring();
+        monitor.startMonitoring();
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        QVERIFY(!monitor.snapshot().canReadHeadsetVolume);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, -1);
+        monitor.setTestProfile(1);
+        monitor.setDesiredSettings({{"headsetVolume", 48}});
+        QVERIFY(errors.last().at(0).toString().isEmpty()); // Restoration was acknowledged.
+        monitor.setHeadsetVolume(-1);
+        monitor.setHeadsetVolume(48);
+        QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
+        monitor.setHeadsetVolume(-1);
+        monitor.setTestProfile(3);
+        QVERIFY(monitor.snapshot().canReadHeadsetVolume);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, 77);
+        QCOMPARE(adopted.size(), 1);
+        monitor.setTestProfile(6);
+        QVERIFY(!monitor.snapshot().canReadHeadsetVolume);
+        QCOMPARE(monitor.snapshot().headsetVolumeLevel, -1);
+        QCOMPARE(adopted.size(), 1);
     }
 
     void audioPolicySaveFailure_data()

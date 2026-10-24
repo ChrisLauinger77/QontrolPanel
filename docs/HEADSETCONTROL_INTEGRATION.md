@@ -52,6 +52,7 @@ Important state includes:
 - `m_fetchTimer`
 - `m_fetchIntervalMs`
 - `m_hasSidetoneCapability`
+- `m_hasHeadsetVolumeCapability`
 - `m_hasLightsCapability`
 - `m_hasRotateToMuteCapability`
 - `m_hasChatMixCapability`
@@ -116,6 +117,7 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolEqualizerPreset`
 - `headsetcontrolInactiveTime`
 - `headsetcontrolSidetone`
+- `headsetcontrolHeadsetVolume` (-1: not set; otherwise 0–128 hardware volume)
 - `headsetcontrolBluetoothCallVolume` (-1: not set; 0–100)
 - `headsetcontrolBluetoothWhenPoweredOn` (-1: not set; 0–1)
 - `headsetcontrolMicMuteLedBrightness` (-1: not set; 0–3)
@@ -201,6 +203,18 @@ On the first successful read for the active headset, or when the read differs fr
 A successful slider write updates the reported level from the library's acknowledgement. While a command is pending, the bridge exposes its requested level separately so consecutive wheel edits accumulate. Snapshots carry the processed request revision; only completion of the latest request releases that optimistic value, including on failure. Subsequent polls adopt changes made on the headset or in another application. The baseline resets when monitoring stops or the active headset changes. Devices without read-back retain saved-level restoration and bounded write retries.
 
 The upstream test device reads back a fixed level of `85`. Slider edits still call `setSidetone`; the next fetch returns to `85`, simulating an external change. Reliability tests filter discovery to this synthetic device before any queries or writes, and cover first-read adoption, explicit writes, external changes, reset, and unrelated settings updates. Policy tests additionally cover failed reads, retries, and write-only headsets.
+
+## Hardware headset volume
+
+The "Headset volume" slider controls the headset's own hardware level, independently of the Windows endpoint volume. `CAP_HEADSET_VOLUME` gates the control; `canRead(CAP_HEADSET_VOLUME)` separately gates polling and the `canReadHeadsetVolume` bridge property. With the pinned library, Logitech ASTRO A50 Gen 5 supports writes, while the synthetic device supports both reads and writes except in profile 6, which is write-only. Future devices can advertise read support without an app-side model list.
+
+`headsetcontrolHeadsetVolume` defaults to `-1` ("Not set"). The bridge copies the saved level to the worker at startup and observes subsequent changes without requiring the settings pane to be open. Unrelated settings snapshots omit this value, just as they omit sidetone, so they cannot reintroduce a stale level after adoption. Explicit commands are clamped to 0–128 before calling `setHeadsetVolume()`; unset never becomes a hardware write.
+
+Readable, reachable devices are queried once per existing poll, before pending writes. The cache, snapshot, and bridge expose the normalized `headsetVolumeLevel`, or `-1` when unknown. Hardware volume and sidetone share `HeadsetLevelPolicy`: a first successful read or an observed change establishes the desired level and baseline, clears retries, and updates saved settings without echoing a write. Failed initial reads do not restore a saved level over an unknown device state. Explicit slider edits still work, with bounded retries, same-value manual retry, revision-guarded adoption, and a pending level that keeps rapid wheel edits stable until the latest acknowledgement. Disconnect and shutdown clear the reading and baseline.
+
+Write-only devices restore only a saved explicit level. Successful write acknowledgements do not populate read-back state; the slider shows the saved choice and labels read-back as unavailable. "Not set" stops restoration without changing hardware. Readable devices can subsequently adopt their actual level again. The slider uses the result's normalized `volume`, not its native `device_volume` steps; readable acknowledgements honor the normalized level returned by the library.
+
+The pinned test device reads back normalized level `77` (native step `15` in the `0–21` range). A slider write succeeds, and the next fetch returns to `77`, simulating a hardware wheel change. Profile 6 accepts writes while reporting no read-back; profile 1 exercises failed writes, retry limits, and recovery. Tests filter discovery to the synthetic device before querying or writing. Real ASTRO hardware and installed-app interaction still require manual validation.
 
 ## Error Handling
 

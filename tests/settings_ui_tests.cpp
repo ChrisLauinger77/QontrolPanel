@@ -184,6 +184,7 @@ private slots:
         QCOMPARE(UserSettings::instance()->headsetcontrolVolumeLimiter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolNoiseFilter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolMicVolume(), -1);
+        QCOMPARE(UserSettings::instance()->headsetcontrolHeadsetVolume(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolAnc(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolAncStartupMode(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolAncButtonModes(), -1);
@@ -329,6 +330,77 @@ private slots:
         QVERIFY(edit(slider, "value", 86, "wheelChanged"));
         QCOMPARE(slider->property("value").toInt(), 86);
         QVERIFY(headset->setProperty("pendingSidetoneLevel", -1)); // Failed latest write.
+        QCOMPARE(slider->property("value").toInt(), 85);
+    }
+
+    void headsetVolumeSliderShowsReadingsAndSavedChoices()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolHeadsetVolume(-1);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* slider = editor(pane, "Headset volume", "value");
+        auto* card = findObject(pane, "title", "Headset volume");
+        QVERIFY(slider && card);
+        QVERIFY(card->property("description").toString().contains("hardware volume"));
+        QCOMPARE(settings->headsetcontrolHeadsetVolume(), -1); // Opening never selects zero.
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        auto* readback = findVisualItem(qobject_cast<QQuickItem*>(pane), "headsetVolumeReadback");
+        QVERIFY(readback);
+        QVERIFY(headset->setProperty("headsetVolumeLevel", 77));
+        QTRY_COMPARE(slider->property("value").toInt(), 77);
+        QTRY_COMPARE(readback->property("text").toString(), QString("Device level (last reading): 77 / 128"));
+        QVERIFY(edit(slider, "value", 64, "wheelChanged"));
+        QCOMPARE(settings->headsetcontrolHeadsetVolume(), 64);
+        QCOMPARE(headset->property("headsetVolumeWriteCount").toInt(), 1);
+        QVERIFY(headset->setProperty("headsetVolumeLevel", 77)); // Simulate the headset wheel.
+        QTRY_COMPARE(slider->property("value").toInt(), 77);
+        QVERIFY(headset->setProperty("canReadHeadsetVolume", false));
+        QVERIFY(headset->setProperty("headsetVolumeLevel", -1));
+        QTRY_COMPARE(slider->property("value").toInt(), 64);
+        QTRY_COMPARE(readback->property("text").toString(), QString("Read-back unavailable; showing your saved choice"));
+        QVERIFY(edit(slider, "value", 48, "wheelChanged"));
+        QCOMPARE(settings->headsetcontrolHeadsetVolume(), 48);
+        QCOMPARE(headset->property("headsetVolumeLevel").toInt(), -1);
+        QTRY_COMPARE(slider->property("value").toInt(), 48);
+        auto* unset = findVisualItem(qobject_cast<QQuickItem*>(pane), "headsetVolumeUnset");
+        QVERIFY(unset);
+        QVERIFY(QMetaObject::invokeMethod(unset, "click"));
+        QCOMPARE(settings->headsetcontrolHeadsetVolume(), -1);
+        QVERIFY(headset->setProperty("hasHeadsetVolumeCapability", false));
+        QTRY_VERIFY(!card->property("visible").toBool());
+        QVERIFY(headset->setProperty("hasHeadsetVolumeCapability", true));
+        QTRY_VERIFY(card->property("visible").toBool());
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
+        QTRY_VERIFY(!card->property("visible").toBool());
+    }
+
+    void headsetVolumeWheelEditsAccumulateWhileRepliesAreDelayed()
+    {
+        UserSettings::instance()->setHeadsetcontrolHeadsetVolume(64);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* slider = editor(pane, "Headset volume", "value");
+        QVERIFY(slider);
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("headsetVolumeLevel", 64));
+        QVERIFY(headset->setProperty("deferHeadsetVolumeWrites", true));
+        for (int expected = 65; expected <= 69; ++expected) {
+            QVERIFY(edit(slider, "value", slider->property("value").toInt() + 1, "wheelChanged"));
+            QCOMPARE(slider->property("value").toInt(), expected);
+        }
+        QCOMPARE(headset->property("headsetVolumeWriteCount").toInt(), 5);
+        QCOMPARE(UserSettings::instance()->headsetcontrolHeadsetVolume(), 69);
+        QVERIFY(headset->setProperty("headsetVolumeLevel", 65)); // An earlier reply arrives.
+        QCOMPARE(slider->property("value").toInt(), 69);
+        QVERIFY(headset->setProperty("headsetVolumeLevel", 69));
+        QVERIFY(headset->setProperty("pendingHeadsetVolumeLevel", -1));
+        QCOMPARE(slider->property("value").toInt(), 69);
+        QVERIFY(headset->setProperty("headsetVolumeLevel", 85)); // Later external update.
+        QCOMPARE(slider->property("value").toInt(), 85);
+        QVERIFY(edit(slider, "value", 86, "wheelChanged"));
+        QCOMPARE(slider->property("value").toInt(), 86);
+        QVERIFY(headset->setProperty("pendingHeadsetVolumeLevel", -1)); // Failed latest write.
         QCOMPARE(slider->property("value").toInt(), 85);
     }
 
@@ -838,6 +910,7 @@ private slots:
         row("HeadsetControlPane", "Inactive time (minutes)", "headsetcontrolInactiveTime", "value", "wheelChanged", 30, 40);
         row("HeadsetControlPane", "Lights", "headsetcontrolLights", "checked", "clicked", true, false);
         row("HeadsetControlPane", "Rotate-to-Mute", "headsetcontrolRotateToMute", "checked", "clicked", true, false);
+        row("HeadsetControlPane", "Headset volume", "headsetcontrolHeadsetVolume", "value", "wheelChanged", -1, 40, 0, 40);
         row("HeadsetControlPane", "Sidetone", "headsetcontrolSidetone", "value", "wheelChanged", 0, 40);
         row("HeadsetControlPane", "Voice Prompts", "headsetcontrolVoicePrompts", "checked", "clicked", true, false);
         row("HeadsetControlPane", "Noise cancelling", "headsetcontrolAnc", "currentIndex", "activated", -1, 2, 0, 3);
@@ -861,6 +934,10 @@ private slots:
             settings->setIconStyle(0);
         QVERIFY(settings->setProperty(setting.constData(), before));
         QVERIFY(loadPane(pane));
+        if (setting == "headsetcontrolHeadsetVolume") {
+            auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+            QVERIFY(headset->setProperty("canReadHeadsetVolume", false));
+        }
         auto* control = editor(m_pane.get(), title, property.constData());
         QVERIFY2(control, qPrintable(title));
         QCOMPARE(control->property(property.constData()), beforeUi);

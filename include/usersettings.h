@@ -52,6 +52,7 @@ class UserSettings : public QObject
     Q_PROPERTY(int headsetcontrolEqualizerPreset READ headsetcontrolEqualizerPreset WRITE setHeadsetcontrolEqualizerPreset NOTIFY headsetcontrolEqualizerPresetChanged)
     Q_PROPERTY(int headsetcontrolInactiveTime READ headsetcontrolInactiveTime WRITE setHeadsetcontrolInactiveTime NOTIFY headsetcontrolInactiveTimeChanged)
     Q_PROPERTY(int headsetcontrolSidetone READ headsetcontrolSidetone WRITE setHeadsetcontrolSidetone NOTIFY headsetcontrolSidetoneChanged)
+    Q_PROPERTY(int headsetcontrolHeadsetVolume READ headsetcontrolHeadsetVolume WRITE setHeadsetcontrolHeadsetVolume NOTIFY headsetcontrolHeadsetVolumeChanged)
     Q_PROPERTY(int headsetcontrolBluetoothCallVolume READ headsetcontrolBluetoothCallVolume WRITE setHeadsetcontrolBluetoothCallVolume NOTIFY headsetcontrolBluetoothCallVolumeChanged)
     Q_PROPERTY(int headsetcontrolBluetoothWhenPoweredOn READ headsetcontrolBluetoothWhenPoweredOn WRITE setHeadsetcontrolBluetoothWhenPoweredOn NOTIFY headsetcontrolBluetoothWhenPoweredOnChanged)
     Q_PROPERTY(int headsetcontrolMicMuteLedBrightness READ headsetcontrolMicMuteLedBrightness WRITE setHeadsetcontrolMicMuteLedBrightness NOTIFY headsetcontrolMicMuteLedBrightnessChanged)
@@ -129,6 +130,7 @@ public:
     int headsetcontrolEqualizerPreset() const { return m_headsetcontrolEqualizerPreset; }
     int headsetcontrolInactiveTime() const { return m_headsetcontrolInactiveTime; }
     int headsetcontrolSidetone() const { return m_headsetcontrolSidetone; }
+    int headsetcontrolHeadsetVolume() const { return m_headsetcontrolHeadsetVolume; }
     int headsetcontrolBluetoothCallVolume() const { return m_headsetcontrolBluetoothCallVolume; }
     int headsetcontrolBluetoothWhenPoweredOn() const { return m_headsetcontrolBluetoothWhenPoweredOn; }
     int headsetcontrolMicMuteLedBrightness() const { return m_headsetcontrolMicMuteLedBrightness; }
@@ -201,6 +203,7 @@ public:
     void setHeadsetcontrolEqualizerPreset(int value);
     void setHeadsetcontrolInactiveTime(int value);
     void setHeadsetcontrolSidetone(int value);
+    void setHeadsetcontrolHeadsetVolume(int value);
     void setHeadsetcontrolBluetoothCallVolume(int value);
     void setHeadsetcontrolBluetoothWhenPoweredOn(int value);
     void setHeadsetcontrolMicMuteLedBrightness(int value);
@@ -275,6 +278,7 @@ signals:
     void headsetcontrolEqualizerPresetChanged();
     void headsetcontrolInactiveTimeChanged();
     void headsetcontrolSidetoneChanged();
+    void headsetcontrolHeadsetVolumeChanged();
     void headsetcontrolBluetoothCallVolumeChanged();
     void headsetcontrolBluetoothWhenPoweredOnChanged();
     void headsetcontrolMicMuteLedBrightnessChanged();
@@ -354,6 +358,7 @@ private:
     int m_headsetcontrolEqualizerPreset;
     int m_headsetcontrolInactiveTime;
     int m_headsetcontrolSidetone;
+    int m_headsetcontrolHeadsetVolume; // -1: not set; otherwise hardware volume 0–128
     int m_headsetcontrolBluetoothCallVolume; // -1: not set; only explicit user choices are written
     int m_headsetcontrolBluetoothWhenPoweredOn; // -1: not set; only explicit user choices are written
     int m_headsetcontrolMicMuteLedBrightness; // -1: not set; only explicit user choices are written

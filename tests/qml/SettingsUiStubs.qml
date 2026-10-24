@@ -37,6 +37,24 @@ QtObject {
     property int chatMix: 50
     property int micMuted: -1
     property int micAttached: -1
+    property bool hasHeadsetVolumeCapability: true
+    property bool canReadHeadsetVolume: true
+    property int headsetVolumeLevel: -1
+    property int pendingHeadsetVolumeLevel: -1
+    property int headsetVolumeWriteCount: 0
+    property bool deferHeadsetVolumeWrites: false
+    function setHeadsetVolume(value) {
+        UserSettings.headsetcontrolHeadsetVolume = value
+        if (UserSettings.headsetcontrolHeadsetVolume === value && value >= 0) {
+            headsetVolumeWriteCount++
+            pendingHeadsetVolumeLevel = value
+            if (!deferHeadsetVolumeWrites) {
+                if (canReadHeadsetVolume)
+                    headsetVolumeLevel = value
+                pendingHeadsetVolumeLevel = -1
+            }
+        }
+    }
     property int sidetoneLevel: -1
     property int sidetoneWriteCount: 0
     property int pendingSidetoneLevel: -1

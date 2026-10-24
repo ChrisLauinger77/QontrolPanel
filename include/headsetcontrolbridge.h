@@ -15,6 +15,8 @@ class HeadsetControlBridge : public QObject
     QML_SINGLETON
 
     Q_PROPERTY(bool hasSidetoneCapability READ hasSidetoneCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasHeadsetVolumeCapability READ hasHeadsetVolumeCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool canReadHeadsetVolume READ canReadHeadsetVolume NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasLightsCapability READ hasLightsCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasRotateToMuteCapability READ hasRotateToMuteCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasChatMixCapability READ hasChatMixCapability NOTIFY capabilitiesChanged)
@@ -42,6 +44,8 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(int micAttached READ micAttached NOTIFY micAttachedChanged)
     Q_PROPERTY(int sidetoneLevel READ sidetoneLevel NOTIFY sidetoneLevelChanged)
     Q_PROPERTY(int pendingSidetoneLevel READ pendingSidetoneLevel NOTIFY pendingSidetoneLevelChanged)
+    Q_PROPERTY(int headsetVolumeLevel READ headsetVolumeLevel NOTIFY headsetVolumeLevelChanged)
+    Q_PROPERTY(int pendingHeadsetVolumeLevel READ pendingHeadsetVolumeLevel NOTIFY pendingHeadsetVolumeLevelChanged)
     Q_PROPERTY(QStringList equalizerPresetNames READ equalizerPresetNames NOTIFY equalizerPresetNamesChanged)
     Q_PROPERTY(bool anyDeviceFound READ anyDeviceFound NOTIFY anyDeviceFoundChanged)
     Q_PROPERTY(bool testModeEnabled READ testModeEnabled NOTIFY testModeEnabledChanged)
@@ -65,6 +69,7 @@ public:
     Q_INVOKABLE void setVoicePrompts(bool enabled);
     Q_INVOKABLE void setEqualizerPreset(int preset);
     Q_INVOKABLE void setSidetone(int value);
+    Q_INVOKABLE void setHeadsetVolume(int value);
     Q_INVOKABLE void setInactiveTime(int value);
     Q_INVOKABLE void setBluetoothCallVolume(int value);
     Q_INVOKABLE void setBluetoothWhenPoweredOn(int value);
@@ -81,6 +86,8 @@ public:
     Q_INVOKABLE void setTestProfile(int profile);
 
     bool hasSidetoneCapability() const;
+    bool hasHeadsetVolumeCapability() const;
+    bool canReadHeadsetVolume() const;
     bool hasLightsCapability() const;
     bool hasRotateToMuteCapability() const;
     bool hasChatMixCapability() const;
@@ -108,6 +115,8 @@ public:
     int micAttached() const;
     int sidetoneLevel() const;
     int pendingSidetoneLevel() const { return m_pendingSidetoneLevel; }
+    int headsetVolumeLevel() const;
+    int pendingHeadsetVolumeLevel() const { return m_pendingHeadsetVolumeLevel; }
     QStringList equalizerPresetNames() const;
     bool anyDeviceFound() const;
     bool testModeEnabled() const;
@@ -128,6 +137,8 @@ signals:
     void micAttachedChanged();
     void sidetoneLevelChanged();
     void pendingSidetoneLevelChanged();
+    void headsetVolumeLevelChanged();
+    void pendingHeadsetVolumeLevelChanged();
     void equalizerPresetNamesChanged();
     void anyDeviceFoundChanged();
     void testModeEnabledChanged();
@@ -145,6 +156,7 @@ private:
     void connectToMonitor();
     void syncDesiredSettings();
     void requestSidetone(int value);
+    void requestHeadsetVolume(int value);
     QThread* m_thread = nullptr;
     HeadsetControlMonitor* m_monitor = nullptr;
     void updateLowBatteryNotificationState();
@@ -153,6 +165,9 @@ private:
     bool m_adoptingSidetone = false;
     quint64 m_sidetoneRequestRevision = 0;
     int m_pendingSidetoneLevel = -1;
+    bool m_adoptingHeadsetVolume = false;
+    quint64 m_headsetVolumeRequestRevision = 0;
+    int m_pendingHeadsetVolumeLevel = -1;
     HeadsetControlState m_cachedState;
     QString m_lastError;
 };

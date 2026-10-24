@@ -1034,6 +1034,26 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Wył.</translation>
     </message>
     <message>
+        <source>Headset volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adjust the headset&apos;s hardware volume, separately from Windows volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device level (last reading): %1 / 128</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No headset volume reading yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read-back unavailable; showing your saved choice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Noise cancelling</source>
         <translation type="unfinished"></translation>
     </message>

@@ -1,6 +1,6 @@
 #include "headsetcontrolmonitor.h"
 #include "logmanager.h"
-#include "sidetonepolicy.h"
+#include "headsetlevelpolicy.h"
 
 namespace
 {
@@ -104,6 +104,16 @@ void HeadsetControlMonitor::setEqualizerPreset(int preset)
     setDesiredSettings(desired);
 }
 
+void HeadsetControlMonitor::setHeadsetVolume(int value, quint64 requestRevision)
+{
+    value = qBound(-1, value, 128);
+    m_settingAttempts.remove("headsetVolume");
+    m_headsetVolumeWriteRequested = value >= 0;
+    m_headsetVolumeRequestRevision = requestRevision;
+    setDesiredSettings({{"headsetVolume", value}});
+    emit snapshotReady(snapshot());
+}
+
 void HeadsetControlMonitor::setSidetone(int value, quint64 requestRevision)
 {
     m_settingAttempts.remove("sidetone");
@@ -205,7 +215,7 @@ void HeadsetControlMonitor::requestRefresh()
 {
     const bool retryPending = !m_settingAttempts.isEmpty();
     m_settingAttempts.clear();
-    // Read before retrying writes so an external sidetone change can be adopted.
+    // Read before retrying writes so external level changes can be adopted.
     fetchHeadsetInfoInternal(retryPending || shouldBypassRecentFetchForManualRequest());
 }
 
@@ -330,6 +340,17 @@ void HeadsetControlMonitor::updateDeviceCache()
                     : QString("Failed to read sidetone: %1").arg(QString::fromStdString(sidetone.error().fullMessage())));
         }
 
+        if (deviceReachable && headset.canRead(CAP_HEADSET_VOLUME))
+        {
+            const auto volume = headset.getHeadsetVolume();
+            if (volume && volume->volume <= 128)
+                device.headsetVolumeLevel = volume->volume;
+            else
+                LOG_WARN("HeadsetControlManager", volume
+                    ? QString("Invalid headset volume: %1").arg(volume->volume)
+                    : QString("Failed to read headset volume: %1").arg(QString::fromStdString(volume.error().fullMessage())));
+        }
+
         // Opening a device can refine its product name (e.g. a paired Jabra headset).
         // Read the names after the battery and ChatMix queries have opened it.
         const auto vendorName = headset.vendorName();
@@ -365,6 +386,7 @@ void HeadsetControlMonitor::updateDeviceCache()
     m_activeHeadsetIndex = activeHeadsetIndex;
     updateCapabilities();
     updateSidetoneFromDevice();
+    updateHeadsetVolumeFromDevice();
     applyPendingSettings();
 
     // Update bridge battery info from the first device
@@ -434,6 +456,8 @@ QString HeadsetControlMonitor::activeHeadsetSettingsKey(const headsetcontrol::He
 void HeadsetControlMonitor::updateCapabilities()
 {
     bool newSidetoneCapability = false;
+    bool newHeadsetVolumeCapability = false;
+    bool newCanReadHeadsetVolume = false;
     bool newLightsCapability = false;
     bool newRotateToMuteCapability = false;
     bool newChatMixCapability = false;
@@ -465,6 +489,8 @@ void HeadsetControlMonitor::updateCapabilities()
         newActiveHeadsetSettingsKey = activeHeadsetSettingsKey(headset);
 
         newSidetoneCapability = headset.supports(CAP_SIDETONE);
+        newHeadsetVolumeCapability = headset.supports(CAP_HEADSET_VOLUME);
+        newCanReadHeadsetVolume = headset.canRead(CAP_HEADSET_VOLUME);
         newLightsCapability = headset.supports(CAP_LIGHTS);
         newRotateToMuteCapability = headset.supports(CAP_ROTATE_TO_MUTE);
         newChatMixCapability = headset.supports(CAP_CHATMIX_STATUS);
@@ -507,6 +533,8 @@ void HeadsetControlMonitor::updateCapabilities()
     }
 
     if (newSidetoneCapability != m_hasSidetoneCapability ||
+        newHeadsetVolumeCapability != m_hasHeadsetVolumeCapability ||
+        newCanReadHeadsetVolume != m_canReadHeadsetVolume ||
         newLightsCapability != m_hasLightsCapability ||
         newRotateToMuteCapability != m_hasRotateToMuteCapability ||
         newChatMixCapability != m_hasChatMixCapability ||
@@ -524,6 +552,8 @@ void HeadsetControlMonitor::updateCapabilities()
         newInactivetimeCapability != m_hasInactiveTimeCapability)
     {
         m_hasSidetoneCapability = newSidetoneCapability;
+        m_hasHeadsetVolumeCapability = newHeadsetVolumeCapability;
+        m_canReadHeadsetVolume = newCanReadHeadsetVolume;
         m_hasLightsCapability = newLightsCapability;
         m_hasRotateToMuteCapability = newRotateToMuteCapability;
         m_hasChatMixCapability = newChatMixCapability;
@@ -570,6 +600,7 @@ void HeadsetControlMonitor::updateCapabilities()
     {
         m_activeHeadsetSettingsKey = "";
         m_sidetoneWriteRequested = false;
+        m_headsetVolumeWriteRequested = false;
         m_appliedSettings.clear();
         m_settingAttempts.clear();
         return;
@@ -579,6 +610,7 @@ void HeadsetControlMonitor::updateCapabilities()
     {
         m_activeHeadsetSettingsKey = newActiveHeadsetSettingsKey;
         m_sidetoneWriteRequested = false;
+        m_headsetVolumeWriteRequested = false;
         m_appliedSettings.clear();
         m_settingAttempts.clear();
     }
@@ -593,9 +625,9 @@ void HeadsetControlMonitor::updateSidetoneFromDevice()
         m_sidetoneLevel = observed;
         emit sidetoneLevelChanged();
     }
-    if (headset && SidetonePolicy::decide(headset->supports(CAP_SIDETONE_STATUS), observed,
+    if (headset && HeadsetLevelPolicy::decide(headset->supports(CAP_SIDETONE_STATUS), observed,
             m_appliedSettings.value("sidetone", -1).toInt(), m_desiredSettings.value("sidetone", 0).toInt(),
-            m_sidetoneWriteRequested) == SidetonePolicy::Action::Adopt)
+            m_sidetoneWriteRequested) == HeadsetLevelPolicy::Action::Adopt)
     {
         // A read establishes the baseline too; its settings echo must never become a write.
         m_desiredSettings["sidetone"] = observed;
@@ -603,6 +635,27 @@ void HeadsetControlMonitor::updateSidetoneFromDevice()
         m_settingAttempts.remove("sidetone");
         m_sidetoneWriteRequested = false;
         emit sidetoneAdopted(observed, m_sidetoneRequestRevision);
+    }
+}
+
+void HeadsetControlMonitor::updateHeadsetVolumeFromDevice()
+{
+    auto* headset = activeHeadset();
+    const int observed = headset ? m_cachedDevices.at(m_activeHeadsetIndex).headsetVolumeLevel : -1;
+    if (m_headsetVolumeLevel != observed)
+    {
+        m_headsetVolumeLevel = observed;
+        emit headsetVolumeLevelChanged();
+    }
+    if (headset && HeadsetLevelPolicy::decide(headset->canRead(CAP_HEADSET_VOLUME), observed,
+            m_appliedSettings.value("headsetVolume", -1).toInt(), m_desiredSettings.value("headsetVolume", -1).toInt(),
+            m_headsetVolumeWriteRequested) == HeadsetLevelPolicy::Action::Adopt)
+    {
+        m_desiredSettings["headsetVolume"] = observed;
+        m_appliedSettings["headsetVolume"] = observed;
+        m_settingAttempts.remove("headsetVolume");
+        m_headsetVolumeWriteRequested = false;
+        emit headsetVolumeAdopted(observed, m_headsetVolumeRequestRevision);
     }
 }
 
@@ -646,6 +699,12 @@ void HeadsetControlMonitor::applyPendingSettings()
             {
                 m_appliedSettings[key] = desired;
                 m_settingAttempts.remove(key);
+                if (key == "headsetVolume")
+                {
+                    m_headsetVolumeWriteRequested = false;
+                    emit headsetVolumeLevelChanged();
+                    emit snapshotReady(snapshot());
+                }
                 if (key == "sidetone")
                 {
                     m_sidetoneWriteRequested = false;
@@ -668,9 +727,21 @@ void HeadsetControlMonitor::applyPendingSettings()
           [&](const QVariant& v) { return headset->setRotateToMute(v.toBool()); });
     apply("voicePrompts", m_hasVoicePromptsCapability,
           [&](const QVariant& v) { return headset->setVoicePrompts(v.toBool()); });
-    const bool applySidetone = SidetonePolicy::decide(headset->supports(CAP_SIDETONE_STATUS), -1,
+    const bool applyHeadsetVolume = HeadsetLevelPolicy::decide(headset->canRead(CAP_HEADSET_VOLUME), -1,
+        m_appliedSettings.value("headsetVolume", -1).toInt(), m_desiredSettings.value("headsetVolume", -1).toInt(),
+        m_headsetVolumeWriteRequested) == HeadsetLevelPolicy::Action::Apply;
+    apply("headsetVolume", m_hasHeadsetVolumeCapability && applyHeadsetVolume,
+          [&](const QVariant& v) {
+              const auto result = headset->setHeadsetVolume(static_cast<uint8_t>(qBound(0, v.toInt(), 128)));
+              // An acknowledgement is not read-back on a write-only headset.
+              if (result)
+                  m_headsetVolumeLevel = headset->canRead(CAP_HEADSET_VOLUME) && result->volume <= 128
+                      ? result->volume : -1;
+              return result;
+          });
+    const bool applySidetone = HeadsetLevelPolicy::decide(headset->supports(CAP_SIDETONE_STATUS), -1,
         m_appliedSettings.value("sidetone", -1).toInt(), m_desiredSettings.value("sidetone", 0).toInt(),
-        m_sidetoneWriteRequested) == SidetonePolicy::Action::Apply;
+        m_sidetoneWriteRequested) == HeadsetLevelPolicy::Action::Apply;
     apply("sidetone", m_hasSidetoneCapability && applySidetone,
           [&](const QVariant& v) {
               const auto result = headset->setSidetone(static_cast<uint8_t>(qBound(0, v.toInt(), 128)));
@@ -718,6 +789,8 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
 {
     HeadsetControlState state;
     state.hasSidetoneCapability = hasSidetoneCapability();
+    state.hasHeadsetVolumeCapability = hasHeadsetVolumeCapability();
+    state.canReadHeadsetVolume = canReadHeadsetVolume();
     state.hasLightsCapability = hasLightsCapability();
     state.hasRotateToMuteCapability = hasRotateToMuteCapability();
     state.hasChatMixCapability = hasChatMixCapability();
@@ -743,6 +816,8 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.micMuted = micMuted();
     state.micAttached = micAttached();
     state.sidetoneLevel = sidetoneLevel();
+    state.headsetVolumeLevel = headsetVolumeLevel();
+    state.headsetVolumeRequestRevision = m_headsetVolumeRequestRevision;
     state.sidetoneRequestRevision = m_sidetoneRequestRevision;
     state.equalizerPresetNames = equalizerPresetNames();
     state.anyDeviceFound = anyDeviceFound();
@@ -875,6 +950,8 @@ void HeadsetControlMonitor::clearDeviceState()
     m_cachedDevices.clear();
     m_headsets.clear();
     m_hasSidetoneCapability = false;
+    m_hasHeadsetVolumeCapability = false;
+    m_canReadHeadsetVolume = false;
     m_hasLightsCapability = false;
     m_hasRotateToMuteCapability = false;
     m_hasChatMixCapability = false;
@@ -900,8 +977,10 @@ void HeadsetControlMonitor::clearDeviceState()
     m_micMuted = -1;
     m_micAttached = -1;
     m_sidetoneLevel = -1;
+    m_headsetVolumeLevel = -1;
     m_sidetoneWriteRequested = false;
     m_activeHeadsetIndex = -1;
+    m_headsetVolumeWriteRequested = false;
     m_activeHeadsetSettingsKey = "";
     if (!m_equalizerPresetNames.isEmpty())
     {
@@ -922,6 +1001,7 @@ void HeadsetControlMonitor::clearDeviceState()
     emit micMutedChanged();
     emit micAttachedChanged();
     emit sidetoneLevelChanged();
+    emit headsetVolumeLevelChanged();
     if (wasDeviceFound)
     {
         emit anyDeviceFoundChanged();

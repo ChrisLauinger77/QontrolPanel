@@ -26,6 +26,7 @@ struct HeadsetControlDevice {
     int micMuted = -1;      // Last poll: -1 unknown, 0 unmuted, 1 muted
     int micAttached = -1;   // Last poll: -1 unknown, 0 detached, 1 attached
     int sidetoneLevel = -1; // Normalised 0 - 128, -1 when unknown
+    int headsetVolumeLevel = -1; // Normalised hardware volume; -1 without read-back
     QStringList capabilities;
 
     HeadsetControlDevice() : batteryLevel(-1), chatMix(-1) {}
@@ -35,6 +36,8 @@ Q_DECLARE_METATYPE(HeadsetControlDevice)
 struct HeadsetControlState
 {
     bool hasSidetoneCapability = false;
+    bool hasHeadsetVolumeCapability = false;
+    bool canReadHeadsetVolume = false;
     bool hasLightsCapability = false;
     bool hasRotateToMuteCapability = false;
     bool hasChatMixCapability = false;
@@ -61,6 +64,8 @@ struct HeadsetControlState
     int micAttached = -1;
     int sidetoneLevel = -1;
     quint64 sidetoneRequestRevision = 0;
+    int headsetVolumeLevel = -1;
+    quint64 headsetVolumeRequestRevision = 0;
     QStringList equalizerPresetNames;
     bool anyDeviceFound = false;
     bool testModeEnabled = false;
@@ -82,6 +87,8 @@ public:
     QList<HeadsetControlDevice> getCachedDevices() const { return m_cachedDevices; }
 
     bool hasSidetoneCapability() const { return m_hasSidetoneCapability; }
+    bool hasHeadsetVolumeCapability() const { return m_hasHeadsetVolumeCapability; }
+    bool canReadHeadsetVolume() const { return m_canReadHeadsetVolume; }
     bool hasLightsCapability() const { return m_hasLightsCapability; }
     bool hasRotateToMuteCapability() const { return m_hasRotateToMuteCapability; }
     bool hasChatMixCapability() const { return m_hasChatMixCapability; }
@@ -106,6 +113,7 @@ public:
     int micMuted() const { return m_micMuted; }
     int micAttached() const { return m_micAttached; }
     int sidetoneLevel() const { return m_sidetoneLevel; }
+    int headsetVolumeLevel() const { return m_headsetVolumeLevel; }
     bool hasEqualizerPresetsCapability() const { return m_hasEqualizerPresetsCapability; }
     QStringList equalizerPresetNames() const { return m_equalizerPresetNames; }
     bool anyDeviceFound() const { return m_anyDeviceFound; }
@@ -122,6 +130,7 @@ public slots:
     void setVoicePrompts(bool enabled);
     void setEqualizerPreset(int preset);
     void setSidetone(int value, quint64 requestRevision = 0);
+    void setHeadsetVolume(int value, quint64 requestRevision = 0);
     void setInactiveTime(int value);
     void setFetchInterval(int intervalMs);
     void setTestModeEnabled(bool enabled);
@@ -144,6 +153,8 @@ signals:
     void micAttachedChanged();
     void sidetoneLevelChanged();
     void sidetoneAdopted(int value, quint64 requestRevision);
+    void headsetVolumeLevelChanged();
+    void headsetVolumeAdopted(int value, quint64 requestRevision);
     void equalizerPresetNamesChanged();
     void anyDeviceFoundChanged();
     void testModeEnabledChanged();
@@ -161,6 +172,7 @@ private:
     void updateDeviceCache();
     void updateCapabilities();
     void updateSidetoneFromDevice();
+    void updateHeadsetVolumeFromDevice();
     void applyPendingSettings();
     void clearDeviceState();
     QVariantMap m_desiredSettings;
@@ -181,6 +193,8 @@ private:
     int m_fetchIntervalMs;
 
     bool m_hasSidetoneCapability;
+    bool m_hasHeadsetVolumeCapability = false;
+    bool m_canReadHeadsetVolume = false;
     bool m_hasLightsCapability;
     bool m_hasRotateToMuteCapability;
     bool m_hasChatMixCapability;
@@ -208,6 +222,9 @@ private:
     int m_sidetoneLevel = -1;
     bool m_sidetoneWriteRequested = false;
     quint64 m_sidetoneRequestRevision = 0;
+    int m_headsetVolumeLevel = -1;
+    bool m_headsetVolumeWriteRequested = false;
+    quint64 m_headsetVolumeRequestRevision = 0;
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;
