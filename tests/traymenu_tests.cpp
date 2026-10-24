@@ -512,7 +512,14 @@ private slots:
         QVERIFY(settings->property("headsetcontrolLights").toBool());
         QVERIFY(lights->isChecked());
         actionFor(actionFor(headsetMenu, "equalizer")->menu(), "equalizer:1")->trigger();
-        QCOMPARE(settings->property("headsetcontrolEqualizerPreset").toInt(), 1);
+        QCOMPARE(headset->property("equalizerPreset").toInt(), 1);
+        auto* equalizerMenu = actionFor(headsetMenu, "equalizer")->menu();
+        QVERIFY(actionFor(equalizerMenu, "equalizer:1")->isChecked());
+        headset->setProperty("customEqualizerEnabled", true);
+        QVERIFY(!actionFor(equalizerMenu, "equalizer:1")->isChecked());
+        actionFor(equalizerMenu, "equalizer:0")->trigger();
+        QVERIFY(!headset->property("customEqualizerEnabled").toBool());
+        QVERIFY(actionFor(equalizerMenu, "equalizer:0")->isChecked());
 
         settings->setProperty("enableMediaSessionManager", false);
         QVERIFY(!previous->isVisible());

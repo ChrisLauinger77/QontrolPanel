@@ -8,8 +8,8 @@ namespace
     constexpr int kMinimumFetchIntervalMs = 60000;
 }
 
-HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent, HeadsetDiscovery discover)
-    : QObject(parent), m_discoverHeadsets(std::move(discover)), m_fetchTimer(new QTimer(this)), m_isMonitoring(false), m_fetchIntervalMs(30000), m_hasSidetoneCapability(false), m_hasLightsCapability(false), m_hasRotateToMuteCapability(false), m_hasChatMixCapability(false), m_hasVoicePromptsCapability(false), m_hasEqualizerPresetsCapability(false), m_hasInactiveTimeCapability(false), m_deviceName(""), m_batteryStatus("BATTERY_UNAVAILABLE"), m_batteryLevel(-1), m_chatMix(-1), m_anyDeviceFound(false), m_isFetching(false), m_activeHeadsetIndex(-1), m_activeHeadsetSettingsKey(""), m_testModeEnabled(false), m_testProfile(3)
+HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent, HeadsetDiscovery discover, EqualizerInfoReader readEqualizerInfo)
+    : QObject(parent), m_discoverHeadsets(std::move(discover)), m_readEqualizerInfo(std::move(readEqualizerInfo)), m_fetchTimer(new QTimer(this)), m_isMonitoring(false), m_fetchIntervalMs(30000), m_hasSidetoneCapability(false), m_hasLightsCapability(false), m_hasRotateToMuteCapability(false), m_hasChatMixCapability(false), m_hasVoicePromptsCapability(false), m_hasEqualizerPresetsCapability(false), m_hasInactiveTimeCapability(false), m_deviceName(""), m_batteryStatus("BATTERY_UNAVAILABLE"), m_batteryLevel(-1), m_chatMix(-1), m_anyDeviceFound(false), m_isFetching(false), m_activeHeadsetIndex(-1), m_activeHeadsetSettingsKey(""), m_testModeEnabled(false), m_testProfile(3)
 {
     LOG_INFO("HeadsetControlManager",
              QString("HeadsetControlMonitor initialized - HeadsetControl library version: %1")
@@ -477,6 +477,7 @@ void HeadsetControlMonitor::updateCapabilities()
     QString newDisplayName;
     QString newActiveHeadsetSettingsKey = "";
     QStringList newEqualizerPresetNames;
+    QVariantList newEqualizerPresetCurves;
     bool newAnyDeviceFound = m_activeHeadsetIndex >= 0;
 
     if (headsetcontrol::Headset *active = activeHeadset())
@@ -514,6 +515,10 @@ void HeadsetControlMonitor::updateCapabilities()
                 for (const auto &preset : presets->presets)
                 {
                     newEqualizerPresetNames.append(QString::fromStdString(preset.name));
+                    QVariantList curve;
+                    for (float value : preset.values)
+                        curve.append(double(value));
+                    newEqualizerPresetCurves.append(QVariant(curve));
                 }
             }
 
@@ -531,6 +536,10 @@ void HeadsetControlMonitor::updateCapabilities()
                  QString("Device capabilities: %1")
                      .arg(getCapabilityList(headset).join(", ")));
     }
+
+    m_hasEqualizerCapability = activeHeadset() && activeHeadset()->supports(CAP_EQUALIZER);
+    m_equalizerPresetCurves = newEqualizerPresetCurves;
+    updateEqualizerInfo();
 
     if (newSidetoneCapability != m_hasSidetoneCapability ||
         newHeadsetVolumeCapability != m_hasHeadsetVolumeCapability ||
@@ -613,6 +622,20 @@ void HeadsetControlMonitor::updateCapabilities()
         m_headsetVolumeWriteRequested = false;
         m_appliedSettings.clear();
         m_settingAttempts.clear();
+    }
+}
+
+void HeadsetControlMonitor::updateEqualizerInfo()
+{
+    m_equalizerLayout = {};
+    if (auto* headset = activeHeadset(); headset && m_hasEqualizerCapability) {
+        // Metadata only, including immediately after a command on this same handle.
+        if (const auto info = m_readEqualizerInfo(*headset)) {
+            const HeadsetEqualizer::Layout layout{info->bands_count, double(info->bands_baseline),
+                double(info->bands_step), double(info->bands_min), double(info->bands_max)};
+            if (layout.valid())
+                m_equalizerLayout = layout;
+        }
     }
 }
 
@@ -749,11 +772,54 @@ void HeadsetControlMonitor::applyPendingSettings()
                   m_sidetoneLevel = result->current_level <= 128 ? result->current_level : -1;
               return result;
           });
-    apply("equalizerPreset", m_hasEqualizerPresetsCapability && !m_equalizerPresetNames.isEmpty(),
-          [&](const QVariant& v) {
-              return headset->setEqualizerPreset(
-                  static_cast<uint8_t>(qBound(0, v.toInt(), int(m_equalizerPresetNames.size()) - 1)));
-          });
+    const auto entry = m_desiredSettings.value("equalizers").toMap().value(m_activeHeadsetSettingsKey).toMap();
+    const bool custom = entry.value("custom", false).toBool() && m_hasEqualizerCapability;
+    const int preset = qBound(0, entry.value("preset", m_desiredSettings.value("equalizerPreset", 0)).toInt(),
+                             qMax(0, int(m_equalizerPresetNames.size()) - 1));
+    const bool canSetPreset = m_hasEqualizerPresetsCapability && !m_equalizerPresetNames.isEmpty()
+        && (entry.contains("preset") || m_desiredSettings.contains("equalizerPreset"));
+    auto stageEqualizer = [&](const QString& key, const QVariant& value) {
+        if (m_desiredSettings.value(key) != value)
+            m_settingAttempts.remove(key);
+        m_desiredSettings[key] = value;
+    };
+    auto writePreset = [&](const QVariant&) {
+        const auto result = headset->setEqualizerPreset(static_cast<uint8_t>(preset));
+        if (result)
+            emit equalizerApplied(false);
+        // PRO X 2 learns its layout during an EQ command. Read it on the same
+        // Headset, before rediscovery can replace that instance.
+        updateEqualizerInfo();
+        emit snapshotReady(snapshot());
+        return result;
+    };
+    if (custom && !m_equalizerLayout.valid()) {
+        stageEqualizer("equalizerBootstrap", preset);
+        apply("equalizerBootstrap", canSetPreset, writePreset);
+    }
+    const auto curve = HeadsetEqualizer::clamp(entry.value("bands").toList(), m_equalizerLayout);
+    // One canonical selection makes presets and curves mutually exclusive, and
+    // compares snapped curves before acknowledging or retrying hardware writes.
+    stageEqualizer("equalizer", custom ? QVariantMap{{"custom", true}, {"bands", curve}}
+                                      : QVariantMap{{"custom", false}, {"preset", preset}});
+    apply("equalizer", custom ? !curve.isEmpty() : canSetPreset,
+          [&](const QVariant&) -> headsetcontrol::Result<headsetcontrol::EqualizerResult> {
+        if (!custom) {
+            const auto result = writePreset({});
+            if (!result)
+                return result.error();
+            return headsetcontrol::EqualizerResult{};
+        }
+        std::vector<float> bands;
+        for (const auto& band : curve)
+            bands.push_back(static_cast<float>(band.toDouble()));
+        const auto result = headset->setEqualizer(EqualizerSettings(std::move(bands)));
+        if (result)
+            emit equalizerApplied(true);
+        return result;
+    });
+    if (custom && curve.isEmpty())
+        errors.append("equalizerCurve: saved curve does not match an available equalizer layout");
     apply("inactiveTime", m_hasInactiveTimeCapability && m_desiredSettings.value("inactiveTime", -1).toInt() >= 0,
           [&](const QVariant& v) { return headset->setInactiveTime(static_cast<uint8_t>(qBound(0, v.toInt(), 255))); });
     apply("micVolume", m_hasMicVolumeCapability && m_desiredSettings.value("micVolume", -1).toInt() >= 0,
@@ -819,6 +885,10 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.headsetVolumeLevel = headsetVolumeLevel();
     state.headsetVolumeRequestRevision = m_headsetVolumeRequestRevision;
     state.sidetoneRequestRevision = m_sidetoneRequestRevision;
+    state.activeDeviceKey = m_activeHeadsetSettingsKey;
+    state.hasEqualizerCapability = m_hasEqualizerCapability;
+    state.equalizerLayout = m_equalizerLayout;
+    state.equalizerPresetCurves = m_equalizerPresetCurves;
     state.equalizerPresetNames = equalizerPresetNames();
     state.anyDeviceFound = anyDeviceFound();
     state.testModeEnabled = testModeEnabled();
@@ -947,6 +1017,9 @@ void HeadsetControlMonitor::applyTestDeviceConfiguration()
 
 void HeadsetControlMonitor::clearDeviceState()
 {
+    m_hasEqualizerCapability = false;
+    m_equalizerLayout = {};
+    m_equalizerPresetCurves.clear();
     m_cachedDevices.clear();
     m_headsets.clear();
     m_hasSidetoneCapability = false;

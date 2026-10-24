@@ -175,7 +175,9 @@ ColumnLayout {
                     enabled: HeadsetControlBridge.hasEqualizerPresetsCapability
                     Layout.fillWidth: true
                     title: qsTr("Equalizer Preset")
-                    description: qsTr("Set the equalizer preset for your headset")
+                    description: HeadsetControlBridge.customEqualizerEnabled
+                        ? qsTr("Selecting a preset stops applying the custom curve. Your custom curve is kept.")
+                        : qsTr("Set the equalizer preset for your headset")
                     additionalControl: CustomComboBox {
                         Layout.preferredHeight: 35
                         model: HeadsetControlBridge.equalizerPresetNames
@@ -185,13 +187,122 @@ ColumnLayout {
                                 return -1;
                             }
 
-                            return Math.min(Math.max(0, UserSettings.headsetcontrolEqualizerPreset), count - 1);
+                            return Math.min(Math.max(0, HeadsetControlBridge.equalizerPreset), count - 1);
                         }
                         currentIndex: acceptedIndex()
                         onActivated: {
-                            UserSettings.headsetcontrolEqualizerPreset = currentIndex;
+                            HeadsetControlBridge.setEqualizerPreset(currentIndex);
                             currentIndex = Qt.binding(acceptedIndex)
                         }
+                    }
+                }
+
+                Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasEqualizerCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Custom equalizer")
+                    description: HeadsetControlBridge.equalizerBandCount > 0
+                        ? qsTr("Save and restore a custom curve for this headset.")
+                        : qsTr("Select an equalizer preset first to load this headset's band layout.")
+                    additionalControl: LabeledSwitch {
+                        objectName: "customEqualizerSwitch"
+                        enabled: HeadsetControlBridge.equalizerBandCount > 0
+                        checked: HeadsetControlBridge.customEqualizerEnabled
+                        onClicked: {
+                            HeadsetControlBridge.setCustomEqualizerEnabled(checked)
+                            checked = Qt.binding(function() { return HeadsetControlBridge.customEqualizerEnabled })
+                        }
+                    }
+                }
+
+                Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasEqualizerCapability
+                        && HeadsetControlBridge.equalizerBandCount > 0
+                    Layout.fillWidth: true
+                    title: qsTr("Start from preset")
+                    description: qsTr("Copy a preset curve, then adjust its bands.")
+                    additionalControl: CustomComboBox {
+                        objectName: "equalizerStartPreset"
+                        model: HeadsetControlBridge.equalizerPresetNames
+                        enabled: HeadsetControlBridge.hasEqualizerPresetCurves
+                        currentIndex: -1
+                        displayText: currentIndex < 0 ? qsTr("Choose a preset") : currentText
+                        onActivated: {
+                            HeadsetControlBridge.startEqualizerFromPreset(currentIndex)
+                            currentIndex = -1
+                        }
+                    }
+                }
+
+                Rectangle {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasEqualizerCapability
+                        && HeadsetControlBridge.equalizerBandCount > 0
+                    enabled: HeadsetControlBridge.customEqualizerEnabled
+                    Layout.fillWidth: true
+                    implicitHeight: equalizerRow.implicitHeight + 30
+                    color: Constants.cardColor
+                    border.color: Constants.cardBorderColor
+                    radius: 5
+                    // Band metadata has no center frequencies; keep the device's band order.
+                    Flickable {
+                        anchors.fill: parent
+                        anchors.margins: 15
+                        contentWidth: equalizerRow.implicitWidth
+                        contentHeight: height
+                        clip: true
+                        flickableDirection: Flickable.HorizontalFlick
+                        RowLayout {
+                            id: equalizerRow
+                            spacing: 16
+                            Repeater {
+                                model: HeadsetControlBridge.equalizerBands
+                                delegate: ColumnLayout {
+                                    id: bandColumn
+                                    required property int index
+                                    required property real bandValue
+                                    spacing: 8
+                                    Label {
+                                        text: qsTr("Band %1").arg(bandColumn.index + 1)
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+                                    Slider {
+                                        id: bandSlider
+                                        objectName: "equalizerBand" + bandColumn.index
+                                        orientation: Qt.Vertical
+                                        Layout.preferredHeight: 150
+                                        Layout.alignment: Qt.AlignHCenter
+                                        from: HeadsetControlBridge.equalizerMinimum
+                                        to: HeadsetControlBridge.equalizerMaximum
+                                        stepSize: HeadsetControlBridge.equalizerStep
+                                        snapMode: Slider.SnapAlways
+                                        wheelEnabled: true
+                                        focusPolicy: Qt.StrongFocus
+                                        value: bandColumn.bandValue
+                                        property string editDeviceKey: ""
+                                        Accessible.name: qsTr("Band %1").arg(bandColumn.index + 1)
+                                        function commit(deviceKey) {
+                                            HeadsetControlBridge.setEqualizerBand(deviceKey, bandColumn.index, value)
+                                            value = Qt.binding(function() { return bandColumn.bandValue })
+                                        }
+                                        onPressedChanged: {
+                                            if (pressed)
+                                                editDeviceKey = HeadsetControlBridge.activeDeviceKey
+                                            else
+                                                commit(editDeviceKey)
+                                        }
+                                        onMoved: {
+                                            if (!pressed)
+                                                commit(HeadsetControlBridge.activeDeviceKey)
+                                        }
+                                    }
+                                    Label {
+                                        text: Number(bandSlider.value).toLocaleString(Qt.locale(), 'f', 1)
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+                                }
+                            }
+                        }
+                        ScrollBar.horizontal: ScrollBar {}
                     }
                 }
 

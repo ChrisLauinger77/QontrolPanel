@@ -948,8 +948,40 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>Equalizer-Voreinstellung</translation>
     </message>
     <message>
+        <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Set the equalizer preset for your headset</source>
         <translation>Stellen Sie die Equalizer-Voreinstellung für Ihr Headset ein</translation>
+    </message>
+    <message>
+        <source>Custom equalizer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save and restore a custom curve for this headset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an equalizer preset first to load this headset&apos;s band layout.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start from preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy a preset curve, then adjust its bands.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Headset volume</source>

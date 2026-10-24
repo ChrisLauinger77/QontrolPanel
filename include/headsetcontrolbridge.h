@@ -46,6 +46,16 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(int pendingSidetoneLevel READ pendingSidetoneLevel NOTIFY pendingSidetoneLevelChanged)
     Q_PROPERTY(int headsetVolumeLevel READ headsetVolumeLevel NOTIFY headsetVolumeLevelChanged)
     Q_PROPERTY(int pendingHeadsetVolumeLevel READ pendingHeadsetVolumeLevel NOTIFY pendingHeadsetVolumeLevelChanged)
+    Q_PROPERTY(bool hasEqualizerCapability READ hasEqualizerCapability NOTIFY equalizerChanged)
+    Q_PROPERTY(QString activeDeviceKey READ activeDeviceKey NOTIFY equalizerChanged)
+    Q_PROPERTY(int equalizerBandCount READ equalizerBandCount NOTIFY equalizerChanged)
+    Q_PROPERTY(double equalizerMinimum READ equalizerMinimum NOTIFY equalizerChanged)
+    Q_PROPERTY(double equalizerMaximum READ equalizerMaximum NOTIFY equalizerChanged)
+    Q_PROPERTY(double equalizerStep READ equalizerStep NOTIFY equalizerChanged)
+    Q_PROPERTY(bool hasEqualizerPresetCurves READ hasEqualizerPresetCurves NOTIFY equalizerChanged)
+    Q_PROPERTY(bool customEqualizerEnabled READ customEqualizerEnabled NOTIFY equalizerChanged)
+    Q_PROPERTY(int equalizerPreset READ equalizerPreset NOTIFY equalizerChanged)
+    Q_PROPERTY(QAbstractItemModel* equalizerBands READ equalizerBands CONSTANT)
     Q_PROPERTY(QStringList equalizerPresetNames READ equalizerPresetNames NOTIFY equalizerPresetNamesChanged)
     Q_PROPERTY(bool anyDeviceFound READ anyDeviceFound NOTIFY anyDeviceFoundChanged)
     Q_PROPERTY(bool testModeEnabled READ testModeEnabled NOTIFY testModeEnabledChanged)
@@ -68,6 +78,9 @@ public:
     Q_INVOKABLE void setRotateToMute(bool enabled);
     Q_INVOKABLE void setVoicePrompts(bool enabled);
     Q_INVOKABLE void setEqualizerPreset(int preset);
+    Q_INVOKABLE void setCustomEqualizerEnabled(bool enabled);
+    Q_INVOKABLE void startEqualizerFromPreset(int preset);
+    Q_INVOKABLE void setEqualizerBand(const QString& deviceKey, int band, double value);
     Q_INVOKABLE void setSidetone(int value);
     Q_INVOKABLE void setHeadsetVolume(int value);
     Q_INVOKABLE void setInactiveTime(int value);
@@ -117,6 +130,16 @@ public:
     int pendingSidetoneLevel() const { return m_pendingSidetoneLevel; }
     int headsetVolumeLevel() const;
     int pendingHeadsetVolumeLevel() const { return m_pendingHeadsetVolumeLevel; }
+    bool hasEqualizerCapability() const { return m_cachedState.hasEqualizerCapability; }
+    QString activeDeviceKey() const { return m_cachedState.activeDeviceKey; }
+    int equalizerBandCount() const { return m_cachedState.equalizerLayout.count; }
+    double equalizerMinimum() const { return m_cachedState.equalizerLayout.minimum; }
+    double equalizerMaximum() const { return m_cachedState.equalizerLayout.maximum; }
+    double equalizerStep() const { return m_cachedState.equalizerLayout.step; }
+    bool hasEqualizerPresetCurves() const;
+    bool customEqualizerEnabled() const;
+    int equalizerPreset() const;
+    QAbstractItemModel* equalizerBands() { return &m_equalizerBands; }
     QStringList equalizerPresetNames() const;
     bool anyDeviceFound() const;
     bool testModeEnabled() const;
@@ -140,6 +163,7 @@ signals:
     void headsetVolumeLevelChanged();
     void pendingHeadsetVolumeLevelChanged();
     void equalizerPresetNamesChanged();
+    void equalizerChanged();
     void anyDeviceFoundChanged();
     void testModeEnabledChanged();
     void testProfileChanged();
@@ -155,6 +179,11 @@ private:
     HeadsetControlMonitor* findMonitor() const;
     void connectToMonitor();
     void syncDesiredSettings();
+    QVariantMap equalizerEntry() const;
+    QVariantList equalizerCurve() const;
+    void saveEqualizerEntry(const QVariantMap& entry);
+    void updateEqualizerModel(bool deviceChanged = false);
+    HeadsetEqualizerModel m_equalizerBands;
     void requestSidetone(int value);
     void requestHeadsetVolume(int value);
     QThread* m_thread = nullptr;

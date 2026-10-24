@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QVariantList>
+#include <QVariantMap>
 
 class UserSettings : public QObject
 {
@@ -49,6 +50,7 @@ class UserSettings : public QObject
     Q_PROPERTY(bool headsetcontrolLights READ headsetcontrolLights WRITE setHeadsetcontrolLights NOTIFY headsetcontrolLightsChanged)
     Q_PROPERTY(bool headsetcontrolRotateToMute READ headsetcontrolRotateToMute WRITE setHeadsetcontrolRotateToMute NOTIFY headsetcontrolRotateToMuteChanged)
     Q_PROPERTY(bool headsetcontrolVoicePrompts READ headsetcontrolVoicePrompts WRITE setHeadsetcontrolVoicePrompts NOTIFY headsetcontrolVoicePromptsChanged)
+    Q_PROPERTY(QVariantMap headsetcontrolEqualizers READ headsetcontrolEqualizers WRITE setHeadsetcontrolEqualizers NOTIFY headsetcontrolEqualizersChanged)
     Q_PROPERTY(int headsetcontrolEqualizerPreset READ headsetcontrolEqualizerPreset WRITE setHeadsetcontrolEqualizerPreset NOTIFY headsetcontrolEqualizerPresetChanged)
     Q_PROPERTY(int headsetcontrolInactiveTime READ headsetcontrolInactiveTime WRITE setHeadsetcontrolInactiveTime NOTIFY headsetcontrolInactiveTimeChanged)
     Q_PROPERTY(int headsetcontrolSidetone READ headsetcontrolSidetone WRITE setHeadsetcontrolSidetone NOTIFY headsetcontrolSidetoneChanged)
@@ -127,6 +129,7 @@ public:
     bool headsetcontrolLights() const { return m_headsetcontrolLights; }
     bool headsetcontrolRotateToMute() const { return m_headsetcontrolRotateToMute; }
     bool headsetcontrolVoicePrompts() const { return m_headsetcontrolVoicePrompts; }
+    QVariantMap headsetcontrolEqualizers() const { return m_headsetcontrolEqualizers; }
     int headsetcontrolEqualizerPreset() const { return m_headsetcontrolEqualizerPreset; }
     int headsetcontrolInactiveTime() const { return m_headsetcontrolInactiveTime; }
     int headsetcontrolSidetone() const { return m_headsetcontrolSidetone; }
@@ -200,6 +203,7 @@ public:
     void setHeadsetcontrolLights(bool value);
     void setHeadsetcontrolRotateToMute(bool value);
     void setHeadsetcontrolVoicePrompts(bool value);
+    void setHeadsetcontrolEqualizers(const QVariantMap& value);
     void setHeadsetcontrolEqualizerPreset(int value);
     void setHeadsetcontrolInactiveTime(int value);
     void setHeadsetcontrolSidetone(int value);
@@ -275,6 +279,7 @@ signals:
     void headsetcontrolLightsChanged();
     void headsetcontrolRotateToMuteChanged();
     void headsetcontrolVoicePromptsChanged();
+    void headsetcontrolEqualizersChanged();
     void headsetcontrolEqualizerPresetChanged();
     void headsetcontrolInactiveTimeChanged();
     void headsetcontrolSidetoneChanged();
@@ -355,6 +360,7 @@ private:
     bool m_headsetcontrolLights;
     bool m_headsetcontrolRotateToMute;
     bool m_headsetcontrolVoicePrompts;
+    QVariantMap m_headsetcontrolEqualizers; // VID:PID:driver name -> custom, preset, bands
     int m_headsetcontrolEqualizerPreset;
     int m_headsetcontrolInactiveTime;
     int m_headsetcontrolSidetone;

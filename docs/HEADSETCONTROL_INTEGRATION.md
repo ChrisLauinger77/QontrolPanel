@@ -114,7 +114,8 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolLights`
 - `headsetcontrolRotateToMute`
 - `headsetcontrolVoicePrompts`
-- `headsetcontrolEqualizerPreset`
+- `headsetcontrolEqualizerPreset` (legacy fallback for a headset without a saved selection)
+- `headsetcontrolEqualizers` (per VID/PID/driver-name custom/preset selection and custom band values)
 - `headsetcontrolInactiveTime`
 - `headsetcontrolSidetone`
 - `headsetcontrolHeadsetVolume` (-1: not set; otherwise 0–128 hardware volume)
@@ -153,6 +154,20 @@ UI controls should bind to capability properties so unsupported headset function
 2. Read the saved value from `UserSettings`.
 3. On user interaction, call the bridge setter, which persists the desired value. The bridge also observes settings changes made elsewhere.
 4. Let bridge signals refresh UI state after polling.
+
+## Custom graphic equalizer
+
+`HeadsetControlPane.qml` places the custom editor immediately after the preset selector. Devices advertising `CAP_EQUALIZER` get a custom-curve switch and a horizontal row of vertical band sliders. Band count, baseline, range and step come from `getEqualizerInfo()`; no frequencies are invented because this metadata does not provide them. Sliders write on release; keyboard and wheel changes write one completed edit. Controls are disabled until the band layout is available.
+
+`UserSettings.headsetcontrolEqualizers` stores a bounded map keyed by the monitor's existing `VID:PID:driver name` identity, for example `f00b:a00c:HeadsetControl Test device`. Each entry contains `custom` (the selected mode), `preset` (the preset index), and `bands` (the retained custom curve). Devices without an entry use the existing `headsetcontrolEqualizerPreset` fallback. This preserves old preferences without migrating model identities. Identical physical headsets still share a key under the upstream discovery limitation.
+
+Turning custom mode on restores the saved curve, or starts from the selected preset's curve when available, or the reported baseline. **Start from preset** copies a supplied preset curve and activates custom mode in one saved change. Selecting a normal preset deactivates custom mode while retaining its curve. Per-device mode, preset and curve changes persist atomically through one settings value; rejected saves retain the accepted UI state and do not enqueue hardware writes.
+
+The bridge exposes band values as a Qt list model and sends the entire copied settings map to the monitor. The monitor selects the entry for its own active device, clamps finite values to the layout's range and step, rejects a mismatched band count, and uses the existing desired-settings acknowledgement and bounded retry path. Presets and custom curves are mutually exclusive; an acknowledged curve is not replayed by polling or unrelated setting changes. Reconnecting restores the active selection once. No current-curve read-back is available: the editor shows saved desired values.
+
+Metadata getters run on the monitor thread and perform no HID reads. After a preset command, the monitor immediately refreshes `getEqualizerInfo()` on that same `Headset` instance. This exposes the PRO X 2 layout as soon as its equalizer backend has been initialized. A saved custom curve with an initially unknown layout first uses its saved preset to initialize that backend, then applies the validated curve. The synthetic test device reports ten bands from -12 to 12 in steps of 0.5; reliability tests cover the layout, storage, clamping, mode changes, single-write acknowledgement, retry exhaustion and reconnect restoration.
+
+Parametric EQ is deferred. A follow-up needs a per-device band schema containing frequency, gain, Q factor and filter type; validation against `getParametricEqualizerInfo()` ranges and gain step; filter choices gated by `1 << EqualizerFilterType`; a model/editor for those fields; and mutually exclusive graphic/parametric selection through the same desired-settings path before calling `setParametricEqualizer()`.
 
 ## Polling Lifecycle
 

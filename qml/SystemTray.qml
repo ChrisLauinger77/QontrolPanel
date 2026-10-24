@@ -62,7 +62,8 @@ Platform.SystemTrayIcon {
                     children: HeadsetControlBridge.hasEqualizerPresetsCapability
                         ? HeadsetControlBridge.equalizerPresetNames.map(function(name, index) {
                             return { id: "equalizer:" + index, text: name,
-                                     checked: UserSettings.headsetcontrolEqualizerPreset === index };
+                                     checked: !HeadsetControlBridge.customEqualizerEnabled
+                                         && HeadsetControlBridge.equalizerPreset === index };
                           }) : [] },
                   { id: "anc", text: qsTr("Noise cancelling"), icon: "qrc:/icons/headsetcontrol.svg",
                     visible: HeadsetControlBridge.hasAncCapability,
@@ -106,7 +107,7 @@ Platform.SystemTrayIcon {
             case "exit": Qt.quit(); break;
             default:
                 if (actionId.startsWith("equalizer:"))
-                    UserSettings.headsetcontrolEqualizerPreset = Number(actionId.substring(10));
+                    HeadsetControlBridge.setEqualizerPreset(Number(actionId.substring(10)));
                 break;
             }
         }

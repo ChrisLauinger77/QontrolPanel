@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <headsetcontrol.hpp>
+#include "headsetequalizer.h"
 #include <memory>
 #include <functional>
 #include <vector>
@@ -66,6 +67,10 @@ struct HeadsetControlState
     quint64 sidetoneRequestRevision = 0;
     int headsetVolumeLevel = -1;
     quint64 headsetVolumeRequestRevision = 0;
+    QString activeDeviceKey;
+    bool hasEqualizerCapability = false;
+    HeadsetEqualizer::Layout equalizerLayout;
+    QVariantList equalizerPresetCurves;
     QStringList equalizerPresetNames;
     bool anyDeviceFound = false;
     bool testModeEnabled = false;
@@ -79,7 +84,9 @@ class HeadsetControlMonitor : public QObject
     Q_OBJECT
 public:
     using HeadsetDiscovery = std::function<std::vector<headsetcontrol::Headset>()>;
-    explicit HeadsetControlMonitor(QObject *parent = nullptr, HeadsetDiscovery discover = headsetcontrol::discover);
+    using EqualizerInfoReader = std::function<std::optional<EqualizerInfo>(const headsetcontrol::Headset&)>;
+    explicit HeadsetControlMonitor(QObject *parent = nullptr, HeadsetDiscovery discover = headsetcontrol::discover,
+        EqualizerInfoReader readEqualizerInfo = [](const headsetcontrol::Headset& headset) { return headset.getEqualizerInfo(); });
     ~HeadsetControlMonitor();
 
     bool isMonitoring() const;
@@ -138,6 +145,7 @@ public slots:
 
 signals:
     void snapshotReady(const HeadsetControlState& state);
+    void equalizerApplied(bool custom);
     void operationErrorChanged(const QString& error);
     void headsetDataUpdated(const QList<HeadsetControlDevice>& devices);
     void monitoringStateChanged(bool enabled);
@@ -174,6 +182,7 @@ private:
     void updateSidetoneFromDevice();
     void updateHeadsetVolumeFromDevice();
     void applyPendingSettings();
+    void updateEqualizerInfo();
     void clearDeviceState();
     QVariantMap m_desiredSettings;
     QVariantMap m_appliedSettings;
@@ -185,6 +194,7 @@ private:
     QStringList getCapabilityList(const headsetcontrol::Headset& headset) const;
 
     HeadsetDiscovery m_discoverHeadsets;
+    EqualizerInfoReader m_readEqualizerInfo;
     QTimer* m_fetchTimer;
     QList<HeadsetControlDevice> m_cachedDevices;
     std::vector<headsetcontrol::Headset> m_headsets;
@@ -225,6 +235,9 @@ private:
     int m_headsetVolumeLevel = -1;
     bool m_headsetVolumeWriteRequested = false;
     quint64 m_headsetVolumeRequestRevision = 0;
+    bool m_hasEqualizerCapability = false;
+    HeadsetEqualizer::Layout m_equalizerLayout;
+    QVariantList m_equalizerPresetCurves;
     QStringList m_equalizerPresetNames;
     bool m_anyDeviceFound;
     bool m_isFetching;

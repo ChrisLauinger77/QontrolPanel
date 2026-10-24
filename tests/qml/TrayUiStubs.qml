@@ -42,6 +42,9 @@ QtObject {
     property int micAttached: -1
     property bool hasChatMixCapability: true
     property bool hasEqualizerPresetsCapability: true
+    property int equalizerPreset: 0
+    property bool customEqualizerEnabled: false
+    function setEqualizerPreset(preset) { equalizerPreset = preset; customEqualizerEnabled = false }
     property var equalizerPresetNames: ["Flat", "Music"]
     property bool hasAncCapability: true
     property bool hasAncStartupModeCapability: true

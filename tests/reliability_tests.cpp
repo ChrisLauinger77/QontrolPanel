@@ -4,6 +4,8 @@
 #include "audiomodels.h"
 #include "sessionindices.h"
 #include "headsetlevelpolicy.h"
+#include "headsetequalizer.h"
+#include <limits>
 #include <QTemporaryDir>
 #include <QFile>
 #include <QJsonObject>
@@ -87,6 +89,66 @@ class ReliabilityTests : public QObject
     }
 #endif
 private slots:
+    void equalizerCurveClampingAndValidation()
+    {
+        const HeadsetEqualizer::Layout layout{10, 0, 0.5, -12, 12};
+        const QVariantList input{-100, -11.8, -1.24, -0.25, 0, 0.24, 0.26, 1.25, 11.9, 100};
+        const QVariantList expected{-12.0, -12.0, -1.0, 0.0, 0.0, 0.0, 0.5, 1.5, 12.0, 12.0};
+        QCOMPARE(HeadsetEqualizer::clamp(input, layout), expected);
+        QVERIFY(HeadsetEqualizer::clamp({0, 0}, layout).isEmpty());
+        auto invalid = input;
+        for (const auto& value : {QVariant(std::numeric_limits<double>::quiet_NaN()),
+                                 QVariant(std::numeric_limits<double>::infinity()), QVariant("1"), QVariant(true)}) {
+            invalid[0] = value;
+            QVERIFY(HeadsetEqualizer::clamp(invalid, layout).isEmpty());
+        }
+        auto badLayout = layout;
+        badLayout.step = 0;
+        QVERIFY(HeadsetEqualizer::clamp(input, badLayout).isEmpty());
+        badLayout = layout;
+        badLayout.count = 65;
+        QVERIFY(!badLayout.valid());
+        badLayout = layout;
+        badLayout.baseline = 13;
+        QVERIFY(!badLayout.valid());
+        const HeadsetEqualizer::Layout offset{2, 5, 0.5, 2, 8};
+        QCOMPARE(HeadsetEqualizer::clamp({1, 5.3}, offset), QVariantList({2.0, 5.5}));
+    }
+
+    void equalizerStorageSchemaAndModel()
+    {
+        const QVariantMap entry{{"custom", true}, {"preset", 1}, {"bands", QVariantList{0.5, -2.0}}};
+        const QVariantMap entries{{"1234:5678:Headset A", entry}, {"1234:5679:Headset B", entry}};
+        QCOMPARE(HeadsetEqualizer::stored(entries).value(), entries);
+        auto invalidEntry = entry;
+        invalidEntry["bands"] = QVariantList{};
+        QVERIFY(!HeadsetEqualizer::stored(QVariantMap{{"device", invalidEntry}}));
+        invalidEntry = entry;
+        invalidEntry["bands"] = QVariantList{std::numeric_limits<double>::infinity()};
+        QVERIFY(!HeadsetEqualizer::stored(QVariantMap{{"device", invalidEntry}}));
+        invalidEntry = entry;
+        invalidEntry["preset"] = -1;
+        QVERIFY(!HeadsetEqualizer::stored(QVariantMap{{"device", invalidEntry}}));
+        QVERIFY(!HeadsetEqualizer::stored(QVariantList{}));
+        QVERIFY(!HeadsetEqualizer::stored(QVariantMap{{"", entry}}));
+        HeadsetEqualizerModel model;
+        QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+        model.setBands({0.0, 1.0});
+        const QPersistentModelIndex band = model.index(0);
+        QSignalSpy reset(&model, &QAbstractItemModel::modelReset);
+        QSignalSpy changed(&model, &QAbstractItemModel::dataChanged);
+        model.setBands({0.5, 1.0});
+        QCOMPARE(reset.size(), 0);
+        QCOMPARE(changed.size(), 1);
+        QVERIFY(band.isValid());
+        QCOMPARE(band.data(Qt::UserRole).toDouble(), 0.5);
+        model.setBands({0.5, 1.0});
+        QCOMPARE(changed.size(), 1);
+        model.setBands({0.0, 0.0}, true);
+        QCOMPARE(reset.size(), 1);
+        QVERIFY(!band.isValid());
+    }
+
     void headsetLevelAdoptVersusApply_data()
     {
         QTest::addColumn<bool>("readable");
@@ -183,6 +245,198 @@ private slots:
         QStandardPaths::setTestModeEnabled(m_originalTestMode);
     }
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+    void equalizerSettingsPersistPerDeviceAndKeepCustomCurve()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolMonitoring(false);
+        settings->setHeadsetcontrolEqualizers({});
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto cleanup = qScopeGuard([&] {
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        HeadsetControlState state;
+        state.anyDeviceFound = true;
+        state.hasEqualizerCapability = true;
+        state.hasEqualizerPresetsCapability = true;
+        state.activeDeviceKey = "1234:5678:Headset A";
+        state.equalizerLayout = {10, 0, 0.5, -12, 12};
+        state.equalizerPresetNames = {"Flat", "Bass"};
+        const QVariantList flat{0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+        const QVariantList bass{6., 4., 2., 0., 0., 0., 0., 0., 0., 0.};
+        state.equalizerPresetCurves = {QVariant(flat), QVariant(bass)};
+        const auto applyState = [&] {
+            return QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                             Q_ARG(HeadsetControlState, state));
+        };
+        QVERIFY(applyState());
+        QCOMPARE(bridge->equalizerBands()->rowCount(), 10);
+        QVERIFY(settings->headsetcontrolEqualizers().isEmpty()); // Merely opening writes nothing.
+        bridge->startEqualizerFromPreset(1);
+        QVERIFY(bridge->customEqualizerEnabled());
+        QCOMPARE(bridge->equalizerBands()->index(0, 0).data(Qt::UserRole).toDouble(), 6.0);
+        bridge->setEqualizerBand(state.activeDeviceKey, 0, 50);
+        QCOMPARE(bridge->equalizerBands()->index(0, 0).data(Qt::UserRole).toDouble(), 12.0);
+        bridge->setEqualizerBand(state.activeDeviceKey, 1, 0.26);
+        auto a = settings->headsetcontrolEqualizers().value(state.activeDeviceKey).toMap();
+        QCOMPARE(a.value("bands").toList().at(1).toDouble(), 0.5);
+        QSettings persisted(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
+        const auto reloaded = HeadsetEqualizer::stored(persisted.value("headsetcontrolEqualizers"));
+        QVERIFY(reloaded);
+        QCOMPARE(*reloaded, settings->headsetcontrolEqualizers());
+        QSignalSpy changes(settings, &UserSettings::headsetcontrolEqualizersChanged);
+        bridge->setEqualizerBand(state.activeDeviceKey, 1, 0.3); // Same snapped curve.
+        bridge->setEqualizerBand("old-device", 0, 1);
+        bridge->setEqualizerBand(state.activeDeviceKey, 10, 1);
+        bridge->setEqualizerBand(state.activeDeviceKey, 0, std::numeric_limits<double>::quiet_NaN());
+        QCOMPARE(changes.size(), 0);
+        bridge->setEqualizerPreset(0);
+        QVERIFY(!bridge->customEqualizerEnabled());
+        QCOMPARE(settings->headsetcontrolEqualizers().value(state.activeDeviceKey).toMap().value("bands"), a.value("bands"));
+        bridge->setCustomEqualizerEnabled(true);
+        QVERIFY(bridge->customEqualizerEnabled());
+        state.activeDeviceKey = "1234:5679:Headset B";
+        QVERIFY(applyState());
+        QVERIFY(!bridge->customEqualizerEnabled());
+        bridge->setEqualizerBand(state.activeDeviceKey, 0, -4);
+        QCOMPARE(settings->headsetcontrolEqualizers().size(), 2);
+        state.activeDeviceKey = "1234:5678:Headset A";
+        QVERIFY(applyState());
+        QCOMPARE(bridge->equalizerBands()->index(0, 0).data(Qt::UserRole).toDouble(), 12.0);
+        QVERIFY(bridge->customEqualizerEnabled());
+        state = {};
+        QVERIFY(applyState());
+        QCOMPARE(bridge->equalizerBands()->rowCount(), 0);
+        QVERIFY(!bridge->hasEqualizerCapability());
+    }
+
+    void equalizerLayoutIsRefreshedOnSameDeviceAfterPreset_data()
+    {
+        QTest::addColumn<bool>("custom");
+        QTest::newRow("preset-reveals-layout") << false;
+        QTest::newRow("saved-curve-bootstraps-layout") << true;
+    }
+
+    void equalizerLayoutIsRefreshedOnSameDeviceAfterPreset()
+    {
+        QFETCH(bool, custom);
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        bool presetApplied = false;
+        const headsetcontrol::Headset* firstDevice = nullptr;
+        bool sameDevice = true;
+        HeadsetControlMonitor monitor(nullptr, [] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        }, [&](const headsetcontrol::Headset& headset) -> std::optional<EqualizerInfo> {
+            if (!firstDevice) firstDevice = &headset;
+            sameDevice = sameDevice && firstDevice == &headset;
+            return presetApplied ? headset.getEqualizerInfo() : std::nullopt;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        connect(&monitor, &HeadsetControlMonitor::equalizerApplied, &monitor,
+                [&](bool curve) { if (!curve) presetApplied = true; });
+        QSignalSpy writes(&monitor, &HeadsetControlMonitor::equalizerApplied);
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        monitor.startMonitoring();
+        const auto key = monitor.snapshot().activeDeviceKey;
+        QCOMPARE(monitor.snapshot().equalizerLayout.count, 0);
+        QVariantList bands{0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+        monitor.setDesiredSettings({{"equalizers", QVariantMap{{key, QVariantMap{
+            {"custom", custom}, {"preset", 1}, {"bands", bands}}}}}});
+        QVERIFY(sameDevice);
+        QCOMPARE(monitor.snapshot().equalizerLayout.count, 10);
+        QCOMPARE(writes.size(), custom ? 2 : 1);
+        QCOMPARE(writes.first().at(0).toBool(), false);
+        if (custom) QCOMPARE(writes.last().at(0).toBool(), true);
+    }
+
+    void equalizerMonitorWritesChangedCurveOnceAndRetriesFailures()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        bool connected = true;
+        HeadsetControlMonitor monitor(nullptr, [&] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return connected ? std::move(devices) : std::vector<headsetcontrol::Headset>{};
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        QSignalSpy writes(&monitor, &HeadsetControlMonitor::equalizerApplied);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        monitor.startMonitoring();
+        const auto state = monitor.snapshot();
+        QVERIFY(state.hasEqualizerCapability);
+        QCOMPARE(state.equalizerLayout.count, 10);
+        QCOMPARE(state.equalizerLayout.minimum, -12.0);
+        QCOMPARE(state.equalizerLayout.maximum, 12.0);
+        QCOMPARE(state.equalizerLayout.step, 0.5);
+        QCOMPARE(writes.size(), 0);
+        QVariantList curve{99., -99., 0.26, 0., 0., 0., 0., 0., 0., 0.};
+        QVariantMap entry{{"custom", true}, {"preset", 0}, {"bands", curve}};
+        auto send = [&] {
+            monitor.setDesiredSettings({{"equalizers", QVariantMap{{state.activeDeviceKey, entry}}}});
+        };
+        send();
+        QCOMPARE(writes.size(), 1);
+        QCOMPARE(writes.last().at(0).toBool(), true);
+        send();
+        monitor.requestRefresh();
+        QCOMPARE(writes.size(), 1); // Polling/settings echoes never replay an acknowledged curve.
+        curve[0] = 12.0; curve[1] = -12.0; curve[2] = 0.5;
+        entry["bands"] = curve;
+        send();
+        QCOMPARE(writes.size(), 1); // Clamping happens before acknowledgement comparison.
+        curve[3] = 2.0; entry["bands"] = curve;
+        send();
+        QCOMPARE(writes.size(), 2);
+        entry["custom"] = false;
+        send();
+        QCOMPARE(writes.size(), 3);
+        QCOMPARE(writes.last().at(0).toBool(), false);
+        entry["custom"] = true;
+        send();
+        QCOMPARE(writes.size(), 4); // Returning to the retained curve reapplies it.
+        const auto workingEntry = entry;
+        entry["bands"] = QVariantList{0.};
+        send();
+        QCOMPARE(writes.size(), 4);
+        QVERIFY(errors.last().at(0).toString().contains("equalizerCurve"));
+        entry = workingEntry;
+        headsetcontrol::setTestProfile(1);
+        curve[4] = -2.0; entry["bands"] = curve;
+        for (int i = 0; i < 5; ++i) send();
+        QCOMPARE(writes.size(), 4);
+        QVERIFY(errors.last().at(0).toString().contains("retry limit"));
+        headsetcontrol::setTestProfile(3);
+        monitor.requestRefresh();
+        QCOMPARE(writes.size(), 5);
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        connected = false;
+        monitor.requestRefresh();
+        QVERIFY(monitor.snapshot().activeDeviceKey.isEmpty());
+        QCOMPARE(monitor.snapshot().equalizerLayout.count, 0);
+        connected = true;
+        monitor.requestRefresh();
+        QCOMPARE(writes.size(), 6); // Restore once when the active device returns.
+    }
+
     void sidetoneBridgeRetainsLatestRequestUntilAcknowledged()
     {
         auto* settings = UserSettings::instance();

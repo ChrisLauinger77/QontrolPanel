@@ -24,7 +24,8 @@ if(Qt6_FOUND)
     endif()
     add_executable(reliability_tests reliability_tests.cpp
         ../src/jsonstore.cpp ../src/logmanager.cpp ../src/workerthreads.cpp
-        ../include/logmanager.h ../src/audiomodels.cpp ../include/audiomodels.h)
+        ../include/logmanager.h ../src/audiomodels.cpp ../include/audiomodels.h
+        ../include/headsetequalizer.h)
     target_include_directories(reliability_tests PRIVATE ../include)
     target_link_libraries(reliability_tests PRIVATE Qt6::Core Qt6::Qml Qt6::Network Qt6::Test)
     if(WIN32)
@@ -65,7 +66,7 @@ if(Qt6_FOUND)
     if(WIN32 AND TARGET Qt6::Quick)
         add_executable(settings_ui_tests settings_ui_tests.cpp
             ../src/usersettings.cpp ../include/usersettings.h
-            ../src/logmanager.cpp ../include/logmanager.h)
+            ../src/logmanager.cpp ../include/logmanager.h ../include/headsetequalizer.h)
         target_include_directories(settings_ui_tests PRIVATE ../include)
         target_compile_definitions(settings_ui_tests PRIVATE UNICODE NOMINMAX
             QONTROLPANEL_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/..")

@@ -119,6 +119,7 @@ set(HEADERS
     include/updater.h
     include/headsetcontrolmonitor.h
     include/headsetcontrolbridge.h
+    include/headsetequalizer.h
     include/monitormanager.h
     include/monitormanagerimpl.h
     include/logmanager.h

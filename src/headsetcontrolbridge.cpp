@@ -41,8 +41,14 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
             &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolVoicePromptsChanged, this,
             &HeadsetControlBridge::syncDesiredSettings);
-    connect(settings, &UserSettings::headsetcontrolEqualizerPresetChanged, this,
-            &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolEqualizerPresetChanged, this, [this] {
+        updateEqualizerModel();
+        syncDesiredSettings();
+    });
+    connect(settings, &UserSettings::headsetcontrolEqualizersChanged, this, [this] {
+        updateEqualizerModel();
+        syncDesiredSettings();
+    });
     connect(settings, &UserSettings::headsetcontrolSidetoneChanged, this, [this, settings] {
         if (m_adoptingSidetone || !m_monitor)
             return;
@@ -158,6 +164,7 @@ void HeadsetControlBridge::syncDesiredSettings()
                               {"rotateToMute", settings->headsetcontrolRotateToMute()},
                               {"voicePrompts", settings->headsetcontrolVoicePrompts()},
                               {"equalizerPreset", settings->headsetcontrolEqualizerPreset()},
+                              {"equalizers", settings->headsetcontrolEqualizers()},
                               {"micVolume", settings->headsetcontrolMicVolume()},
                               {"ancButtonModes", settings->headsetcontrolAncButtonModes()},
                               {"ancStartupMode", settings->headsetcontrolAncStartupMode()},
@@ -206,7 +213,116 @@ void HeadsetControlBridge::setVoicePrompts(bool enabled)
 
 void HeadsetControlBridge::setEqualizerPreset(int preset)
 {
-    UserSettings::instance()->setHeadsetcontrolEqualizerPreset(preset);
+    if (!m_cachedState.anyDeviceFound || preset < 0 || preset >= equalizerPresetNames().size())
+        return;
+    auto entry = equalizerEntry();
+    entry["custom"] = false;
+    entry["preset"] = preset;
+    saveEqualizerEntry(entry);
+}
+
+QVariantMap HeadsetControlBridge::equalizerEntry() const
+{
+    const auto* settings = UserSettings::instance();
+    const auto saved = settings->headsetcontrolEqualizers().value(activeDeviceKey()).toMap();
+    return saved.isEmpty() ? QVariantMap{{"custom", false}, {"preset", qBound(0, settings->headsetcontrolEqualizerPreset(),
+                                            qMax(0, int(equalizerPresetNames().size()) - 1))},
+                                        {"bands", QVariantList{}}} : saved;
+}
+
+bool HeadsetControlBridge::hasEqualizerPresetCurves() const
+{
+    for (const auto& curve : m_cachedState.equalizerPresetCurves) {
+        if (!HeadsetEqualizer::clamp(curve.toList(), m_cachedState.equalizerLayout).isEmpty())
+            return true;
+    }
+    return false;
+}
+
+bool HeadsetControlBridge::customEqualizerEnabled() const
+{
+    return equalizerEntry().value("custom").toBool();
+}
+
+int HeadsetControlBridge::equalizerPreset() const
+{
+    return equalizerEntry().value("preset").toInt();
+}
+
+QVariantList HeadsetControlBridge::equalizerCurve() const
+{
+    const auto& layout = m_cachedState.equalizerLayout;
+    auto curve = HeadsetEqualizer::clamp(equalizerEntry().value("bands").toList(), layout);
+    if (!curve.isEmpty())
+        return curve;
+    const auto presets = m_cachedState.equalizerPresetCurves;
+    const int preset = equalizerPreset();
+    if (preset >= 0 && preset < presets.size())
+        curve = HeadsetEqualizer::clamp(presets.at(preset).toList(), layout);
+    if (curve.isEmpty() && layout.valid()) {
+        for (int i = 0; i < layout.count; ++i)
+            curve.append(layout.baseline);
+    }
+    return curve;
+}
+
+void HeadsetControlBridge::saveEqualizerEntry(const QVariantMap& entry)
+{
+    if (!m_cachedState.anyDeviceFound || activeDeviceKey().isEmpty())
+        return;
+    auto* settings = UserSettings::instance();
+    auto entries = settings->headsetcontrolEqualizers();
+    entries[activeDeviceKey()] = entry;
+    settings->setHeadsetcontrolEqualizers(entries);
+}
+
+void HeadsetControlBridge::setCustomEqualizerEnabled(bool enabled)
+{
+    if (!hasEqualizerCapability())
+        return;
+    auto entry = equalizerEntry();
+    if (enabled) {
+        const auto curve = equalizerCurve();
+        if (curve.isEmpty())
+            return;
+        entry["bands"] = curve;
+    }
+    entry["custom"] = enabled;
+    saveEqualizerEntry(entry);
+}
+
+void HeadsetControlBridge::startEqualizerFromPreset(int preset)
+{
+    const auto presets = m_cachedState.equalizerPresetCurves;
+    if (!hasEqualizerCapability() || preset < 0 || preset >= presets.size())
+        return;
+    const auto curve = HeadsetEqualizer::clamp(presets.at(preset).toList(), m_cachedState.equalizerLayout);
+    if (curve.isEmpty())
+        return;
+    saveEqualizerEntry({{"custom", true}, {"preset", preset}, {"bands", curve}});
+}
+
+void HeadsetControlBridge::setEqualizerBand(const QString& deviceKey, int band, double value)
+{
+    if (deviceKey != activeDeviceKey() || !hasEqualizerCapability() || !std::isfinite(value))
+        return;
+    auto curve = equalizerCurve();
+    if (band < 0 || band >= curve.size())
+        return;
+    curve[band] = value;
+    curve = HeadsetEqualizer::clamp(curve, m_cachedState.equalizerLayout);
+    if (curve.isEmpty())
+        return;
+    auto entry = equalizerEntry();
+    entry["custom"] = true;
+    entry["bands"] = curve;
+    saveEqualizerEntry(entry);
+}
+
+void HeadsetControlBridge::updateEqualizerModel(bool deviceChanged)
+{
+    m_equalizerBands.setBands(equalizerCurve(), deviceChanged);
+    emit equalizerChanged();
 }
 
 void HeadsetControlBridge::setHeadsetVolume(int value)
@@ -520,6 +636,11 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
 {
     const HeadsetControlState previous = m_cachedState;
     m_cachedState = state;
+    if (previous.activeDeviceKey != state.activeDeviceKey
+        || previous.hasEqualizerCapability != state.hasEqualizerCapability
+        || previous.equalizerLayout != state.equalizerLayout
+        || previous.equalizerPresetCurves != state.equalizerPresetCurves)
+        updateEqualizerModel(previous.activeDeviceKey != state.activeDeviceKey);
     // Earlier command acknowledgements must not reset a newer wheel/drag target.
     if (m_pendingSidetoneLevel >= 0 && state.sidetoneRequestRevision >= m_sidetoneRequestRevision)
     {

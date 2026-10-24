@@ -1,4 +1,5 @@
 #include "usersettings.h"
+#include "headsetequalizer.h"
 #include <QSettings>
 #include "logmanager.h"
 
@@ -100,6 +101,8 @@ void UserSettings::initProperties()
     m_headsetcontrolLights = settings.value("headsetcontrolLights", true).toBool();
     m_headsetcontrolRotateToMute = settings.value("headsetcontrolRotateToMute", true).toBool();
     m_headsetcontrolVoicePrompts = settings.value("headsetcontrolVoicePrompts", true).toBool();
+    m_headsetcontrolEqualizers = HeadsetEqualizer::stored(
+        settings.value("headsetcontrolEqualizers", QVariantMap{})).value_or(QVariantMap{});
     m_headsetcontrolEqualizerPreset = qMax(0, settings.value("headsetcontrolEqualizerPreset", 0).toInt());
     m_headsetcontrolInactiveTime = qBound(0, settings.value("headsetcontrolInactiveTime", 30).toInt(), 90);
     m_headsetcontrolSidetone = qBound(0, settings.value("headsetcontrolSidetone", 0).toInt(), 128);
@@ -493,6 +496,17 @@ void UserSettings::setHeadsetcontrolVoicePrompts(bool value)
         m_headsetcontrolVoicePrompts = value;
         emit headsetcontrolVoicePromptsChanged();
     }
+}
+
+void UserSettings::setHeadsetcontrolEqualizers(const QVariantMap& value)
+{
+    const auto validated = HeadsetEqualizer::stored(value);
+    if (!validated || *validated == m_headsetcontrolEqualizers)
+        return;
+    if (!saveValue("headsetcontrolEqualizers", *validated))
+        return;
+    m_headsetcontrolEqualizers = *validated;
+    emit headsetcontrolEqualizersChanged();
 }
 
 void UserSettings::setHeadsetcontrolEqualizerPreset(int value)

@@ -73,6 +73,47 @@ QtObject {
     }
     property bool testModeEnabled: true
     property int testProfile: 1
+    property string activeDeviceKey: "f00b:a00c:Test headset"
+    property bool hasEqualizerCapability: false
+    property int equalizerBandCount: 10
+    property real equalizerMinimum: -12
+    property real equalizerMaximum: 12
+    property real equalizerStep: 0.5
+    property bool hasEqualizerPresetCurves: true
+    property int equalizerPreset: UserSettings.headsetcontrolEqualizerPreset
+    property bool customEqualizerEnabled: (UserSettings.headsetcontrolEqualizers[activeDeviceKey] || {}).custom || false
+    property int equalizerWriteCount: 0
+    property var equalizerBands: ListModel {
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+        ListElement { bandValue: 0 }
+    }
+    function setEqualizerPreset(preset) { UserSettings.headsetcontrolEqualizerPreset = preset }
+    function setCustomEqualizerEnabled(enabled) {
+        let entries = UserSettings.headsetcontrolEqualizers
+        entries[activeDeviceKey] = {custom: enabled, preset: 0, bands: [0,0,0,0,0,0,0,0,0,0]}
+        UserSettings.headsetcontrolEqualizers = entries
+    }
+    function startEqualizerFromPreset(preset) { setCustomEqualizerEnabled(true) }
+    function setEqualizerBand(key, band, value) {
+        if (key !== activeDeviceKey) return
+        let entries = UserSettings.headsetcontrolEqualizers
+        let entry = entries[key]
+        if (!entry) return
+        entry.bands[band] = value
+        entries[key] = entry
+        UserSettings.headsetcontrolEqualizers = entries
+        let accepted = UserSettings.headsetcontrolEqualizers[key].bands[band]
+        if (accepted === value) equalizerWriteCount++
+        equalizerBands.setProperty(band, "bandValue", accepted)
+    }
     property var equalizerPresetNames: ["Flat", "Music", "Voice"]
     property bool hasChatMixCapability: true
     property bool hasEqualizerPresetsCapability: true

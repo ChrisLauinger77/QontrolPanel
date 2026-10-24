@@ -217,6 +217,43 @@ private slots:
         m_window.reset();
     }
 
+    void equalizerSlidersUseDeviceLayoutAndCommitOnRelease()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolEqualizers({});
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("hasEqualizerCapability", true));
+        QVERIFY(QMetaObject::invokeMethod(headset, "setCustomEqualizerEnabled", Q_ARG(QVariant, true)));
+        auto* slider = findVisualItem(qobject_cast<QQuickItem*>(pane), "equalizerBand0");
+        QVERIFY(slider);
+        QCOMPARE(slider->property("from").toDouble(), -12.0);
+        QCOMPARE(slider->property("to").toDouble(), 12.0);
+        QCOMPARE(slider->property("stepSize").toDouble(), 0.5);
+        QVERIFY(findVisualItem(qobject_cast<QQuickItem*>(pane), "equalizerBand9"));
+        QVERIFY(!findVisualItem(qobject_cast<QQuickItem*>(pane), "equalizerBand10"));
+        QVERIFY(slider->setProperty("pressed", true));
+        QVERIFY(slider->setProperty("value", 2.5));
+        QVERIFY(QMetaObject::invokeMethod(slider, "moved"));
+        QCOMPARE(headset->property("equalizerWriteCount").toInt(), 0);
+        QVERIFY(slider->setProperty("pressed", false));
+        QCOMPARE(headset->property("equalizerWriteCount").toInt(), 1);
+        QCOMPARE(settings->headsetcontrolEqualizers().value(headset->property("activeDeviceKey").toString())
+                     .toMap().value("bands").toList().at(0).toDouble(), 2.5);
+        QSignalSpy failed(settings, &UserSettings::saveFailed);
+        {
+            const HANDLE lock = lockPreferences();
+            QVERIFY(lock != INVALID_HANDLE_VALUE);
+            const auto unlock = qScopeGuard([&] { CloseHandle(lock); });
+            QVERIFY(slider->setProperty("value", 3.0));
+            QVERIFY(QMetaObject::invokeMethod(slider, "moved"));
+            QCOMPARE(failed.size(), 1);
+            QCOMPARE(slider->property("value").toDouble(), 2.5);
+            QCOMPARE(headset->property("equalizerWriteCount").toInt(), 1);
+        }
+    }
+
     void batteryTimeUsesSharedFormatter()
     {
         auto* pane = loadPane("HeadsetControlPane");
