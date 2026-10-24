@@ -100,7 +100,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Update compiled translations [skip ci]"
+          git commit -m "Update compiled translations"
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Create pull request for compiled translations
@@ -108,7 +108,7 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Update compiled translations [skip ci]"
+          commit-message: "Update compiled translations"
           committer: GitHub Action <action@github.com>
           author: GitHub Action <action@github.com>
           branch: automation/update-compiled-translations
