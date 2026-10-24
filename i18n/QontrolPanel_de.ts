@@ -881,7 +881,7 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>10 - Limited capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>10 - Eingeschränkte Funktionen</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
@@ -953,7 +953,7 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>Durch die Auswahl einer Voreinstellung wird die benutzerdefinierte Kurve nicht mehr angewendet. Sie bleibt gespeichert.</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
@@ -961,83 +961,83 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>Custom equalizer</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierter Equalizer</translation>
     </message>
     <message>
         <source>Save and restore a custom curve for this headset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine benutzerdefinierte Kurve für dieses Headset speichern und wiederherstellen.</translation>
     </message>
     <message>
         <source>Select an equalizer preset first to load this headset&apos;s band layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie zuerst eine Equalizer-Voreinstellung, um die Bandkonfiguration dieses Headsets zu laden.</translation>
     </message>
     <message>
         <source>Start from preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mit Voreinstellung beginnen</translation>
     </message>
     <message>
         <source>Copy a preset curve, then adjust its bands.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieren Sie eine voreingestellte Kurve und passen Sie anschließend ihre Bänder an.</translation>
     </message>
     <message>
         <source>Choose a preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Voreinstellung auswählen</translation>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Band %1</translation>
     </message>
     <message>
         <source>Headset volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Headset-Lautstärke</translation>
     </message>
     <message>
         <source>Adjust the headset&apos;s hardware volume, separately from Windows volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Passen Sie die Hardware-Lautstärke des Headsets unabhängig von der Windows-Lautstärke an</translation>
     </message>
     <message>
         <source>Device level (last reading): %1 / 128</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerätepegel (letzter Messwert): %1 / 128</translation>
     </message>
     <message>
         <source>No headset volume reading yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Messwert für die Headset-Lautstärke</translation>
     </message>
     <message>
         <source>Read-back unavailable; showing your saved choice</source>
-        <translation type="unfinished"></translation>
+        <translation>Auslesen nicht verfügbar; Ihre gespeicherte Auswahl wird angezeigt</translation>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Geräuschunterdrückung</translation>
     </message>
     <message>
         <source>Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Hörmodus. Angezeigt wird Ihre gespeicherte Auswahl; das Headset kann seinen aktuellen Modus nicht melden.</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Umgebungsgeräusche</translation>
     </message>
     <message>
         <source>Noise cancelling at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Geräuschunterdrückung beim Einschalten</translation>
     </message>
     <message>
         <source>Choose the listening mode when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Hörmodus beim Einschalten des Headsets</translation>
     </message>
     <message>
         <source>Last mode at power-off</source>
-        <translation type="unfinished"></translation>
+        <translation>Letzter Modus vor dem Ausschalten</translation>
     </message>
     <message>
         <source>Noise cancelling button cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>Modusfolge der ANC-Taste</translation>
     </message>
     <message>
         <source>Choose at least one mode for the headset button to cycle through</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie mindestens einen Modus für den Wechsel per Headset-Taste</translation>
     </message>
     <message>
         <source>Microphone volume</source>
@@ -1681,15 +1681,15 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Geräuschunterdrückung</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Aus</translation>
+        <translation>Aus</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Umgebungsgeräusche</translation>
     </message>
     <message>
         <source>Volume limiter</source>

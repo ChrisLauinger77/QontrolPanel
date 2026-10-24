@@ -969,7 +969,7 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
     <message>
         <source>10 - Limited capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>10 - Funciones limitadas</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
@@ -1009,7 +1009,7 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
     <message>
         <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>Al seleccionar un preajuste se deja de aplicar la curva personalizada. La curva se conserva.</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
@@ -1017,83 +1017,83 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
     <message>
         <source>Custom equalizer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ecualizador personalizado</translation>
     </message>
     <message>
         <source>Save and restore a custom curve for this headset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Guarda y restaura una curva personalizada para estos auriculares.</translation>
     </message>
     <message>
         <source>Select an equalizer preset first to load this headset&apos;s band layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona primero un preajuste del ecualizador para cargar la configuración de bandas de estos auriculares.</translation>
     </message>
     <message>
         <source>Start from preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Empezar desde un preajuste</translation>
     </message>
     <message>
         <source>Copy a preset curve, then adjust its bands.</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia la curva de un preajuste y luego ajusta sus bandas.</translation>
     </message>
     <message>
         <source>Choose a preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige un preajuste</translation>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Banda %1</translation>
     </message>
     <message>
         <source>Headset volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumen de los auriculares</translation>
     </message>
     <message>
         <source>Adjust the headset&apos;s hardware volume, separately from Windows volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajusta el volumen propio de los auriculares de forma independiente al de Windows</translation>
     </message>
     <message>
         <source>Device level (last reading): %1 / 128</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel del dispositivo (última lectura): %1 / 128</translation>
     </message>
     <message>
         <source>No headset volume reading yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Aún no hay una lectura del volumen de los auriculares</translation>
     </message>
     <message>
         <source>Read-back unavailable; showing your saved choice</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede consultar el valor; se muestra tu selección guardada</translation>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelación de ruido</translation>
     </message>
     <message>
         <source>Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige el modo de escucha. Se muestra tu selección guardada; los auriculares no pueden comunicar su modo actual.</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Sonido ambiente</translation>
     </message>
     <message>
         <source>Noise cancelling at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelación de ruido al encender</translation>
     </message>
     <message>
         <source>Choose the listening mode when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige el modo de escucha al encender los auriculares</translation>
     </message>
     <message>
         <source>Last mode at power-off</source>
-        <translation type="unfinished"></translation>
+        <translation>Último modo antes de apagar</translation>
     </message>
     <message>
         <source>Noise cancelling button cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciclo del botón de cancelación de ruido</translation>
     </message>
     <message>
         <source>Choose at least one mode for the headset button to cycle through</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige al menos un modo para alternar con el botón de los auriculares</translation>
     </message>
     <message>
         <source>Microphone volume</source>
@@ -1681,15 +1681,15 @@ Puedes activarla en la pestaña Componentes.</translation>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelación de ruido</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Desactivado</translation>
+        <translation>Desactivado</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Sonido ambiente</translation>
     </message>
     <message>
         <source>Volume limiter</source>

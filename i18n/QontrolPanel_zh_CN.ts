@@ -880,7 +880,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>10 - Limited capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>10 - 功能受限</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
@@ -952,7 +952,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>选择预设后将停止应用自定义曲线，但会保留该曲线。</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
@@ -960,83 +960,83 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Custom equalizer</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义均衡器</translation>
     </message>
     <message>
         <source>Save and restore a custom curve for this headset.</source>
-        <translation type="unfinished"></translation>
+        <translation>保存并恢复此耳机的自定义曲线。</translation>
     </message>
     <message>
         <source>Select an equalizer preset first to load this headset&apos;s band layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>请先选择均衡器预设，以加载此耳机的频段配置。</translation>
     </message>
     <message>
         <source>Start from preset</source>
-        <translation type="unfinished"></translation>
+        <translation>从预设开始</translation>
     </message>
     <message>
         <source>Copy a preset curve, then adjust its bands.</source>
-        <translation type="unfinished"></translation>
+        <translation>复制预设曲线，然后调整各频段。</translation>
     </message>
     <message>
         <source>Choose a preset</source>
-        <translation type="unfinished"></translation>
+        <translation>选择预设</translation>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>频段 %1</translation>
     </message>
     <message>
         <source>Headset volume</source>
-        <translation type="unfinished"></translation>
+        <translation>耳机音量</translation>
     </message>
     <message>
         <source>Adjust the headset&apos;s hardware volume, separately from Windows volume</source>
-        <translation type="unfinished"></translation>
+        <translation>独立于 Windows 音量调整耳机的硬件音量</translation>
     </message>
     <message>
         <source>Device level (last reading): %1 / 128</source>
-        <translation type="unfinished"></translation>
+        <translation>设备音量（上次读取）：%1 / 128</translation>
     </message>
     <message>
         <source>No headset volume reading yet</source>
-        <translation type="unfinished"></translation>
+        <translation>尚未读取到耳机音量</translation>
     </message>
     <message>
         <source>Read-back unavailable; showing your saved choice</source>
-        <translation type="unfinished"></translation>
+        <translation>无法读取当前值；显示已保存的选择</translation>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>降噪</translation>
     </message>
     <message>
         <source>Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>选择聆听模式。此处显示已保存的选择；耳机无法报告当前模式。</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>环境声</translation>
     </message>
     <message>
         <source>Noise cancelling at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>开机时的降噪模式</translation>
     </message>
     <message>
         <source>Choose the listening mode when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>选择耳机开机时的聆听模式</translation>
     </message>
     <message>
         <source>Last mode at power-off</source>
-        <translation type="unfinished"></translation>
+        <translation>关机前的模式</translation>
     </message>
     <message>
         <source>Noise cancelling button cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>降噪按键的循环模式</translation>
     </message>
     <message>
         <source>Choose at least one mode for the headset button to cycle through</source>
-        <translation type="unfinished"></translation>
+        <translation>至少选择一种可通过耳机按键循环切换的模式</translation>
     </message>
     <message>
         <source>Microphone volume</source>
@@ -1680,15 +1680,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>降噪</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">关</translation>
+        <translation>关</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>环境声</translation>
     </message>
     <message>
         <source>Volume limiter</source>

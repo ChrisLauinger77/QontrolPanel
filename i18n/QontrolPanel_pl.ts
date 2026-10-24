@@ -1035,91 +1035,91 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>10 - Ograniczone funkcje</translation>
     </message>
     <message>
         <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybór ustawienia wstępnego wyłącza stosowanie niestandardowej krzywej. Krzywa zostaje zachowana.</translation>
     </message>
     <message>
         <source>Custom equalizer</source>
-        <translation type="unfinished"></translation>
+        <translation>Niestandardowy korektor</translation>
     </message>
     <message>
         <source>Save and restore a custom curve for this headset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz i przywracaj niestandardową krzywą dla tego zestawu słuchawkowego.</translation>
     </message>
     <message>
         <source>Select an equalizer preset first to load this headset&apos;s band layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>Najpierw wybierz ustawienie wstępne korektora, aby wczytać układ pasm tego zestawu słuchawkowego.</translation>
     </message>
     <message>
         <source>Start from preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Zacznij od ustawienia wstępnego</translation>
     </message>
     <message>
         <source>Copy a preset curve, then adjust its bands.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj krzywą ustawienia wstępnego, a następnie dostosuj jej pasma.</translation>
     </message>
     <message>
         <source>Choose a preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz ustawienie wstępne</translation>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasmo %1</translation>
     </message>
     <message>
         <source>Headset volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Głośność zestawu słuchawkowego</translation>
     </message>
     <message>
         <source>Adjust the headset&apos;s hardware volume, separately from Windows volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostosuj sprzętową głośność zestawu słuchawkowego niezależnie od głośności systemu Windows</translation>
     </message>
     <message>
         <source>Device level (last reading): %1 / 128</source>
-        <translation type="unfinished"></translation>
+        <translation>Poziom urządzenia (ostatni odczyt): %1 / 128</translation>
     </message>
     <message>
         <source>No headset volume reading yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak odczytu głośności zestawu słuchawkowego</translation>
     </message>
     <message>
         <source>Read-back unavailable; showing your saved choice</source>
-        <translation type="unfinished"></translation>
+        <translation>Odczyt jest niedostępny; wyświetlany jest zapisany wybór</translation>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Redukcja hałasu</translation>
     </message>
     <message>
         <source>Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tryb odsłuchu. Wyświetlany jest zapisany wybór; zestaw słuchawkowy nie może zgłosić bieżącego trybu.</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Dźwięk otoczenia</translation>
     </message>
     <message>
         <source>Noise cancelling at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Redukcja hałasu po włączeniu</translation>
     </message>
     <message>
         <source>Choose the listening mode when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tryb odsłuchu po włączeniu zestawu słuchawkowego</translation>
     </message>
     <message>
         <source>Last mode at power-off</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostatni tryb przed wyłączeniem</translation>
     </message>
     <message>
         <source>Noise cancelling button cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryby przycisku redukcji hałasu</translation>
     </message>
     <message>
         <source>Choose at least one mode for the headset button to cycle through</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz co najmniej jeden tryb do przełączania przyciskiem zestawu słuchawkowego</translation>
     </message>
     <message>
         <source>Low</source>
@@ -1689,15 +1689,15 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Redukcja hałasu</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Wył.</translation>
+        <translation>Wył.</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Dźwięk otoczenia</translation>
     </message>
     <message>
         <source>Volume limiter</source>
