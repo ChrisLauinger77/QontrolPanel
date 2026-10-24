@@ -97,14 +97,16 @@ QtObject {
     }
     function setEqualizerPreset(preset) { UserSettings.headsetcontrolEqualizerPreset = preset }
     function setCustomEqualizerEnabled(enabled) {
-        let entries = UserSettings.headsetcontrolEqualizers
+        // Detach QML map references so only the explicit assignment attempts a save.
+        let entries = JSON.parse(JSON.stringify(UserSettings.headsetcontrolEqualizers))
         entries[activeDeviceKey] = {custom: enabled, preset: 0, bands: [0,0,0,0,0,0,0,0,0,0]}
         UserSettings.headsetcontrolEqualizers = entries
     }
     function startEqualizerFromPreset(preset) { setCustomEqualizerEnabled(true) }
     function setEqualizerBand(key, band, value) {
         if (key !== activeDeviceKey) return
-        let entries = UserSettings.headsetcontrolEqualizers
+        // Detach QML map references so only the explicit assignment attempts a save.
+        let entries = JSON.parse(JSON.stringify(UserSettings.headsetcontrolEqualizers))
         let entry = entries[key]
         if (!entry) return
         entry.bands[band] = value
