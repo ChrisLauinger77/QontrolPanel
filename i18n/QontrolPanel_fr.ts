@@ -829,6 +829,25 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
 </context>
 <context>
+    <name>HeadsetBattery</name>
+    <message>
+        <source>about %1 min to full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 min left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 h to full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 h left</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HeadsetControlPane</name>
     <message>
         <source>Toggle RGB lights on your headset</source>

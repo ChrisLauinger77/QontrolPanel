@@ -236,6 +236,7 @@ set(QML_FILES
 )
 
 set(QML_SINGLETONS
+    qml/Singletons/HeadsetBattery.qml
     qml/Singletons/Constants.qml
     qml/Singletons/Context.qml
     qml/Singletons/LogBridge.qml

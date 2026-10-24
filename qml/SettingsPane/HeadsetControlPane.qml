@@ -84,7 +84,10 @@ ColumnLayout {
                     visible: HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE" && HeadsetControlBridge.anyDeviceFound
                     description: qsTr("Current battery level of the connected headset")
                     additionalControl: Label {
+                        readonly property string estimate: HeadsetBattery.formatTime(HeadsetControlBridge.batteryStatus,
+                            HeadsetControlBridge.timeToFullMinutes, HeadsetControlBridge.timeToEmptyMinutes)
                         text: HeadsetControlBridge.batteryIcon + HeadsetControlBridge.batteryLevel + "%"
+                            + (estimate.length > 0 ? " (" + estimate + ")" : "")
                     }
                 }
 

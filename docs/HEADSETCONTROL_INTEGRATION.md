@@ -89,6 +89,8 @@ QML should use the bridge rather than holding a monitor pointer directly.
 - `productId`
 - `batteryStatus`
 - `batteryLevel`
+- `timeToFullMinutes`
+- `timeToEmptyMinutes`
 - `chatMix`
 - `micMuted`
 - `micAttached`
@@ -164,7 +166,11 @@ Battery state is normalized for QML as:
 - `BATTERY_CHARGING`
 - `BATTERY_UNAVAILABLE`
 
-Battery level uses `-1` when unavailable.
+Battery level uses `-1` when unavailable. The cache, snapshot, and bridge also carry `timeToFullMinutes` and `timeToEmptyMinutes`, copied from the optional fields in the same `getBattery()` result. Missing or negative estimates become `-1`; subsequent reports without estimates, failed polls, device changes, and shutdown clear earlier values. Reading estimates does not issue extra HID requests.
+
+`HeadsetBattery.formatTime()` is shared by the tray tooltip and settings battery label. Charging uses only time to full; available/discharging uses only time to empty. Unknown estimates and other battery states produce no text. Values below 60 minutes use minutes, and longer values round to the nearest whole hour, for example "about 1 h to full" or "about 5 h left". These are the last device estimates, refreshed at the existing fetch rate.
+
+The pinned test device's profile 2 reports 50% charging with 60 minutes to full. Selectable profiles 6 and 7 report 720 and 72 minutes to empty. Upstream profile 0 additionally reports 302 minutes to empty, but QontrolPanel's profile selector supports 1–7. Profile 3 omits both estimates; profiles 1, 4, and 5 fail the battery query.
 
 ChatMix uses `-1` when unavailable and otherwise follows the HeadsetControl value range. Application-side ChatMix behavior is coordinated with `AudioBridge`, which applies volume changes to configured communication apps and restores original volumes when needed.
 

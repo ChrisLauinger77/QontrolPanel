@@ -30,6 +30,8 @@ QtObject {
     property string deviceName: "Test headset"
     property string displayName: "HeadsetControl Test device"
     property int batteryLevel: 50
+    property int timeToFullMinutes: -1
+    property int timeToEmptyMinutes: -1
     property string batteryStatus: "BATTERY_AVAILABLE"
     property string batteryIcon: ""
     property int chatMix: 50

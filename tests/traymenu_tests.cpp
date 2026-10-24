@@ -78,6 +78,7 @@ class TrayMenuTests : public QObject
     int m_mediaType = -1;
     int m_settingsType = -1;
     int m_headsetType = -1;
+    int m_batteryType = -1;
 
 private slots:
     void initTestCase()
@@ -90,6 +91,51 @@ private slots:
         m_mediaType = qmlRegisterSingletonType(stub, Module, 1, 0, "MediaSessionBridge");
         m_settingsType = qmlRegisterSingletonType(stub, Module, 1, 0, "UserSettings");
         m_headsetType = qmlRegisterSingletonType(stub, Module, 1, 0, "HeadsetControlBridge");
+        m_batteryType = qmlRegisterSingletonType(
+            QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/Singletons/HeadsetBattery.qml"),
+            Module, 1, 0, "HeadsetBattery");
+    }
+
+    void batteryTimeFormatter_data()
+    {
+        QTest::addColumn<QString>("status");
+        QTest::addColumn<int>("toFull");
+        QTest::addColumn<int>("toEmpty");
+        QTest::addColumn<QString>("expected");
+        auto row = [](const char* name, const char* status, int full, int empty, const char* expected) {
+            QTest::newRow(name) << QString::fromLatin1(status) << full << empty << QString::fromLatin1(expected);
+        };
+        row("profile-2", "BATTERY_CHARGING", 60, -1, "about 1 h to full");
+        row("profile-0", "BATTERY_AVAILABLE", -1, 302, "about 5 h left");
+        row("profile-6", "BATTERY_AVAILABLE", -1, 720, "about 12 h left");
+        row("profile-7", "BATTERY_AVAILABLE", -1, 72, "about 1 h left");
+        row("zero-charging", "BATTERY_CHARGING", 0, -1, "about 0 min to full");
+        row("zero-discharging", "BATTERY_AVAILABLE", -1, 0, "about 0 min left");
+        row("minutes-charging", "BATTERY_CHARGING", 45, 300, "about 45 min to full");
+        row("minutes-discharging", "BATTERY_AVAILABLE", 60, 45, "about 45 min left");
+        row("last-minute", "BATTERY_CHARGING", 59, -1, "about 59 min to full");
+        row("round-down", "BATTERY_AVAILABLE", -1, 89, "about 1 h left");
+        row("round-up", "BATTERY_AVAILABLE", -1, 90, "about 2 h left");
+        row("charging-missing", "BATTERY_CHARGING", -1, 300, "");
+        row("discharging-missing", "BATTERY_AVAILABLE", 60, -1, "");
+        row("both-missing", "BATTERY_AVAILABLE", -1, -1, "");
+        row("negative-estimate", "BATTERY_CHARGING", -30, 300, "");
+        row("unavailable", "BATTERY_UNAVAILABLE", 60, 300, "");
+        row("hid-error", "BATTERY_HIDERROR", 60, 300, "");
+        row("timeout", "BATTERY_TIMEOUT", 60, 300, "");
+        row("unknown-status", "unknown", 60, 300, "");
+    }
+
+    void batteryTimeFormatter()
+    {
+        QFETCH(QString, status); QFETCH(int, toFull); QFETCH(int, toEmpty); QFETCH(QString, expected);
+        QQmlEngine engine;
+        auto* formatter = engine.singletonInstance<QObject*>(m_batteryType);
+        QVERIFY(formatter);
+        QString actual;
+        QVERIFY(QMetaObject::invokeMethod(formatter, "formatTime", Q_RETURN_ARG(QString, actual),
+                                         Q_ARG(QString, status), Q_ARG(int, toFull), Q_ARG(int, toEmpty)));
+        QCOMPARE(actual, expected);
     }
 
     void themesRetintIconsAndSubmenus()
@@ -367,6 +413,15 @@ private slots:
         QVERIFY(tray);
         auto* headset = engine.singletonInstance<QObject*>(m_headsetType);
         QVERIFY(systemTray->property("tooltip").toString().contains(QStringLiteral("HeadsetControl Test device")));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_CHARGING"));
+        QVERIFY(headset->setProperty("timeToFullMinutes", 60));
+        QTRY_VERIFY(systemTray->property("tooltip").toString().contains("50% (about 1 h to full)"));
+        QVERIFY(headset->setProperty("timeToEmptyMinutes", 302));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_AVAILABLE"));
+        QTRY_VERIFY(systemTray->property("tooltip").toString().contains("50% (about 5 h left)"));
+        QVERIFY(headset->setProperty("timeToEmptyMinutes", -1));
+        QTRY_VERIFY(!systemTray->property("tooltip").toString().contains("about "));
+        QVERIFY(headset->setProperty("timeToFullMinutes", -1));
         // A newly paired headset changes the display name without changing the driver name.
         headset->setProperty("displayName", QStringLiteral("Jabra Evolve2 85"));
         QTRY_VERIFY(systemTray->property("tooltip").toString().contains(QStringLiteral("Jabra Evolve2 85")));

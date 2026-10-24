@@ -31,6 +31,8 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
     Q_PROPERTY(QString batteryStatus READ batteryStatus NOTIFY batteryStatusChanged)
     Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
+    Q_PROPERTY(int timeToFullMinutes READ timeToFullMinutes NOTIFY timeToFullMinutesChanged)
+    Q_PROPERTY(int timeToEmptyMinutes READ timeToEmptyMinutes NOTIFY timeToEmptyMinutesChanged)
     Q_PROPERTY(QString batteryIcon READ batteryIcon NOTIFY batteryIconChanged)
     Q_PROPERTY(int chatMix READ chatMix NOTIFY chatMixChanged)
     Q_PROPERTY(int micMuted READ micMuted NOTIFY micMutedChanged)
@@ -89,6 +91,8 @@ public:
     QString displayName() const;
     QString batteryStatus() const;
     int batteryLevel() const;
+    int timeToFullMinutes() const;
+    int timeToEmptyMinutes() const;
     QString batteryIcon() const;
     int chatMix() const;
     int micMuted() const;
@@ -107,6 +111,8 @@ signals:
     void displayNameChanged();
     void batteryStatusChanged();
     void batteryLevelChanged();
+    void timeToFullMinutesChanged();
+    void timeToEmptyMinutesChanged();
     void batteryIconChanged();
     void chatMixChanged();
     void micMutedChanged();

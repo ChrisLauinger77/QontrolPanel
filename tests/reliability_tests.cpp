@@ -221,6 +221,112 @@ private slots:
         QCOMPARE(bridge->sidetoneLevel(), 72);
     }
 
+    void batteryTimeSnapshotsNotifyOnChanges()
+    {
+        HeadsetControlDevice device;
+        HeadsetControlState state;
+        QCOMPARE(device.timeToFullMinutes, -1);
+        QCOMPARE(device.timeToEmptyMinutes, -1);
+        QCOMPARE(state.timeToFullMinutes, -1);
+        QCOMPARE(state.timeToEmptyMinutes, -1);
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto cleanup = qScopeGuard([&] {
+            bridge->shutdown();
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        QCOMPARE(bridge->timeToFullMinutes(), -1);
+        QCOMPARE(bridge->timeToEmptyMinutes(), -1);
+        QSignalSpy full(bridge, &HeadsetControlBridge::timeToFullMinutesChanged);
+        QSignalSpy empty(bridge, &HeadsetControlBridge::timeToEmptyMinutesChanged);
+        auto publish = [&] {
+            return QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                             Q_ARG(HeadsetControlState, state));
+        };
+        state.timeToFullMinutes = 60;
+        QVERIFY(publish());
+        QCOMPARE(bridge->property("timeToFullMinutes").toInt(), 60);
+        QCOMPARE(full.size(), 1);
+        QCOMPARE(empty.size(), 0);
+        QVERIFY(publish());
+        QCOMPARE(full.size(), 1);
+        state.timeToEmptyMinutes = 302;
+        QVERIFY(publish());
+        QCOMPARE(bridge->property("timeToEmptyMinutes").toInt(), 302);
+        QCOMPARE(full.size(), 1);
+        QCOMPARE(empty.size(), 1);
+        state = HeadsetControlState{};
+        QVERIFY(publish());
+        QCOMPARE(bridge->timeToFullMinutes(), -1);
+        QCOMPARE(bridge->timeToEmptyMinutes(), -1);
+        QCOMPARE(full.size(), 2);
+        QCOMPARE(empty.size(), 2);
+    }
+
+    void batteryTimeTestProfilesAndReset()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        bool connected = true;
+        HeadsetControlMonitor monitor(nullptr, [&] {
+            auto devices = connected ? headsetcontrol::discover() : std::vector<headsetcontrol::Headset>{};
+            // Never query or write a real device in this test.
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        QCOMPARE(monitor.snapshot().timeToFullMinutes, -1);
+        QCOMPARE(monitor.snapshot().timeToEmptyMinutes, -1);
+        monitor.setTestProfile(2);
+        monitor.setTestModeEnabled(true);
+        monitor.startMonitoring();
+        QCOMPARE(monitor.snapshot().batteryLevel, 50);
+        QCOMPARE(monitor.snapshot().batteryStatus, QString("BATTERY_CHARGING"));
+        auto check = [&](int full, int empty) {
+            const auto state = monitor.snapshot();
+            const auto devices = monitor.getCachedDevices();
+            return devices.size() == 1 && devices.first().timeToFullMinutes == full
+                && devices.first().timeToEmptyMinutes == empty
+                && state.timeToFullMinutes == full && state.timeToEmptyMinutes == empty;
+        };
+        QVERIFY(check(60, -1));
+        monitor.setTestProfile(3); // Successful report without optional estimates must clear the old value.
+        QVERIFY(check(-1, -1));
+        monitor.setTestProfile(6);
+        QVERIFY(check(-1, 720));
+        monitor.setTestProfile(7);
+        QVERIFY(check(-1, 72));
+        monitor.setTestProfile(4); // Offline report clears the discharge estimate.
+        QVERIFY(check(-1, -1));
+        monitor.setTestProfile(2);
+        QVERIFY(check(60, -1));
+        monitor.setTestProfile(5); // Timeout clears the charging estimate.
+        QVERIFY(check(-1, -1));
+        monitor.setTestProfile(7);
+        QVERIFY(check(-1, 72));
+        monitor.setTestProfile(1); // Synthetic error profile remains selectable, with unknown estimates.
+        QVERIFY(check(-1, -1));
+        monitor.setTestProfile(2);
+        QVERIFY(check(60, -1));
+        connected = false;
+        monitor.requestRefresh();
+        QVERIFY(monitor.getCachedDevices().isEmpty());
+        QCOMPARE(monitor.snapshot().timeToFullMinutes, -1);
+        QCOMPARE(monitor.snapshot().timeToEmptyMinutes, -1);
+        connected = true;
+        monitor.requestRefresh();
+        QVERIFY(check(60, -1));
+        monitor.stopMonitoring();
+        QCOMPARE(monitor.snapshot().timeToFullMinutes, -1);
+        QCOMPARE(monitor.snapshot().timeToEmptyMinutes, -1);
+    }
+
     void microphoneSnapshotsNotifyOnChanges()
     {
         HeadsetControlDevice device;

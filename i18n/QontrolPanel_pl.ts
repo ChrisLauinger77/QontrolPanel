@@ -827,6 +827,25 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
     </message>
 </context>
 <context>
+    <name>HeadsetBattery</name>
+    <message>
+        <source>about %1 min to full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 min left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 h to full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 h left</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HeadsetControlPane</name>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>

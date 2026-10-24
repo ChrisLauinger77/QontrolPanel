@@ -827,6 +827,25 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
 </context>
 <context>
+    <name>HeadsetBattery</name>
+    <message>
+        <source>about %1 min to full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 min left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 h to full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about %1 h left</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HeadsetControlPane</name>
     <message>
         <source>No compatible device found.</source>

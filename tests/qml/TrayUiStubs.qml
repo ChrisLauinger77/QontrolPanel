@@ -34,6 +34,8 @@ QtObject {
     property string batteryStatus: "BATTERY_AVAILABLE"
     property string batteryIcon: ""
     property int batteryLevel: 50
+    property int timeToFullMinutes: -1
+    property int timeToEmptyMinutes: -1
     property int chatMix: 50
     property int micMuted: -1
     property int micAttached: -1

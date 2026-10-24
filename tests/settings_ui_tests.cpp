@@ -175,6 +175,7 @@ private slots:
         for (const auto* name : {"Constants", "Utils", "StartupShortcutBridge", "Updater", "KeyboardShortcutManager"})
             qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, name);
         qmlRegisterSingletonType(sourceUrl("qml/Singletons/Context.qml"), Module, 1, 0, "Context");
+        qmlRegisterSingletonType(sourceUrl("qml/Singletons/HeadsetBattery.qml"), Module, 1, 0, "HeadsetBattery");
         m_headsetType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "HeadsetControlBridge");
         m_audioType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "AudioBridge");
         m_mediaType = qmlRegisterSingletonType(sourceUrl("tests/qml/SettingsUiStubs.qml"), Module, 1, 0, "MediaSessionBridge");
@@ -195,6 +196,32 @@ private slots:
         m_pane.reset();
         m_engine.reset();
         m_window.reset();
+    }
+
+    void batteryTimeUsesSharedFormatter()
+    {
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* card = findObject(pane, "title", "Device battery");
+        QVERIFY(card);
+        QVERIFY(findObject(card, "text", "50%"));
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_CHARGING"));
+        QVERIFY(headset->setProperty("timeToFullMinutes", 60));
+        QTRY_VERIFY(findObject(card, "text", "50% (about 1 h to full)"));
+        QVERIFY(headset->setProperty("timeToFullMinutes", 45));
+        QTRY_VERIFY(findObject(card, "text", "50% (about 45 min to full)"));
+        QVERIFY(headset->setProperty("timeToEmptyMinutes", 302));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_AVAILABLE"));
+        QTRY_VERIFY(findObject(card, "text", "50% (about 5 h left)"));
+        QVERIFY(headset->setProperty("timeToEmptyMinutes", -1));
+        QTRY_VERIFY(findObject(card, "text", "50%")); // Do not display a charging estimate while discharging.
+        QVERIFY(headset->setProperty("timeToEmptyMinutes", 720));
+        QTRY_VERIFY(findObject(card, "text", "50% (about 12 h left)"));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_UNAVAILABLE"));
+        QTRY_VERIFY(!card->property("visible").toBool());
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
+        QTRY_VERIFY(!card->property("visible").toBool());
     }
 
     void microphoneStatusShowsLastReading_data()

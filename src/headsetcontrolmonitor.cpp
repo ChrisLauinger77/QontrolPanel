@@ -246,6 +246,8 @@ void HeadsetControlMonitor::updateDeviceCache()
             if (batteryResult)
             {
                 device.batteryLevel = batteryResult->level_percent;
+                device.timeToFullMinutes = qMax(-1, batteryResult->time_to_full_min.value_or(-1));
+                device.timeToEmptyMinutes = qMax(-1, batteryResult->time_to_empty_min.value_or(-1));
                 device.batteryStatus = batteryStatusToString(batteryResult->status);
 
                 LOG_INFO("HeadsetControlManager",
@@ -379,6 +381,16 @@ void HeadsetControlMonitor::updateDeviceCache()
         {
             m_batteryLevel = primaryDevice.batteryLevel;
             emit batteryLevelChanged();
+        }
+        if (primaryDevice.timeToFullMinutes != m_timeToFullMinutes)
+        {
+            m_timeToFullMinutes = primaryDevice.timeToFullMinutes;
+            emit timeToFullMinutesChanged();
+        }
+        if (primaryDevice.timeToEmptyMinutes != m_timeToEmptyMinutes)
+        {
+            m_timeToEmptyMinutes = primaryDevice.timeToEmptyMinutes;
+            emit timeToEmptyMinutesChanged();
         }
         if (primaryDevice.chatMix != m_chatMix)
         {
@@ -699,6 +711,8 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.displayName = displayName();
     state.batteryStatus = batteryStatus();
     state.batteryLevel = batteryLevel();
+    state.timeToFullMinutes = timeToFullMinutes();
+    state.timeToEmptyMinutes = timeToEmptyMinutes();
     state.chatMix = chatMix();
     state.micMuted = micMuted();
     state.micAttached = micAttached();
@@ -851,6 +865,8 @@ void HeadsetControlMonitor::clearDeviceState()
     m_displayName.clear();
     m_batteryStatus = "BATTERY_UNAVAILABLE";
     m_batteryLevel = -1;
+    m_timeToFullMinutes = -1;
+    m_timeToEmptyMinutes = -1;
     m_chatMix = -1;
     m_micMuted = -1;
     m_micAttached = -1;
@@ -871,6 +887,8 @@ void HeadsetControlMonitor::clearDeviceState()
     emit displayNameChanged();
     emit batteryStatusChanged();
     emit batteryLevelChanged();
+    emit timeToFullMinutesChanged();
+    emit timeToEmptyMinutesChanged();
     emit chatMixChanged();
     emit micMutedChanged();
     emit micAttachedChanged();

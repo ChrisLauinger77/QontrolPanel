@@ -20,6 +20,8 @@ struct HeadsetControlDevice {
     QString productId;
     QString batteryStatus;  // "BATTERY_AVAILABLE", "BATTERY_CHARGING", "BATTERY_UNAVAILABLE"
     int batteryLevel;       // -1 - 100
+    int timeToFullMinutes = -1; // -1 when the device supplies no estimate
+    int timeToEmptyMinutes = -1;
     int chatMix;            // -1 when unavailable, otherwise 0 - 128
     int micMuted = -1;      // Last poll: -1 unknown, 0 unmuted, 1 muted
     int micAttached = -1;   // Last poll: -1 unknown, 0 detached, 1 attached
@@ -49,6 +51,8 @@ struct HeadsetControlState
     QString displayName;
     QString batteryStatus = "BATTERY_UNAVAILABLE";
     int batteryLevel = -1;
+    int timeToFullMinutes = -1;
+    int timeToEmptyMinutes = -1;
     int chatMix = -1;
     int micMuted = -1;
     int micAttached = -1;
@@ -90,6 +94,8 @@ public:
     QString displayName() const { return m_displayName; }
     QString batteryStatus() const { return m_batteryStatus; }
     int batteryLevel() const { return m_batteryLevel; }
+    int timeToFullMinutes() const { return m_timeToFullMinutes; }
+    int timeToEmptyMinutes() const { return m_timeToEmptyMinutes; }
     int chatMix() const { return m_chatMix; }
     int micMuted() const { return m_micMuted; }
     int micAttached() const { return m_micAttached; }
@@ -125,6 +131,8 @@ signals:
     void displayNameChanged();
     void batteryStatusChanged();
     void batteryLevelChanged();
+    void timeToFullMinutesChanged();
+    void timeToEmptyMinutesChanged();
     void chatMixChanged();
     void micMutedChanged();
     void micAttachedChanged();
@@ -183,6 +191,8 @@ private:
     QString m_displayName;
     QString m_batteryStatus;
     int m_batteryLevel;
+    int m_timeToFullMinutes = -1;
+    int m_timeToEmptyMinutes = -1;
     int m_chatMix;
     int m_micMuted = -1;
     int m_micAttached = -1;

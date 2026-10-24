@@ -127,6 +127,10 @@ Platform.SystemTrayIcon {
         batteryText += HeadsetControlBridge.batteryIcon;
         if (HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE") {
             batteryText += HeadsetControlBridge.batteryLevel + "%";
+            const estimate = HeadsetBattery.formatTime(HeadsetControlBridge.batteryStatus,
+                HeadsetControlBridge.timeToFullMinutes, HeadsetControlBridge.timeToEmptyMinutes);
+            if (estimate.length > 0)
+                batteryText += " (" + estimate + ")";
         } else {
             batteryText += qsTr("Device disconnected");
         }

@@ -342,6 +342,16 @@ int HeadsetControlBridge::batteryLevel() const
     return m_cachedState.batteryLevel;
 }
 
+int HeadsetControlBridge::timeToFullMinutes() const
+{
+    return m_cachedState.timeToFullMinutes;
+}
+
+int HeadsetControlBridge::timeToEmptyMinutes() const
+{
+    return m_cachedState.timeToEmptyMinutes;
+}
+
 QString HeadsetControlBridge::batteryIcon() const
 {
     const int level = batteryLevel();
@@ -467,6 +477,10 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         emit batteryLevelChanged();
         emit batteryIconChanged();
     }
+    if (previous.timeToFullMinutes != m_cachedState.timeToFullMinutes)
+        emit timeToFullMinutesChanged();
+    if (previous.timeToEmptyMinutes != m_cachedState.timeToEmptyMinutes)
+        emit timeToEmptyMinutesChanged();
     if (previous.chatMix != m_cachedState.chatMix)
     {
         emit chatMixChanged();
