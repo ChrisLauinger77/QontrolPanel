@@ -21,11 +21,11 @@
     </message>
     <message>
         <source>Up %1  Down %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Aumentar %1  Diminuir %2%3</translation>
     </message>
     <message>
         <source>(Step: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Incremento: %1)</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -116,19 +116,19 @@
     </message>
     <message>
         <source>Panel animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Animações do painel</translation>
     </message>
     <message>
         <source>Animate panel opening and closing</source>
-        <translation type="unfinished"></translation>
+        <translation>Animar a abertura e o fechamento do painel</translation>
     </message>
     <message>
         <source>Settings page animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Animações das páginas de configurações</translation>
     </message>
     <message>
         <source>Animate transitions between settings pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Animar as transições entre as páginas de configurações</translation>
     </message>
     <message>
         <source>Tray icon theme</source>
@@ -177,7 +177,7 @@
     </message>
     <message>
         <source>Normal</source>
-        <translation></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Filled</source>
@@ -235,7 +235,7 @@
     <name>AudioBridge</name>
     <message>
         <source>Could not save audio settings. Check access to your user profile and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível salvar as configurações de áudio. Verifique o acesso ao seu perfil de usuário e o espaço disponível em disco.</translation>
     </message>
 </context>
 <context>
@@ -265,7 +265,7 @@
     </message>
     <message>
         <source>ChatMix is not activated</source>
-        <translation type="unfinished"></translation>
+        <translation>O ChatMix não está ativado</translation>
     </message>
 </context>
 <context>
@@ -300,11 +300,11 @@
     </message>
     <message>
         <source>Show ChatMix controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar controles do ChatMix</translation>
     </message>
     <message>
         <source>Use ChatMix volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar o volume do ChatMix</translation>
     </message>
     <message>
         <source>ChatMix volume</source>
@@ -403,23 +403,23 @@
     </message>
     <message>
         <source>Remember application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Lembrar os níveis de volume dos aplicativos</translation>
     </message>
     <message>
         <source>Restore each application&apos;s last volume when it starts</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurar o último volume de cada aplicativo ao iniciá-lo</translation>
     </message>
     <message>
         <source>Clear remembered application volumes</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpar os volumes memorizados dos aplicativos</translation>
     </message>
     <message>
         <source>Forget all saved per-application volume levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquecer todos os níveis de volume salvos por aplicativo</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Limpar</translation>
+        <translation>Limpar</translation>
     </message>
     <message>
         <source>Show brightness control in panel</source>
@@ -493,110 +493,110 @@
     <name>Context</name>
     <message>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Cima</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Baixo</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Esquerda</translation>
+        <translation>Esquerda</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Direita</translation>
+        <translation>Direita</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espaço</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab</translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Insert</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Up</translation>
     </message>
     <message>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Down</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconhecido</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
     <name>DebugPane</name>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos</translation>
     </message>
     <message>
         <source>QontrolPanel Log Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportação de registros do QontrolPanel</translation>
     </message>
     <message>
         <source>Console output</source>
-        <translation type="unfinished">Saída do console</translation>
+        <translation>Saída do console</translation>
     </message>
     <message>
         <source>Filter by:</source>
-        <translation type="unfinished">Filtrar por:</translation>
+        <translation>Filtrar por:</translation>
     </message>
     <message>
         <source>Auto-scroll</source>
-        <translation type="unfinished">Rolagem automática</translation>
+        <translation>Rolagem automática</translation>
     </message>
     <message>
         <source>Copy All</source>
-        <translation type="unfinished">Copiar tudo</translation>
+        <translation>Copiar tudo</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Limpar</translation>
+        <translation>Limpar</translation>
     </message>
 </context>
 <context>
@@ -724,71 +724,71 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     </message>
     <message>
         <source>Settings startup page</source>
-        <translation type="unfinished"></translation>
+        <translation>Página inicial das configurações</translation>
     </message>
     <message>
         <source>Choose which settings page opens when the settings window is shown</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha qual página de configurações será aberta ao exibir a janela de configurações</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Geral</translation>
+        <translation>Geral</translation>
     </message>
     <message>
         <source>Components</source>
-        <translation type="unfinished">Componentes</translation>
+        <translation>Componentes</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">Aparência</translation>
+        <translation>Aparência</translation>
     </message>
     <message>
         <source>Media Overlay</source>
-        <translation type="unfinished">Sobreposição de mídia</translation>
+        <translation>Sobreposição de mídia</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished">Atalhos</translation>
+        <translation>Atalhos</translation>
     </message>
     <message>
         <source>App Hotkeys</source>
-        <translation type="unfinished">Atalhos de App</translation>
+        <translation>Atalhos de aplicativos</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">HeadsetControl</translation>
+        <translation>HeadsetControl</translation>
     </message>
     <message>
         <source>Renaming</source>
-        <translation type="unfinished">Renomeação</translation>
+        <translation>Renomeação</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Idioma</translation>
+        <translation>Idioma</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished">Atualizações</translation>
+        <translation>Atualizações</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">Depuração</translation>
+        <translation>Depuração</translation>
     </message>
     <message>
         <source>Show a confirmation dialog when selecting a power action from the system tray menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar uma caixa de confirmação ao selecionar uma ação de energia no menu da bandeja do sistema</translation>
     </message>
     <message>
         <source>Power action confirmation timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempo limite da confirmação de ações de energia (segundos)</translation>
     </message>
     <message>
         <source>Time before the power action confirmation dialog automatically triggers the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempo até que a caixa de confirmação de ações de energia execute automaticamente a ação selecionada</translation>
     </message>
     <message>
         <source>Slider wheel sensivity</source>
@@ -816,7 +816,7 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     </message>
     <message>
         <source>QontrolPanel will boot up when your computer starts</source>
-        <translation type="unfinished"></translation>
+        <translation>O QontrolPanel será iniciado junto com o computador</translation>
     </message>
     <message>
         <source>Controls how frequently brightness commands are sent to external monitors</source>
@@ -831,19 +831,19 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     <name>HeadsetBattery</name>
     <message>
         <source>about %1 min to full</source>
-        <translation type="unfinished"></translation>
+        <translation>carga completa em cerca de %1 min</translation>
     </message>
     <message>
         <source>about %1 min left</source>
-        <translation type="unfinished"></translation>
+        <translation>cerca de %1 min de autonomia</translation>
     </message>
     <message>
         <source>about %1 h to full</source>
-        <translation type="unfinished"></translation>
+        <translation>carga completa em cerca de %1 h</translation>
     </message>
     <message>
         <source>about %1 h left</source>
-        <translation type="unfinished"></translation>
+        <translation>cerca de %1 h de autonomia</translation>
     </message>
 </context>
 <context>
@@ -854,200 +854,201 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     </message>
     <message>
         <source>1 - Error conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>1 - Condições de erro</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
-        <translation type="unfinished"></translation>
+        <translation>2 - Bateria carregando</translation>
     </message>
     <message>
         <source>3 - Basic battery</source>
-        <translation type="unfinished"></translation>
+        <translation>3 - Bateria básica</translation>
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>4 - Bateria indisponível</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>5 - Tempo limite excedido</translation>
     </message>
     <message>
         <source>6 - Full battery</source>
-        <translation type="unfinished"></translation>
+        <translation>6 - Bateria cheia</translation>
     </message>
     <message>
         <source>7 - Low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>7 - Bateria fraca</translation>
     </message>
     <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ative o modo de teste abaixo para simular um headset compatível e validar a interface do HeadsetControl.</translation>
     </message>
     <message>
         <source>HeadsetControl test mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de teste do HeadsetControl</translation>
     </message>
     <message>
         <source>Simulate a supported headset for testing. This stays enabled until the app closes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simule um headset compatível para testes. Este modo permanece ativado até o aplicativo ser fechado.</translation>
     </message>
     <message>
         <source>Test headset profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Perfil do headset de teste</translation>
     </message>
     <message>
         <source>Choose which synthetic headset scenario HeadsetControl should simulate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha qual cenário de headset simulado o HeadsetControl deve usar.</translation>
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nível atual da bateria do headset conectado</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
-        <translation type="unfinished"></translation>
+        <translation>Notificar quando a bateria do headset conectado chegar a %1% ou menos.</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>ChatMix value of the connected headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor do ChatMix do headset conectado</translation>
     </message>
     <message>
         <source>Microphone mute (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenciamento do microfone (última leitura)</translation>
     </message>
     <message>
         <source>Updates at the headset fetch rate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Atualizado conforme o intervalo de consulta do headset.</translation>
     </message>
     <message>
         <source>Muted</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenciado</translation>
     </message>
     <message>
         <source>Unmuted</source>
-        <translation type="unfinished"></translation>
+        <translation>Não silenciado</translation>
     </message>
     <message>
         <source>Boom mic (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Microfone de haste (última leitura)</translation>
     </message>
     <message>
         <source>Attached</source>
-        <translation type="unfinished"></translation>
+        <translation>Conectado</translation>
     </message>
     <message>
         <source>Detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconectado</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Predefinição do equalizador</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Defina a predefinição do equalizador do headset</translation>
     </message>
     <message>
         <source>Microphone volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume do microfone</translation>
     </message>
     <message>
         <source>Adjust the headset microphone volume (0–128)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuste o volume do microfone do headset (0–128)</translation>
     </message>
     <message>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Não definido</translation>
     </message>
     <message>
         <source>Microphone noise filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro de ruído do microfone</translation>
     </message>
     <message>
         <source>Choose the microphone noise filter strength</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha a intensidade do filtro de ruído do microfone</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Desligado</translation>
+        <translation>Desligado</translation>
     </message>
     <message>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>Baixo</translation>
     </message>
     <message>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Alto</translation>
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitador de volume</translation>
     </message>
     <message>
         <source>Limit the headset playback volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite o volume de reprodução do headset</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="unfinished">Ligado</translation>
+        <translation>Ligado</translation>
     </message>
     <message>
         <source>Mic mute LED brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Brilho do LED de silenciamento do microfone</translation>
     </message>
     <message>
         <source>Adjust the microphone mute indicator brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuste o brilho do indicador de silenciamento do microfone</translation>
     </message>
     <message>
         <source>Medium</source>
-        <translation type="unfinished"></translation>
+        <translation>Médio</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth ao ligar</translation>
     </message>
     <message>
         <source>Enable Bluetooth when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>Ative o Bluetooth ao ligar o headset</translation>
     </message>
     <message>
         <source>Bluetooth call volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume de chamadas Bluetooth</translation>
     </message>
     <message>
         <source>Adjust the Bluetooth call volume (0–100)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuste o volume das chamadas Bluetooth (0–100)</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo entre as consultas de status do headset. Valores menores podem aumentar o consumo da bateria.</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Atualizar</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">Versão</translation>
+        <translation>Versão</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Repositório no GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver no GitHub</translation>
     </message>
     <message>
         <source>HeadsetControl monitoring is disabled
 You can enable it in the Components tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>O monitoramento do HeadsetControl está desativado
+Você pode ativá-lo na aba Componentes.</translation>
     </message>
     <message>
         <source>Show battery status in panel footer</source>
@@ -1055,15 +1056,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Inactive time (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempo de inatividade (minutos)</translation>
     </message>
     <message>
         <source>Set the time of inactivity after which your headset will enter power-saving mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Defina o tempo de inatividade após o qual o headset entrará no modo de economia de energia</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Luzes</translation>
     </message>
     <message>
         <source>Toggle RGB lights on your headset</source>
@@ -1071,7 +1072,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Toggle rotate-to-mute feature on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ativar ou desativar o silenciamento ao girar o headset</translation>
     </message>
     <message>
         <source>Adjust your voice feedback level</source>
@@ -1083,19 +1084,19 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenciar ao girar</translation>
     </message>
     <message>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>Retorno de voz</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Avisos de voz</translation>
     </message>
     <message>
         <source>Toggle voice prompts on your headset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ativar ou desativar os avisos de voz do headset</translation>
     </message>
     <message>
         <source>Fetch rate (seconds)</source>
@@ -1107,7 +1108,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Some headset settings could not be applied. Refresh to retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível aplicar algumas configurações do headset. Atualize para tentar novamente.</translation>
     </message>
 </context>
 <context>
@@ -1133,11 +1134,11 @@ You can enable it in the Components tab.</source>
     <name>KeyboardShortcutManager</name>
     <message>
         <source>Could not save application shortcuts. Check access to your user profile and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível salvar os atalhos de aplicativos. Verifique o acesso ao seu perfil de usuário e o espaço disponível em disco.</translation>
     </message>
     <message>
         <source>Windows could not register a shortcut (error %1). The previous binding was retained when possible.</source>
-        <translation type="unfinished"></translation>
+        <translation>O Windows não conseguiu registrar um atalho (erro %1). A configuração anterior foi mantida quando possível.</translation>
     </message>
 </context>
 <context>
@@ -1175,7 +1176,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished">Idioma</translation>
+        <translation>Idioma</translation>
     </message>
     <message>
         <source>Download the latest translation files from GitHub</source>
@@ -1230,18 +1231,18 @@ You can enable it in the Components tab.</source>
     <name>LogBridge</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconhecido</translation>
     </message>
 </context>
 <context>
     <name>Main</name>
     <message>
         <source>Low Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Bateria fraca</translation>
     </message>
     <message>
         <source>Headset battery is getting low</source>
-        <translation type="unfinished"></translation>
+        <translation>A bateria do headset está ficando fraca</translation>
     </message>
     <message>
         <source>Update Available</source>
@@ -1277,15 +1278,15 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Power action failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na ação de energia</translation>
     </message>
     <message>
         <source>Shortcut registration failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao registrar o atalho</translation>
     </message>
     <message>
         <source>Settings could not be saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível salvar as configurações</translation>
     </message>
 </context>
 <context>
@@ -1381,7 +1382,7 @@ You can enable it in the Components tab.</source>
     <name>PowerBridge</name>
     <message>
         <source>Windows could not complete the power action (error %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>O Windows não conseguiu concluir a ação de energia (erro %1).</translation>
     </message>
 </context>
 <context>
@@ -1459,7 +1460,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Doar</translation>
     </message>
     <message>
         <source>HeadsetControl</source>
@@ -1557,7 +1558,7 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregando...</translation>
     </message>
     <message>
         <source>Input: </source>
@@ -1581,35 +1582,35 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>HeadsetControl</source>
-        <translation type="unfinished">HeadsetControl</translation>
+        <translation>HeadsetControl</translation>
     </message>
     <message>
         <source>Fetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Atualizar</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Predefinição do equalizador</translation>
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitador de volume</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth ao ligar</translation>
     </message>
     <message>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Luzes</translation>
     </message>
     <message>
         <source>Voice Prompts</source>
-        <translation type="unfinished"></translation>
+        <translation>Avisos de voz</translation>
     </message>
     <message>
         <source>Rotate-to-Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenciar ao girar</translation>
     </message>
     <message>
         <source>Exit</source>
@@ -1617,27 +1618,27 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Unknown Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo desconhecido</translation>
     </message>
     <message>
         <source>QontrolPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>QontrolPanel</translation>
     </message>
     <message>
         <source>Device disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo desconectado</translation>
     </message>
     <message>
         <source>ChatMix</source>
-        <translation type="unfinished">ChatMix</translation>
+        <translation>ChatMix</translation>
     </message>
     <message>
         <source>Mic muted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Microfone silenciado (última leitura)</translation>
     </message>
     <message>
         <source>Mic unmuted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Microfone não silenciado (última leitura)</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
@@ -1656,106 +1657,106 @@ You can enable it in the Components tab.</source>
     <name>UpdatePane</name>
     <message>
         <source>Updates and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Atualizações e informações</translation>
     </message>
     <message>
         <source>Application Updates</source>
-        <translation type="unfinished">Atualizações do aplicativo</translation>
+        <translation>Atualizações do aplicativo</translation>
     </message>
     <message>
         <source>Version %1 is available</source>
-        <translation type="unfinished">A versão %1 está disponível</translation>
+        <translation>A versão %1 está disponível</translation>
     </message>
     <message>
         <source>Checking...</source>
-        <translation type="unfinished">Verificando...</translation>
+        <translation>Verificando...</translation>
     </message>
     <message>
         <source>Downloading...</source>
-        <translation type="unfinished">Baixando...</translation>
+        <translation>Baixando...</translation>
     </message>
     <message>
         <source>Download and Install</source>
-        <translation type="unfinished">Baixar e instalar</translation>
+        <translation>Baixar e instalar</translation>
     </message>
     <message>
         <source>Check for Updates</source>
-        <translation type="unfinished">Verificar atualizações</translation>
+        <translation>Verificar atualizações</translation>
     </message>
     <message>
         <source>Release notes</source>
-        <translation type="unfinished">Notas da versão</translation>
+        <translation>Notas da versão</translation>
     </message>
     <message>
         <source>View what&apos;s new in version %1</source>
-        <translation type="unfinished">Ver o que há de novo na versão %1</translation>
+        <translation>Ver o que há de novo na versão %1</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">Exibir</translation>
+        <translation>Exibir</translation>
     </message>
     <message>
         <source>Auto check for app updates</source>
-        <translation type="unfinished">Verificar automaticamente atualizações do aplicativo</translation>
+        <translation>Verificar automaticamente atualizações do aplicativo</translation>
     </message>
     <message>
         <source>Check for application updates at startup and every 4 hours</source>
-        <translation type="unfinished">Verificar atualizações do aplicativo ao iniciar e a cada 4 horas</translation>
+        <translation>Verificar atualizações do aplicativo ao iniciar e a cada 4 horas</translation>
     </message>
     <message>
         <source>Application version</source>
-        <translation type="unfinished">Versão do aplicativo</translation>
+        <translation>Versão do aplicativo</translation>
     </message>
     <message>
         <source>QT version</source>
-        <translation type="unfinished">Versão do aplicativo</translation>
+        <translation>Versão do Qt</translation>
     </message>
     <message>
         <source>Commit</source>
-        <translation type="unfinished">Commit</translation>
+        <translation>Commit</translation>
     </message>
     <message>
         <source>Build date</source>
-        <translation type="unfinished">Data de compilação</translation>
+        <translation>Data de compilação</translation>
     </message>
     <message>
         <source>GitHub repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Repositório no GitHub</translation>
     </message>
     <message>
         <source>View on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver no GitHub</translation>
     </message>
     <message>
         <source>Version %1</source>
-        <translation type="unfinished">Versão %1</translation>
+        <translation>Versão %1</translation>
     </message>
     <message>
         <source>No release notes available</source>
-        <translation type="unfinished">Nenhuma nota de versão disponível</translation>
+        <translation>Nenhuma nota de versão disponível</translation>
     </message>
 </context>
 <context>
     <name>Updater</name>
     <message>
         <source>Failed to check for updates: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao verificar atualizações: %1</translation>
     </message>
     <message>
         <source>No executable found in latest release</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenhum executável encontrado na versão mais recente</translation>
     </message>
     <message>
         <source>Download failed: %1</source>
-        <translation type="unfinished">Falha no download: %1</translation>
+        <translation>Falha no download: %1</translation>
     </message>
     <message>
         <source>Failed to save update file</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao salvar o arquivo de atualização</translation>
     </message>
     <message>
         <source>Failed to start update executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao iniciar o executável de atualização</translation>
     </message>
     <message>
         <source>Update available: %1</source>
@@ -1783,30 +1784,30 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Invalid release metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadados da versão inválidos</translation>
     </message>
     <message>
         <source>The release has no valid SHA-256 checksum or file size.</source>
-        <translation type="unfinished"></translation>
+        <translation>A versão não informa um hash SHA-256 válido ou o tamanho do arquivo.</translation>
     </message>
     <message>
         <source>Update verification failed. The installer was discarded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na verificação da atualização. O instalador foi descartado.</translation>
     </message>
     <message>
         <source>The download exceeded its expected size or could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>O download excedeu o tamanho esperado ou não pôde ser salvo.</translation>
     </message>
     <message>
         <source>Download cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Download cancelado</translation>
     </message>
 </context>
 <context>
     <name>UserSettings</name>
     <message>
         <source>Could not save settings. Check access to your user profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível salvar as configurações. Verifique o acesso ao seu perfil de usuário.</translation>
     </message>
 </context>
 </TS>

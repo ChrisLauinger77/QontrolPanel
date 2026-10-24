@@ -830,19 +830,19 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <name>HeadsetBattery</name>
     <message>
         <source>about %1 min to full</source>
-        <translation type="unfinished"></translation>
+        <translation>до полной зарядки: около %1 мин</translation>
     </message>
     <message>
         <source>about %1 min left</source>
-        <translation type="unfinished"></translation>
+        <translation>осталось около %1 мин</translation>
     </message>
     <message>
         <source>about %1 h to full</source>
-        <translation type="unfinished"></translation>
+        <translation>до полной зарядки: около %1 ч</translation>
     </message>
     <message>
         <source>about %1 h left</source>
-        <translation type="unfinished"></translation>
+        <translation>осталось около %1 ч</translation>
     </message>
 </context>
 <context>
@@ -917,31 +917,31 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Microphone mute (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Звук микрофона (последний опрос)</translation>
     </message>
     <message>
         <source>Updates at the headset fetch rate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновляется с заданной частотой опроса гарнитуры.</translation>
     </message>
     <message>
         <source>Muted</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключён</translation>
     </message>
     <message>
         <source>Unmuted</source>
-        <translation type="unfinished"></translation>
+        <translation>Включён</translation>
     </message>
     <message>
         <source>Boom mic (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Микрофон на штанге (последний опрос)</translation>
     </message>
     <message>
         <source>Attached</source>
-        <translation type="unfinished"></translation>
+        <translation>Подключён</translation>
     </message>
     <message>
         <source>Detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсоединён</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
@@ -953,75 +953,75 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Microphone volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость микрофона</translation>
     </message>
     <message>
         <source>Adjust the headset microphone volume (0–128)</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройте громкость микрофона гарнитуры (0–128)</translation>
     </message>
     <message>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задано</translation>
     </message>
     <message>
         <source>Microphone noise filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Шумовой фильтр микрофона</translation>
     </message>
     <message>
         <source>Choose the microphone noise filter strength</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите уровень фильтрации шума микрофона</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Выкл.</translation>
+        <translation>Выкл.</translation>
     </message>
     <message>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>Низкий</translation>
     </message>
     <message>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Высокий</translation>
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Ограничитель громкости</translation>
     </message>
     <message>
         <source>Limit the headset playback volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Ограничьте громкость воспроизведения гарнитуры</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="unfinished">Вкл.</translation>
+        <translation>Вкл.</translation>
     </message>
     <message>
         <source>Mic mute LED brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Яркость светодиода отключения микрофона</translation>
     </message>
     <message>
         <source>Adjust the microphone mute indicator brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройте яркость индикатора отключения микрофона</translation>
     </message>
     <message>
         <source>Medium</source>
-        <translation type="unfinished"></translation>
+        <translation>Средний</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth при включении</translation>
     </message>
     <message>
         <source>Enable Bluetooth when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>Включать Bluetooth при включении гарнитуры</translation>
     </message>
     <message>
         <source>Bluetooth call volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость звонков Bluetooth</translation>
     </message>
     <message>
         <source>Adjust the Bluetooth call volume (0–100)</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройте громкость звонков Bluetooth (0–100)</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
@@ -1593,11 +1593,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Ограничитель громкости</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth при включении</translation>
     </message>
     <message>
         <source>Lights</source>
@@ -1633,11 +1633,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Mic muted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Звук микрофона отключён (последний опрос)</translation>
     </message>
     <message>
         <source>Mic unmuted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Звук микрофона включён (последний опрос)</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

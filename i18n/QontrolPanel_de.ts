@@ -830,19 +830,19 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     <name>HeadsetBattery</name>
     <message>
         <source>about %1 min to full</source>
-        <translation type="unfinished"></translation>
+        <translation>voll in etwa %1 Min.</translation>
     </message>
     <message>
         <source>about %1 min left</source>
-        <translation type="unfinished"></translation>
+        <translation>noch etwa %1 Min.</translation>
     </message>
     <message>
         <source>about %1 h to full</source>
-        <translation type="unfinished"></translation>
+        <translation>voll in etwa %1 Std.</translation>
     </message>
     <message>
         <source>about %1 h left</source>
-        <translation type="unfinished"></translation>
+        <translation>noch etwa %1 Std.</translation>
     </message>
 </context>
 <context>
@@ -917,31 +917,31 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>Microphone mute (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofon-Stummschaltung (letzte Abfrage)</translation>
     </message>
     <message>
         <source>Updates at the headset fetch rate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wird im Abfrageintervall des Headsets aktualisiert.</translation>
     </message>
     <message>
         <source>Muted</source>
-        <translation type="unfinished"></translation>
+        <translation>Stummgeschaltet</translation>
     </message>
     <message>
         <source>Unmuted</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht stummgeschaltet</translation>
     </message>
     <message>
         <source>Boom mic (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bügelmikrofon (letzte Abfrage)</translation>
     </message>
     <message>
         <source>Attached</source>
-        <translation type="unfinished"></translation>
+        <translation>Angesteckt</translation>
     </message>
     <message>
         <source>Detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Abgezogen</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
@@ -953,75 +953,75 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>Microphone volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofonlautstärke</translation>
     </message>
     <message>
         <source>Adjust the headset microphone volume (0–128)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofonlautstärke des Headsets einstellen (0–128)</translation>
     </message>
     <message>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht festgelegt</translation>
     </message>
     <message>
         <source>Microphone noise filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofon-Rauschfilter</translation>
     </message>
     <message>
         <source>Choose the microphone noise filter strength</source>
-        <translation type="unfinished"></translation>
+        <translation>Stärke des Mikrofon-Rauschfilters auswählen</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">Aus</translation>
+        <translation>Aus</translation>
     </message>
     <message>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>Niedrig</translation>
     </message>
     <message>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoch</translation>
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Lautstärkebegrenzung</translation>
     </message>
     <message>
         <source>Limit the headset playback volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiedergabelautstärke des Headsets begrenzen</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="unfinished">An</translation>
+        <translation>An</translation>
     </message>
     <message>
         <source>Mic mute LED brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>LED-Helligkeit bei stummem Mikrofon</translation>
     </message>
     <message>
         <source>Adjust the microphone mute indicator brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Helligkeit der Mikrofon-Stummanzeige einstellen</translation>
     </message>
     <message>
         <source>Medium</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittel</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth beim Einschalten</translation>
     </message>
     <message>
         <source>Enable Bluetooth when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth beim Einschalten des Headsets aktivieren</translation>
     </message>
     <message>
         <source>Bluetooth call volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth-Anruflautstärke</translation>
     </message>
     <message>
         <source>Adjust the Bluetooth call volume (0–100)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lautstärke von Bluetooth-Anrufen einstellen (0–100)</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
@@ -1593,11 +1593,11 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Lautstärkebegrenzung</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth beim Einschalten</translation>
     </message>
     <message>
         <source>Lights</source>
@@ -1633,11 +1633,11 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Mic muted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofon stumm (letzte Abfrage)</translation>
     </message>
     <message>
         <source>Mic unmuted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofon nicht stumm (letzte Abfrage)</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
