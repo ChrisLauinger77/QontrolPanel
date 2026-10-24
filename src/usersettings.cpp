@@ -103,6 +103,7 @@ void UserSettings::initProperties()
     m_headsetcontrolEqualizerPreset = qMax(0, settings.value("headsetcontrolEqualizerPreset", 0).toInt());
     m_headsetcontrolInactiveTime = qBound(0, settings.value("headsetcontrolInactiveTime", 30).toInt(), 90);
     m_headsetcontrolSidetone = qBound(0, settings.value("headsetcontrolSidetone", 0).toInt(), 128);
+    m_headsetcontrolBluetoothWhenPoweredOn = qBound(-1, settings.value("headsetcontrolBluetoothWhenPoweredOn", -1).toInt(), 1);
     m_headsetcontrolMicMuteLedBrightness = qBound(-1, settings.value("headsetcontrolMicMuteLedBrightness", -1).toInt(), 3);
     m_headsetcontrolVolumeLimiter = qBound(-1, settings.value("headsetcontrolVolumeLimiter", -1).toInt(), 1);
     m_headsetcontrolNoiseFilter = qBound(-1, settings.value("headsetcontrolNoiseFilter", -1).toInt(), 2);
@@ -553,6 +554,17 @@ void UserSettings::setHeadsetcontrolMicMuteLedBrightness(int value)
             return;
         m_headsetcontrolMicMuteLedBrightness = value;
         emit headsetcontrolMicMuteLedBrightnessChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolBluetoothWhenPoweredOn(int value)
+{
+    value = qBound(-1, value, 1);
+    if (m_headsetcontrolBluetoothWhenPoweredOn != value) {
+        if (!saveValue("headsetcontrolBluetoothWhenPoweredOn", value))
+            return;
+        m_headsetcontrolBluetoothWhenPoweredOn = value;
+        emit headsetcontrolBluetoothWhenPoweredOnChanged();
     }
 }
 

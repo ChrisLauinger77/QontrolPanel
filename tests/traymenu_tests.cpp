@@ -252,6 +252,8 @@ private slots:
         QTest::addColumn<QByteArray>("setting");
         QTest::newRow("volumeLimiter") << QString("volumeLimiter") << QByteArray("hasVolumeLimiterCapability")
             << QByteArray("headsetcontrolVolumeLimiter");
+        QTest::newRow("bluetoothWhenPoweredOn") << QString("bluetoothWhenPoweredOn") << QByteArray("hasBluetoothWhenPoweredOnCapability")
+            << QByteArray("headsetcontrolBluetoothWhenPoweredOn");
         // Additional headset toggles add rows here.
     }
 
@@ -279,6 +281,7 @@ private slots:
             QVERIFY(headset->setProperty(flag, false));
         // Disable other new toggles too, leaving just the capability under test.
         QVERIFY(headset->setProperty("hasVolumeLimiterCapability", false));
+        QVERIFY(headset->setProperty("hasBluetoothWhenPoweredOnCapability", false));
         // Toggle isolation is inserted below.
         QVERIFY(headset->setProperty(capability.constData(), true));
         tray->popup();

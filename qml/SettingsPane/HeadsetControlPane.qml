@@ -369,6 +369,23 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasBluetoothWhenPoweredOnCapability
+                    enabled: HeadsetControlBridge.hasBluetoothWhenPoweredOnCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Bluetooth on at power-on")
+                    description: qsTr("Enable Bluetooth when the headset powers on")
+
+                    additionalControl: CustomComboBox {
+                        model: [qsTr("Not set"), qsTr("Off"), qsTr("On")]
+                        currentIndex: UserSettings.headsetcontrolBluetoothWhenPoweredOn + 1
+                        onActivated: {
+                            UserSettings.headsetcontrolBluetoothWhenPoweredOn = currentIndex - 1;
+                            currentIndex = Qt.binding(function() { return UserSettings.headsetcontrolBluetoothWhenPoweredOn + 1 })
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")

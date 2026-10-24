@@ -1019,6 +1019,14 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Bluetooth on at power-on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable Bluetooth when the headset powers on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>Wersja</translation>
     </message>
@@ -1538,6 +1546,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bluetooth on at power-on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

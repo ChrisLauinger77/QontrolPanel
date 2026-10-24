@@ -394,6 +394,7 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newVoicePromptsCapability = false;
     bool newEqualizerPresetsCapability = false;
     bool newInactivetimeCapability = false;
+    bool newBluetoothWhenPoweredOnCapability = false;
     bool newMicMuteLedBrightnessCapability = false;
     bool newVolumeLimiterCapability = false;
     bool newNoiseFilterCapability = false;
@@ -420,6 +421,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newVoicePromptsCapability = headset.supports(CAP_VOICE_PROMPTS);
         newEqualizerPresetsCapability = headset.supports(CAP_EQUALIZER_PRESET);
         newInactivetimeCapability = headset.supports(CAP_INACTIVE_TIME);
+        newBluetoothWhenPoweredOnCapability = headset.supports(CAP_BT_WHEN_POWERED_ON);
         newMicMuteLedBrightnessCapability = headset.supports(CAP_MICROPHONE_MUTE_LED_BRIGHTNESS);
         newVolumeLimiterCapability = headset.supports(CAP_VOLUME_LIMITER);
         newNoiseFilterCapability = headset.supports(CAP_NOISE_FILTER);
@@ -460,6 +462,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newNoiseFilterCapability != m_hasNoiseFilterCapability ||
         newVolumeLimiterCapability != m_hasVolumeLimiterCapability ||
         newMicMuteLedBrightnessCapability != m_hasMicMuteLedBrightnessCapability ||
+        newBluetoothWhenPoweredOnCapability != m_hasBluetoothWhenPoweredOnCapability ||
         newInactivetimeCapability != m_hasInactiveTimeCapability)
     {
         m_hasSidetoneCapability = newSidetoneCapability;
@@ -469,6 +472,7 @@ void HeadsetControlMonitor::updateCapabilities()
         m_hasVoicePromptsCapability = newVoicePromptsCapability;
         m_hasEqualizerPresetsCapability = newEqualizerPresetsCapability;
         m_hasInactiveTimeCapability = newInactivetimeCapability;
+        m_hasBluetoothWhenPoweredOnCapability = newBluetoothWhenPoweredOnCapability;
         m_hasMicMuteLedBrightnessCapability = newMicMuteLedBrightnessCapability;
         m_hasVolumeLimiterCapability = newVolumeLimiterCapability;
         m_hasNoiseFilterCapability = newNoiseFilterCapability;
@@ -627,6 +631,8 @@ void HeadsetControlMonitor::applyPendingSettings()
           [&](const QVariant& v) { return headset->setVolumeLimiter(qBound(0, v.toInt(), 1) != 0); });
     apply("micMuteLedBrightness", m_hasMicMuteLedBrightnessCapability && m_desiredSettings.value("micMuteLedBrightness", -1).toInt() >= 0,
           [&](const QVariant& v) { return headset->setMicMuteLedBrightness(static_cast<uint8_t>(qBound(0, v.toInt(), 3))); });
+    apply("bluetoothWhenPoweredOn", m_hasBluetoothWhenPoweredOnCapability && m_desiredSettings.value("bluetoothWhenPoweredOn", -1).toInt() >= 0,
+          [&](const QVariant& v) { return headset->setBluetoothWhenPoweredOn(qBound(0, v.toInt(), 1) != 0); });
     const QString error = errors.join("\n");
     if (!error.isEmpty())
         LOG_WARN("HeadsetControlManager", error);
@@ -643,6 +649,7 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.hasVoicePromptsCapability = hasVoicePromptsCapability();
     state.hasEqualizerPresetsCapability = hasEqualizerPresetsCapability();
     state.hasInactiveTimeCapability = hasInactiveTimeCapability();
+    state.hasBluetoothWhenPoweredOnCapability = hasBluetoothWhenPoweredOnCapability();
     state.hasMicMuteLedBrightnessCapability = hasMicMuteLedBrightnessCapability();
     state.hasVolumeLimiterCapability = hasVolumeLimiterCapability();
     state.hasNoiseFilterCapability = hasNoiseFilterCapability();
@@ -791,6 +798,7 @@ void HeadsetControlMonitor::clearDeviceState()
     m_hasVoicePromptsCapability = false;
     m_hasEqualizerPresetsCapability = false;
     m_hasInactiveTimeCapability = false;
+    m_hasBluetoothWhenPoweredOnCapability = false;
     m_hasMicMuteLedBrightnessCapability = false;
     m_hasVolumeLimiterCapability = false;
     m_hasNoiseFilterCapability = false;

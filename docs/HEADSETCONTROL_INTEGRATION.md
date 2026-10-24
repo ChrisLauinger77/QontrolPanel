@@ -58,6 +58,7 @@ Important state includes:
 - `m_hasVoicePromptsCapability`
 - `m_hasEqualizerPresetsCapability`
 - `m_hasInactiveTimeCapability`
+- `m_hasBluetoothWhenPoweredOnCapability`
 - `m_hasMicMuteLedBrightnessCapability`
 - `m_hasVolumeLimiterCapability`
 - `m_hasNoiseFilterCapability`
@@ -107,6 +108,7 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolEqualizerPreset`
 - `headsetcontrolInactiveTime`
 - `headsetcontrolSidetone`
+- `headsetcontrolBluetoothWhenPoweredOn` (-1: not set; 0–1)
 - `headsetcontrolMicMuteLedBrightness` (-1: not set; 0–3)
 - `headsetcontrolVolumeLimiter` (-1: not set; 0–1)
 - `headsetcontrolNoiseFilter` (-1: not set; 0–2)

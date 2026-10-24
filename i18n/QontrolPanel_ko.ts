@@ -1017,6 +1017,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Bluetooth on at power-on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable Bluetooth when the headset powers on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>헤드셋에서 상태를 가져오는 빈도. 값이 낮을수록 배터리 사용량이 증가할 수 있습니다.</translation>
     </message>
@@ -1530,6 +1538,10 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bluetooth on at power-on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

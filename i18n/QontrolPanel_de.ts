@@ -961,6 +961,14 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Bluetooth on at power-on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable Bluetooth when the headset powers on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Wie oft der Status Ihres Headsets abgerufen wird. Niedrigere Werte können den Akkuverbrauch erhöhen.</translation>
     </message>
@@ -1530,6 +1538,10 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bluetooth on at power-on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -5,6 +5,7 @@ import QtQml
 QtObject {
     property bool enableMediaSessionManager: true
     property bool headsetcontrolLights: false
+    property int headsetcontrolBluetoothWhenPoweredOn: -1
     property int headsetcontrolVolumeLimiter: -1
     property bool headsetcontrolVoicePrompts: true
     property bool headsetcontrolRotateToMute: false
@@ -38,6 +39,7 @@ QtObject {
     property bool hasEqualizerPresetsCapability: true
     property var equalizerPresetNames: ["Flat", "Music"]
     property bool hasLightsCapability: true
+    property bool hasBluetoothWhenPoweredOnCapability: true
     property bool hasVolumeLimiterCapability: true
     property bool hasVoicePromptsCapability: true
     property bool hasRotateToMuteCapability: true
