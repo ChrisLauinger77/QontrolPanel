@@ -973,6 +973,26 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Microphone noise filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the microphone noise filter strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Desactivado</translation>
+    </message>
+    <message>
+        <source>Low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>High</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Con qué frecuencia se obtiene el estado de tus auriculares. Los valores más bajos pueden aumentar el uso de batería.</translation>
     </message>

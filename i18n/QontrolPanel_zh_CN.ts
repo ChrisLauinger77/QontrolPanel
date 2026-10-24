@@ -916,6 +916,26 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Microphone noise filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the microphone noise filter strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">关</translation>
+    </message>
+    <message>
+        <source>Low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>High</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>获取耳机状态的频率。较低的值可能会增加电量消耗。</translation>
     </message>

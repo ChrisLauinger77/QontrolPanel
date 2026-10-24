@@ -318,6 +318,23 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasNoiseFilterCapability
+                    enabled: HeadsetControlBridge.hasNoiseFilterCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Microphone noise filter")
+                    description: qsTr("Choose the microphone noise filter strength")
+
+                    additionalControl: CustomComboBox {
+                        model: [qsTr("Not set"), qsTr("Off"), qsTr("Low"), qsTr("High")]
+                        currentIndex: UserSettings.headsetcontrolNoiseFilter + 1
+                        onActivated: {
+                            UserSettings.headsetcontrolNoiseFilter = currentIndex - 1;
+                            currentIndex = Qt.binding(function() { return UserSettings.headsetcontrolNoiseFilter + 1 })
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")

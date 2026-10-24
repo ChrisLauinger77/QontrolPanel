@@ -257,7 +257,9 @@ void HeadsetControlMonitor::updateDeviceCache()
             {
                 device.batteryLevel = -1;
                 device.batteryStatus = batteryStatusFromError(batteryResult.error());
-                deviceReachable = false;
+                // Keep the synthetic error profile selectable so its failing writes and
+                // bounded retries can be exercised through the settings pane.
+                deviceReachable = m_testModeEnabled && headset.vendorId() == 0xF00B && headset.productId() == 0xA00C;
                 LOG_WARN("HeadsetControlManager",
                          QString("Failed to read battery: %1")
                              .arg(QString::fromStdString(batteryResult.error().fullMessage())));
@@ -392,6 +394,7 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newVoicePromptsCapability = false;
     bool newEqualizerPresetsCapability = false;
     bool newInactivetimeCapability = false;
+    bool newNoiseFilterCapability = false;
     bool newMicVolumeCapability = false;
     QString newDeviceName = "";
     QString newDisplayName;
@@ -415,6 +418,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newVoicePromptsCapability = headset.supports(CAP_VOICE_PROMPTS);
         newEqualizerPresetsCapability = headset.supports(CAP_EQUALIZER_PRESET);
         newInactivetimeCapability = headset.supports(CAP_INACTIVE_TIME);
+        newNoiseFilterCapability = headset.supports(CAP_NOISE_FILTER);
         newMicVolumeCapability = headset.supports(CAP_MICROPHONE_VOLUME);
 
         if (newEqualizerPresetsCapability)
@@ -449,6 +453,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newVoicePromptsCapability != m_hasVoicePromptsCapability ||
         newEqualizerPresetsCapability != m_hasEqualizerPresetsCapability ||
         newMicVolumeCapability != m_hasMicVolumeCapability ||
+        newNoiseFilterCapability != m_hasNoiseFilterCapability ||
         newInactivetimeCapability != m_hasInactiveTimeCapability)
     {
         m_hasSidetoneCapability = newSidetoneCapability;
@@ -458,6 +463,7 @@ void HeadsetControlMonitor::updateCapabilities()
         m_hasVoicePromptsCapability = newVoicePromptsCapability;
         m_hasEqualizerPresetsCapability = newEqualizerPresetsCapability;
         m_hasInactiveTimeCapability = newInactivetimeCapability;
+        m_hasNoiseFilterCapability = newNoiseFilterCapability;
         m_hasMicVolumeCapability = newMicVolumeCapability;
         emit capabilitiesChanged();
     }
@@ -533,6 +539,10 @@ void HeadsetControlMonitor::setDesiredSettings(const QVariantMap& settings)
         if (m_desiredSettings.value(it.key()) != it.value())
             m_settingAttempts.remove(it.key());
         m_desiredSettings[it.key()] = it.value();
+        // Relinquishing a write-only preference invalidates its old acknowledgement.
+        // A later explicit selection must write again, even if it matches that old value.
+        if (it.value().toInt() < 0)
+            m_appliedSettings.remove(it.key());
     }
     applyPendingSettings();
 }
@@ -603,6 +613,8 @@ void HeadsetControlMonitor::applyPendingSettings()
           [&](const QVariant& v) { return headset->setInactiveTime(static_cast<uint8_t>(qBound(0, v.toInt(), 255))); });
     apply("micVolume", m_hasMicVolumeCapability && m_desiredSettings.value("micVolume", -1).toInt() >= 0,
           [&](const QVariant& v) { return headset->setMicVolume(static_cast<uint8_t>(qBound(0, v.toInt(), 128))); });
+    apply("noiseFilter", m_hasNoiseFilterCapability && m_desiredSettings.value("noiseFilter", -1).toInt() >= 0,
+          [&](const QVariant& v) { return headset->setNoiseFilter(static_cast<uint8_t>(qBound(0, v.toInt(), 2))); });
     const QString error = errors.join("\n");
     if (!error.isEmpty())
         LOG_WARN("HeadsetControlManager", error);
@@ -619,6 +631,7 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.hasVoicePromptsCapability = hasVoicePromptsCapability();
     state.hasEqualizerPresetsCapability = hasEqualizerPresetsCapability();
     state.hasInactiveTimeCapability = hasInactiveTimeCapability();
+    state.hasNoiseFilterCapability = hasNoiseFilterCapability();
     state.hasMicVolumeCapability = hasMicVolumeCapability();
     state.deviceName = deviceName();
     state.displayName = displayName();
@@ -764,6 +777,7 @@ void HeadsetControlMonitor::clearDeviceState()
     m_hasVoicePromptsCapability = false;
     m_hasEqualizerPresetsCapability = false;
     m_hasInactiveTimeCapability = false;
+    m_hasNoiseFilterCapability = false;
     m_hasMicVolumeCapability = false;
     m_deviceName = "";
     m_displayName.clear();

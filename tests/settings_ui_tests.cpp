@@ -163,6 +163,7 @@ private slots:
         QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
         QCOMPARE(UserSettings::instance()->iconStyle(), 3);
         QVERIFY(UserSettings::instance()->panelAnimationsEnabled());
+        QCOMPARE(UserSettings::instance()->headsetcontrolNoiseFilter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolMicVolume(), -1);
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
@@ -569,6 +570,8 @@ private slots:
         QTest::addColumn<int>("unsetUi");
         QTest::newRow("micVolume") << QString("Microphone volume") << QByteArray("hasMicVolumeCapability")
             << QByteArray("headsetcontrolMicVolume") << QByteArray("value") << -1;
+        QTest::newRow("noiseFilter") << QString("Microphone noise filter") << QByteArray("hasNoiseFilterCapability")
+            << QByteArray("headsetcontrolNoiseFilter") << QByteArray("currentIndex") << 0;
         // Additional settings add rows here.
     }
 
@@ -594,6 +597,21 @@ private slots:
         QTRY_VERIFY(card->property("visible").toBool());
         QVERIFY(headset->setProperty("anyDeviceFound", false));
         QTRY_VERIFY(!card->property("visible").toBool());
+    }
+
+    void headsetRetryLimitIsVisible()
+    {
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        const QString error = "noiseFilter: retry limit reached; refresh to retry";
+        QVERIFY(headset->setProperty("lastError", error));
+        auto* warning = findObject(pane, "text",
+            QString("Some headset settings could not be applied. Refresh to retry.\n") + error);
+        QVERIFY(warning);
+        QVERIFY(warning->property("visible").toBool());
+        QVERIFY(headset->setProperty("lastError", ""));
+        QTRY_VERIFY(!warning->property("visible").toBool());
     }
 
     void rejectedEditor_data()
@@ -644,6 +662,7 @@ private slots:
         row("HeadsetControlPane", "Sidetone", "headsetcontrolSidetone", "value", "wheelChanged", 0, 40);
         row("HeadsetControlPane", "Voice Prompts", "headsetcontrolVoicePrompts", "checked", "clicked", true, false);
         row("HeadsetControlPane", "Microphone volume", "headsetcontrolMicVolume", "value", "valueModified", -1, 0, -1, 0);
+        row("HeadsetControlPane", "Microphone noise filter", "headsetcontrolNoiseFilter", "currentIndex", "activated", -1, 0, 0, 1);
         row("HeadsetControlPane", "Fetch rate (seconds)", "headsetcontrolFetchRate", "value", "valueModified", 60, 120);
     }
 

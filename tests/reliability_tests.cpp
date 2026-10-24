@@ -230,6 +230,8 @@ private slots:
         QTest::addColumn<QByteArray>("setting");
         QTest::newRow("micVolume") << QString("micVolume") << 128 << QByteArray("hasMicVolumeCapability")
             << QByteArray("setMicVolume") << QByteArray("headsetcontrolMicVolume");
+        QTest::newRow("noiseFilter") << QString("noiseFilter") << 2 << QByteArray("hasNoiseFilterCapability")
+            << QByteArray("setNoiseFilter") << QByteArray("headsetcontrolNoiseFilter");
         // Additional write-only settings add rows here.
     }
 
@@ -249,6 +251,7 @@ private slots:
         // Deliver capability snapshots without starting native monitoring.
         HeadsetControlState state;
         state.hasMicVolumeCapability = key == "micVolume";
+        state.hasNoiseFilterCapability = key == "noiseFilter";
         // Capability assignments are inserted below.
         QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
                                          Q_ARG(HeadsetControlState, state)));
@@ -286,6 +289,7 @@ private slots:
         QVERIFY(errors.last().at(0).toString().isEmpty());
         const auto snapshot = monitor.snapshot();
         if (key == "micVolume") QVERIFY(snapshot.hasMicVolumeCapability);
+        if (key == "noiseFilter") QVERIFY(snapshot.hasNoiseFilterCapability);
         // Snapshot capability checks are inserted below.
         monitor.setDesiredSettings({{key, 0}}); // Explicit zero/off is a valid choice.
         QVERIFY(errors.last().at(0).toString().isEmpty());
@@ -297,11 +301,70 @@ private slots:
         QVERIFY(errors.last().at(0).toString().isEmpty());
         monitor.stopMonitoring();
         if (key == "micVolume") QVERIFY(!monitor.snapshot().hasMicVolumeCapability);
+        if (key == "noiseFilter") QVERIFY(!monitor.snapshot().hasNoiseFilterCapability);
         // Reset capability checks are inserted below.
         QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
                                          Q_ARG(HeadsetControlState, monitor.snapshot())));
         QVERIFY(!bridge->property(capability.constData()).toBool());
         QCOMPARE(capabilities.size(), 2);
+    }
+
+    void noiseFilterSkipsUnsetAndBoundsRetries()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        HeadsetControlMonitor monitor(nullptr, [] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        monitor.startMonitoring();
+        QVERIFY(monitor.snapshot().hasNoiseFilterCapability);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        monitor.setDesiredSettings({{"noiseFilter", 2}});
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        // Profile 1 must keep the test controls usable even though its battery read fails.
+        monitor.setTestProfile(1);
+        QVERIFY(monitor.snapshot().anyDeviceFound);
+        QVERIFY(monitor.snapshot().hasNoiseFilterCapability);
+        QCOMPARE(monitor.snapshot().testProfile, 1);
+        monitor.setDesiredSettings({{"noiseFilter", 2}});
+        QVERIFY(errors.last().at(0).toString().isEmpty()); // Acknowledged values are not written twice.
+        monitor.setDesiredSettings({{"noiseFilter", -1}});
+        QVERIFY(errors.last().at(0).toString().isEmpty()); // Unset must not become off or uint8(255).
+        monitor.setDesiredSettings({{"noiseFilter", 2}}); // Selecting the former value after unset must write again.
+        QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
+        monitor.setDesiredSettings({{"noiseFilter", -1}});
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        for (int attempt = 0; attempt < 3; ++attempt) {
+            // Full desired snapshots and unrelated edits must not reset this value's budget.
+            monitor.setDesiredSettings({{"noiseFilter", 0}, {"inactiveTime", -1}});
+            QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
+            QVERIFY(!errors.last().at(0).toString().contains("retry limit reached"));
+        }
+        monitor.setDesiredSettings({{"noiseFilter", 0}});
+        QVERIFY(errors.last().at(0).toString().contains("noiseFilter: retry limit reached"));
+        monitor.setTestProfile(3);
+        monitor.setDesiredSettings({{"noiseFilter", 0}});
+        QVERIFY(errors.last().at(0).toString().contains("noiseFilter: retry limit reached")); // No fourth write.
+        monitor.requestRefresh(); // Manual refresh resets the budget and succeeds with profile 3.
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.setTestProfile(1);
+        monitor.setDesiredSettings({{"noiseFilter", 0}});
+        QVERIFY(errors.last().at(0).toString().isEmpty());
+        monitor.setDesiredSettings({{"noiseFilter", 1}}); // A changed value receives a new budget.
+        QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
+        monitor.setDesiredSettings({{"noiseFilter", -1}});
+        QVERIFY(errors.last().at(0).toString().isEmpty());
     }
 
     void sidetoneTestDeviceAdoptsAndStillAcceptsWrites()
