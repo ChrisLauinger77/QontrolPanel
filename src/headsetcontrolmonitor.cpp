@@ -176,6 +176,10 @@ void HeadsetControlMonitor::fetchHeadsetInfoInternal(bool bypassRecentFetch)
                  QString("Headset discovery returned after %1ms").arg(pollTimer.elapsed()));
 
         m_headsets = std::move(discoveredHeadsets);
+        // Layout initialization belongs to these handles, even when the device
+        // identity and its desired curve survive rediscovery. Retain failed-write
+        // attempt counts so normal polling cannot bypass the bounded retry policy.
+        m_appliedSettings.remove("equalizerBootstrap");
         LOG_INFO("HeadsetControlManager",
                  QString("Headset list replacement completed after %1ms").arg(pollTimer.elapsed()));
 
@@ -785,8 +789,12 @@ void HeadsetControlMonitor::applyPendingSettings()
     };
     auto writePreset = [&](const QVariant&) {
         const auto result = headset->setEqualizerPreset(static_cast<uint8_t>(preset));
-        if (result)
+        if (result) {
+            // A preset replaces the hardware curve. In particular, a metadata
+            // bootstrap must not leave an earlier custom curve acknowledged.
+            m_appliedSettings.remove("equalizer");
             emit equalizerApplied(false);
+        }
         // PRO X 2 learns its layout during an EQ command. Read it on the same
         // Headset, before rediscovery can replace that instance.
         updateEqualizerInfo();

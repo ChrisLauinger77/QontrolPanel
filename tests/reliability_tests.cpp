@@ -325,7 +325,10 @@ private slots:
         bool presetApplied = false;
         const headsetcontrol::Headset* firstDevice = nullptr;
         bool sameDevice = true;
-        HeadsetControlMonitor monitor(nullptr, [] {
+        HeadsetControlMonitor monitor(nullptr, [&] {
+            // Simulate metadata learned only on the current discovered handle.
+            presetApplied = false;
+            firstDevice = nullptr;
             auto devices = headsetcontrol::discover();
             std::erase_if(devices, [](const auto& headset) {
                 return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
@@ -357,6 +360,24 @@ private slots:
         QCOMPARE(writes.size(), custom ? 2 : 1);
         QCOMPARE(writes.first().at(0).toBool(), false);
         if (custom) QCOMPARE(writes.last().at(0).toBool(), true);
+        else {
+            // Also cover choosing a preset first, then switching to custom mode.
+            monitor.setDesiredSettings({{"equalizers", QVariantMap{{key, QVariantMap{
+                {"custom", true}, {"preset", 1}, {"bands", bands}}}}}});
+            QCOMPARE(writes.size(), 2);
+            QCOMPARE(writes.last().at(0).toBool(), true);
+        }
+        for (int poll = 0; poll < 2; ++poll) {
+            const int previousWrites = writes.size();
+            monitor.requestRefresh();
+            QVERIFY(sameDevice);
+            QCOMPARE(monitor.snapshot().equalizerLayout.count, 10);
+            QCOMPARE(writes.size(), previousWrites + 2);
+            QCOMPARE(writes.at(previousWrites).at(0).toBool(), false);
+            QCOMPARE(writes.last().at(0).toBool(), true); // Bootstrap must always restore the curve.
+            monitor.setDesiredSettings({});
+            QCOMPARE(writes.size(), previousWrites + 2); // Same-handle echoes remain deduplicated.
+        }
     }
 
     void equalizerMonitorWritesChangedCurveOnceAndRetriesFailures()
