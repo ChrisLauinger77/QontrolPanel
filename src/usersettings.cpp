@@ -109,6 +109,11 @@ void UserSettings::initProperties()
     m_headsetcontrolVolumeLimiter = qBound(-1, settings.value("headsetcontrolVolumeLimiter", -1).toInt(), 1);
     m_headsetcontrolNoiseFilter = qBound(-1, settings.value("headsetcontrolNoiseFilter", -1).toInt(), 2);
     m_headsetcontrolMicVolume = qBound(-1, settings.value("headsetcontrolMicVolume", -1).toInt(), 128);
+    m_headsetcontrolAnc = qBound(-1, settings.value("headsetcontrolAnc", -1).toInt(), 2);
+    m_headsetcontrolAncStartupMode = qBound(-1, settings.value("headsetcontrolAncStartupMode", -1).toInt(), 3);
+    m_headsetcontrolAncButtonModes = settings.value("headsetcontrolAncButtonModes", -1).toInt();
+    if (m_headsetcontrolAncButtonModes < 1 || m_headsetcontrolAncButtonModes > 7)
+        m_headsetcontrolAncButtonModes = -1;
     m_allowBrightnessControl = settings.value("allowBrightnessControl", true).toBool();
     m_avoidApplicationsOverflow = settings.value("avoidApplicationsOverflow", false).toBool();
     m_ddcciQueueDelay = qBound(1, settings.value("ddcciQueueDelay", 500).toInt(), 5000);
@@ -511,6 +516,40 @@ void UserSettings::setHeadsetcontrolInactiveTime(int value)
             return;
         m_headsetcontrolInactiveTime = value;
         emit headsetcontrolInactiveTimeChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolAnc(int value)
+{
+    value = qBound(-1, value, 2);
+    if (m_headsetcontrolAnc != value) {
+        if (!saveValue("headsetcontrolAnc", value))
+            return;
+        m_headsetcontrolAnc = value;
+        emit headsetcontrolAncChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolAncStartupMode(int value)
+{
+    value = qBound(-1, value, 3);
+    if (m_headsetcontrolAncStartupMode != value) {
+        if (!saveValue("headsetcontrolAncStartupMode", value))
+            return;
+        m_headsetcontrolAncStartupMode = value;
+        emit headsetcontrolAncStartupModeChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolAncButtonModes(int value)
+{
+    if (value != -1 && (value < 1 || value > 7))
+        return;
+    if (m_headsetcontrolAncButtonModes != value) {
+        if (!saveValue("headsetcontrolAncButtonModes", value))
+            return;
+        m_headsetcontrolAncButtonModes = value;
+        emit headsetcontrolAncButtonModesChanged();
     }
 }
 

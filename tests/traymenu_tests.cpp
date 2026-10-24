@@ -322,7 +322,7 @@ private slots:
         auto* settings = engine.singletonInstance<QObject*>(m_settingsType);
         headset->setProperty("batteryStatus", "BATTERY_UNAVAILABLE");
         for (const auto* flag : {"hasLightsCapability", "hasVoicePromptsCapability", "hasRotateToMuteCapability",
-                                 "hasEqualizerPresetsCapability"})
+                                 "hasEqualizerPresetsCapability", "hasAncCapability"})
             QVERIFY(headset->setProperty(flag, false));
         // Disable other new toggles too, leaving just the capability under test.
         QVERIFY(headset->setProperty("hasVolumeLimiterCapability", false));
@@ -345,6 +345,61 @@ private slots:
         QVERIFY(!toggle->isChecked());
         QVERIFY(headset->setProperty(capability.constData(), false));
         QVERIFY(!toggle->isVisible());
+        QVERIFY(!headsetAction->isVisible());
+    }
+
+    void ancSubmenuShowsSavedChoice()
+    {
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* tray = qobject_cast<TrayMenu*>(systemTray->property("contextMenu").value<QObject*>());
+        QVERIFY(tray);
+        auto* headset = engine.singletonInstance<QObject*>(m_headsetType);
+        auto* settings = engine.singletonInstance<QObject*>(m_settingsType);
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_UNAVAILABLE"));
+        for (const auto* flag : {"hasLightsCapability", "hasVoicePromptsCapability", "hasRotateToMuteCapability",
+                                 "hasEqualizerPresetsCapability", "hasVolumeLimiterCapability",
+                                 "hasBluetoothWhenPoweredOnCapability"})
+            QVERIFY(headset->setProperty(flag, false));
+        tray->popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        auto* headsetAction = actionFor(menu, "headset");
+        QVERIFY(headsetAction && headsetAction->isVisible()); // ANC alone keeps HeadsetControl visible.
+        auto* anc = actionFor(headsetAction->menu(), "anc");
+        QVERIFY(anc && anc->isVisible() && anc->menu());
+        QCOMPARE(anc->text(), QString("Noise cancelling"));
+        QCOMPARE(anc->menu()->actions().size(), 3);
+        QCOMPARE(settings->property("headsetcontrolAnc").toInt(), -1);
+        for (auto* action : anc->menu()->actions())
+            QVERIFY(action->isCheckable() && !action->isChecked());
+        for (int mode = 0; mode <= 2; ++mode) {
+            auto* action = actionFor(anc->menu(), QString("anc:%1").arg(mode));
+            QVERIFY(action);
+            action->trigger();
+            QCOMPARE(settings->property("headsetcontrolAnc").toInt(), mode);
+            for (int other = 0; other <= 2; ++other)
+                QCOMPARE(actionFor(anc->menu(), QString("anc:%1").arg(other))->isChecked(), other == mode);
+        }
+        QVERIFY(settings->setProperty("headsetcontrolAnc", -1));
+        for (auto* action : anc->menu()->actions())
+            QVERIFY(!action->isChecked());
+        QVERIFY(headset->setProperty("hasAncCapability", false));
+        QVERIFY(!anc->isVisible());
+        QVERIFY(!headsetAction->isVisible());
+        QVERIFY(headset->setProperty("hasAncCapability", true));
+        QVERIFY(anc->isVisible());
+        QVERIFY(headsetAction->isVisible());
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
         QVERIFY(!headsetAction->isVisible());
     }
 

@@ -316,6 +316,84 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasAncCapability
+                    enabled: HeadsetControlBridge.hasAncCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Noise cancelling")
+                    description: qsTr("Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.")
+
+                    additionalControl: CustomComboBox {
+                        model: [qsTr("Not set"), qsTr("Off"), qsTr("Noise cancelling"), qsTr("Ambient sound")]
+                        currentIndex: UserSettings.headsetcontrolAnc + 1
+                        onActivated: {
+                            UserSettings.headsetcontrolAnc = currentIndex - 1;
+                            currentIndex = Qt.binding(function() { return UserSettings.headsetcontrolAnc + 1 })
+                        }
+                    }
+                }
+
+                Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasAncStartupModeCapability
+                    enabled: HeadsetControlBridge.hasAncStartupModeCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Noise cancelling at power-on")
+                    description: qsTr("Choose the listening mode when the headset powers on")
+
+                    additionalControl: CustomComboBox {
+                        model: [qsTr("Not set"), qsTr("Off"), qsTr("Noise cancelling"), qsTr("Ambient sound"), qsTr("Last mode at power-off")]
+                        currentIndex: UserSettings.headsetcontrolAncStartupMode + 1
+                        onActivated: {
+                            UserSettings.headsetcontrolAncStartupMode = currentIndex - 1;
+                            currentIndex = Qt.binding(function() { return UserSettings.headsetcontrolAncStartupMode + 1 })
+                        }
+                    }
+                }
+
+                Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasAncButtonModesCapability
+                    enabled: HeadsetControlBridge.hasAncButtonModesCapability
+                    Layout.fillWidth: true
+                    implicitHeight: 190
+                    title: qsTr("Noise cancelling button cycle")
+                    description: qsTr("Choose at least one mode for the headset button to cycle through")
+
+                    additionalControl: ColumnLayout {
+                        Repeater {
+                            model: [
+                                { label: qsTr("Off"), mask: 1 },
+                                { label: qsTr("Noise cancelling"), mask: 2 },
+                                { label: qsTr("Ambient sound"), mask: 4 }
+                            ]
+                            delegate: CheckBox {
+                                id: modeCheckBox
+                                required property var modelData
+                                objectName: "ancButtonMode" + modelData.mask
+                                text: modelData.label
+                                checked: UserSettings.headsetcontrolAncButtonModes >= 0
+                                    && (UserSettings.headsetcontrolAncButtonModes & modelData.mask) !== 0
+                                enabled: !checked || UserSettings.headsetcontrolAncButtonModes !== modelData.mask
+                                onClicked: {
+                                    const current = Math.max(0, UserSettings.headsetcontrolAncButtonModes);
+                                    const modes = checked ? current | modelData.mask : current & ~modelData.mask;
+                                    if (modes > 0)
+                                        UserSettings.headsetcontrolAncButtonModes = modes;
+                                    checked = Qt.binding(function() {
+                                        return UserSettings.headsetcontrolAncButtonModes >= 0
+                                            && (UserSettings.headsetcontrolAncButtonModes & modeCheckBox.modelData.mask) !== 0;
+                                    })
+                                }
+                            }
+                        }
+                        Button {
+                            objectName: "ancButtonModesUnset"
+                            text: qsTr("Not set")
+                            enabled: UserSettings.headsetcontrolAncButtonModes >= 0
+                            onClicked: UserSettings.headsetcontrolAncButtonModes = -1
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasMicVolumeCapability
                     enabled: HeadsetControlBridge.hasMicVolumeCapability
                     Layout.fillWidth: true

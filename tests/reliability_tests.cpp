@@ -465,6 +465,10 @@ private slots:
         QTest::addColumn<QByteArray>("capability");
         QTest::addColumn<QByteArray>("setter");
         QTest::addColumn<QByteArray>("setting");
+        QTest::newRow("anc") << QString("anc") << 2 << QByteArray("hasAncCapability")
+            << QByteArray("setAnc") << QByteArray("headsetcontrolAnc");
+        QTest::newRow("ancStartupMode") << QString("ancStartupMode") << 3 << QByteArray("hasAncStartupModeCapability")
+            << QByteArray("setAncStartupMode") << QByteArray("headsetcontrolAncStartupMode");
         QTest::newRow("micVolume") << QString("micVolume") << 128 << QByteArray("hasMicVolumeCapability")
             << QByteArray("setMicVolume") << QByteArray("headsetcontrolMicVolume");
         QTest::newRow("noiseFilter") << QString("noiseFilter") << 2 << QByteArray("hasNoiseFilterCapability")
@@ -495,6 +499,8 @@ private slots:
         // Deliver capability snapshots without starting native monitoring.
         HeadsetControlState state;
         state.hasMicVolumeCapability = key == "micVolume";
+        state.hasAncCapability = key == "anc";
+        state.hasAncStartupModeCapability = key == "ancStartupMode";
         state.hasNoiseFilterCapability = key == "noiseFilter";
         state.hasVolumeLimiterCapability = key == "volumeLimiter";
         state.hasMicMuteLedBrightnessCapability = key == "micMuteLedBrightness";
@@ -536,6 +542,8 @@ private slots:
         QVERIFY(errors.last().at(0).toString().isEmpty());
         const auto snapshot = monitor.snapshot();
         if (key == "micVolume") QVERIFY(snapshot.hasMicVolumeCapability);
+        if (key == "anc") QVERIFY(snapshot.hasAncCapability);
+        if (key == "ancStartupMode") QVERIFY(snapshot.hasAncStartupModeCapability);
         if (key == "noiseFilter") QVERIFY(snapshot.hasNoiseFilterCapability);
         if (key == "volumeLimiter") QVERIFY(snapshot.hasVolumeLimiterCapability);
         if (key == "micMuteLedBrightness") QVERIFY(snapshot.hasMicMuteLedBrightnessCapability);
@@ -551,6 +559,8 @@ private slots:
         QVERIFY(errors.last().at(0).toString().isEmpty());
         monitor.stopMonitoring();
         if (key == "micVolume") QVERIFY(!monitor.snapshot().hasMicVolumeCapability);
+        if (key == "anc") QVERIFY(!monitor.snapshot().hasAncCapability);
+        if (key == "ancStartupMode") QVERIFY(!monitor.snapshot().hasAncStartupModeCapability);
         if (key == "noiseFilter") QVERIFY(!monitor.snapshot().hasNoiseFilterCapability);
         if (key == "volumeLimiter") QVERIFY(!monitor.snapshot().hasVolumeLimiterCapability);
         if (key == "micMuteLedBrightness") QVERIFY(!monitor.snapshot().hasMicMuteLedBrightnessCapability);
@@ -562,8 +572,83 @@ private slots:
         QCOMPARE(capabilities.size(), 2);
     }
 
-    void noiseFilterSkipsUnsetAndBoundsRetries()
+    void ancButtonModesWriteAllNonemptyCycles()
     {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolAncButtonModes(-1);
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto bridgeCleanup = qScopeGuard([&] {
+            bridge->shutdown();
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        HeadsetControlState state;
+        state.hasAncButtonModesCapability = true;
+        QSignalSpy capabilities(bridge, &HeadsetControlBridge::capabilitiesChanged);
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QVERIFY(bridge->hasAncButtonModesCapability());
+        QCOMPARE(capabilities.size(), 1);
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        HeadsetControlMonitor monitor(nullptr, [] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        monitor.setDesiredSettings({{"ancButtonModes", -1}});
+        monitor.startMonitoring();
+        QVERIFY(monitor.snapshot().hasAncButtonModesCapability);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        for (int mask = 1; mask <= 7; ++mask) {
+            bridge->setAncButtonModes(mask);
+            QCOMPARE(settings->headsetcontrolAncButtonModes(), mask);
+            QSettings persisted(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
+            QCOMPARE(persisted.value("headsetcontrolAncButtonModes").toInt(), mask);
+            monitor.setDesiredSettings({{"ancButtonModes", mask}});
+            QVERIFY(errors.last().at(0).toString().isEmpty());
+        }
+        for (int invalid : {0, -2, 8, 255}) {
+            bridge->setAncButtonModes(invalid);
+            QCOMPARE(settings->headsetcontrolAncButtonModes(), 7);
+        }
+        monitor.stopMonitoring();
+        QVERIFY(!monitor.snapshot().hasAncButtonModesCapability);
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, monitor.snapshot())));
+        QVERIFY(!bridge->hasAncButtonModesCapability());
+        QCOMPARE(capabilities.size(), 2);
+        bridge->setAncButtonModes(-1);
+        QCOMPARE(settings->headsetcontrolAncButtonModes(), -1);
+    }
+
+    void writeOnlyHeadsetSkipsUnsetAndBoundsRetries_data()
+    {
+        QTest::addColumn<QString>("key");
+        QTest::newRow("noiseFilter") << QString("noiseFilter");
+        QTest::newRow("anc") << QString("anc");
+        QTest::newRow("ancStartupMode") << QString("ancStartupMode");
+        QTest::newRow("ancButtonModes") << QString("ancButtonModes");
+    }
+
+    void writeOnlyHeadsetSkipsUnsetAndBoundsRetries()
+    {
+        QFETCH(QString, key);
+        const auto supported = [&](const HeadsetControlState& state) {
+            if (key == "anc") return state.hasAncCapability;
+            if (key == "ancStartupMode") return state.hasAncStartupModeCapability;
+            if (key == "ancButtonModes") return state.hasAncButtonModesCapability;
+            return state.hasNoiseFilterCapability;
+        };
         const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
         const int previousProfile = headsetcontrol::getTestProfile();
         HeadsetControlMonitor monitor(nullptr, [] {
@@ -581,42 +666,49 @@ private slots:
         monitor.setTestProfile(3);
         monitor.setTestModeEnabled(true);
         monitor.startMonitoring();
-        QVERIFY(monitor.snapshot().hasNoiseFilterCapability);
+        QVERIFY(supported(monitor.snapshot()));
         QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
-        monitor.setDesiredSettings({{"noiseFilter", 2}});
+        monitor.setDesiredSettings({{key, 2}});
         QVERIFY(errors.last().at(0).toString().isEmpty());
         // Profile 1 must keep the test controls usable even though its battery read fails.
         monitor.setTestProfile(1);
         QVERIFY(monitor.snapshot().anyDeviceFound);
-        QVERIFY(monitor.snapshot().hasNoiseFilterCapability);
+        QVERIFY(supported(monitor.snapshot()));
         QCOMPARE(monitor.snapshot().testProfile, 1);
-        monitor.setDesiredSettings({{"noiseFilter", 2}});
+        monitor.setDesiredSettings({{key, 2}});
         QVERIFY(errors.last().at(0).toString().isEmpty()); // Acknowledged values are not written twice.
-        monitor.setDesiredSettings({{"noiseFilter", -1}});
+        monitor.setDesiredSettings({{key, -1}});
         QVERIFY(errors.last().at(0).toString().isEmpty()); // Unset must not become off or uint8(255).
-        monitor.setDesiredSettings({{"noiseFilter", 2}}); // Selecting the former value after unset must write again.
+        monitor.setDesiredSettings({{key, 2}}); // Selecting the former value after unset must write again.
         QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
-        monitor.setDesiredSettings({{"noiseFilter", -1}});
+        monitor.setDesiredSettings({{key, -1}});
         QVERIFY(errors.last().at(0).toString().isEmpty());
+        if (key == "ancButtonModes") {
+            for (int invalid : {0, 8, 255}) {
+                monitor.setDesiredSettings({{key, invalid}});
+                QVERIFY(errors.last().at(0).toString().isEmpty()); // Invalid/empty cycles never reach the library.
+            }
+        }
+        const int retryValue = key == "ancButtonModes" ? 7 : 0;
         for (int attempt = 0; attempt < 3; ++attempt) {
             // Full desired snapshots and unrelated edits must not reset this value's budget.
-            monitor.setDesiredSettings({{"noiseFilter", 0}, {"inactiveTime", -1}});
+            monitor.setDesiredSettings({{key, retryValue}, {"inactiveTime", -1}});
             QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
             QVERIFY(!errors.last().at(0).toString().contains("retry limit reached"));
         }
-        monitor.setDesiredSettings({{"noiseFilter", 0}});
-        QVERIFY(errors.last().at(0).toString().contains("noiseFilter: retry limit reached"));
+        monitor.setDesiredSettings({{key, retryValue}});
+        QVERIFY(errors.last().at(0).toString().contains(key + ": retry limit reached"));
         monitor.setTestProfile(3);
-        monitor.setDesiredSettings({{"noiseFilter", 0}});
-        QVERIFY(errors.last().at(0).toString().contains("noiseFilter: retry limit reached")); // No fourth write.
+        monitor.setDesiredSettings({{key, retryValue}});
+        QVERIFY(errors.last().at(0).toString().contains(key + ": retry limit reached")); // No fourth write.
         monitor.requestRefresh(); // Manual refresh resets the budget and succeeds with profile 3.
         QVERIFY(errors.last().at(0).toString().isEmpty());
         monitor.setTestProfile(1);
-        monitor.setDesiredSettings({{"noiseFilter", 0}});
+        monitor.setDesiredSettings({{key, retryValue}});
         QVERIFY(errors.last().at(0).toString().isEmpty());
-        monitor.setDesiredSettings({{"noiseFilter", 1}}); // A changed value receives a new budget.
+        monitor.setDesiredSettings({{key, 1}}); // A changed value receives a new budget.
         QVERIFY(errors.last().at(0).toString().contains("Test error condition"));
-        monitor.setDesiredSettings({{"noiseFilter", -1}});
+        monitor.setDesiredSettings({{key, -1}});
         QVERIFY(errors.last().at(0).toString().isEmpty());
     }
 

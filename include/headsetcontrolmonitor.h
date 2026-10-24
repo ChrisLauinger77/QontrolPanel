@@ -47,6 +47,9 @@ struct HeadsetControlState
     bool hasVolumeLimiterCapability = false;
     bool hasNoiseFilterCapability = false;
     bool hasMicVolumeCapability = false;
+    bool hasAncButtonModesCapability = false;
+    bool hasAncStartupModeCapability = false;
+    bool hasAncCapability = false;
     QString deviceName;
     QString displayName;
     QString batteryStatus = "BATTERY_UNAVAILABLE";
@@ -90,6 +93,9 @@ public:
     bool hasVolumeLimiterCapability() const { return m_hasVolumeLimiterCapability; }
     bool hasNoiseFilterCapability() const { return m_hasNoiseFilterCapability; }
     bool hasMicVolumeCapability() const { return m_hasMicVolumeCapability; }
+    bool hasAncButtonModesCapability() const { return m_hasAncButtonModesCapability; }
+    bool hasAncStartupModeCapability() const { return m_hasAncStartupModeCapability; }
+    bool hasAncCapability() const { return m_hasAncCapability; }
     QString deviceName() const { return m_deviceName; }
     QString displayName() const { return m_displayName; }
     QString batteryStatus() const { return m_batteryStatus; }
@@ -187,6 +193,9 @@ private:
     bool m_hasVolumeLimiterCapability = false;
     bool m_hasNoiseFilterCapability = false;
     bool m_hasMicVolumeCapability = false;
+    bool m_hasAncButtonModesCapability = false;
+    bool m_hasAncStartupModeCapability = false;
+    bool m_hasAncCapability = false;
     QString m_deviceName;
     QString m_displayName;
     QString m_batteryStatus;

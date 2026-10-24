@@ -58,6 +58,9 @@ class UserSettings : public QObject
     Q_PROPERTY(int headsetcontrolVolumeLimiter READ headsetcontrolVolumeLimiter WRITE setHeadsetcontrolVolumeLimiter NOTIFY headsetcontrolVolumeLimiterChanged)
     Q_PROPERTY(int headsetcontrolNoiseFilter READ headsetcontrolNoiseFilter WRITE setHeadsetcontrolNoiseFilter NOTIFY headsetcontrolNoiseFilterChanged)
     Q_PROPERTY(int headsetcontrolMicVolume READ headsetcontrolMicVolume WRITE setHeadsetcontrolMicVolume NOTIFY headsetcontrolMicVolumeChanged)
+    Q_PROPERTY(int headsetcontrolAncButtonModes READ headsetcontrolAncButtonModes WRITE setHeadsetcontrolAncButtonModes NOTIFY headsetcontrolAncButtonModesChanged)
+    Q_PROPERTY(int headsetcontrolAncStartupMode READ headsetcontrolAncStartupMode WRITE setHeadsetcontrolAncStartupMode NOTIFY headsetcontrolAncStartupModeChanged)
+    Q_PROPERTY(int headsetcontrolAnc READ headsetcontrolAnc WRITE setHeadsetcontrolAnc NOTIFY headsetcontrolAncChanged)
     Q_PROPERTY(bool allowBrightnessControl READ allowBrightnessControl WRITE setAllowBrightnessControl NOTIFY allowBrightnessControlChanged)
     Q_PROPERTY(bool avoidApplicationsOverflow READ avoidApplicationsOverflow WRITE setAvoidApplicationsOverflow NOTIFY avoidApplicationsOverflowChanged)
     Q_PROPERTY(int ddcciQueueDelay READ ddcciQueueDelay WRITE setDdcciQueueDelay NOTIFY ddcciQueueDelayChanged)
@@ -132,6 +135,9 @@ public:
     int headsetcontrolVolumeLimiter() const { return m_headsetcontrolVolumeLimiter; }
     int headsetcontrolNoiseFilter() const { return m_headsetcontrolNoiseFilter; }
     int headsetcontrolMicVolume() const { return m_headsetcontrolMicVolume; }
+    int headsetcontrolAncButtonModes() const { return m_headsetcontrolAncButtonModes; }
+    int headsetcontrolAncStartupMode() const { return m_headsetcontrolAncStartupMode; }
+    int headsetcontrolAnc() const { return m_headsetcontrolAnc; }
     bool allowBrightnessControl() const { return m_allowBrightnessControl; }
     bool avoidApplicationsOverflow() const { return m_avoidApplicationsOverflow; }
     int ddcciQueueDelay() const { return m_ddcciQueueDelay; }
@@ -201,6 +207,9 @@ public:
     void setHeadsetcontrolVolumeLimiter(int value);
     void setHeadsetcontrolNoiseFilter(int value);
     void setHeadsetcontrolMicVolume(int value);
+    void setHeadsetcontrolAncButtonModes(int value);
+    void setHeadsetcontrolAncStartupMode(int value);
+    void setHeadsetcontrolAnc(int value);
     void setAllowBrightnessControl(bool value);
     void setAvoidApplicationsOverflow(bool value);
     void setDdcciQueueDelay(int value);
@@ -272,6 +281,9 @@ signals:
     void headsetcontrolVolumeLimiterChanged();
     void headsetcontrolNoiseFilterChanged();
     void headsetcontrolMicVolumeChanged();
+    void headsetcontrolAncButtonModesChanged();
+    void headsetcontrolAncStartupModeChanged();
+    void headsetcontrolAncChanged();
     void allowBrightnessControlChanged();
     void avoidApplicationsOverflowChanged();
     void ddcciQueueDelayChanged();
@@ -348,6 +360,9 @@ private:
     int m_headsetcontrolVolumeLimiter; // -1: not set; only explicit user choices are written
     int m_headsetcontrolNoiseFilter; // -1: not set; only explicit user choices are written
     int m_headsetcontrolMicVolume; // -1: not set; only explicit user choices are written
+    int m_headsetcontrolAncButtonModes; // -1: not set; bits 1/2/4: off/ANC/ambient, nonempty
+    int m_headsetcontrolAncStartupMode; // -1: not set; 0–3: explicit mode
+    int m_headsetcontrolAnc; // -1: not set; 0–2: explicit mode
     bool m_allowBrightnessControl;
     bool m_avoidApplicationsOverflow;
     int m_ddcciQueueDelay;

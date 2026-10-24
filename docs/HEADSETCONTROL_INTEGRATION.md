@@ -64,6 +64,9 @@ Important state includes:
 - `m_hasVolumeLimiterCapability`
 - `m_hasNoiseFilterCapability`
 - `m_hasMicVolumeCapability`
+- `m_hasAncCapability`
+- `m_hasAncStartupModeCapability`
+- `m_hasAncButtonModesCapability`
 
 ### `HeadsetControlBridge`
 
@@ -119,6 +122,9 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolVolumeLimiter` (-1: not set; 0–1)
 - `headsetcontrolNoiseFilter` (-1: not set; 0–2)
 - `headsetcontrolMicVolume` (-1: not set; 0–128)
+- `headsetcontrolAnc` (-1: not set; 0 off, 1 noise cancelling, 2 ambient sound)
+- `headsetcontrolAncStartupMode` (-1: not set; 0 off, 1 noise cancelling, 2 ambient sound, 3 last mode at power-off)
+- `headsetcontrolAncButtonModes` (-1: not set; nonempty bitmask: 1 off, 2 noise cancelling, 4 ambient sound)
 - `headsetcontrolFetchRate`
 - `headsetcontrolLowBatteryThreshold`
 - `enableNotifications`
@@ -126,6 +132,10 @@ Relevant settings live in `UserSettings`:
 Microphone volume, microphone noise filter, volume limiter, mic mute LED brightness, Bluetooth at power-on, and Bluetooth call volume are write-only preferences. They default to `-1` ("Not set") and are omitted from hardware writes until the user chooses a value. On/off preferences use `0` for off and `1` for on; the first tray toggle from "Not set" explicitly selects on. Choosing "Not set" again stops future restoration without changing the headset's current value. The UI displays saved desired values because these preferences cannot be read back.
 
 When adding a headset preference, keep persisted settings, bridge state, monitor behavior, and QML controls in sync.
+
+ANC mode, startup mode, and button cycle are also write-only preferences, using `CAP_ANC`, `CAP_ANC_STARTUP_MODE`, and `CAP_ANC_BUTTON_MODES`. The pinned library supports these on Sony InZone H9 II and the synthetic test device. All three default to `-1`, so opening the settings pane or starting monitoring does not write an ANC preference. Selectors and tray checkmarks show the saved desired mode, which can differ from the mode chosen on the headset itself. Selecting "Not set" stops restoration without changing the current hardware state.
+
+The button-cycle checkboxes store one bitmask so changes cross threads and reach `setAncButtonModes()` as one operation. Settings reject empty or invalid masks; invalid persisted masks load as unset. The worker also rejects empty or invalid masks before calling the library. Once a cycle is chosen, the last checked box is disabled until another mode is added; "Not set" relinquishes the preference explicitly. Test profile 3 accepts all three ANC writes; profile 1 fails them and exercises unset guards, acknowledgement deduplication, bounded retries, and manual-refresh recovery.
 
 ## QML Integration
 

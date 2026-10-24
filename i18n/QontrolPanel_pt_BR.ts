@@ -953,6 +953,38 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
         <translation>Defina a predefinição do equalizador do headset</translation>
     </message>
     <message>
+        <source>Noise cancelling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ambient sound</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Noise cancelling at power-on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the listening mode when the headset powers on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last mode at power-off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Noise cancelling button cycle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose at least one mode for the headset button to cycle through</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Microphone volume</source>
         <translation>Volume do microfone</translation>
     </message>
@@ -1591,6 +1623,18 @@ Você pode ativá-lo na aba Componentes.</translation>
     <message>
         <source>Equalizer Preset</source>
         <translation>Predefinição do equalizador</translation>
+    </message>
+    <message>
+        <source>Noise cancelling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Desligado</translation>
+    </message>
+    <message>
+        <source>Ambient sound</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Volume limiter</source>

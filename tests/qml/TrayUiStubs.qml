@@ -10,6 +10,7 @@ QtObject {
     property bool headsetcontrolVoicePrompts: true
     property bool headsetcontrolRotateToMute: false
     property int headsetcontrolEqualizerPreset: 0
+    property int headsetcontrolAnc: -1
 
     property bool isReady: true
     property int outputVolume: 50
@@ -42,6 +43,9 @@ QtObject {
     property bool hasChatMixCapability: true
     property bool hasEqualizerPresetsCapability: true
     property var equalizerPresetNames: ["Flat", "Music"]
+    property bool hasAncCapability: true
+    property bool hasAncStartupModeCapability: true
+    property bool hasAncButtonModesCapability: true
     property bool hasLightsCapability: true
     property bool hasBluetoothWhenPoweredOnCapability: true
     property bool hasVolumeLimiterCapability: true

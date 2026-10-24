@@ -34,6 +34,9 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
     connect(settings, &UserSettings::headsetcontrolVolumeLimiterChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolNoiseFilterChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolMicVolumeChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolAncButtonModesChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolAncStartupModeChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolAncChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolRotateToMuteChanged, this,
             &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolVoicePromptsChanged, this,
@@ -143,6 +146,9 @@ void HeadsetControlBridge::syncDesiredSettings()
                               {"voicePrompts", settings->headsetcontrolVoicePrompts()},
                               {"equalizerPreset", settings->headsetcontrolEqualizerPreset()},
                               {"micVolume", settings->headsetcontrolMicVolume()},
+                              {"ancButtonModes", settings->headsetcontrolAncButtonModes()},
+                              {"ancStartupMode", settings->headsetcontrolAncStartupMode()},
+                              {"anc", settings->headsetcontrolAnc()},
                               {"noiseFilter", settings->headsetcontrolNoiseFilter()},
                               {"volumeLimiter", settings->headsetcontrolVolumeLimiter()},
                               {"micMuteLedBrightness", settings->headsetcontrolMicMuteLedBrightness()},
@@ -212,6 +218,21 @@ void HeadsetControlBridge::requestSidetone(int value)
     QMetaObject::invokeMethod(m_monitor, [monitor = m_monitor, value, revision] {
         monitor->setSidetone(value, revision);
     }, Qt::QueuedConnection);
+}
+
+void HeadsetControlBridge::setAnc(int value)
+{
+    UserSettings::instance()->setHeadsetcontrolAnc(value);
+}
+
+void HeadsetControlBridge::setAncStartupMode(int value)
+{
+    UserSettings::instance()->setHeadsetcontrolAncStartupMode(value);
+}
+
+void HeadsetControlBridge::setAncButtonModes(int value)
+{
+    UserSettings::instance()->setHeadsetcontrolAncButtonModes(value);
 }
 
 void HeadsetControlBridge::setMicVolume(int value)
@@ -290,6 +311,21 @@ bool HeadsetControlBridge::hasEqualizerPresetsCapability() const
 bool HeadsetControlBridge::hasInactiveTimeCapability() const
 {
     return m_cachedState.hasInactiveTimeCapability;
+}
+
+bool HeadsetControlBridge::hasAncCapability() const
+{
+    return m_cachedState.hasAncCapability;
+}
+
+bool HeadsetControlBridge::hasAncStartupModeCapability() const
+{
+    return m_cachedState.hasAncStartupModeCapability;
+}
+
+bool HeadsetControlBridge::hasAncButtonModesCapability() const
+{
+    return m_cachedState.hasAncButtonModesCapability;
 }
 
 bool HeadsetControlBridge::hasMicVolumeCapability() const
@@ -448,6 +484,9 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         previous.hasVoicePromptsCapability != m_cachedState.hasVoicePromptsCapability ||
         previous.hasEqualizerPresetsCapability != m_cachedState.hasEqualizerPresetsCapability ||
         previous.hasMicVolumeCapability != m_cachedState.hasMicVolumeCapability ||
+        previous.hasAncButtonModesCapability != m_cachedState.hasAncButtonModesCapability ||
+        previous.hasAncStartupModeCapability != m_cachedState.hasAncStartupModeCapability ||
+        previous.hasAncCapability != m_cachedState.hasAncCapability ||
         previous.hasNoiseFilterCapability != m_cachedState.hasNoiseFilterCapability ||
         previous.hasVolumeLimiterCapability != m_cachedState.hasVolumeLimiterCapability ||
         previous.hasMicMuteLedBrightnessCapability != m_cachedState.hasMicMuteLedBrightnessCapability ||

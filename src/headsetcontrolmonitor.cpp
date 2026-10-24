@@ -446,6 +446,9 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newVolumeLimiterCapability = false;
     bool newNoiseFilterCapability = false;
     bool newMicVolumeCapability = false;
+    bool newAncButtonModesCapability = false;
+    bool newAncStartupModeCapability = false;
+    bool newAncCapability = false;
     QString newDeviceName = "";
     QString newDisplayName;
     QString newActiveHeadsetSettingsKey = "";
@@ -474,6 +477,9 @@ void HeadsetControlMonitor::updateCapabilities()
         newVolumeLimiterCapability = headset.supports(CAP_VOLUME_LIMITER);
         newNoiseFilterCapability = headset.supports(CAP_NOISE_FILTER);
         newMicVolumeCapability = headset.supports(CAP_MICROPHONE_VOLUME);
+        newAncButtonModesCapability = headset.supports(CAP_ANC_BUTTON_MODES);
+        newAncStartupModeCapability = headset.supports(CAP_ANC_STARTUP_MODE);
+        newAncCapability = headset.supports(CAP_ANC);
 
         if (newEqualizerPresetsCapability)
         {
@@ -507,6 +513,9 @@ void HeadsetControlMonitor::updateCapabilities()
         newVoicePromptsCapability != m_hasVoicePromptsCapability ||
         newEqualizerPresetsCapability != m_hasEqualizerPresetsCapability ||
         newMicVolumeCapability != m_hasMicVolumeCapability ||
+        newAncButtonModesCapability != m_hasAncButtonModesCapability ||
+        newAncStartupModeCapability != m_hasAncStartupModeCapability ||
+        newAncCapability != m_hasAncCapability ||
         newNoiseFilterCapability != m_hasNoiseFilterCapability ||
         newVolumeLimiterCapability != m_hasVolumeLimiterCapability ||
         newMicMuteLedBrightnessCapability != m_hasMicMuteLedBrightnessCapability ||
@@ -527,6 +536,9 @@ void HeadsetControlMonitor::updateCapabilities()
         m_hasVolumeLimiterCapability = newVolumeLimiterCapability;
         m_hasNoiseFilterCapability = newNoiseFilterCapability;
         m_hasMicVolumeCapability = newMicVolumeCapability;
+        m_hasAncButtonModesCapability = newAncButtonModesCapability;
+        m_hasAncStartupModeCapability = newAncStartupModeCapability;
+        m_hasAncCapability = newAncCapability;
         emit capabilitiesChanged();
     }
 
@@ -685,6 +697,17 @@ void HeadsetControlMonitor::applyPendingSettings()
           [&](const QVariant& v) { return headset->setBluetoothWhenPoweredOn(qBound(0, v.toInt(), 1) != 0); });
     apply("bluetoothCallVolume", m_hasBluetoothCallVolumeCapability && m_desiredSettings.value("bluetoothCallVolume", -1).toInt() >= 0,
           [&](const QVariant& v) { return headset->setBluetoothCallVolume(static_cast<uint8_t>(qBound(0, v.toInt(), 100))); });
+    apply("anc", m_hasAncCapability && m_desiredSettings.value("anc", -1).toInt() >= 0,
+          [&](const QVariant& v) { return headset->setAnc(static_cast<uint8_t>(qBound(0, v.toInt(), 2))); });
+    apply("ancStartupMode", m_hasAncStartupModeCapability && m_desiredSettings.value("ancStartupMode", -1).toInt() >= 0,
+          [&](const QVariant& v) { return headset->setAncStartupMode(static_cast<uint8_t>(qBound(0, v.toInt(), 3))); });
+    const int buttonModes = m_desiredSettings.value("ancButtonModes", -1).toInt();
+    apply("ancButtonModes", m_hasAncButtonModesCapability && buttonModes >= 1 && buttonModes <= 7,
+          [&](const QVariant& v) {
+              const int modes = v.toInt();
+              return headset->setAncButtonModes(AncButtonModes{
+                  .off = (modes & 1) != 0, .anc = (modes & 2) != 0, .ambient = (modes & 4) != 0});
+          });
     const QString error = errors.join("\n");
     if (!error.isEmpty())
         LOG_WARN("HeadsetControlManager", error);
@@ -707,6 +730,9 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.hasVolumeLimiterCapability = hasVolumeLimiterCapability();
     state.hasNoiseFilterCapability = hasNoiseFilterCapability();
     state.hasMicVolumeCapability = hasMicVolumeCapability();
+    state.hasAncButtonModesCapability = hasAncButtonModesCapability();
+    state.hasAncStartupModeCapability = hasAncStartupModeCapability();
+    state.hasAncCapability = hasAncCapability();
     state.deviceName = deviceName();
     state.displayName = displayName();
     state.batteryStatus = batteryStatus();
@@ -861,6 +887,9 @@ void HeadsetControlMonitor::clearDeviceState()
     m_hasVolumeLimiterCapability = false;
     m_hasNoiseFilterCapability = false;
     m_hasMicVolumeCapability = false;
+    m_hasAncButtonModesCapability = false;
+    m_hasAncStartupModeCapability = false;
+    m_hasAncCapability = false;
     m_deviceName = "";
     m_displayName.clear();
     m_batteryStatus = "BATTERY_UNAVAILABLE";

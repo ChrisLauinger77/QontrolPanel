@@ -65,6 +65,9 @@ QtObject {
     property bool hasVolumeLimiterCapability: true
     property bool hasNoiseFilterCapability: true
     property bool hasMicVolumeCapability: true
+    property bool hasAncCapability: true
+    property bool hasAncStartupModeCapability: true
+    property bool hasAncButtonModesCapability: true
     property bool hasLightsCapability: true
     property bool hasRotateToMuteCapability: true
     property bool hasSidetoneCapability: true

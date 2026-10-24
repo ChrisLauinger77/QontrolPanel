@@ -169,6 +169,9 @@ private slots:
         QCOMPARE(UserSettings::instance()->headsetcontrolVolumeLimiter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolNoiseFilter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolMicVolume(), -1);
+        QCOMPARE(UserSettings::instance()->headsetcontrolAnc(), -1);
+        QCOMPARE(UserSettings::instance()->headsetcontrolAncStartupMode(), -1);
+        QCOMPARE(UserSettings::instance()->headsetcontrolAncButtonModes(), -1);
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
@@ -637,6 +640,10 @@ private slots:
         QTest::addColumn<QByteArray>("setting");
         QTest::addColumn<QByteArray>("property");
         QTest::addColumn<int>("unsetUi");
+        QTest::newRow("anc") << QString("Noise cancelling") << QByteArray("hasAncCapability")
+            << QByteArray("headsetcontrolAnc") << QByteArray("currentIndex") << 0;
+        QTest::newRow("ancStartupMode") << QString("Noise cancelling at power-on") << QByteArray("hasAncStartupModeCapability")
+            << QByteArray("headsetcontrolAncStartupMode") << QByteArray("currentIndex") << 0;
         QTest::newRow("micVolume") << QString("Microphone volume") << QByteArray("hasMicVolumeCapability")
             << QByteArray("headsetcontrolMicVolume") << QByteArray("value") << -1;
         QTest::newRow("noiseFilter") << QString("Microphone noise filter") << QByteArray("hasNoiseFilterCapability")
@@ -673,6 +680,87 @@ private slots:
         QTRY_VERIFY(card->property("visible").toBool());
         QVERIFY(headset->setProperty("anyDeviceFound", false));
         QTRY_VERIFY(!card->property("visible").toBool());
+    }
+
+    void ancButtonCycleNeverBecomesEmpty()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolAncButtonModes(-1);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* card = findObject(pane, "title", "Noise cancelling button cycle");
+        QVERIFY(card && card->property("visible").toBool());
+        QList<QObject*> checkboxes;
+        for (int bit : {1, 2, 4}) {
+            auto* checkbox = pane->findChild<QObject*>(QString("ancButtonMode%1").arg(bit));
+            QVERIFY(checkbox);
+            checkboxes.append(checkbox);
+            QVERIFY(!checkbox->property("checked").toBool());
+        }
+        QCOMPARE(settings->headsetcontrolAncButtonModes(), -1);
+        for (int mask = 1; mask <= 7; ++mask) {
+            settings->setHeadsetcontrolAncButtonModes(mask);
+            for (int index = 0; index < checkboxes.size(); ++index) {
+                auto* checkbox = checkboxes.at(index);
+                const int bit = 1 << index;
+                QTRY_COMPARE(checkbox->property("checked").toBool(), (mask & bit) != 0);
+                QTRY_COMPARE(checkbox->property("enabled").toBool(), mask != bit);
+                QVERIFY(QMetaObject::invokeMethod(checkbox, "click"));
+                QCOMPARE(settings->headsetcontrolAncButtonModes(), mask == bit ? mask : mask ^ bit);
+                QVERIFY(settings->headsetcontrolAncButtonModes() > 0);
+                settings->setHeadsetcontrolAncButtonModes(mask);
+            }
+        }
+        settings->setHeadsetcontrolAncButtonModes(2);
+        for (int invalid : {0, -2, 8, 255}) {
+            settings->setHeadsetcontrolAncButtonModes(invalid);
+            QCOMPARE(settings->headsetcontrolAncButtonModes(), 2);
+        }
+        auto* unset = pane->findChild<QObject*>("ancButtonModesUnset");
+        QVERIFY(unset);
+        QVERIFY(QMetaObject::invokeMethod(unset, "click"));
+        QCOMPARE(settings->headsetcontrolAncButtonModes(), -1);
+        for (auto* checkbox : checkboxes)
+            QTRY_VERIFY(!checkbox->property("checked").toBool());
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("hasAncButtonModesCapability", false));
+        QTRY_VERIFY(!card->property("visible").toBool());
+        QVERIFY(headset->setProperty("hasAncButtonModesCapability", true));
+        QTRY_VERIFY(card->property("visible").toBool());
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
+        QTRY_VERIFY(!card->property("visible").toBool());
+    }
+
+    void rejectedAncButtonCycleKeepsBindings()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolAncButtonModes(-1);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* checkbox = pane->findChild<QObject*>("ancButtonMode2");
+        QVERIFY(checkbox);
+        QSignalSpy changed(settings, &UserSettings::headsetcontrolAncButtonModesChanged);
+        QSignalSpy failed(settings, &UserSettings::saveFailed);
+        {
+            const HANDLE lock = lockPreferences();
+            QVERIFY(lock != INVALID_HANDLE_VALUE);
+            const auto unlock = qScopeGuard([&] { CloseHandle(lock); });
+            QVERIFY(QMetaObject::invokeMethod(checkbox, "click"));
+            QCOMPARE(settings->headsetcontrolAncButtonModes(), -1);
+            QVERIFY(!checkbox->property("checked").toBool());
+            QCOMPARE(changed.size(), 0);
+            QCOMPARE(failed.size(), 1);
+        }
+        QTRY_VERIFY((settings->headsetcontrolAncButtonModes() == 2
+                     || QMetaObject::invokeMethod(checkbox, "click"))
+                    && settings->headsetcontrolAncButtonModes() == 2);
+        QTRY_VERIFY(checkbox->property("checked").toBool());
+        QCOMPARE(changed.size(), 1);
+        QSettings persisted(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
+        QCOMPARE(persisted.value("headsetcontrolAncButtonModes").toInt(), 2);
+        settings->setHeadsetcontrolAncButtonModes(7);
+        QTRY_VERIFY(checkbox->property("checked").toBool());
+        QTRY_VERIFY(checkbox->property("enabled").toBool());
     }
 
     void headsetRetryLimitIsVisible()
@@ -737,6 +825,8 @@ private slots:
         row("HeadsetControlPane", "Rotate-to-Mute", "headsetcontrolRotateToMute", "checked", "clicked", true, false);
         row("HeadsetControlPane", "Sidetone", "headsetcontrolSidetone", "value", "wheelChanged", 0, 40);
         row("HeadsetControlPane", "Voice Prompts", "headsetcontrolVoicePrompts", "checked", "clicked", true, false);
+        row("HeadsetControlPane", "Noise cancelling", "headsetcontrolAnc", "currentIndex", "activated", -1, 2, 0, 3);
+        row("HeadsetControlPane", "Noise cancelling at power-on", "headsetcontrolAncStartupMode", "currentIndex", "activated", -1, 3, 0, 4);
         row("HeadsetControlPane", "Microphone volume", "headsetcontrolMicVolume", "value", "valueModified", -1, 0, -1, 0);
         row("HeadsetControlPane", "Microphone noise filter", "headsetcontrolNoiseFilter", "currentIndex", "activated", -1, 0, 0, 1);
         row("HeadsetControlPane", "Volume limiter", "headsetcontrolVolumeLimiter", "currentIndex", "activated", -1, 0, 0, 1);

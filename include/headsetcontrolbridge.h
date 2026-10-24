@@ -27,6 +27,9 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(bool hasVolumeLimiterCapability READ hasVolumeLimiterCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasNoiseFilterCapability READ hasNoiseFilterCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasMicVolumeCapability READ hasMicVolumeCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasAncButtonModesCapability READ hasAncButtonModesCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasAncStartupModeCapability READ hasAncStartupModeCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasAncCapability READ hasAncCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(QString deviceName READ deviceName NOTIFY deviceNameChanged)
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
     Q_PROPERTY(QString batteryStatus READ batteryStatus NOTIFY batteryStatusChanged)
@@ -69,6 +72,9 @@ public:
     Q_INVOKABLE void setVolumeLimiter(int value);
     Q_INVOKABLE void setNoiseFilter(int value);
     Q_INVOKABLE void setMicVolume(int value);
+    Q_INVOKABLE void setAncButtonModes(int value);
+    Q_INVOKABLE void setAncStartupMode(int value);
+    Q_INVOKABLE void setAnc(int value);
     Q_INVOKABLE void refreshNow();
     Q_INVOKABLE void setFetchRate(int seconds);
     Q_INVOKABLE void setTestModeEnabled(bool enabled);
@@ -87,6 +93,9 @@ public:
     bool hasVolumeLimiterCapability() const;
     bool hasNoiseFilterCapability() const;
     bool hasMicVolumeCapability() const;
+    bool hasAncButtonModesCapability() const;
+    bool hasAncStartupModeCapability() const;
+    bool hasAncCapability() const;
     QString deviceName() const;
     QString displayName() const;
     QString batteryStatus() const;

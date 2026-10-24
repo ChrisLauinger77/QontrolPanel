@@ -952,6 +952,38 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>Задать пресет эквалайзера для гарнитуры</translation>
     </message>
     <message>
+        <source>Noise cancelling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ambient sound</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Noise cancelling at power-on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the listening mode when the headset powers on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last mode at power-off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Noise cancelling button cycle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose at least one mode for the headset button to cycle through</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Microphone volume</source>
         <translation>Громкость микрофона</translation>
     </message>
@@ -1590,6 +1622,18 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Equalizer Preset</source>
         <translation>Пресет эквалайзера</translation>
+    </message>
+    <message>
+        <source>Noise cancelling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Выкл.</translation>
+    </message>
+    <message>
+        <source>Ambient sound</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Volume limiter</source>
