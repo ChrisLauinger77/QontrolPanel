@@ -959,6 +959,34 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Test profilu zestawu słuchawkowego</translation>
     </message>
     <message>
+        <source>Microphone mute (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates at the headset fetch rate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Muted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unmuted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boom mic (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>Predefiniowane Korektora</translation>
     </message>
@@ -1587,6 +1615,14 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
+    </message>
+    <message>
+        <source>Mic muted (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mic unmuted (last reading)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Output: </source>

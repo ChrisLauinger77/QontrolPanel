@@ -197,6 +197,44 @@ private slots:
         m_window.reset();
     }
 
+    void microphoneStatusShowsLastReading_data()
+    {
+        QTest::addColumn<QString>("title");
+        QTest::addColumn<QByteArray>("property");
+        QTest::addColumn<QString>("zeroText");
+        QTest::addColumn<QString>("oneText");
+        QTest::newRow("mute") << QString("Microphone mute (last reading)") << QByteArray("micMuted")
+            << QString("Unmuted") << QString("Muted");
+        QTest::newRow("attachment") << QString("Boom mic (last reading)") << QByteArray("micAttached")
+            << QString("Detached") << QString("Attached");
+    }
+
+    void microphoneStatusShowsLastReading()
+    {
+        QFETCH(QString, title); QFETCH(QByteArray, property);
+        QFETCH(QString, zeroText); QFETCH(QString, oneText);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* card = findObject(pane, "title", title);
+        QVERIFY(card);
+        QVERIFY(!card->property("visible").toBool()); // Unknown/unsupported values do not imply unmuted or detached.
+        QCOMPARE(card->property("description").toString(), QString("Updates at the headset fetch rate."));
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty(property.constData(), 0));
+        QTRY_VERIFY(card->property("visible").toBool());
+        auto* zero = findObject(card, "text", zeroText);
+        QVERIFY(zero && zero->property("visible").toBool());
+        QVERIFY(headset->setProperty(property.constData(), 1));
+        auto* one = findObject(card, "text", oneText);
+        QVERIFY(one && one->property("visible").toBool());
+        QVERIFY(headset->setProperty(property.constData(), -1));
+        QTRY_VERIFY(!card->property("visible").toBool());
+        QVERIFY(headset->setProperty(property.constData(), 1));
+        QTRY_VERIFY(card->property("visible").toBool());
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
+        QTRY_VERIFY(!card->property("visible").toBool());
+    }
+
     void sidetoneSliderFollowsReadbackAndAcceptsAnEdit()
     {
         auto* settings = UserSettings::instance();

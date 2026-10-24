@@ -90,6 +90,8 @@ QML should use the bridge rather than holding a monitor pointer directly.
 - `batteryStatus`
 - `batteryLevel`
 - `chatMix`
+- `micMuted`
+- `micAttached`
 - `capabilities`
 
 It represents app-facing data and should not grow protocol-specific behavior.
@@ -165,6 +167,14 @@ Battery state is normalized for QML as:
 Battery level uses `-1` when unavailable.
 
 ChatMix uses `-1` when unavailable and otherwise follows the HeadsetControl value range. Application-side ChatMix behavior is coordinated with `AudioBridge`, which applies volume changes to configured communication apps and restores original volumes when needed.
+
+## Microphone status readings
+
+The device cache, state snapshot, and bridge expose `micMuted` and `micAttached` as `-1` (unknown), `0` (unmuted/detached), or `1` (muted/attached). `updateDeviceCache()` reads each supported status once per poll on the monitor thread, after the headset passes the battery reachability check. Failed, unsupported, or skipped reads remain unknown; a later poll or disconnect clears an earlier reading. Bridge getters and UI bindings only read copied snapshots and never query HID.
+
+Mute status uses `CAP_MICROPHONE_MUTE_STATUS` and `getMicMuteStatus()`. On the supported Corsair Void and Wireless V2 families, muted means the boom is flipped up; the same API also covers Audeze Maxwell/Maxwell 2 and Sony InZone H9 II. Attachment uses `CAP_MICROPHONE_ATTACHMENT_STATUS` and `getMicAttachmentStatus()`, currently supported by Sony InZone H9 II. Capability detection comes from the pinned library rather than an app-side device list.
+
+These queries can issue additional battery requests, wake handshakes, or key reads, including a roughly 3.75-second timeout on an offline Maxwell. They run at the existing fetch rate (at least 60 seconds), without a separate timer or write retry. The tray mute text and both settings status lines say "last reading"; unknown values are hidden. Test mode reports unmuted (`0`) and attached (`1`). The synthetic error profile remains selectable for write-retry testing, but its failed battery query skips microphone reads.
 
 ## Sidetone read-back
 

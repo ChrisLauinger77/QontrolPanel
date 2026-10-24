@@ -135,6 +135,11 @@ Platform.SystemTrayIcon {
             batteryText += " " + "🎤" + qsTr("ChatMix") + ": " + HeadsetControlBridge.chatMix;
         }
 
+        if (HeadsetControlBridge.micMuted >= 0) {
+            batteryText += " " + (HeadsetControlBridge.micMuted === 1
+                ? qsTr("Mic muted (last reading)") : qsTr("Mic unmuted (last reading)"));
+        }
+
         return baseTooltip + batteryText;
     }
 

@@ -35,6 +35,8 @@ QtObject {
     property string batteryIcon: ""
     property int batteryLevel: 50
     property int chatMix: 50
+    property int micMuted: -1
+    property int micAttached: -1
     property bool hasChatMixCapability: true
     property bool hasEqualizerPresetsCapability: true
     property var equalizerPresetNames: ["Flat", "Music"]

@@ -907,6 +907,34 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Valeur ChatMix du casque connecté</translation>
     </message>
     <message>
+        <source>Microphone mute (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates at the headset fetch rate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Muted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unmuted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boom mic (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>Préréglage de l&apos;égaliseur</translation>
     </message>
@@ -1598,6 +1626,14 @@ You can enable it in the Components tab.</source>
     <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
+    </message>
+    <message>
+        <source>Mic muted (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mic unmuted (last reading)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -896,6 +896,34 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>已连接耳机的 ChatMix 值</translation>
     </message>
     <message>
+        <source>Microphone mute (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates at the headset fetch rate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Muted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unmuted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boom mic (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>均衡器预设</translation>
     </message>
@@ -1582,6 +1610,14 @@ You can enable it in the Components tab.</source>
     <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
+    </message>
+    <message>
+        <source>Mic muted (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mic unmuted (last reading)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

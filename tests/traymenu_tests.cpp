@@ -302,6 +302,54 @@ private slots:
         QVERIFY(!headsetAction->isVisible());
     }
 
+    void microphoneTooltipShowsLastReading_data()
+    {
+        QTest::addColumn<int>("micMuted");
+        QTest::addColumn<bool>("chatMix");
+        QTest::addColumn<QString>("expected");
+        for (bool chatMix : {false, true}) {
+            const auto suffix = chatMix ? "-chatmix" : "-no-chatmix";
+            QTest::newRow(qPrintable(QString("unknown") + suffix)) << -1 << chatMix << QString();
+            QTest::newRow(qPrintable(QString("unmuted") + suffix)) << 0 << chatMix << QString("Mic unmuted (last reading)");
+            QTest::newRow(qPrintable(QString("muted") + suffix)) << 1 << chatMix << QString("Mic muted (last reading)");
+        }
+    }
+
+    void microphoneTooltipShowsLastReading()
+    {
+        QFETCH(int, micMuted); QFETCH(bool, chatMix); QFETCH(QString, expected);
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* headset = engine.singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("hasChatMixCapability", chatMix));
+        QVERIFY(headset->setProperty("micMuted", micMuted));
+        const auto tooltip = systemTray->property("tooltip").toString();
+        QCOMPARE(tooltip.contains("ChatMix"), chatMix);
+        if (micMuted < 0) {
+            QVERIFY(!tooltip.contains("Mic muted"));
+            QVERIFY(!tooltip.contains("Mic unmuted"));
+        } else {
+            QVERIFY2(tooltip.contains(expected), qPrintable(tooltip));
+            if (chatMix)
+                QVERIFY(tooltip.indexOf("ChatMix") < tooltip.indexOf(expected));
+        }
+        QVERIFY(headset->setProperty("micMuted", -1));
+        QVERIFY(!systemTray->property("tooltip").toString().contains("last reading"));
+        QVERIFY(headset->setProperty("micMuted", 1));
+        QVERIFY(systemTray->property("tooltip").toString().contains("Mic muted (last reading)"));
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
+        QCOMPARE(systemTray->property("tooltip").toString(), QString("QontrolPanel"));
+    }
+
     void actualTrayBindingsAndActions()
     {
         QQmlEngine engine;

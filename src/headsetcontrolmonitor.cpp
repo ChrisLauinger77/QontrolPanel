@@ -257,9 +257,7 @@ void HeadsetControlMonitor::updateDeviceCache()
             {
                 device.batteryLevel = -1;
                 device.batteryStatus = batteryStatusFromError(batteryResult.error());
-                // Keep the synthetic error profile selectable so its failing writes and
-                // bounded retries can be exercised through the settings pane.
-                deviceReachable = m_testModeEnabled && headset.vendorId() == 0xF00B && headset.productId() == 0xA00C;
+                deviceReachable = false;
                 LOG_WARN("HeadsetControlManager",
                          QString("Failed to read battery: %1")
                              .arg(QString::fromStdString(batteryResult.error().fullMessage())));
@@ -296,6 +294,29 @@ void HeadsetControlMonitor::updateDeviceCache()
             device.chatMix = -1;
         }
 
+        // These reads can perform extra HID requests or time out. Query each once
+        // per poll, only after the headset has responded to the reachability check.
+        if (deviceReachable && headset.supports(CAP_MICROPHONE_MUTE_STATUS))
+        {
+            const auto mute = headset.getMicMuteStatus();
+            if (mute)
+                device.micMuted = mute->muted ? 1 : 0;
+            else
+                LOG_WARN("HeadsetControlManager",
+                         QString("Failed to read microphone mute status: %1")
+                             .arg(QString::fromStdString(mute.error().fullMessage())));
+        }
+        if (deviceReachable && headset.supports(CAP_MICROPHONE_ATTACHMENT_STATUS))
+        {
+            const auto attachment = headset.getMicAttachmentStatus();
+            if (attachment)
+                device.micAttached = attachment->attached ? 1 : 0;
+            else
+                LOG_WARN("HeadsetControlManager",
+                         QString("Failed to read microphone attachment status: %1")
+                             .arg(QString::fromStdString(attachment.error().fullMessage())));
+        }
+
         if (deviceReachable && headset.supports(CAP_SIDETONE_STATUS))
         {
             const auto sidetone = headset.getSidetone();
@@ -321,11 +342,14 @@ void HeadsetControlMonitor::updateDeviceCache()
                      .arg(device.deviceName)
                      .arg(device.capabilities.size()));
 
-        if (deviceReachable && activeHeadsetIndex < 0)
+        // Keep the synthetic error profile selectable for bounded write-retry tests,
+        // without treating its failed battery query as permission for extra HID reads.
+        const bool selectableTestDevice = m_testModeEnabled && headset.vendorId() == 0xF00B && headset.productId() == 0xA00C;
+        if ((deviceReachable || selectableTestDevice) && activeHeadsetIndex < 0)
         {
             activeHeadsetIndex = headsetIndex;
         }
-        else if (!deviceReachable)
+        else if (!deviceReachable && !selectableTestDevice)
         {
             LOG_INFO("HeadsetControlManager",
                      QString("Headset device %1 is not reachable; saved settings will not be applied until it responds")
@@ -360,6 +384,16 @@ void HeadsetControlMonitor::updateDeviceCache()
         {
             m_chatMix = primaryDevice.chatMix;
             emit chatMixChanged();
+        }
+        if (primaryDevice.micMuted != m_micMuted)
+        {
+            m_micMuted = primaryDevice.micMuted;
+            emit micMutedChanged();
+        }
+        if (primaryDevice.micAttached != m_micAttached)
+        {
+            m_micAttached = primaryDevice.micAttached;
+            emit micAttachedChanged();
         }
     }
 
@@ -666,6 +700,8 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.batteryStatus = batteryStatus();
     state.batteryLevel = batteryLevel();
     state.chatMix = chatMix();
+    state.micMuted = micMuted();
+    state.micAttached = micAttached();
     state.sidetoneLevel = sidetoneLevel();
     state.sidetoneRequestRevision = m_sidetoneRequestRevision;
     state.equalizerPresetNames = equalizerPresetNames();
@@ -816,6 +852,8 @@ void HeadsetControlMonitor::clearDeviceState()
     m_batteryStatus = "BATTERY_UNAVAILABLE";
     m_batteryLevel = -1;
     m_chatMix = -1;
+    m_micMuted = -1;
+    m_micAttached = -1;
     m_sidetoneLevel = -1;
     m_sidetoneWriteRequested = false;
     m_activeHeadsetIndex = -1;
@@ -834,6 +872,8 @@ void HeadsetControlMonitor::clearDeviceState()
     emit batteryStatusChanged();
     emit batteryLevelChanged();
     emit chatMixChanged();
+    emit micMutedChanged();
+    emit micAttachedChanged();
     emit sidetoneLevelChanged();
     if (wasDeviceFound)
     {

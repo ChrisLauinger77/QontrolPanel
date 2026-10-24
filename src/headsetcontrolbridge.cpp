@@ -366,6 +366,16 @@ int HeadsetControlBridge::chatMix() const
     return m_cachedState.chatMix;
 }
 
+int HeadsetControlBridge::micMuted() const
+{
+    return m_cachedState.micMuted;
+}
+
+int HeadsetControlBridge::micAttached() const
+{
+    return m_cachedState.micAttached;
+}
+
 int HeadsetControlBridge::sidetoneLevel() const
 {
     return m_cachedState.sidetoneLevel;
@@ -461,6 +471,10 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
     {
         emit chatMixChanged();
     }
+    if (previous.micMuted != m_cachedState.micMuted)
+        emit micMutedChanged();
+    if (previous.micAttached != m_cachedState.micAttached)
+        emit micAttachedChanged();
     if (previous.sidetoneLevel != m_cachedState.sidetoneLevel)
         emit sidetoneLevelChanged();
     if (previous.equalizerPresetNames != m_cachedState.equalizerPresetNames)

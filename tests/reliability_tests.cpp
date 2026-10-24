@@ -221,6 +221,137 @@ private slots:
         QCOMPARE(bridge->sidetoneLevel(), 72);
     }
 
+    void microphoneSnapshotsNotifyOnChanges()
+    {
+        HeadsetControlDevice device;
+        HeadsetControlState state;
+        QCOMPARE(device.micMuted, -1);
+        QCOMPARE(device.micAttached, -1);
+        QCOMPARE(state.micMuted, -1);
+        QCOMPARE(state.micAttached, -1);
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto cleanup = qScopeGuard([&] {
+            bridge->shutdown();
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        QCOMPARE(bridge->micMuted(), -1);
+        QCOMPARE(bridge->micAttached(), -1);
+        QSignalSpy muted(bridge, &HeadsetControlBridge::micMutedChanged);
+        QSignalSpy attached(bridge, &HeadsetControlBridge::micAttachedChanged);
+        auto publish = [&] {
+            return QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                             Q_ARG(HeadsetControlState, state));
+        };
+        state.anyDeviceFound = true;
+        state.micMuted = 0;
+        state.micAttached = 1;
+        QVERIFY(publish());
+        QCOMPARE(bridge->property("micMuted").toInt(), 0);
+        QCOMPARE(bridge->property("micAttached").toInt(), 1);
+        QCOMPARE(muted.size(), 1);
+        QCOMPARE(attached.size(), 1);
+        QVERIFY(publish());
+        QCOMPARE(muted.size(), 1);
+        QCOMPARE(attached.size(), 1);
+        state.micMuted = 1;
+        QVERIFY(publish());
+        QCOMPARE(bridge->micMuted(), 1);
+        QCOMPARE(muted.size(), 2);
+        QCOMPARE(attached.size(), 1);
+        state.micAttached = 0;
+        QVERIFY(publish());
+        QCOMPARE(bridge->micAttached(), 0);
+        QCOMPARE(muted.size(), 2);
+        QCOMPARE(attached.size(), 2);
+        state = HeadsetControlState{};
+        QVERIFY(publish());
+        QCOMPARE(bridge->micMuted(), -1);
+        QCOMPARE(bridge->micAttached(), -1);
+        QCOMPARE(muted.size(), 3);
+        QCOMPARE(attached.size(), 3);
+    }
+
+    void microphoneTestDeviceReadsOnlyOnReachablePolls()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        bool connected = true;
+        int discoveries = 0;
+        HeadsetControlMonitor monitor(nullptr, [&] {
+            ++discoveries;
+            auto devices = connected ? headsetcontrol::discover() : std::vector<headsetcontrol::Headset>{};
+            // Never query or write a real device in this test.
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        QCOMPARE(monitor.snapshot().micMuted, -1);
+        QCOMPARE(monitor.snapshot().micAttached, -1);
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        QSignalSpy muted(&monitor, &HeadsetControlMonitor::micMutedChanged);
+        QSignalSpy attached(&monitor, &HeadsetControlMonitor::micAttachedChanged);
+        monitor.startMonitoring();
+        QCOMPARE(monitor.snapshot().micMuted, 0);
+        QCOMPARE(monitor.snapshot().micAttached, 1);
+        QCOMPARE(monitor.getCachedDevices().size(), 1);
+        QCOMPARE(monitor.getCachedDevices().first().micMuted, 0);
+        QCOMPARE(monitor.getCachedDevices().first().micAttached, 1);
+        QCOMPARE(muted.size(), 1);
+        QCOMPARE(attached.size(), 1);
+        // Making further reads fail must not affect cached getters or desired-setting changes.
+        headsetcontrol::setTestProfile(1);
+        monitor.setDesiredSettings({{"inactiveTime", -1}});
+        QCOMPARE(monitor.micMuted(), 0);
+        QCOMPARE(monitor.micAttached(), 1);
+        QCOMPARE(monitor.snapshot().micMuted, 0);
+        QCOMPARE(monitor.getCachedDevices().first().micAttached, 1);
+        QCOMPARE(discoveries, 1);
+        QCOMPARE(muted.size(), 1);
+        QCOMPARE(attached.size(), 1);
+        auto* logger = LogManager::instance();
+        logger->clearLogs();
+        monitor.setTestProfile(1); // Battery read now fails; microphone requests must be skipped.
+        QVERIFY(monitor.snapshot().anyDeviceFound); // Synthetic write-retry profile stays selectable.
+        QCOMPARE(monitor.snapshot().micMuted, -1);
+        QCOMPARE(monitor.snapshot().micAttached, -1);
+        QCOMPARE(monitor.getCachedDevices().first().micMuted, -1);
+        QCOMPARE(monitor.getCachedDevices().first().micAttached, -1);
+        QCOMPARE(muted.size(), 2);
+        QCOMPARE(attached.size(), 2);
+        bool batteryFailed = false;
+        for (const auto& log : logger->snapshot()) {
+            const auto message = log.toMap().value("message").toString();
+            batteryFailed |= message.contains("Failed to read battery");
+            QVERIFY(!message.contains("Failed to read microphone mute status"));
+            QVERIFY(!message.contains("Failed to read microphone attachment status"));
+        }
+        QVERIFY(batteryFailed);
+        monitor.setTestProfile(3);
+        QCOMPARE(monitor.snapshot().micMuted, 0);
+        QCOMPARE(monitor.snapshot().micAttached, 1);
+        connected = false;
+        monitor.requestRefresh();
+        QVERIFY(!monitor.snapshot().anyDeviceFound);
+        QVERIFY(monitor.getCachedDevices().isEmpty());
+        QCOMPARE(monitor.snapshot().micMuted, -1);
+        QCOMPARE(monitor.snapshot().micAttached, -1);
+        connected = true;
+        monitor.requestRefresh();
+        QCOMPARE(monitor.snapshot().micMuted, 0);
+        QCOMPARE(monitor.snapshot().micAttached, 1);
+        monitor.stopMonitoring();
+        QCOMPARE(monitor.snapshot().micMuted, -1);
+        QCOMPARE(monitor.snapshot().micAttached, -1);
+    }
+
     void writeOnlyHeadsetSettings_data()
     {
         QTest::addColumn<QString>("key");

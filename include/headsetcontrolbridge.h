@@ -33,6 +33,8 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
     Q_PROPERTY(QString batteryIcon READ batteryIcon NOTIFY batteryIconChanged)
     Q_PROPERTY(int chatMix READ chatMix NOTIFY chatMixChanged)
+    Q_PROPERTY(int micMuted READ micMuted NOTIFY micMutedChanged)
+    Q_PROPERTY(int micAttached READ micAttached NOTIFY micAttachedChanged)
     Q_PROPERTY(int sidetoneLevel READ sidetoneLevel NOTIFY sidetoneLevelChanged)
     Q_PROPERTY(int pendingSidetoneLevel READ pendingSidetoneLevel NOTIFY pendingSidetoneLevelChanged)
     Q_PROPERTY(QStringList equalizerPresetNames READ equalizerPresetNames NOTIFY equalizerPresetNamesChanged)
@@ -89,6 +91,8 @@ public:
     int batteryLevel() const;
     QString batteryIcon() const;
     int chatMix() const;
+    int micMuted() const;
+    int micAttached() const;
     int sidetoneLevel() const;
     int pendingSidetoneLevel() const { return m_pendingSidetoneLevel; }
     QStringList equalizerPresetNames() const;
@@ -105,6 +109,8 @@ signals:
     void batteryLevelChanged();
     void batteryIconChanged();
     void chatMixChanged();
+    void micMutedChanged();
+    void micAttachedChanged();
     void sidetoneLevelChanged();
     void pendingSidetoneLevelChanged();
     void equalizerPresetNamesChanged();

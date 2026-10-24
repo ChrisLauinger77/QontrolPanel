@@ -21,6 +21,8 @@ struct HeadsetControlDevice {
     QString batteryStatus;  // "BATTERY_AVAILABLE", "BATTERY_CHARGING", "BATTERY_UNAVAILABLE"
     int batteryLevel;       // -1 - 100
     int chatMix;            // -1 when unavailable, otherwise 0 - 128
+    int micMuted = -1;      // Last poll: -1 unknown, 0 unmuted, 1 muted
+    int micAttached = -1;   // Last poll: -1 unknown, 0 detached, 1 attached
     int sidetoneLevel = -1; // Normalised 0 - 128, -1 when unknown
     QStringList capabilities;
 
@@ -48,6 +50,8 @@ struct HeadsetControlState
     QString batteryStatus = "BATTERY_UNAVAILABLE";
     int batteryLevel = -1;
     int chatMix = -1;
+    int micMuted = -1;
+    int micAttached = -1;
     int sidetoneLevel = -1;
     quint64 sidetoneRequestRevision = 0;
     QStringList equalizerPresetNames;
@@ -87,6 +91,8 @@ public:
     QString batteryStatus() const { return m_batteryStatus; }
     int batteryLevel() const { return m_batteryLevel; }
     int chatMix() const { return m_chatMix; }
+    int micMuted() const { return m_micMuted; }
+    int micAttached() const { return m_micAttached; }
     int sidetoneLevel() const { return m_sidetoneLevel; }
     bool hasEqualizerPresetsCapability() const { return m_hasEqualizerPresetsCapability; }
     QStringList equalizerPresetNames() const { return m_equalizerPresetNames; }
@@ -120,6 +126,8 @@ signals:
     void batteryStatusChanged();
     void batteryLevelChanged();
     void chatMixChanged();
+    void micMutedChanged();
+    void micAttachedChanged();
     void sidetoneLevelChanged();
     void sidetoneAdopted(int value, quint64 requestRevision);
     void equalizerPresetNamesChanged();
@@ -176,6 +184,8 @@ private:
     QString m_batteryStatus;
     int m_batteryLevel;
     int m_chatMix;
+    int m_micMuted = -1;
+    int m_micAttached = -1;
     int m_sidetoneLevel = -1;
     bool m_sidetoneWriteRequested = false;
     quint64 m_sidetoneRequestRevision = 0;

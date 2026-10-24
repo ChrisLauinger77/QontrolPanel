@@ -148,6 +148,26 @@ ColumnLayout {
                 }
 
                 Card {
+                    Layout.fillWidth: true
+                    title: qsTr("Microphone mute (last reading)")
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.micMuted >= 0
+                    description: qsTr("Updates at the headset fetch rate.")
+                    additionalControl: Label {
+                        text: HeadsetControlBridge.micMuted === 1 ? qsTr("Muted") : qsTr("Unmuted")
+                    }
+                }
+
+                Card {
+                    Layout.fillWidth: true
+                    title: qsTr("Boom mic (last reading)")
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.micAttached >= 0
+                    description: qsTr("Updates at the headset fetch rate.")
+                    additionalControl: Label {
+                        text: HeadsetControlBridge.micAttached === 1 ? qsTr("Attached") : qsTr("Detached")
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasEqualizerPresetsCapability
                     enabled: HeadsetControlBridge.hasEqualizerPresetsCapability
                     Layout.fillWidth: true

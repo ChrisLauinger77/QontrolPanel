@@ -897,6 +897,34 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>ChatMix-Wert des angeschlossenen Headsets</translation>
     </message>
     <message>
+        <source>Microphone mute (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates at the headset fetch rate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Muted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unmuted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boom mic (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Equalizer Preset</source>
         <translation>Equalizer-Voreinstellung</translation>
     </message>
@@ -1583,6 +1611,14 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     <message>
         <source>ChatMix</source>
         <translation>ChatMix</translation>
+    </message>
+    <message>
+        <source>Mic muted (last reading)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mic unmuted (last reading)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>

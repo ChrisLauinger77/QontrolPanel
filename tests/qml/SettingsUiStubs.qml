@@ -33,6 +33,8 @@ QtObject {
     property string batteryStatus: "BATTERY_AVAILABLE"
     property string batteryIcon: ""
     property int chatMix: 50
+    property int micMuted: -1
+    property int micAttached: -1
     property int sidetoneLevel: -1
     property int sidetoneWriteCount: 0
     property int pendingSidetoneLevel: -1
