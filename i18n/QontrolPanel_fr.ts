@@ -947,6 +947,18 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit the headset playback volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished">Activé</translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Fréquence de récupération de l&apos;état du casque. Des valeurs plus faibles peuvent augmenter l&apos;utilisation de la batterie.</translation>
     </message>
@@ -1522,6 +1534,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Equalizer Preset</source>
         <translation>Préréglage de l&apos;égaliseur</translation>
+    </message>
+    <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Lights</source>

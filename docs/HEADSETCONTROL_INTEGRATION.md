@@ -58,6 +58,7 @@ Important state includes:
 - `m_hasVoicePromptsCapability`
 - `m_hasEqualizerPresetsCapability`
 - `m_hasInactiveTimeCapability`
+- `m_hasVolumeLimiterCapability`
 - `m_hasNoiseFilterCapability`
 - `m_hasMicVolumeCapability`
 
@@ -105,6 +106,7 @@ Relevant settings live in `UserSettings`:
 - `headsetcontrolEqualizerPreset`
 - `headsetcontrolInactiveTime`
 - `headsetcontrolSidetone`
+- `headsetcontrolVolumeLimiter` (-1: not set; 0–1)
 - `headsetcontrolNoiseFilter` (-1: not set; 0–2)
 - `headsetcontrolMicVolume` (-1: not set; 0–128)
 - `headsetcontrolFetchRate`

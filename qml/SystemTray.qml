@@ -64,6 +64,8 @@ Platform.SystemTrayIcon {
                             return { id: "equalizer:" + index, text: name,
                                      checked: UserSettings.headsetcontrolEqualizerPreset === index };
                           }) : [] },
+                  { id: "volumeLimiter", text: qsTr("Volume limiter"), icon: "qrc:/icons/panel_volume_100.svg",
+                    visible: HeadsetControlBridge.hasVolumeLimiterCapability, checked: UserSettings.headsetcontrolVolumeLimiter === 1 },
                   { id: "lights", text: qsTr("Lights"), icon: "qrc:/icons/brightness.svg",
                     visible: HeadsetControlBridge.hasLightsCapability, checked: UserSettings.headsetcontrolLights },
                   { id: "voicePrompts", text: qsTr("Voice Prompts"), icon: "qrc:/icons/music.svg",
@@ -84,6 +86,7 @@ Platform.SystemTrayIcon {
             case "modernSound": Utils.openModernSoundSettings(); break;
             case "settings": systemTray.settingsWindowRequested(); break;
             case "fetch": HeadsetControlBridge.refreshNow(); break;
+            case "volumeLimiter": UserSettings.headsetcontrolVolumeLimiter = UserSettings.headsetcontrolVolumeLimiter === 1 ? 0 : 1; break;
             case "lights": UserSettings.headsetcontrolLights = !UserSettings.headsetcontrolLights; break;
             case "voicePrompts": UserSettings.headsetcontrolVoicePrompts = !UserSettings.headsetcontrolVoicePrompts; break;
             case "rotateToMute": UserSettings.headsetcontrolRotateToMute = !UserSettings.headsetcontrolRotateToMute; break;
@@ -137,6 +140,6 @@ Platform.SystemTrayIcon {
     }
 
     function hasHeadsetControlMenuEntries() {
-        return systemTray.isHeadsetBatteryAvailable() || (HeadsetControlBridge.hasEqualizerPresetsCapability && HeadsetControlBridge.equalizerPresetNames.length > 0) || HeadsetControlBridge.hasLightsCapability || HeadsetControlBridge.hasVoicePromptsCapability || HeadsetControlBridge.hasRotateToMuteCapability;
+        return HeadsetControlBridge.hasVolumeLimiterCapability || systemTray.isHeadsetBatteryAvailable() || (HeadsetControlBridge.hasEqualizerPresetsCapability && HeadsetControlBridge.equalizerPresetNames.length > 0) || HeadsetControlBridge.hasLightsCapability || HeadsetControlBridge.hasVoicePromptsCapability || HeadsetControlBridge.hasRotateToMuteCapability;
     }
 }

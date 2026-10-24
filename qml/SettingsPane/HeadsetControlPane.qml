@@ -335,6 +335,23 @@ ColumnLayout {
                 }
 
                 Card {
+                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasVolumeLimiterCapability
+                    enabled: HeadsetControlBridge.hasVolumeLimiterCapability
+                    Layout.fillWidth: true
+                    title: qsTr("Volume limiter")
+                    description: qsTr("Limit the headset playback volume")
+
+                    additionalControl: CustomComboBox {
+                        model: [qsTr("Not set"), qsTr("Off"), qsTr("On")]
+                        currentIndex: UserSettings.headsetcontrolVolumeLimiter + 1
+                        onActivated: {
+                            UserSettings.headsetcontrolVolumeLimiter = currentIndex - 1;
+                            currentIndex = Qt.binding(function() { return UserSettings.headsetcontrolVolumeLimiter + 1 })
+                        }
+                    }
+                }
+
+                Card {
                     visible: HeadsetControlBridge.anyDeviceFound
                     Layout.fillWidth: true
                     title: qsTr("Fetch rate (seconds)")

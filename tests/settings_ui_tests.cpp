@@ -163,6 +163,7 @@ private slots:
         QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
         QCOMPARE(UserSettings::instance()->iconStyle(), 3);
         QVERIFY(UserSettings::instance()->panelAnimationsEnabled());
+        QCOMPARE(UserSettings::instance()->headsetcontrolVolumeLimiter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolNoiseFilter(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolMicVolume(), -1);
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
@@ -572,6 +573,8 @@ private slots:
             << QByteArray("headsetcontrolMicVolume") << QByteArray("value") << -1;
         QTest::newRow("noiseFilter") << QString("Microphone noise filter") << QByteArray("hasNoiseFilterCapability")
             << QByteArray("headsetcontrolNoiseFilter") << QByteArray("currentIndex") << 0;
+        QTest::newRow("volumeLimiter") << QString("Volume limiter") << QByteArray("hasVolumeLimiterCapability")
+            << QByteArray("headsetcontrolVolumeLimiter") << QByteArray("currentIndex") << 0;
         // Additional settings add rows here.
     }
 
@@ -663,6 +666,7 @@ private slots:
         row("HeadsetControlPane", "Voice Prompts", "headsetcontrolVoicePrompts", "checked", "clicked", true, false);
         row("HeadsetControlPane", "Microphone volume", "headsetcontrolMicVolume", "value", "valueModified", -1, 0, -1, 0);
         row("HeadsetControlPane", "Microphone noise filter", "headsetcontrolNoiseFilter", "currentIndex", "activated", -1, 0, 0, 1);
+        row("HeadsetControlPane", "Volume limiter", "headsetcontrolVolumeLimiter", "currentIndex", "activated", -1, 0, 0, 1);
         row("HeadsetControlPane", "Fetch rate (seconds)", "headsetcontrolFetchRate", "value", "valueModified", 60, 120);
     }
 

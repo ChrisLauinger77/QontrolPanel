@@ -37,6 +37,7 @@ struct HeadsetControlState
     bool hasVoicePromptsCapability = false;
     bool hasEqualizerPresetsCapability = false;
     bool hasInactiveTimeCapability = false;
+    bool hasVolumeLimiterCapability = false;
     bool hasNoiseFilterCapability = false;
     bool hasMicVolumeCapability = false;
     QString deviceName;
@@ -72,6 +73,7 @@ public:
     bool hasChatMixCapability() const { return m_hasChatMixCapability; }
     bool hasVoicePromptsCapability() const { return m_hasVoicePromptsCapability; }
     bool hasInactiveTimeCapability() const { return m_hasInactiveTimeCapability; }
+    bool hasVolumeLimiterCapability() const { return m_hasVolumeLimiterCapability; }
     bool hasNoiseFilterCapability() const { return m_hasNoiseFilterCapability; }
     bool hasMicVolumeCapability() const { return m_hasMicVolumeCapability; }
     QString deviceName() const { return m_deviceName; }
@@ -157,6 +159,7 @@ private:
     bool m_hasVoicePromptsCapability;
     bool m_hasEqualizerPresetsCapability;
     bool m_hasInactiveTimeCapability;
+    bool m_hasVolumeLimiterCapability = false;
     bool m_hasNoiseFilterCapability = false;
     bool m_hasMicVolumeCapability = false;
     QString m_deviceName;

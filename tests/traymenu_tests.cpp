@@ -245,6 +245,62 @@ private slots:
         QCOMPARE(changed.size(), 1);
     }
 
+    void writeOnlyHeadsetToggle_data()
+    {
+        QTest::addColumn<QString>("id");
+        QTest::addColumn<QByteArray>("capability");
+        QTest::addColumn<QByteArray>("setting");
+        QTest::newRow("volumeLimiter") << QString("volumeLimiter") << QByteArray("hasVolumeLimiterCapability")
+            << QByteArray("headsetcontrolVolumeLimiter");
+        // Additional headset toggles add rows here.
+    }
+
+    void writeOnlyHeadsetToggle()
+    {
+        QFETCH(QString, id); QFETCH(QByteArray, capability); QFETCH(QByteArray, setting);
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* tray = qobject_cast<TrayMenu*>(systemTray->property("contextMenu").value<QObject*>());
+        QVERIFY(tray);
+        auto* headset = engine.singletonInstance<QObject*>(m_headsetType);
+        auto* settings = engine.singletonInstance<QObject*>(m_settingsType);
+        headset->setProperty("batteryStatus", "BATTERY_UNAVAILABLE");
+        for (const auto* flag : {"hasLightsCapability", "hasVoicePromptsCapability", "hasRotateToMuteCapability",
+                                 "hasEqualizerPresetsCapability"})
+            QVERIFY(headset->setProperty(flag, false));
+        // Disable other new toggles too, leaving just the capability under test.
+        QVERIFY(headset->setProperty("hasVolumeLimiterCapability", false));
+        // Toggle isolation is inserted below.
+        QVERIFY(headset->setProperty(capability.constData(), true));
+        tray->popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        auto* headsetAction = actionFor(menu, "headset");
+        QVERIFY(headsetAction && headsetAction->isVisible());
+        auto* toggle = actionFor(headsetAction->menu(), id);
+        QVERIFY(toggle && toggle->isVisible() && toggle->isCheckable());
+        QCOMPARE(settings->property(setting.constData()).toInt(), -1);
+        QVERIFY(!toggle->isChecked());
+        toggle->trigger(); // The first explicit choice enables it, even from -1.
+        QCOMPARE(settings->property(setting.constData()).toInt(), 1);
+        QVERIFY(toggle->isChecked());
+        toggle->trigger();
+        QCOMPARE(settings->property(setting.constData()).toInt(), 0);
+        QVERIFY(!toggle->isChecked());
+        QVERIFY(headset->setProperty(capability.constData(), false));
+        QVERIFY(!toggle->isVisible());
+        QVERIFY(!headsetAction->isVisible());
+    }
+
     void actualTrayBindingsAndActions()
     {
         QQmlEngine engine;

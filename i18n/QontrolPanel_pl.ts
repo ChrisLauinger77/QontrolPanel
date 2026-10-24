@@ -995,6 +995,18 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit the headset playback volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished">Wł.</translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>Wersja</translation>
     </message>
@@ -1511,6 +1523,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>Equalizer Preset</source>
         <translation>Predefiniowane Korektora</translation>
+    </message>
+    <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Lights</source>

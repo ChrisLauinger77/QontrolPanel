@@ -937,6 +937,18 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit the headset playback volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished">ON</translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>La frequenza con cui viene verificato lo stato dalle cuffie. Valori inferiori potrebbero aumentare l&apos;uso della batteria.</translation>
     </message>
@@ -1503,6 +1515,10 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     <message>
         <source>Equalizer Preset</source>
         <translation>Profilo equalizzatore</translation>
+    </message>
+    <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Lights</source>

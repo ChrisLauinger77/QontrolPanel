@@ -936,6 +936,18 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit the headset playback volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished">Vklopljeno</translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>Kako pogosto se pridobi stanje iz slušalk. Nižje vrednosti lahko povečajo porabo baterije.</translation>
     </message>
@@ -1502,6 +1514,10 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>Equalizer Preset</source>
         <translation>Prednastavitev izenačevalnika</translation>
+    </message>
+    <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Lights</source>

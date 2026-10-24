@@ -936,6 +936,18 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit the headset playback volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished">开</translation>
+    </message>
+    <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
         <translation>获取耳机状态的频率。较低的值可能会增加电量消耗。</translation>
     </message>
@@ -1502,6 +1514,10 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Equalizer Preset</source>
         <translation>均衡器预设</translation>
+    </message>
+    <message>
+        <source>Volume limiter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Lights</source>

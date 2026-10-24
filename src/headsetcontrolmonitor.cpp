@@ -394,6 +394,7 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newVoicePromptsCapability = false;
     bool newEqualizerPresetsCapability = false;
     bool newInactivetimeCapability = false;
+    bool newVolumeLimiterCapability = false;
     bool newNoiseFilterCapability = false;
     bool newMicVolumeCapability = false;
     QString newDeviceName = "";
@@ -418,6 +419,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newVoicePromptsCapability = headset.supports(CAP_VOICE_PROMPTS);
         newEqualizerPresetsCapability = headset.supports(CAP_EQUALIZER_PRESET);
         newInactivetimeCapability = headset.supports(CAP_INACTIVE_TIME);
+        newVolumeLimiterCapability = headset.supports(CAP_VOLUME_LIMITER);
         newNoiseFilterCapability = headset.supports(CAP_NOISE_FILTER);
         newMicVolumeCapability = headset.supports(CAP_MICROPHONE_VOLUME);
 
@@ -454,6 +456,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newEqualizerPresetsCapability != m_hasEqualizerPresetsCapability ||
         newMicVolumeCapability != m_hasMicVolumeCapability ||
         newNoiseFilterCapability != m_hasNoiseFilterCapability ||
+        newVolumeLimiterCapability != m_hasVolumeLimiterCapability ||
         newInactivetimeCapability != m_hasInactiveTimeCapability)
     {
         m_hasSidetoneCapability = newSidetoneCapability;
@@ -463,6 +466,7 @@ void HeadsetControlMonitor::updateCapabilities()
         m_hasVoicePromptsCapability = newVoicePromptsCapability;
         m_hasEqualizerPresetsCapability = newEqualizerPresetsCapability;
         m_hasInactiveTimeCapability = newInactivetimeCapability;
+        m_hasVolumeLimiterCapability = newVolumeLimiterCapability;
         m_hasNoiseFilterCapability = newNoiseFilterCapability;
         m_hasMicVolumeCapability = newMicVolumeCapability;
         emit capabilitiesChanged();
@@ -615,6 +619,8 @@ void HeadsetControlMonitor::applyPendingSettings()
           [&](const QVariant& v) { return headset->setMicVolume(static_cast<uint8_t>(qBound(0, v.toInt(), 128))); });
     apply("noiseFilter", m_hasNoiseFilterCapability && m_desiredSettings.value("noiseFilter", -1).toInt() >= 0,
           [&](const QVariant& v) { return headset->setNoiseFilter(static_cast<uint8_t>(qBound(0, v.toInt(), 2))); });
+    apply("volumeLimiter", m_hasVolumeLimiterCapability && m_desiredSettings.value("volumeLimiter", -1).toInt() >= 0,
+          [&](const QVariant& v) { return headset->setVolumeLimiter(qBound(0, v.toInt(), 1) != 0); });
     const QString error = errors.join("\n");
     if (!error.isEmpty())
         LOG_WARN("HeadsetControlManager", error);
@@ -631,6 +637,7 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.hasVoicePromptsCapability = hasVoicePromptsCapability();
     state.hasEqualizerPresetsCapability = hasEqualizerPresetsCapability();
     state.hasInactiveTimeCapability = hasInactiveTimeCapability();
+    state.hasVolumeLimiterCapability = hasVolumeLimiterCapability();
     state.hasNoiseFilterCapability = hasNoiseFilterCapability();
     state.hasMicVolumeCapability = hasMicVolumeCapability();
     state.deviceName = deviceName();
@@ -777,6 +784,7 @@ void HeadsetControlMonitor::clearDeviceState()
     m_hasVoicePromptsCapability = false;
     m_hasEqualizerPresetsCapability = false;
     m_hasInactiveTimeCapability = false;
+    m_hasVolumeLimiterCapability = false;
     m_hasNoiseFilterCapability = false;
     m_hasMicVolumeCapability = false;
     m_deviceName = "";
