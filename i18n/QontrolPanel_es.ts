@@ -945,7 +945,7 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
     <message>
         <source>Light color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de la iluminación</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
@@ -1049,7 +1049,7 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
     <message>
         <source>Saved color for all LED zones; the headset cannot report its current color.</source>
-        <translation type="unfinished"></translation>
+        <translation>Color guardado para todas las zonas LED; los auriculares no pueden informar de su color actual.</translation>
     </message>
     <message>
         <source>Headset volume</source>

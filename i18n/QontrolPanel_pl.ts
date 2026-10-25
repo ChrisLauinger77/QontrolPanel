@@ -1035,7 +1035,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Light color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor podświetlenia</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>
@@ -1075,7 +1075,7 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     </message>
     <message>
         <source>Saved color for all LED zones; the headset cannot report its current color.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisany kolor wszystkich stref LED; zestaw słuchawkowy nie podaje bieżącego koloru.</translation>
     </message>
     <message>
         <source>Headset volume</source>

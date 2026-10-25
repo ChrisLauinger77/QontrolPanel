@@ -857,7 +857,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Light color</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет подсветки</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
@@ -993,7 +993,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Saved color for all LED zones; the headset cannot report its current color.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранённый цвет всех зон светодиодной подсветки; гарнитура не сообщает текущий цвет.</translation>
     </message>
     <message>
         <source>Headset volume</source>

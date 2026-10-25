@@ -867,7 +867,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Light color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur de l’éclairage</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
@@ -1003,7 +1003,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Saved color for all LED zones; the headset cannot report its current color.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur enregistrée pour toutes les zones LED ; le casque ne peut pas indiquer sa couleur actuelle.</translation>
     </message>
     <message>
         <source>Headset volume</source>
