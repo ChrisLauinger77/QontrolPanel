@@ -856,6 +856,10 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>1 – Fehlerzustände</translation>
     </message>
     <message>
+        <source>Light color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>2 - Charging battery</source>
         <translation>2 – Akku aufladen</translation>
     </message>
@@ -986,6 +990,10 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     <message>
         <source>Band %1</source>
         <translation>Band %1</translation>
+    </message>
+    <message>
+        <source>Saved color for all LED zones; the headset cannot report its current color.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Headset volume</source>

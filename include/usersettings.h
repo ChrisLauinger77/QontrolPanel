@@ -48,6 +48,7 @@ class UserSettings : public QObject
     Q_PROPERTY(bool autoFetchForAppUpdates READ autoFetchForAppUpdates WRITE setAutoFetchForAppUpdates NOTIFY autoFetchForAppUpdatesChanged)
     Q_PROPERTY(bool headsetcontrolMonitoring READ headsetcontrolMonitoring WRITE setHeadsetcontrolMonitoring NOTIFY headsetcontrolMonitoringChanged)
     Q_PROPERTY(bool headsetcontrolLights READ headsetcontrolLights WRITE setHeadsetcontrolLights NOTIFY headsetcontrolLightsChanged)
+    Q_PROPERTY(QString headsetcontrolLightColor READ headsetcontrolLightColor WRITE setHeadsetcontrolLightColor NOTIFY headsetcontrolLightColorChanged)
     Q_PROPERTY(bool headsetcontrolRotateToMute READ headsetcontrolRotateToMute WRITE setHeadsetcontrolRotateToMute NOTIFY headsetcontrolRotateToMuteChanged)
     Q_PROPERTY(bool headsetcontrolVoicePrompts READ headsetcontrolVoicePrompts WRITE setHeadsetcontrolVoicePrompts NOTIFY headsetcontrolVoicePromptsChanged)
     Q_PROPERTY(QVariantMap headsetcontrolEqualizers READ headsetcontrolEqualizers WRITE setHeadsetcontrolEqualizers NOTIFY headsetcontrolEqualizersChanged)
@@ -127,6 +128,7 @@ public:
     bool autoFetchForAppUpdates() const { return m_autoFetchForAppUpdates; }
     bool headsetcontrolMonitoring() const { return m_headsetcontrolMonitoring; }
     bool headsetcontrolLights() const { return m_headsetcontrolLights; }
+    QString headsetcontrolLightColor() const { return m_headsetcontrolLightColor; }
     bool headsetcontrolRotateToMute() const { return m_headsetcontrolRotateToMute; }
     bool headsetcontrolVoicePrompts() const { return m_headsetcontrolVoicePrompts; }
     QVariantMap headsetcontrolEqualizers() const { return m_headsetcontrolEqualizers; }
@@ -201,6 +203,7 @@ public:
     void setAutoFetchForAppUpdates(bool value);
     void setHeadsetcontrolMonitoring(bool value);
     void setHeadsetcontrolLights(bool value);
+    void setHeadsetcontrolLightColor(const QString& value);
     void setHeadsetcontrolRotateToMute(bool value);
     void setHeadsetcontrolVoicePrompts(bool value);
     void setHeadsetcontrolEqualizers(const QVariantMap& value);
@@ -277,6 +280,7 @@ signals:
     void autoFetchForAppUpdatesChanged();
     void headsetcontrolMonitoringChanged();
     void headsetcontrolLightsChanged();
+    void headsetcontrolLightColorChanged();
     void headsetcontrolRotateToMuteChanged();
     void headsetcontrolVoicePromptsChanged();
     void headsetcontrolEqualizersChanged();
@@ -358,6 +362,7 @@ private:
     bool m_autoFetchForAppUpdates;
     bool m_headsetcontrolMonitoring;
     bool m_headsetcontrolLights;
+    QString m_headsetcontrolLightColor;
     bool m_headsetcontrolRotateToMute;
     bool m_headsetcontrolVoicePrompts;
     QVariantMap m_headsetcontrolEqualizers; // VID:PID:driver name -> custom, preset, bands

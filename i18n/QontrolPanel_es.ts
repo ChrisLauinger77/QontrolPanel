@@ -944,6 +944,10 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation>1 - Condiciones de error</translation>
     </message>
     <message>
+        <source>Light color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>2 - Charging battery</source>
         <translation>2 - Batería cargándose</translation>
     </message>
@@ -1042,6 +1046,10 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     <message>
         <source>Band %1</source>
         <translation>Banda %1</translation>
+    </message>
+    <message>
+        <source>Saved color for all LED zones; the headset cannot report its current color.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Headset volume</source>

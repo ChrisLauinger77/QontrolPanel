@@ -856,6 +856,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>1 - Ошибки</translation>
     </message>
     <message>
+        <source>Light color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>2 - Charging battery</source>
         <translation>2 - Батарея заряжается</translation>
     </message>
@@ -986,6 +990,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <message>
         <source>Band %1</source>
         <translation>Полоса %1</translation>
+    </message>
+    <message>
+        <source>Saved color for all LED zones; the headset cannot report its current color.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Headset volume</source>

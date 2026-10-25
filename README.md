@@ -37,7 +37,7 @@ Default section of settings pane is configurable in General section.
 - **ChatMix:** Keep communication apps at a dedicated volume and restore their original levels afterward.
 - **Media controls:** View artwork and track details, switch media sources, control playback, and seek through supported media.
 - **Display controls:** Adjust internal and external monitor brightness and control Windows Night Light.
-- **HeadsetControl integration:** Monitor supported headsets and configure battery alerts, sidetone, lighting, equalizer presets, and more.
+- **HeadsetControl integration:** Monitor supported headsets and configure battery alerts, sidetone, lighting and light color, equalizer presets, and more.
 - **Keyboard shortcuts:** Configure global controls and per-application volume hotkeys.
 - **Power and personalization:** Access Windows power actions and customize the panel layout, appearance, language, and behavior.
 

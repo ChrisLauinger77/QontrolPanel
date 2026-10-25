@@ -28,6 +28,7 @@ HeadsetControlBridge::HeadsetControlBridge(QObject *parent)
     connect(settings, &UserSettings::enableNotificationsChanged, this,
             &HeadsetControlBridge::updateLowBatteryNotificationState);
     connect(settings, &UserSettings::headsetcontrolLightsChanged, this, &HeadsetControlBridge::syncDesiredSettings);
+    connect(settings, &UserSettings::headsetcontrolLightColorChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolBluetoothCallVolumeChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolBluetoothWhenPoweredOnChanged, this, &HeadsetControlBridge::syncDesiredSettings);
     connect(settings, &UserSettings::headsetcontrolMicMuteLedBrightnessChanged, this, &HeadsetControlBridge::syncDesiredSettings);
@@ -161,6 +162,7 @@ void HeadsetControlBridge::syncDesiredSettings()
         return;
     auto* settings = UserSettings::instance();
     const QVariantMap desired{{"lights", settings->headsetcontrolLights()},
+                              {"lightColor", settings->headsetcontrolLightColor()},
                               {"rotateToMute", settings->headsetcontrolRotateToMute()},
                               {"voicePrompts", settings->headsetcontrolVoicePrompts()},
                               {"equalizerPreset", settings->headsetcontrolEqualizerPreset()},
@@ -455,6 +457,11 @@ bool HeadsetControlBridge::hasLightsCapability() const
     return m_cachedState.hasLightsCapability;
 }
 
+bool HeadsetControlBridge::hasLightColorCapability() const
+{
+    return m_cachedState.hasLightColorCapability;
+}
+
 bool HeadsetControlBridge::hasRotateToMuteCapability() const
 {
     return m_cachedState.hasRotateToMuteCapability;
@@ -659,6 +666,7 @@ void HeadsetControlBridge::applyState(const HeadsetControlState& state)
         previous.hasHeadsetVolumeCapability != m_cachedState.hasHeadsetVolumeCapability ||
         previous.canReadHeadsetVolume != m_cachedState.canReadHeadsetVolume ||
         previous.hasLightsCapability != m_cachedState.hasLightsCapability ||
+        previous.hasLightColorCapability != m_cachedState.hasLightColorCapability ||
         previous.hasRotateToMuteCapability != m_cachedState.hasRotateToMuteCapability ||
         previous.hasChatMixCapability != m_cachedState.hasChatMixCapability ||
         previous.hasVoicePromptsCapability != m_cachedState.hasVoicePromptsCapability ||

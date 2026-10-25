@@ -2,11 +2,25 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick.Controls.FluentWinUI3
 import ChrisLauinger77.QontrolPanel
 
 ColumnLayout {
     spacing: 3
+
+    ColorDialog {
+        id: lightColorDialog
+        objectName: "headsetLightColorDialog"
+        title: qsTr("Light color")
+        // Default options omit ShowAlphaChannel, keeping this RGB-only.
+        selectedColor: UserSettings.headsetcontrolLightColor
+        onAccepted: {
+            UserSettings.headsetcontrolLightColor = selectedColor.toString()
+            selectedColor = Qt.binding(function() { return UserSettings.headsetcontrolLightColor })
+        }
+    }
+
     readonly property var testProfiles: [
         { text: qsTr("1 - Error conditions"), value: 1 },
         { text: qsTr("2 - Charging battery"), value: 2 },
@@ -360,17 +374,46 @@ ColumnLayout {
                 }
 
                 Card {
-                    visible: HeadsetControlBridge.anyDeviceFound && HeadsetControlBridge.hasLightsCapability
-                    enabled: HeadsetControlBridge.hasLightsCapability
+                    visible: HeadsetControlBridge.anyDeviceFound
+                        && (HeadsetControlBridge.hasLightsCapability || HeadsetControlBridge.hasLightColorCapability)
                     Layout.fillWidth: true
                     title: qsTr("Lights")
-                    description: qsTr("Toggle RGB lights on your headset")
+                    description: HeadsetControlBridge.hasLightColorCapability
+                        ? qsTr("Saved color for all LED zones; the headset cannot report its current color.")
+                        : qsTr("Toggle RGB lights on your headset")
 
-                    additionalControl: LabeledSwitch {
-                        checked: UserSettings.headsetcontrolLights
-                        onClicked: {
-                            UserSettings.headsetcontrolLights = checked;
-                            checked = Qt.binding(function() { return UserSettings.headsetcontrolLights })
+                    additionalControl: RowLayout {
+                        spacing: 10
+
+                        LabeledSwitch {
+                            objectName: "headsetLightsSwitch"
+                            visible: HeadsetControlBridge.hasLightsCapability
+                            checked: UserSettings.headsetcontrolLights
+                            onClicked: {
+                                UserSettings.headsetcontrolLights = checked;
+                                checked = Qt.binding(function() { return UserSettings.headsetcontrolLights })
+                            }
+                        }
+
+                        Button {
+                            id: lightColorButton
+                            objectName: "headsetLightColorButton"
+                            visible: HeadsetControlBridge.hasLightColorCapability
+                            enabled: !HeadsetControlBridge.hasLightsCapability || UserSettings.headsetcontrolLights
+                            Accessible.name: qsTr("Light color")
+                            implicitWidth: 48
+                            contentItem: Rectangle {
+                                implicitWidth: 24
+                                implicitHeight: 20
+                                radius: 3
+                                color: UserSettings.headsetcontrolLightColor
+                                border.width: 1
+                                border.color: lightColorButton.palette.buttonText
+                            }
+                            onClicked: {
+                                lightColorDialog.selectedColor = UserSettings.headsetcontrolLightColor
+                                lightColorDialog.open()
+                            }
                         }
                     }
                 }

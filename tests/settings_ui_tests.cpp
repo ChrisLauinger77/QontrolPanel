@@ -1,5 +1,6 @@
 #include <QtTest>
 #include <QDir>
+#include <QColor>
 #include <QFile>
 #include <QFileInfo>
 #include <QGuiApplication>
@@ -68,6 +69,8 @@ QObject* editor(QObject* pane, const QString& title, const char* property)
     auto* card = findObject(pane, "title", title);
     if (!card)
         return nullptr;
+    if (card->metaObject()->indexOfProperty(property) >= 0)
+        return card;
     for (auto* child : card->findChildren<QObject*>()) {
         if (qobject_cast<QQuickItem*>(child) && child->metaObject()->indexOfProperty(property) >= 0)
             return child;
@@ -171,6 +174,7 @@ private slots:
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
         settings.setValue("chatMixEnabled", false);
         settings.setValue("mediaOverlayPosition", 8);
+        settings.setValue("headsetcontrolLightColor", "#12345678");
         settings.sync();
         QCOMPARE(settings.status(), QSettings::NoError);
         QVERIFY(!settings.contains("panelAnimationsEnabled"));
@@ -188,6 +192,7 @@ private slots:
         QCOMPARE(UserSettings::instance()->headsetcontrolAnc(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolAncStartupMode(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolAncButtonModes(), -1);
+        QCOMPARE(UserSettings::instance()->headsetcontrolLightColor(), QString("#ffffff"));
         qmlRegisterSingletonType<UserSettings>(Module, 1, 0, "UserSettings", UserSettings::create);
         for (const auto* name : {"Card", "CustomScrollView", "CustomComboBox", "LabeledSwitch", "NFSlider"})
             qmlRegisterType(sourceUrl("qml/Common/" + QString::fromLatin1(name) + ".qml"), Module, 1, 0, name);
@@ -911,6 +916,72 @@ private slots:
         QTRY_VERIFY(checkbox->property("enabled").toBool());
     }
 
+    void headsetLightColorValidatesAndPersists()
+    {
+        auto* settings = UserSettings::instance();
+        settings->setHeadsetcontrolLightColor("#123456");
+        QSignalSpy changed(settings, &UserSettings::headsetcontrolLightColorChanged);
+        for (const auto& invalid : {"", "white", "#fff", "123456", "#12345g", "#11223344", "#123456\n", " #123456"}) {
+            settings->setHeadsetcontrolLightColor(invalid);
+            QCOMPARE(settings->headsetcontrolLightColor(), QString("#123456"));
+        }
+        QCOMPARE(changed.size(), 0);
+        settings->setHeadsetcontrolLightColor("#AB12EF");
+        QCOMPARE(settings->headsetcontrolLightColor(), QString("#ab12ef"));
+        QCOMPARE(changed.size(), 1);
+        settings->setHeadsetcontrolLightColor("#ab12ef");
+        QCOMPARE(changed.size(), 1);
+        settings->setHeadsetcontrolLightColor("#000000");
+        QCOMPARE(settings->headsetcontrolLightColor(), QString("#000000"));
+        QSettings persisted(QSettings::IniFormat, QSettings::UserScope, "ChrisLauinger77", "QontrolPanel");
+        QCOMPARE(persisted.value("headsetcontrolLightColor").toString(), QString("#000000"));
+    }
+
+    void headsetLightColorVisibility_data()
+    {
+        QTest::addColumn<bool>("lightsCapability");
+        QTest::addColumn<bool>("colorCapability");
+        QTest::addColumn<bool>("lightsOn");
+        QTest::addColumn<bool>("connected");
+        QTest::newRow("profile-3") << true << true << true << true;
+        QTest::newRow("profile-10") << true << false << true << true;
+        QTest::newRow("lights-off") << true << true << false << true;
+        QTest::newRow("color-only") << false << true << false << true;
+        QTest::newRow("unsupported") << false << false << true << true;
+        QTest::newRow("disconnected") << true << true << true << false;
+    }
+
+    void headsetLightColorVisibility()
+    {
+        QFETCH(bool, lightsCapability); QFETCH(bool, colorCapability);
+        QFETCH(bool, lightsOn); QFETCH(bool, connected);
+        UserSettings::instance()->setHeadsetcontrolLights(lightsOn);
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        QVERIFY(headset->setProperty("hasLightsCapability", lightsCapability));
+        QVERIFY(headset->setProperty("hasLightColorCapability", colorCapability));
+        QVERIFY(headset->setProperty("anyDeviceFound", connected));
+        auto* card = findObject(pane, "title", "Lights");
+        auto* swatch = findVisualItem(qobject_cast<QQuickItem*>(pane), "headsetLightColorButton");
+        auto* toggle = findVisualItem(qobject_cast<QQuickItem*>(pane), "headsetLightsSwitch");
+        auto* dialog = pane->findChild<QObject*>("headsetLightColorDialog");
+        QVERIFY(card && swatch && toggle && dialog);
+        QTRY_COMPARE(card->property("visible").toBool(), connected && (lightsCapability || colorCapability));
+        QTRY_COMPARE(swatch->isVisible(), connected && colorCapability);
+        QTRY_COMPARE(toggle->isVisible(), connected && lightsCapability);
+        QCOMPARE(swatch->isEnabled(), !lightsCapability || lightsOn);
+        QCOMPARE(dialog->property("options").toInt(), 0); // No alpha channel.
+        if (swatch->isVisible() && swatch->isEnabled()) {
+            QVERIFY(QMetaObject::invokeMethod(swatch, "click"));
+            QTRY_VERIFY(dialog->property("visible").toBool());
+            const auto savedColor = UserSettings::instance()->headsetcontrolLightColor();
+            QVERIFY(dialog->setProperty("selectedColor", QColor("#fedcba")));
+            QVERIFY(QMetaObject::invokeMethod(dialog, "reject"));
+            QCOMPARE(UserSettings::instance()->headsetcontrolLightColor(), savedColor);
+        }
+    }
+
     void headsetRetryLimitIsVisible()
     {
         auto* pane = loadPane("HeadsetControlPane");
@@ -970,6 +1041,8 @@ private slots:
         row("HeadsetControlPane", "Equalizer Preset", "headsetcontrolEqualizerPreset", "currentIndex", "activated", 0, 1);
         row("HeadsetControlPane", "Inactive time (minutes)", "headsetcontrolInactiveTime", "value", "wheelChanged", 30, 40);
         row("HeadsetControlPane", "Lights", "headsetcontrolLights", "checked", "clicked", true, false);
+        row("HeadsetControlPane", "Light color", "headsetcontrolLightColor", "selectedColor", "accepted",
+            QString("#ffffff"), QString("#12abef"), QColor("#ffffff"), QColor("#12abef"));
         row("HeadsetControlPane", "Rotate-to-Mute", "headsetcontrolRotateToMute", "checked", "clicked", true, false);
         row("HeadsetControlPane", "Headset volume", "headsetcontrolHeadsetVolume", "value", "wheelChanged", -1, 40, 0, 40);
         row("HeadsetControlPane", "Sidetone", "headsetcontrolSidetone", "value", "wheelChanged", 0, 40);

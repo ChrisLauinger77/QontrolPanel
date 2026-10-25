@@ -1,6 +1,7 @@
 #include "usersettings.h"
 #include "headsetequalizer.h"
 #include <QSettings>
+#include <QRegularExpression>
 #include "logmanager.h"
 
 namespace {
@@ -11,6 +12,12 @@ constexpr int kMaxIconStyle = 4;
 constexpr int kMinHeadsetcontrolLowBatteryThreshold = 1;
 constexpr int kMaxHeadsetcontrolLowBatteryThreshold = 30;
 constexpr int kMinHeadsetcontrolFetchRate = 60;
+
+bool validHeadsetLightColor(const QString& value)
+{
+    static const QRegularExpression pattern(QStringLiteral("\\A#[0-9a-fA-F]{6}\\z"));
+    return pattern.match(value).hasMatch();
+}
 }
 
 UserSettings* UserSettings::m_instance = nullptr;
@@ -99,6 +106,8 @@ void UserSettings::initProperties()
     m_autoFetchForAppUpdates = settings.value("autoFetchForAppUpdates", false).toBool();
     m_headsetcontrolMonitoring = settings.value("headsetcontrolMonitoring", true).toBool();
     m_headsetcontrolLights = settings.value("headsetcontrolLights", true).toBool();
+    const QString lightColor = settings.value("headsetcontrolLightColor", "#ffffff").toString();
+    m_headsetcontrolLightColor = validHeadsetLightColor(lightColor) ? lightColor.toLower() : QStringLiteral("#ffffff");
     m_headsetcontrolRotateToMute = settings.value("headsetcontrolRotateToMute", true).toBool();
     m_headsetcontrolVoicePrompts = settings.value("headsetcontrolVoicePrompts", true).toBool();
     m_headsetcontrolEqualizers = HeadsetEqualizer::stored(
@@ -475,6 +484,19 @@ void UserSettings::setHeadsetcontrolLights(bool value)
             return;
         m_headsetcontrolLights = value;
         emit headsetcontrolLightsChanged();
+    }
+}
+
+void UserSettings::setHeadsetcontrolLightColor(const QString& value)
+{
+    if (!validHeadsetLightColor(value))
+        return;
+    const QString color = value.toLower();
+    if (m_headsetcontrolLightColor != color) {
+        if (!saveValue("headsetcontrolLightColor", color))
+            return;
+        m_headsetcontrolLightColor = color;
+        emit headsetcontrolLightColorChanged();
     }
 }
 

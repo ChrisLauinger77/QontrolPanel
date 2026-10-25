@@ -1,6 +1,7 @@
 #include "headsetcontrolmonitor.h"
 #include "logmanager.h"
 #include "headsetlevelpolicy.h"
+#include <QRegularExpression>
 
 namespace
 {
@@ -9,7 +10,7 @@ namespace
 }
 
 HeadsetControlMonitor::HeadsetControlMonitor(QObject *parent, HeadsetDiscovery discover, EqualizerInfoReader readEqualizerInfo)
-    : QObject(parent), m_discoverHeadsets(std::move(discover)), m_readEqualizerInfo(std::move(readEqualizerInfo)), m_fetchTimer(new QTimer(this)), m_isMonitoring(false), m_fetchIntervalMs(30000), m_hasSidetoneCapability(false), m_hasLightsCapability(false), m_hasRotateToMuteCapability(false), m_hasChatMixCapability(false), m_hasVoicePromptsCapability(false), m_hasEqualizerPresetsCapability(false), m_hasInactiveTimeCapability(false), m_deviceName(""), m_batteryStatus("BATTERY_UNAVAILABLE"), m_batteryLevel(-1), m_chatMix(-1), m_anyDeviceFound(false), m_isFetching(false), m_activeHeadsetIndex(-1), m_activeHeadsetSettingsKey(""), m_testModeEnabled(false), m_testProfile(3)
+    : QObject(parent), m_discoverHeadsets(std::move(discover)), m_readEqualizerInfo(std::move(readEqualizerInfo)), m_fetchTimer(new QTimer(this)), m_isMonitoring(false), m_fetchIntervalMs(30000), m_hasSidetoneCapability(false), m_hasLightsCapability(false), m_hasLightColorCapability(false), m_hasRotateToMuteCapability(false), m_hasChatMixCapability(false), m_hasVoicePromptsCapability(false), m_hasEqualizerPresetsCapability(false), m_hasInactiveTimeCapability(false), m_deviceName(""), m_batteryStatus("BATTERY_UNAVAILABLE"), m_batteryLevel(-1), m_chatMix(-1), m_anyDeviceFound(false), m_isFetching(false), m_activeHeadsetIndex(-1), m_activeHeadsetSettingsKey(""), m_testModeEnabled(false), m_testProfile(3)
 {
     LOG_INFO("HeadsetControlManager",
              QString("HeadsetControlMonitor initialized - HeadsetControl library version: %1")
@@ -463,6 +464,7 @@ void HeadsetControlMonitor::updateCapabilities()
     bool newHeadsetVolumeCapability = false;
     bool newCanReadHeadsetVolume = false;
     bool newLightsCapability = false;
+    bool newLightColorCapability = false;
     bool newRotateToMuteCapability = false;
     bool newChatMixCapability = false;
     bool newVoicePromptsCapability = false;
@@ -497,6 +499,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newHeadsetVolumeCapability = headset.supports(CAP_HEADSET_VOLUME);
         newCanReadHeadsetVolume = headset.canRead(CAP_HEADSET_VOLUME);
         newLightsCapability = headset.supports(CAP_LIGHTS);
+        newLightColorCapability = headset.supports(CAP_LIGHT_COLOR);
         newRotateToMuteCapability = headset.supports(CAP_ROTATE_TO_MUTE);
         newChatMixCapability = headset.supports(CAP_CHATMIX_STATUS);
         newVoicePromptsCapability = headset.supports(CAP_VOICE_PROMPTS);
@@ -549,6 +552,7 @@ void HeadsetControlMonitor::updateCapabilities()
         newHeadsetVolumeCapability != m_hasHeadsetVolumeCapability ||
         newCanReadHeadsetVolume != m_canReadHeadsetVolume ||
         newLightsCapability != m_hasLightsCapability ||
+        newLightColorCapability != m_hasLightColorCapability ||
         newRotateToMuteCapability != m_hasRotateToMuteCapability ||
         newChatMixCapability != m_hasChatMixCapability ||
         newVoicePromptsCapability != m_hasVoicePromptsCapability ||
@@ -568,6 +572,7 @@ void HeadsetControlMonitor::updateCapabilities()
         m_hasHeadsetVolumeCapability = newHeadsetVolumeCapability;
         m_canReadHeadsetVolume = newCanReadHeadsetVolume;
         m_hasLightsCapability = newLightsCapability;
+        m_hasLightColorCapability = newLightColorCapability;
         m_hasRotateToMuteCapability = newRotateToMuteCapability;
         m_hasChatMixCapability = newChatMixCapability;
         m_hasVoicePromptsCapability = newVoicePromptsCapability;
@@ -698,6 +703,18 @@ void HeadsetControlMonitor::setDesiredSettings(const QVariantMap& settings)
 {
     for (auto it = settings.cbegin(); it != settings.cend(); ++it)
     {
+        if (it.key() == "lightColor")
+        {
+            static const QRegularExpression colorPattern(QStringLiteral("\\A#[0-9a-fA-F]{6}\\z"));
+            if (!colorPattern.match(it.value().toString()).hasMatch())
+                continue;
+        }
+        if (it.key() == "lights" && !m_desiredSettings.value("lights", true).toBool() && it.value().toBool())
+        {
+            // Plain on has a device-defined color, so restore the saved color afterwards.
+            m_appliedSettings.remove("lightColor");
+            m_settingAttempts.remove("lightColor");
+        }
         if (m_desiredSettings.value(it.key()) != it.value())
             m_settingAttempts.remove(it.key());
         m_desiredSettings[it.key()] = it.value();
@@ -734,6 +751,7 @@ void HeadsetControlMonitor::applyPendingSettings()
             {
                 m_appliedSettings[key] = desired;
                 m_settingAttempts.remove(key);
+                emit settingApplied(key, desired);
                 if (key == "headsetVolume")
                 {
                     m_headsetVolumeWriteRequested = false;
@@ -758,6 +776,14 @@ void HeadsetControlMonitor::applyPendingSettings()
     }
     };
     apply("lights", m_hasLightsCapability, [&](const QVariant& v) { return headset->setLights(v.toBool()); });
+    apply("lightColor", m_hasLightColorCapability && (!m_hasLightsCapability || m_desiredSettings.value("lights").toBool()),
+          [&](const QVariant& v) {
+              const auto rgb = v.toString().mid(1).toUInt(nullptr, 16);
+              return headset->setLightColor(LightColorSettings{
+                  .r = static_cast<uint8_t>((rgb >> 16) & 0xff),
+                  .g = static_cast<uint8_t>((rgb >> 8) & 0xff),
+                  .b = static_cast<uint8_t>(rgb & 0xff)});
+          });
     apply("rotateToMute", m_hasRotateToMuteCapability,
           [&](const QVariant& v) { return headset->setRotateToMute(v.toBool()); });
     apply("voicePrompts", m_hasVoicePromptsCapability,
@@ -879,6 +905,7 @@ HeadsetControlState HeadsetControlMonitor::snapshot() const
     state.hasHeadsetVolumeCapability = hasHeadsetVolumeCapability();
     state.canReadHeadsetVolume = canReadHeadsetVolume();
     state.hasLightsCapability = hasLightsCapability();
+    state.hasLightColorCapability = hasLightColorCapability();
     state.hasRotateToMuteCapability = hasRotateToMuteCapability();
     state.hasChatMixCapability = hasChatMixCapability();
     state.hasVoicePromptsCapability = hasVoicePromptsCapability();
@@ -1048,6 +1075,7 @@ void HeadsetControlMonitor::clearDeviceState()
     m_hasHeadsetVolumeCapability = false;
     m_canReadHeadsetVolume = false;
     m_hasLightsCapability = false;
+    m_hasLightColorCapability = false;
     m_hasRotateToMuteCapability = false;
     m_hasChatMixCapability = false;
     m_hasVoicePromptsCapability = false;

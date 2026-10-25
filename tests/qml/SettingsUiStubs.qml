@@ -130,6 +130,7 @@ QtObject {
     property bool hasAncStartupModeCapability: true
     property bool hasAncButtonModesCapability: true
     property bool hasLightsCapability: true
+    property bool hasLightColorCapability: true
     property bool hasRotateToMuteCapability: true
     property bool hasSidetoneCapability: true
     property bool hasVoicePromptsCapability: true

@@ -18,6 +18,7 @@ class HeadsetControlBridge : public QObject
     Q_PROPERTY(bool hasHeadsetVolumeCapability READ hasHeadsetVolumeCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool canReadHeadsetVolume READ canReadHeadsetVolume NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasLightsCapability READ hasLightsCapability NOTIFY capabilitiesChanged)
+    Q_PROPERTY(bool hasLightColorCapability READ hasLightColorCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasRotateToMuteCapability READ hasRotateToMuteCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasChatMixCapability READ hasChatMixCapability NOTIFY capabilitiesChanged)
     Q_PROPERTY(bool hasVoicePromptsCapability READ hasVoicePromptsCapability NOTIFY capabilitiesChanged)
@@ -102,6 +103,7 @@ public:
     bool hasHeadsetVolumeCapability() const;
     bool canReadHeadsetVolume() const;
     bool hasLightsCapability() const;
+    bool hasLightColorCapability() const;
     bool hasRotateToMuteCapability() const;
     bool hasChatMixCapability() const;
     bool hasVoicePromptsCapability() const;

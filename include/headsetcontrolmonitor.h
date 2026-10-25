@@ -40,6 +40,7 @@ struct HeadsetControlState
     bool hasHeadsetVolumeCapability = false;
     bool canReadHeadsetVolume = false;
     bool hasLightsCapability = false;
+    bool hasLightColorCapability = false;
     bool hasRotateToMuteCapability = false;
     bool hasChatMixCapability = false;
     bool hasVoicePromptsCapability = false;
@@ -97,6 +98,7 @@ public:
     bool hasHeadsetVolumeCapability() const { return m_hasHeadsetVolumeCapability; }
     bool canReadHeadsetVolume() const { return m_canReadHeadsetVolume; }
     bool hasLightsCapability() const { return m_hasLightsCapability; }
+    bool hasLightColorCapability() const { return m_hasLightColorCapability; }
     bool hasRotateToMuteCapability() const { return m_hasRotateToMuteCapability; }
     bool hasChatMixCapability() const { return m_hasChatMixCapability; }
     bool hasVoicePromptsCapability() const { return m_hasVoicePromptsCapability; }
@@ -146,6 +148,7 @@ public slots:
 signals:
     void snapshotReady(const HeadsetControlState& state);
     void equalizerApplied(bool custom);
+    void settingApplied(const QString& key, const QVariant& value);
     void operationErrorChanged(const QString& error);
     void headsetDataUpdated(const QList<HeadsetControlDevice>& devices);
     void monitoringStateChanged(bool enabled);
@@ -206,6 +209,7 @@ private:
     bool m_hasHeadsetVolumeCapability = false;
     bool m_canReadHeadsetVolume = false;
     bool m_hasLightsCapability;
+    bool m_hasLightColorCapability;
     bool m_hasRotateToMuteCapability;
     bool m_hasChatMixCapability;
     bool m_hasVoicePromptsCapability;

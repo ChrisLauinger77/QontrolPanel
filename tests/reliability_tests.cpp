@@ -595,6 +595,136 @@ private slots:
         QCOMPARE(empty.size(), 2);
     }
 
+    void lightColorWritesFollowLightsAndReplayOnReconnect()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        bool connected = true;
+        HeadsetControlMonitor monitor(nullptr, [&] {
+            auto devices = connected ? headsetcontrol::discover() : std::vector<headsetcontrol::Headset>{};
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(3);
+        monitor.setTestModeEnabled(true);
+        QSignalSpy writes(&monitor, &HeadsetControlMonitor::settingApplied);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        monitor.setDesiredSettings({{"lights", false}, {"lightColor", "#12abef"}});
+        monitor.startMonitoring();
+        QVERIFY(monitor.snapshot().hasLightColorCapability);
+        QCOMPARE(writes.size(), 1);
+        QCOMPARE(writes.at(0).at(0).toString(), QString("lights"));
+        QCOMPARE(writes.at(0).at(1).toBool(), false);
+        monitor.setDesiredSettings({{"lightColor", "#000000"}});
+        monitor.requestRefresh();
+        QCOMPARE(writes.size(), 1); // Color edits and polls cannot turn the lights back on.
+
+        writes.clear();
+        monitor.setDesiredSettings({{"lights", true}});
+        QCOMPARE(writes.size(), 2);
+        QCOMPARE(writes.at(0).at(0).toString(), QString("lights"));
+        QCOMPARE(writes.at(0).at(1).toBool(), true);
+        QCOMPARE(writes.at(1).at(0).toString(), QString("lightColor"));
+        QCOMPARE(writes.at(1).at(1).toString(), QString("#000000")); // Black is a valid color.
+        writes.clear();
+        monitor.setDesiredSettings({{"lights", true}, {"lightColor", "#000000"}});
+        monitor.requestRefresh();
+        QCOMPARE(writes.size(), 0); // Acknowledged settings are not repeated by snapshots or polling.
+
+        monitor.setDesiredSettings({{"lights", false}});
+        writes.clear();
+        monitor.setDesiredSettings({{"lights", true}});
+        QCOMPARE(writes.size(), 2); // Even an unchanged color must follow plain on again.
+        QCOMPARE(writes.at(0).at(0).toString(), QString("lights"));
+        QCOMPARE(writes.at(1).at(0).toString(), QString("lightColor"));
+
+        connected = false;
+        monitor.requestRefresh();
+        QVERIFY(!monitor.snapshot().anyDeviceFound);
+        QVERIFY(!monitor.snapshot().hasLightColorCapability);
+        writes.clear();
+        connected = true;
+        monitor.requestRefresh();
+        QVERIFY(monitor.snapshot().hasLightColorCapability);
+        QCOMPARE(writes.size(), 2);
+        QCOMPARE(writes.at(0).at(0).toString(), QString("lights"));
+        QCOMPARE(writes.at(1).at(0).toString(), QString("lightColor"));
+        QCOMPARE(writes.at(1).at(1).toString(), QString("#000000"));
+
+        writes.clear();
+        for (const auto& invalid : {"#fff", "#aabbccdd", "#gg0000", "aabbcc", "#123456\n"})
+            monitor.setDesiredSettings({{"lightColor", invalid}});
+        QCOMPARE(writes.size(), 0);
+        for (const auto& error : errors)
+            QVERIFY2(error.at(0).toString().isEmpty(), qPrintable(error.at(0).toString()));
+    }
+
+    void lightColorAppliesAfterLightsAndRequiresCapability()
+    {
+        const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
+        const int previousProfile = headsetcontrol::getTestProfile();
+        HeadsetControlMonitor monitor(nullptr, [] {
+            auto devices = headsetcontrol::discover();
+            std::erase_if(devices, [](const auto& headset) {
+                return headset.vendorId() != 0xF00B || headset.productId() != 0xA00C;
+            });
+            return devices;
+        });
+        const auto cleanup = qScopeGuard([&] {
+            monitor.stopMonitoring();
+            headsetcontrol::enableTestDevice(wasEnabled);
+            headsetcontrol::setTestProfile(previousProfile);
+        });
+        monitor.setTestProfile(10);
+        monitor.setTestModeEnabled(true);
+        QSignalSpy writes(&monitor, &HeadsetControlMonitor::settingApplied);
+        QSignalSpy errors(&monitor, &HeadsetControlMonitor::operationErrorChanged);
+        monitor.setDesiredSettings({{"lights", true}, {"lightColor", "#12abef"}});
+        monitor.startMonitoring();
+        QVERIFY(!monitor.snapshot().hasLightColorCapability);
+        QCOMPARE(writes.size(), 1);
+        QCOMPARE(writes.at(0).at(0).toString(), QString("lights"));
+        monitor.setDesiredSettings({{"lightColor", "#000000"}});
+        monitor.requestRefresh();
+        QCOMPARE(writes.size(), 1);
+        for (const auto& error : errors)
+            QVERIFY2(error.at(0).toString().isEmpty(), qPrintable(error.at(0).toString()));
+        // An unsupported library call would also produce an error, even without an acknowledgement.
+        monitor.stopMonitoring();
+        monitor.setTestProfile(3);
+        writes.clear();
+        monitor.startMonitoring();
+        QCOMPARE(writes.size(), 2); // Both settings staged before one apply pass.
+        QCOMPARE(writes.at(0).at(0).toString(), QString("lights"));
+        QCOMPARE(writes.at(1).at(0).toString(), QString("lightColor"));
+        QCOMPARE(writes.at(1).at(1).toString(), QString("#000000"));
+
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto bridgeCleanup = qScopeGuard([&] {
+            bridge->shutdown();
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        QSignalSpy capabilities(bridge, &HeadsetControlBridge::capabilitiesChanged);
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, monitor.snapshot())));
+        QVERIFY(bridge->hasLightColorCapability());
+        const int before = capabilities.size();
+        auto state = monitor.snapshot();
+        state.hasLightColorCapability = false; // This flag alone must notify QML.
+        QVERIFY(QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                         Q_ARG(HeadsetControlState, state)));
+        QVERIFY(!bridge->hasLightColorCapability());
+        QCOMPARE(capabilities.size(), before + 1);
+    }
+
     void limitedHeadsetTestProfile()
     {
         const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
@@ -618,6 +748,7 @@ private slots:
         monitor.startMonitoring();
         QVERIFY(monitor.snapshot().hasEqualizerCapability);
         QVERIFY(monitor.snapshot().hasHeadsetVolumeCapability);
+        QVERIFY(monitor.snapshot().hasLightColorCapability);
         QCOMPARE(monitor.snapshot().equalizerLayout.count, 10);
         QSignalSpy profileChanged(&monitor, &HeadsetControlMonitor::testProfileChanged);
         monitor.setTestProfile(10);
@@ -628,6 +759,7 @@ private slots:
         QVERIFY(state.anyDeviceFound);
         QVERIFY(state.hasSidetoneCapability);
         QVERIFY(state.hasLightsCapability);
+        QVERIFY(!state.hasLightColorCapability);
         QCOMPARE(state.batteryLevel, 42);
         QCOMPARE(state.batteryStatus, QString("BATTERY_AVAILABLE"));
         const auto devices = monitor.getCachedDevices();

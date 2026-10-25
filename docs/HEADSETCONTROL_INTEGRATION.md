@@ -54,6 +54,7 @@ Important state includes:
 - `m_hasSidetoneCapability`
 - `m_hasHeadsetVolumeCapability`
 - `m_hasLightsCapability`
+- `m_hasLightColorCapability`
 - `m_hasRotateToMuteCapability`
 - `m_hasChatMixCapability`
 - `m_hasVoicePromptsCapability`
@@ -112,6 +113,7 @@ Relevant settings live in `UserSettings`:
 
 - `headsetcontrolMonitoring`
 - `headsetcontrolLights`
+- `headsetcontrolLightColor` (global RGB color, `#rrggbb`, default `#ffffff`)
 - `headsetcontrolRotateToMute`
 - `headsetcontrolVoicePrompts`
 - `headsetcontrolEqualizerPreset` (legacy fallback for a headset without a saved selection)
@@ -133,6 +135,12 @@ Relevant settings live in `UserSettings`:
 - `enableNotifications`
 
 Microphone volume, microphone noise filter, volume limiter, mic mute LED brightness, Bluetooth at power-on, and Bluetooth call volume are write-only preferences. They default to `-1` ("Not set") and are omitted from hardware writes until the user chooses a value. On/off preferences use `0` for off and `1` for on; the first tray toggle from "Not set" explicitly selects on. Choosing "Not set" again stops future restoration without changing the headset's current value. The UI displays saved desired values because these preferences cannot be read back.
+
+Light color uses the set-only `CAP_LIGHT_COLOR` capability and applies to every LED zone. The swatch shows the saved desired color, not a hardware reading. Loading or setting it accepts only `#` followed by six hex digits and normalizes to lowercase; malformed persisted values fall back to white. Black (`#000000`) is valid and some devices may treat it as off.
+
+Sending a color turns the lights on, so the monitor sends it only when the desired lights toggle is on or the headset has no `CAP_LIGHTS` toggle. Writes always apply lights before color. Turning lights off and on invalidates the color acknowledgement so the saved color is restored after plain on; reconnects replay both in the same order. The Lights card supports color-only headsets and disables its swatch while the lights toggle is off. Color is available only in settings, with no tray action.
+
+The pinned HeadsetControl revision `2c6790b` advertises light color only on the synthetic test device, in all supported profiles except 10. Profile 3 shows the color control; profile 10 hides it. Corsair Virtuoso XT/SE support is still pending upstream, so no app-side device list enables this control.
 
 When adding a headset preference, keep persisted settings, bridge state, monitor behavior, and QML controls in sync.
 

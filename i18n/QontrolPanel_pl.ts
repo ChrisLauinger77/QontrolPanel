@@ -1034,6 +1034,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>Wył.</translation>
     </message>
     <message>
+        <source>Light color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>10 - Limited capabilities</source>
         <translation>10 - Ograniczone funkcje</translation>
     </message>
@@ -1068,6 +1072,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>Band %1</source>
         <translation>Pasmo %1</translation>
+    </message>
+    <message>
+        <source>Saved color for all LED zones; the headset cannot report its current color.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Headset volume</source>
