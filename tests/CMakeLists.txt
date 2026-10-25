@@ -64,6 +64,7 @@ if(Qt6_FOUND)
     # Keep assertion reports even when Windows CTest cannot capture Qt's console output.
     add_test(NAME qt_reliability COMMAND reliability_tests -o -,txt -o qt_reliability.txt,txt)
     if(WIN32 AND TARGET Qt6::Quick)
+        find_package(Qt6 REQUIRED COMPONENTS LinguistTools)
         add_executable(settings_ui_tests settings_ui_tests.cpp
             ../src/usersettings.cpp ../include/usersettings.h
             ../src/logmanager.cpp ../include/logmanager.h ../include/headsetequalizer.h)
@@ -71,6 +72,12 @@ if(Qt6_FOUND)
         target_compile_definitions(settings_ui_tests PRIVATE UNICODE NOMINMAX
             QONTROLPANEL_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/..")
         target_link_libraries(settings_ui_tests PRIVATE Qt6::Quick Qt6::Test)
+        add_custom_target(settings_ui_test_translations
+            COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:settings_ui_tests>/i18n"
+            COMMAND Qt6::lrelease "${CMAKE_CURRENT_SOURCE_DIR}/../i18n/QontrolPanel_ko.ts"
+                -qm "$<TARGET_FILE_DIR:settings_ui_tests>/i18n/QontrolPanel_ko.qm"
+            VERBATIM)
+        add_dependencies(settings_ui_tests settings_ui_test_translations)
         add_test(NAME settings_ui COMMAND settings_ui_tests -o -,txt -o settings_ui.txt,txt)
     endif()
 else()

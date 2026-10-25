@@ -32,7 +32,7 @@ public:
     static KeyboardShortcutManager* create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     ~KeyboardShortcutManager() override;
 
-    QString lastError() const { return m_lastError; }
+    QString lastError() const;
     bool globalShortcutsSuspended() const;
     void setGlobalShortcutsSuspended(bool suspended);
 
@@ -43,6 +43,7 @@ public:
 
     // Native event filter to handle WM_HOTKEY messages
     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 signals:
     void lastErrorChanged();
@@ -76,7 +77,13 @@ private:
     HWND m_hwnd = nullptr;
     QMap<int, bool> m_registeredHotkeys;
     QMap<int, QPair<UINT, UINT>> m_bindings;
-    QString m_lastError;
+    // Keep the cause so an existing error follows the selected language.
+    struct ErrorState {
+        enum Kind { None, Registration, Save };
+        Kind kind = None;
+        DWORD code = ERROR_SUCCESS;
+    };
+    ErrorState m_lastError;
     bool m_registering = false;
     bool m_registrationQueued = false;
     QMap<int, QPair<int, int>> m_acceptedGlobalBindings;

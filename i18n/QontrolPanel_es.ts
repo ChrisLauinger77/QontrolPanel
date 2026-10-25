@@ -976,6 +976,10 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation>10 - Funciones limitadas</translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation>Dispositivo de prueba de HeadsetControl</translation>
+    </message>
+    <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
         <translation>Notificar cuando los auriculares conectados alcancen %1 % o menos.</translation>
     </message>

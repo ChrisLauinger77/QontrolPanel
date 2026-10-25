@@ -14,6 +14,7 @@
 #include <QSettings>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QTranslator>
 #include <memory>
 #include <windows.h>
 #include "usersettings.h"
@@ -220,6 +221,34 @@ private slots:
         m_pane.reset();
         m_engine.reset();
         m_window.reset();
+    }
+
+    void headsetTitleFollowsLanguageAndKeepsDeviceNames()
+    {
+        auto* pane = loadPane("HeadsetControlPane");
+        QVERIFY(pane);
+        auto* title = pane->findChild<QObject*>("headsetTitle");
+        QVERIFY(title);
+        QCOMPARE(title->property("text").toString(), QString("HeadsetControl Test device"));
+        QTranslator translator;
+        QVERIFY(translator.load(QCoreApplication::applicationDirPath() + "/i18n/QontrolPanel_ko.qm"));
+        const auto removeTranslator = qScopeGuard([&] { QCoreApplication::removeTranslator(&translator); });
+        QVERIFY(QCoreApplication::installTranslator(&translator));
+        m_engine->retranslate();
+        QCOMPARE(title->property("text").toString(), QStringLiteral("HeadsetControl \uD14C\uC2A4\uD2B8 \uC7A5\uCE58"));
+
+        auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
+        const QString deviceName = "Real headset product name";
+        QVERIFY(headset->setProperty("displayName", deviceName));
+        QCOMPARE(title->property("text").toString(), deviceName);
+        QVERIFY(headset->setProperty("testModeEnabled", false));
+        QCOMPARE(title->property("text").toString(), deviceName);
+        QVERIFY(QCoreApplication::removeTranslator(&translator));
+        m_engine->retranslate();
+        QCOMPARE(title->property("text").toString(), deviceName);
+        QVERIFY(headset->setProperty("displayName", "HeadsetControl Test device"));
+        QVERIFY(headset->setProperty("testModeEnabled", true));
+        QCOMPARE(title->property("text").toString(), QString("HeadsetControl Test device"));
     }
 
     void testHeadsetProfileUsesExplicitIds()

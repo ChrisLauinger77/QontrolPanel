@@ -976,6 +976,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>10 - 제한된 기능</translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation>HeadsetControl 테스트 장치</translation>
+    </message>
+    <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
         <translation>연결된 헤드셋이 %1% 이하에 도달하면 알려줍니다.</translation>
     </message>

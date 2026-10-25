@@ -33,7 +33,9 @@ ColumnLayout {
     ]
 
     Label {
-        text: HeadsetControlBridge.displayName
+        objectName: "headsetTitle"
+        text: HeadsetControlBridge.testModeEnabled && HeadsetControlBridge.displayName === "HeadsetControl Test device"
+            ? qsTr("HeadsetControl Test device") : HeadsetControlBridge.displayName
         font.pixelSize: 22
         font.bold: true
         visible: HeadsetControlBridge.anyDeviceFound

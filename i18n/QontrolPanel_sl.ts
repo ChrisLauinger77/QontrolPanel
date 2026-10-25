@@ -887,6 +887,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Spodaj omogočite testni način, da simulirate podprte slušalke in preverite uporabniški vmesnik HeadsetControl.</translation>
     </message>
