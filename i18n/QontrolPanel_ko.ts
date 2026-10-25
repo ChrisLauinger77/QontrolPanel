@@ -830,19 +830,19 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <name>HeadsetBattery</name>
     <message>
         <source>about %1 min to full</source>
-        <translation type="unfinished"></translation>
+        <translation>완충까지 약 %1분</translation>
     </message>
     <message>
         <source>about %1 min left</source>
-        <translation type="unfinished"></translation>
+        <translation>남은 시간 약 %1분</translation>
     </message>
     <message>
         <source>about %1 h to full</source>
-        <translation type="unfinished"></translation>
+        <translation>완충까지 약 %1시간</translation>
     </message>
     <message>
         <source>about %1 h left</source>
-        <translation type="unfinished"></translation>
+        <translation>남은 시간 약 %1시간</translation>
     </message>
 </context>
 <context>
@@ -853,7 +853,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Current battery level of the connected headset</source>
-        <translation>연결된 헤드셋의 현재 배터리 수준</translation>
+        <translation>연결된 헤드셋의 현재 배터리 잔량</translation>
     </message>
     <message>
         <source>ChatMix</source>
@@ -945,7 +945,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Light color</source>
-        <translation type="unfinished"></translation>
+        <translation>조명 색상</translation>
     </message>
     <message>
         <source>2 - Charging battery</source>
@@ -957,7 +957,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>4 - Battery unavailable</source>
-        <translation>4 - 배터리 없ㅇ</translation>
+        <translation>4 - 배터리 없음</translation>
     </message>
     <message>
         <source>5 - Timeout</source>
@@ -973,7 +973,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>10 - Limited capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>10 - 제한된 기능</translation>
     </message>
     <message>
         <source>Notify when the connected headset reaches %1% or lower.</source>
@@ -981,31 +981,31 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Microphone mute (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 음소거 (마지막 상태)</translation>
     </message>
     <message>
         <source>Updates at the headset fetch rate.</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋의 데이터 수신 주기에 따라 업데이트됩니다.</translation>
     </message>
     <message>
         <source>Muted</source>
-        <translation type="unfinished"></translation>
+        <translation>음소거됨</translation>
     </message>
     <message>
         <source>Unmuted</source>
-        <translation type="unfinished"></translation>
+        <translation>음소거 해제됨</translation>
     </message>
     <message>
         <source>Boom mic (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>붐 마이크 (마지막 상태)</translation>
     </message>
     <message>
         <source>Attached</source>
-        <translation type="unfinished"></translation>
+        <translation>연결됨</translation>
     </message>
     <message>
         <source>Detached</source>
-        <translation type="unfinished"></translation>
+        <translation>분리됨</translation>
     </message>
     <message>
         <source>Equalizer Preset</source>
@@ -1013,7 +1013,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>프리셋을 선택하면 사용자 지정 곡선 적용이 중단됩니다. 사용자 지정 곡선 설정은 그대로 유지됩니다.</translation>
     </message>
     <message>
         <source>Set the equalizer preset for your headset</source>
@@ -1021,159 +1021,159 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Custom equalizer</source>
-        <translation type="unfinished"></translation>
+        <translation>사용자 지정 이퀄라이저</translation>
     </message>
     <message>
         <source>Save and restore a custom curve for this headset.</source>
-        <translation type="unfinished"></translation>
+        <translation>이 헤드셋을 위한 사용자 지정 곡선을 저장하고 불러올 수 있습니다.</translation>
     </message>
     <message>
         <source>Select an equalizer preset first to load this headset&apos;s band layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>이 헤드셋의 대역 구성을 불러오려면 먼저 이퀄라이저 프리셋을 선택하세요.</translation>
     </message>
     <message>
         <source>Start from preset</source>
-        <translation type="unfinished"></translation>
+        <translation>프리셋에서 시작하기</translation>
     </message>
     <message>
         <source>Copy a preset curve, then adjust its bands.</source>
-        <translation type="unfinished"></translation>
+        <translation>프리셋 곡선을 복사한 후, 각 대역을 조정할 수 있습니다.</translation>
     </message>
     <message>
         <source>Choose a preset</source>
-        <translation type="unfinished"></translation>
+        <translation>프리셋 선택</translation>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>대역 %1</translation>
     </message>
     <message>
         <source>Saved color for all LED zones; the headset cannot report its current color.</source>
-        <translation type="unfinished"></translation>
+        <translation>모든 LED 구역에 대해 저장된 색상입니다. 헤드셋에서 현재 설정된 색상 정보를 가져올 수는 없습니다.</translation>
     </message>
     <message>
         <source>Headset volume</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋 볼륨</translation>
     </message>
     <message>
         <source>Adjust the headset&apos;s hardware volume, separately from Windows volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows 볼륨과 별도로 헤드셋 하드웨어 볼륨 조정</translation>
     </message>
     <message>
         <source>Device level (last reading): %1 / 128</source>
-        <translation type="unfinished"></translation>
+        <translation>장치 수준 (마지막 상태): %1 / 128</translation>
     </message>
     <message>
         <source>No headset volume reading yet</source>
-        <translation type="unfinished"></translation>
+        <translation>아직 헤드셋 볼륨 정보를 가져오지 못했습니다</translation>
     </message>
     <message>
         <source>Read-back unavailable; showing your saved choice</source>
-        <translation type="unfinished"></translation>
+        <translation>현재 상태를 불러올 수 없습니다. 저장해 두신 설정을 표시합니다</translation>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>노이즈 캔슬링</translation>
     </message>
     <message>
         <source>Choose the listening mode. Shows your saved choice; the headset cannot report its current mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>청취 모드를 선택합니다. 저장된 선택 사항을 표시합니다. 헤드셋은 현재 모드를 표시할 수 없습니다.</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>주변 소리</translation>
     </message>
     <message>
         <source>Noise cancelling at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>전원 켜짐 시 노이즈 캔슬링</translation>
     </message>
     <message>
         <source>Choose the listening mode when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋 전원을 켤 때 청취 모드를 선택하세요</translation>
     </message>
     <message>
         <source>Last mode at power-off</source>
-        <translation type="unfinished"></translation>
+        <translation>전원 꺼짐 시 마지막 모드</translation>
     </message>
     <message>
         <source>Noise cancelling button cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>노이즈 캔슬링 버튼 순환</translation>
     </message>
     <message>
         <source>Choose at least one mode for the headset button to cycle through</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋의 버튼을 눌러 전환할 모드를 하나 이상 선택하세요</translation>
     </message>
     <message>
         <source>Microphone volume</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 볼륨</translation>
     </message>
     <message>
         <source>Adjust the headset microphone volume (0–128)</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋 마이크 볼륨 조정 (0–128)</translation>
     </message>
     <message>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>설정되지 않음</translation>
     </message>
     <message>
         <source>Microphone noise filter</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 노이즈 필터</translation>
     </message>
     <message>
         <source>Choose the microphone noise filter strength</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 노이즈 필터 강도 선택</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">끔</translation>
+        <translation>끔</translation>
     </message>
     <message>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>낮음</translation>
     </message>
     <message>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>높음</translation>
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>볼륨 제한기</translation>
     </message>
     <message>
         <source>Limit the headset playback volume</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋 재생 볼륨 제한</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="unfinished">켬</translation>
+        <translation>켬</translation>
     </message>
     <message>
         <source>Mic mute LED brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 음소거 LED 밝기</translation>
     </message>
     <message>
         <source>Adjust the microphone mute indicator brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 음소거 표시등 밝기 조절</translation>
     </message>
     <message>
         <source>Medium</source>
-        <translation type="unfinished"></translation>
+        <translation>중간</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>전원 켤 때 블루투스 활성화</translation>
     </message>
     <message>
         <source>Enable Bluetooth when the headset powers on</source>
-        <translation type="unfinished"></translation>
+        <translation>헤드셋 전원을 켤 때 블루투스 기능 활성화</translation>
     </message>
     <message>
         <source>Bluetooth call volume</source>
-        <translation type="unfinished"></translation>
+        <translation>블루투스 통화 볼륨</translation>
     </message>
     <message>
         <source>Adjust the Bluetooth call volume (0–100)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth 통화 볼륨 조절 (0–100)</translation>
     </message>
     <message>
         <source>How often the status from your headset is fetched. Lower values may increase battery usage.</source>
@@ -1689,23 +1689,23 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Noise cancelling</source>
-        <translation type="unfinished"></translation>
+        <translation>노이즈 캔슬링</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">끔</translation>
+        <translation>끔</translation>
     </message>
     <message>
         <source>Ambient sound</source>
-        <translation type="unfinished"></translation>
+        <translation>주변 소리</translation>
     </message>
     <message>
         <source>Volume limiter</source>
-        <translation type="unfinished"></translation>
+        <translation>볼륨 제한기</translation>
     </message>
     <message>
         <source>Bluetooth on at power-on</source>
-        <translation type="unfinished"></translation>
+        <translation>전원 켜짐 시 블루투스 활성화</translation>
     </message>
     <message>
         <source>Lights</source>
@@ -1741,11 +1741,11 @@ You can enable it in the Components tab.</source>
     </message>
     <message>
         <source>Mic muted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 음소거 (마지막 상태)</translation>
     </message>
     <message>
         <source>Mic unmuted (last reading)</source>
-        <translation type="unfinished"></translation>
+        <translation>마이크 음소거 해제 (마지막 상태)</translation>
     </message>
     <message>
         <source>Windows sound settings (Legacy)</source>
