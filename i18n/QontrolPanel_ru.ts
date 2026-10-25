@@ -888,6 +888,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>10 - Ограниченные возможности</translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation>Тестовое устройство HeadsetControl</translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Включите тестовый режим ниже, чтобы имитировать поддерживаемую гарнитуру и проверить интерфейс HeadsetControl.</translation>
     </message>

@@ -1042,6 +1042,10 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <translation>10 - Ograniczone funkcje</translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation>Urządzenie testowe HeadsetControl</translation>
+    </message>
+    <message>
         <source>Selecting a preset stops applying the custom curve. Your custom curve is kept.</source>
         <translation>Wybór ustawienia wstępnego wyłącza stosowanie niestandardowej krzywej. Krzywa zostaje zachowana.</translation>
     </message>

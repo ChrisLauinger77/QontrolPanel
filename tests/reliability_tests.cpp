@@ -31,6 +31,8 @@
 #include "updater.h"
 #endif
 #include <QScopeGuard>
+#include <QTranslator>
+#include <future>
 #include <QStandardPaths>
 #include <QUuid>
 #include <QSettings>
@@ -1637,6 +1639,75 @@ private slots:
     }
 #endif
 #ifdef QONTROLPANEL_LANGUAGE_TESTS
+    void shortcutErrorsFollowLanguageChanges_data()
+    {
+        QTest::addColumn<bool>("registrationError");
+        QTest::newRow("registration") << true;
+        QTest::newRow("save") << false;
+    }
+
+    void shortcutErrorsFollowLanguageChanges()
+    {
+        QFETCH(bool, registrationError);
+        std::promise<bool> registered;
+        std::promise<void> release;
+        auto released = release.get_future();
+        std::thread blocker;
+        const auto unblock = qScopeGuard([&] {
+            if (blocker.joinable()) {
+                release.set_value();
+                blocker.join();
+            }
+        });
+        if (registrationError) {
+            // Reserve the startup shortcut on another thread to reproduce error 1409.
+            blocker = std::thread([&] {
+                constexpr int id = 0x3ffe;
+                const bool held = RegisterHotKey(nullptr, id, MOD_CONTROL | MOD_ALT | MOD_SHIFT, VK_F17) != 0;
+                registered.set_value(held);
+                released.wait();
+                if (held)
+                    UnregisterHotKey(nullptr, id);
+            });
+            QVERIFY(registered.get_future().get());
+        }
+        m_shortcuts.reset(KeyboardShortcutManager::instance());
+        if (!registrationError) {
+            const QString path = m_shortcutDataDirectory + "/appvolumehotkeys.json";
+            QVERIFY(QDir().mkpath(path));
+            constexpr int modifiers = Qt::ControlModifier | Qt::AltModifier | Qt::ShiftModifier;
+            QVERIFY(!m_shortcuts->addAppVolumeHotkey("player.exe", Qt::Key_F20, modifiers,
+                                                    Qt::Key_F21, modifiers));
+        }
+        const char* source = registrationError
+            ? "Windows could not register a shortcut (error %1). The previous binding was retained when possible."
+            : "Could not save application shortcuts. Check access to your user profile and available disk space.";
+        const auto formatted = [&](QString text) {
+            return registrationError ? text.arg(ERROR_HOTKEY_ALREADY_REGISTERED) : text;
+        };
+        const QString english = formatted(QString::fromUtf8(source));
+        QCOMPARE(m_shortcuts->lastError(), english);
+        QSignalSpy changed(m_shortcuts.get(), &KeyboardShortcutManager::lastErrorChanged);
+        QSignalSpy registrationFailed(m_shortcuts.get(), &KeyboardShortcutManager::registrationFailed);
+        QSignalSpy saveFailed(m_shortcuts.get(), &KeyboardShortcutManager::saveFailed);
+        QTranslator translator;
+        QVERIFY(translator.load(QCoreApplication::applicationDirPath() + "/i18n/QontrolPanel_de.qm"));
+        const auto removeTranslator = qScopeGuard([&] { QCoreApplication::removeTranslator(&translator); });
+        QVERIFY(QCoreApplication::installTranslator(&translator));
+        const QString german = formatted(translator.translate("KeyboardShortcutManager", source));
+        QVERIFY(!german.isEmpty() && german != english);
+        QCOMPARE(m_shortcuts->lastError(), german);
+        QCOMPARE(changed.size(), 1);
+        QVERIFY(QCoreApplication::removeTranslator(&translator));
+        QCOMPARE(m_shortcuts->lastError(), english);
+        QCOMPARE(changed.size(), 2);
+        // Retranslation must not retry registration or persistence.
+        QCOMPARE(registrationFailed.size(), 0);
+        QCOMPARE(saveFailed.size(), 0);
+        QVERIFY(!shortcutIsAvailable(VK_F18));
+        QVERIFY(!shortcutIsAvailable(VK_F19));
+    }
+
     void languageChangesRequireSavedSettings()
     {
         auto* settings = UserSettings::instance();

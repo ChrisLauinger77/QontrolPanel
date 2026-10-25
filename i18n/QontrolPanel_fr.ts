@@ -898,6 +898,10 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>10 - Fonctionnalités limitées</translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation>Périphérique de test HeadsetControl</translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Activez le mode test ci-dessous pour simuler un casque pris en charge et valider l&apos;interface HeadsetControl.</translation>
     </message>

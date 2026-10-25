@@ -3,6 +3,7 @@
 #include "keyboardshortcutmanager.h"
 #include "usersettings.h"
 #include <QCoreApplication>
+#include <QEvent>
 #include <QWindow>
 #include <QTimer>
 #include <QStandardPaths>
@@ -38,6 +39,7 @@ KeyboardShortcutManager::KeyboardShortcutManager(QObject *parent)
 
     // Install the native event filter
     QCoreApplication::instance()->installNativeEventFilter(this);
+    QCoreApplication::instance()->installEventFilter(this);
 
     // Load per-app volume hotkeys from file
     loadAppVolumeHotkeys();
@@ -61,6 +63,7 @@ KeyboardShortcutManager::~KeyboardShortcutManager()
 
     // Remove the native event filter
     QCoreApplication::instance()->removeNativeEventFilter(this);
+    QCoreApplication::instance()->removeEventFilter(this);
 
     // Destroy the message-only window
     if (m_hwnd) {
@@ -71,6 +74,28 @@ KeyboardShortcutManager::~KeyboardShortcutManager()
     if (m_instance == this) {
         m_instance = nullptr;
     }
+}
+
+QString KeyboardShortcutManager::lastError() const
+{
+    switch (m_lastError.kind) {
+    case ErrorState::Registration:
+        return tr("Windows could not register a shortcut (error %1). The previous binding was retained when possible.")
+            .arg(m_lastError.code);
+    case ErrorState::Save:
+        return tr("Could not save application shortcuts. Check access to your user profile and available disk space.");
+    case ErrorState::None:
+        return {};
+    }
+    return {};
+}
+
+bool KeyboardShortcutManager::eventFilter(QObject* watched, QEvent* event)
+{
+    if (watched == QCoreApplication::instance() && event->type() == QEvent::LanguageChange
+        && m_lastError.kind != ErrorState::None)
+        emit lastErrorChanged();
+    return QObject::eventFilter(watched, event);
 }
 
 void KeyboardShortcutManager::syncGlobalShortcuts()
@@ -112,7 +137,7 @@ void KeyboardShortcutManager::registerHotkeys()
     if (m_registering || !m_hwnd)
         return;
     m_registering = true;
-    m_lastError.clear();
+    m_lastError = {};
     auto* settings = UserSettings::instance();
     auto apply = [&](int id, int key, int modifiers, auto restore) {
         if (registerBinding(id, convertQtModifiers(modifiers), qtKeyToVirtualKey(key)))
@@ -345,9 +370,9 @@ bool KeyboardShortcutManager::saveAppVolumeHotkeys(const QList<AppVolumeHotkey>&
 void KeyboardShortcutManager::reportAppVolumeHotkeysSaveFailure()
 {
     LOG_WARN("Shortcuts", "Could not persist application volume hotkeys");
-    m_lastError = tr("Could not save application shortcuts. Check access to your user profile and available disk space.");
+    m_lastError = {ErrorState::Save};
     emit lastErrorChanged();
-    emit saveFailed(m_lastError);
+    emit saveFailed(lastError());
 }
 
 void KeyboardShortcutManager::registerAppVolumeHotkeys()
@@ -407,13 +432,13 @@ bool KeyboardShortcutManager::addAppVolumeHotkey(const QString &executableName, 
     hotkey.volumeDownModifiers = volDownMods;
     hotkey.volumeStepSize = qBound(0, volumeStepSize, 100);
     m_appVolumeHotkeys.append(hotkey);
-    m_lastError.clear();
+    m_lastError = {};
     if (UserSettings::instance()->globalShortcutsEnabled())
         registerAppVolumeHotkeys();
-    const bool persistenceFailed = m_lastError.isEmpty() && !saveAppVolumeHotkeys(m_appVolumeHotkeys);
-    if (!m_lastError.isEmpty() || persistenceFailed)
+    const bool persistenceFailed = m_lastError.kind == ErrorState::None && !saveAppVolumeHotkeys(m_appVolumeHotkeys);
+    if (m_lastError.kind != ErrorState::None || persistenceFailed)
     {
-        const QString error = m_lastError;
+        const auto error = m_lastError;
         unregisterAppVolumeHotkeys();
         m_appVolumeHotkeys = previous;
         if (UserSettings::instance()->globalShortcutsEnabled())
@@ -458,7 +483,7 @@ bool KeyboardShortcutManager::removeAppVolumeHotkey(const QString &executableNam
                 }
             }
             m_appVolumeHotkeys = desired;
-            m_lastError.clear();
+            m_lastError = {};
             emit lastErrorChanged();
             emit appVolumeHotkeysChanged();
             return true;
@@ -509,11 +534,9 @@ bool KeyboardShortcutManager::registerBinding(int id, UINT modifiers, UINT key)
         m_registeredHotkeys[id] = true;
         m_bindings[id] = previous;
     }
-    m_lastError =
-        tr("Windows could not register a shortcut (error %1). The previous binding was retained when possible.")
-            .arg(error);
+    m_lastError = {ErrorState::Registration, error};
     LOG_WARN("Shortcuts", QString("Hotkey %1 registration failed: %2").arg(id).arg(error));
     emit lastErrorChanged();
-    emit registrationFailed(m_lastError);
+    emit registrationFailed(lastError());
     return false;
 }

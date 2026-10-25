@@ -888,6 +888,10 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Abilita la modalità test di seguito per simulare una cuffia supportata e convalidare l&apos;interfaccia utente di Controllo cuffie</translation>
     </message>

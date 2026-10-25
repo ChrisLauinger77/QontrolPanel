@@ -889,6 +889,10 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
         <translation>10 - Recursos limitados</translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation>Dispositivo de teste do HeadsetControl</translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>Ative o modo de teste abaixo para simular um headset compatível e validar a interface do HeadsetControl.</translation>
     </message>

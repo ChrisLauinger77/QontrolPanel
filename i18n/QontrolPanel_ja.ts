@@ -888,6 +888,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>HeadsetControl Test device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable test mode below to simulate a supported headset and validate the HeadsetControl UI.</source>
         <translation>以下のテストモードを有効にすると、対応しているヘッドセットをシミュレートしてヘッドセット コントロール UI を検証できます。</translation>
     </message>
