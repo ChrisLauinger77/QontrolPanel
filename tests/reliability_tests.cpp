@@ -1576,6 +1576,7 @@ private slots:
     {
         auto* settings = UserSettings::instance();
         settings->setRememberApplicationVolumes(true);
+        m_shortcuts.reset(KeyboardShortcutManager::instance());
         m_audio.reset(AudioBridge::instance());
         AudioApplication player;
         player.id = "player-session";
@@ -1621,6 +1622,7 @@ private slots:
         const QJsonDocument saved(QJsonObject{{"applicationVolumes", QJsonArray{
             QJsonObject{{"executableName", "player"}, {"volume", 37}}}}});
         QVERIFY(JsonStore::save(path, saved));
+        m_shortcuts.reset(KeyboardShortcutManager::instance());
         m_audio.reset(AudioBridge::instance());
         QCOMPARE(m_audio->rememberedApplicationVolume("Player"), 37);
         QSignalSpy failed(m_audio.get(), &AudioBridge::saveFailed);
