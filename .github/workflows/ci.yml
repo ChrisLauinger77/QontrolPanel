@@ -13,6 +13,8 @@ on:
       - "renovate.json"
 
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'
 permissions:
   contents: read
 env:
