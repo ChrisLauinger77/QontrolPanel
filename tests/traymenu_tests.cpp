@@ -451,6 +451,67 @@ private slots:
         QCOMPARE(systemTray->property("tooltip").toString(), QString("QontrolPanel"));
     }
 
+    void mediaTooltip()
+    {
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* headset = engine.singletonInstance<QObject*>(m_headsetType);
+        auto* media = engine.singletonInstance<QObject*>(m_mediaType);
+        auto* settings = engine.singletonInstance<QObject*>(m_settingsType);
+        const auto tooltip = [&] { return systemTray->property("tooltip").toString(); };
+        const auto mediaLine = QStringLiteral("\n♫ Test song");
+        QVERIFY(!tooltip().contains(QChar(0x266B)));
+        QVERIFY(media->setProperty("mediaTitle", " Test song "));
+        // Paused media is left out of the tooltip.
+        QVERIFY(!tooltip().contains(QChar(0x266B)));
+        QVERIFY(media->setProperty("isMediaPlaying", true));
+        QVERIFY2(tooltip().endsWith(mediaLine), qPrintable(tooltip()));
+        QVERIFY(media->setProperty("mediaArtist", " Test artist "));
+        QVERIFY2(tooltip().endsWith(mediaLine + QStringLiteral(" — Test artist")), qPrintable(tooltip()));
+        QVERIFY(media->setProperty("isMediaPlaying", false));
+        QVERIFY(!tooltip().contains(QChar(0x266B)));
+        QVERIFY(media->setProperty("isMediaPlaying", true));
+        QVERIFY(media->setProperty("mediaArtist", ""));
+        QVERIFY2(tooltip().endsWith(mediaLine), qPrintable(tooltip()));
+        QVERIFY(tooltip().contains(QStringLiteral("HeadsetControl Test device")));
+        QVERIFY(settings->setProperty("enableMediaSessionManager", false));
+        QVERIFY(!tooltip().contains(QChar(0x266B)));
+        QVERIFY(settings->setProperty("enableMediaSessionManager", true));
+        QVERIFY(headset->setProperty("anyDeviceFound", false));
+        QCOMPARE(tooltip(), QStringLiteral("QontrolPanel") + mediaLine);
+
+        // Long titles are shortened so the headset status before them stays within the Windows limit.
+        QVERIFY(headset->setProperty("anyDeviceFound", true));
+        QVERIFY(headset->setProperty("micMuted", 0));
+        const auto headsetTooltip = QStringLiteral("QontrolPanel\n\U0001F3A7HeadsetControl Test device\n50% "
+                                                   "\U0001F3A4ChatMix: 50 Mic unmuted (last reading)");
+        QVERIFY(media->setProperty("mediaTitle", QString(200, QChar('x'))));
+        QVERIFY2(tooltip().startsWith(headsetTooltip + QStringLiteral("\n♫ x")), qPrintable(tooltip()));
+        QVERIFY(tooltip().endsWith(QStringLiteral("x...")));
+        QCOMPARE(tooltip().size(), 127);
+        QVERIFY(media->setProperty("mediaTitle", QStringLiteral("Test song")));
+        QVERIFY(media->setProperty("mediaArtist", QString(200, QChar('y'))));
+        QVERIFY2(tooltip().startsWith(headsetTooltip + mediaLine + QStringLiteral(" — y")), qPrintable(tooltip()));
+        QVERIFY(tooltip().endsWith(QStringLiteral("y...")));
+        QCOMPARE(tooltip().size(), 127);
+        QVERIFY(media->setProperty("mediaArtist", ""));
+        // Without room for a readable title, the media line is left out.
+        QVERIFY(headset->setProperty("displayName", QString(60, QChar('h'))));
+        QVERIFY(!tooltip().contains(QChar(0x266B)));
+        QVERIFY(media->setProperty("mediaTitle", ""));
+        QVERIFY(headset->setProperty("displayName", QStringLiteral("HeadsetControl Test device")));
+        QCOMPARE(tooltip(), headsetTooltip);
+    }
+
     void actualTrayBindingsAndActions()
     {
         QQmlEngine engine;
