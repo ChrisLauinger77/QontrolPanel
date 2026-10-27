@@ -22,6 +22,8 @@ QtObject {
     property int sourceCount: 1
     property bool canPreviousTrack: false
     property bool isMediaPlaying: false
+    property string mediaTitle: ""
+    property string mediaArtist: ""
     property int previousTrackCount: 0
     property int playPauseCount: 0
     property int nextTrackCount: 0

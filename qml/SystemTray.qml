@@ -13,6 +13,9 @@ Platform.SystemTrayIcon {
 
     readonly property bool mediaControlsEnabled: UserSettings.enableMediaSessionManager
                                                 && MediaSessionBridge.sourceCount > 0
+    // Windows cuts tray tooltips at 127 characters (NOTIFYICONDATA::szTip).
+    readonly property int maxTooltipLength: 127
+    readonly property int minTooltipTitleLength: 8
 
     onActivated: function (reason) {
         if (reason === Platform.SystemTrayIcon.Context) {
@@ -128,11 +131,27 @@ Platform.SystemTrayIcon {
     }
 
     function getTooltip() {
-        var baseTooltip = qsTr("QontrolPanel");
-        var isWirelessHeadsetAvailable = HeadsetControlBridge.anyDeviceFound;
-        if (!isWirelessHeadsetAvailable) {
-            return baseTooltip;
-        }
+        var tooltip = qsTr("QontrolPanel") + systemTray.getHeadsetTooltip();
+        return tooltip + systemTray.getMediaTooltip(systemTray.maxTooltipLength - tooltip.length);
+    }
+
+    // The media line goes last and is shortened to the remaining space, so it never
+    // pushes the headset status past the Windows tooltip limit.
+    function getMediaTooltip(maxLength) {
+        const prefix = "\n♫ ";
+        if (!UserSettings.enableMediaSessionManager || !MediaSessionBridge.isMediaPlaying)
+            return "";
+        const title = (MediaSessionBridge.mediaTitle || "").trim();
+        const artist = (MediaSessionBridge.mediaArtist || "").trim();
+        if (title.length === 0 || maxLength - prefix.length < systemTray.minTooltipTitleLength)
+            return "";
+        const text = artist.length > 0 ? title + " — " + artist : title;
+        return prefix + systemTray.truncateText(text, maxLength - prefix.length);
+    }
+
+    function getHeadsetTooltip() {
+        if (!HeadsetControlBridge.anyDeviceFound)
+            return "";
 
         var batteryText = "\n" + "🎧" + HeadsetControlBridge.displayName + "\n";
         batteryText += HeadsetControlBridge.batteryIcon;
@@ -155,7 +174,7 @@ Platform.SystemTrayIcon {
                 ? qsTr("Mic muted (last reading)") : qsTr("Mic unmuted (last reading)"));
         }
 
-        return baseTooltip + batteryText;
+        return batteryText;
     }
 
     function isHeadsetBatteryAvailable() {
