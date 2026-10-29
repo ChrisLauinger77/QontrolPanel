@@ -369,10 +369,6 @@
         <translation>Omogoči meni za napajanje</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Prikaži gumb za vklop v nogi plošče</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>Omogoči nadzor svetlosti</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Prikaz trenutno predvajanih medijev iz znanih virov sistema Windows</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Prikaži dejanja napajanja v nogi plošče in v meniju sistemske vrstice</translation>
     </message>
 </context>
 <context>
@@ -1761,6 +1761,42 @@ Omogočite ga lahko na zavihku Komponente.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel nastavitve</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Napajanje</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Spanje</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Hibernacija</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Ponovni zagon</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Ponovni zagon UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Zaustavi</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Zakleni</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Odjava</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Preklopi uporabnika</translation>
     </message>
 </context>
 <context>

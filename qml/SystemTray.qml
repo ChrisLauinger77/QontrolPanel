@@ -8,6 +8,7 @@ Platform.SystemTrayIcon {
     signal togglePanelRequested
     signal showIntroRequested
     signal settingsWindowRequested
+    signal powerConfirmationRequested(int action)
     icon.source: Constants.getTrayIcon(AudioBridge.outputVolume, AudioBridge.outputMuted)
     tooltip: getTooltip()
 
@@ -87,6 +88,19 @@ Platform.SystemTrayIcon {
                     visible: HeadsetControlBridge.hasRotateToMuteCapability, checked: UserSettings.headsetcontrolRotateToMute }
               ] },
             { separator: true },
+            { id: "power", text: qsTr("Power"), icon: "qrc:/icons/power.svg",
+              visible: UserSettings.enablePowerMenu, enabled: !PowerBridge.busy,
+              children: [
+                  { id: "sleep", text: qsTr("Sleep"), icon: "qrc:/icons/sleep.svg", enabled: PowerBridge.sleepSupported },
+                  { id: "hibernate", text: qsTr("Hibernate"), icon: "qrc:/icons/hibernate.svg", enabled: PowerBridge.hibernateSupported },
+                  { id: "restart", text: qsTr("Restart"), icon: "qrc:/icons/restart.svg" },
+                  { id: "restartUefi", text: qsTr("Restart UEFI"), icon: "qrc:/icons/restart.svg", enabled: PowerBridge.uefiSupported },
+                  { id: "shutdown", text: qsTr("Shutdown"), icon: "qrc:/icons/shutdown.svg" },
+                  { separator: true },
+                  { id: "lock", text: qsTr("Lock"), icon: "qrc:/icons/lock.svg" },
+                  { id: "signOut", text: qsTr("Sign Out"), icon: "qrc:/icons/signout.svg" },
+                  { id: "switchUser", text: qsTr("Switch User"), icon: "qrc:/icons/switch.svg", enabled: PowerBridge.multipleUsers }
+              ] },
             { id: "exit", text: qsTr("Exit"), icon: "qrc:/icons/signout.svg" }
         ]
 
@@ -107,12 +121,36 @@ Platform.SystemTrayIcon {
             case "lights": UserSettings.headsetcontrolLights = !UserSettings.headsetcontrolLights; break;
             case "voicePrompts": UserSettings.headsetcontrolVoicePrompts = !UserSettings.headsetcontrolVoicePrompts; break;
             case "rotateToMute": UserSettings.headsetcontrolRotateToMute = !UserSettings.headsetcontrolRotateToMute; break;
+            case "sleep": PowerBridge.sleep(); break;
+            case "hibernate": systemTray.requestPowerAction(0); break;
+            case "restart": systemTray.requestPowerAction(1); break;
+            case "shutdown": systemTray.requestPowerAction(2); break;
+            case "signOut": systemTray.requestPowerAction(3); break;
+            case "restartUefi": systemTray.requestPowerAction(4); break;
+            case "lock": PowerBridge.lockAccount(); break;
+            case "switchUser": PowerBridge.switchAccount(); break;
             case "exit": Qt.quit(); break;
             default:
                 if (actionId.startsWith("equalizer:"))
                     HeadsetControlBridge.setEqualizerPreset(Number(actionId.substring(10)));
                 break;
             }
+        }
+    }
+
+    // Uses the PowerMenu and ConfirmPowerActionDialog action indexes, so the tray
+    // shares the panel's confirmation window and countdown.
+    function requestPowerAction(action) {
+        if (UserSettings.showPowerDialogConfirmation) {
+            systemTray.powerConfirmationRequested(action);
+            return;
+        }
+        switch (action) {
+        case 0: PowerBridge.hibernate(); break;
+        case 1: PowerBridge.restart(); break;
+        case 2: PowerBridge.shutdown(); break;
+        case 3: PowerBridge.signOut(); break;
+        case 4: PowerBridge.restartToUEFI(); break;
         }
     }
 

@@ -369,10 +369,6 @@
         <translation>Energie-Menü aktivieren</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Netzschalter im Panel-Footer anzeigen</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>Helligkeitsregelung aktivieren</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Aktuell wiedergegebene Medien aus bekannten Windows-Quellen anzeigen</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Energieaktionen im Panel-Footer und im Taskleistenmenü anzeigen</translation>
     </message>
 </context>
 <context>
@@ -1762,6 +1762,42 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel-Einstellungen</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Energie</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Ruhezustand</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Ruhezustand</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Neustart</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>UEFI neu starten</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Herunterfahren</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Sperren</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Abmelden</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Benutzer wechseln</translation>
     </message>
 </context>
 <context>

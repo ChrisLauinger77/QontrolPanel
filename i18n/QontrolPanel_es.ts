@@ -369,10 +369,6 @@
         <translation>Activar menú de energía</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Mostrar el botón de encendido en el pie del panel</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>Activar control de brillo</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Mostrar el contenido multimedia que se está reproduciendo desde fuentes conocidas de Windows</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Mostrar las acciones de energía en el pie del panel y en el menú de la bandeja del sistema</translation>
     </message>
 </context>
 <context>
@@ -1762,6 +1762,42 @@ Puedes activarla en la pestaña Componentes.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>Configuración de QontrolPanel</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Energía</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Suspender</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Hibernar</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Reiniciar</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Reiniciar UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Apagar</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Bloquear</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Cerrar sesión</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Cambiar de usuario</translation>
     </message>
 </context>
 <context>

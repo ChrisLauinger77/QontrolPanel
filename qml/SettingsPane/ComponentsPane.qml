@@ -101,7 +101,7 @@ ColumnLayout {
                 Card {
                     Layout.fillWidth: true
                     title: qsTr("Enable power menu")
-                    description: qsTr("Show power button in the panel footer")
+                    description: qsTr("Show power actions in the panel footer and system tray menu")
                     additionalControl: LabeledSwitch {
                         checked: UserSettings.enablePowerMenu
                         onClicked: {

@@ -370,10 +370,6 @@
         <translation>Ativar menu de energia</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Exibir botão de energia no rodapé do painel</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>Ativar controle de brilho</translation>
     </message>
@@ -432,6 +428,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Exibir a mídia em reprodução de fontes conhecidas do Windows</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Exibir ações de energia no rodapé do painel e no menu da bandeja do sistema</translation>
     </message>
 </context>
 <context>
@@ -1763,6 +1763,42 @@ Você pode ativá-lo na aba Componentes.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>Configurações do QontrolPanel</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Energia</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Suspender</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Hibernar</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Reiniciar</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Reiniciar para UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Desligar</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Bloquear</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Encerrar sessão</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Trocar usuário</translation>
     </message>
 </context>
 <context>

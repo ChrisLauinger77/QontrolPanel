@@ -369,10 +369,6 @@
         <translation>電源メニューを有効</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>パネルのフッターに電源ボタンを表示します。</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>明るさのコントロールを有効</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Windows の既知のソースから現在再生中のメディアを表示します。</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>パネルのフッターとシステム トレイ メニューに電源操作を表示します。</translation>
     </message>
 </context>
 <context>
@@ -1761,6 +1761,42 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel の設定</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>電源</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>スリープ</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>休止状態</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>再起動</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>UEFI で再起動</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>シャットダウン</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>ロック</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>サインアウト</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>ユーザーを切り替え</translation>
     </message>
 </context>
 <context>

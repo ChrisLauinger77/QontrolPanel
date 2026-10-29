@@ -423,16 +423,16 @@
         <translation>Activer le contrôle de la luminosité</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Afficher le bouton d&apos;alimentation dans le pied de page du panneau</translation>
-    </message>
-    <message>
         <source>Enable power menu</source>
         <translation>Activer le menu d&apos;alimentation</translation>
     </message>
     <message>
         <source>Display audio device manager in panel</source>
         <translation>Afficher le gestionnaire de périphériques audio dans le panneau</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Afficher les actions d&apos;alimentation dans le pied de page du panneau et dans le menu de la zone de notification</translation>
     </message>
 </context>
 <context>
@@ -1765,6 +1765,42 @@ You can enable it in the Components tab.</source>
     <message>
         <source>Mic unmuted (last reading)</source>
         <translation>Microphone non muet (dernière lecture)</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Alimentation</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Veille</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Mettre en veille</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Redémarrer</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Redémarrer UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Arrêter</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Verrouiller</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Se déconnecter</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Changer d&apos;utilisateur</translation>
     </message>
 </context>
 <context>

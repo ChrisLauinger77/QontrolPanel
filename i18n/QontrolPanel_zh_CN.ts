@@ -369,10 +369,6 @@
         <translation>启用电源菜单</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>在面板中显示电源按钮</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>启用亮度控制</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>显示 Windows 已知来源当前播放的媒体</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>在面板底部和系统托盘菜单中显示电源操作</translation>
     </message>
 </context>
 <context>
@@ -1761,6 +1761,42 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel 设置</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>电源</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>睡眠</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>休眠</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>重启</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>重启到 UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>关机</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>锁定</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>注销</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>切换用户</translation>
     </message>
 </context>
 <context>

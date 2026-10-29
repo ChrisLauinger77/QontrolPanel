@@ -39,7 +39,7 @@ Default section of settings pane is configurable in General section.
 - **Display controls:** Adjust internal and external monitor brightness and control Windows Night Light.
 - **HeadsetControl integration:** Monitor supported headsets and configure battery alerts, sidetone, lighting and light color, equalizer presets, and more.
 - **Keyboard shortcuts:** Configure global controls and per-application volume hotkeys.
-- **Power and personalization:** Access Windows power actions and customize the panel layout, appearance, language, and behavior.
+- **Power and personalization:** Access Windows power actions from the panel or tray menu and customize the panel layout, appearance, language, and behavior.
 
 ## Translations
 

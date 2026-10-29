@@ -203,6 +203,10 @@ ApplicationWindow {
             trayToggleTimer.stop()
             settingsWindow.showPreferredPane()
         }
+        onPowerConfirmationRequested: function(action) {
+            powerConfirmationWindow.setAction(action)
+            powerConfirmationWindow.show()
+        }
     }
 
     Timer {

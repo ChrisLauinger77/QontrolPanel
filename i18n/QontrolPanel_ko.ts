@@ -369,10 +369,6 @@
         <translation>전원 메뉴 사용함</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>패널 하단에 전원 버튼 표시</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>밝기 제어 사용함</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Windows에서 알려진 소스에서 현재 재생 중인 미디어 표시</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>패널 하단과 시스템 트레이 메뉴에 전원 작업 표시</translation>
     </message>
 </context>
 <context>
@@ -1762,6 +1762,42 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel 설정</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>전원</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>절전 모드</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>최대 절전 모드</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>다시 시작</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>UEFI 다시 시작</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>시스템 종료</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>잠금</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>로그아웃</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>사용자 전환</translation>
     </message>
 </context>
 <context>

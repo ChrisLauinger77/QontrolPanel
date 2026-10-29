@@ -11,6 +11,8 @@ QtObject {
     property bool headsetcontrolRotateToMute: false
     property int headsetcontrolEqualizerPreset: 0
     property int headsetcontrolAnc: -1
+    property bool enablePowerMenu: true
+    property bool showPowerDialogConfirmation: false
 
     property bool isReady: true
     property int outputVolume: 50
@@ -57,6 +59,22 @@ QtObject {
     property bool hasVoicePromptsCapability: true
     property bool hasRotateToMuteCapability: true
     function refreshNow() {}
+
+    property bool sleepSupported: true
+    property bool hibernateSupported: false
+    property bool uefiSupported: true
+    property bool multipleUsers: false
+    property bool busy: false
+    property string lastPowerAction: ""
+    function sleep() { lastPowerAction = "sleep" }
+    function hibernate() { lastPowerAction = "hibernate" }
+    function restart() { lastPowerAction = "restart" }
+    function restartToUEFI() { lastPowerAction = "uefi" }
+    function shutdown() { lastPowerAction = "shutdown" }
+    function lockAccount() { lastPowerAction = "lock" }
+    function signOut() { lastPowerAction = "signOut" }
+    function switchAccount() { lastPowerAction = "switchAccount" }
+
     function openLegacySoundSettings() {}
     function openModernSoundSettings() {}
 }

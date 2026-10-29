@@ -79,6 +79,7 @@ class TrayMenuTests : public QObject
     int m_settingsType = -1;
     int m_headsetType = -1;
     int m_batteryType = -1;
+    int m_powerType = -1;
 
 private slots:
     void initTestCase()
@@ -91,6 +92,7 @@ private slots:
         m_mediaType = qmlRegisterSingletonType(stub, Module, 1, 0, "MediaSessionBridge");
         m_settingsType = qmlRegisterSingletonType(stub, Module, 1, 0, "UserSettings");
         m_headsetType = qmlRegisterSingletonType(stub, Module, 1, 0, "HeadsetControlBridge");
+        m_powerType = qmlRegisterSingletonType(stub, Module, 1, 0, "PowerBridge");
         m_batteryType = qmlRegisterSingletonType(
             QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/Singletons/HeadsetBattery.qml"),
             Module, 1, 0, "HeadsetBattery");
@@ -401,6 +403,120 @@ private slots:
         QVERIFY(headsetAction->isVisible());
         QVERIFY(headset->setProperty("anyDeviceFound", false));
         QVERIFY(!headsetAction->isVisible());
+    }
+
+    void powerSubmenuFollowsSettingAndCapabilities()
+    {
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* tray = qobject_cast<TrayMenu*>(systemTray->property("contextMenu").value<QObject*>());
+        QVERIFY(tray);
+        auto* power = engine.singletonInstance<QObject*>(m_powerType);
+        auto* settings = engine.singletonInstance<QObject*>(m_settingsType);
+        tray->popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        auto* powerAction = actionFor(menu, "power");
+        QVERIFY(powerAction && powerAction->isVisible() && powerAction->isEnabled() && powerAction->menu());
+        auto* powerMenu = powerAction->menu();
+        QCOMPARE(powerMenu->actions().size(), 9);
+        for (auto* action : powerMenu->actions()) {
+            if (!action->isSeparator())
+                QVERIFY2(!action->icon().isNull(), qPrintable(action->text()));
+        }
+        // The stub supports sleep and UEFI, but not hibernate or switching users.
+        for (const auto* id : {"sleep", "restart", "restartUefi", "shutdown", "lock", "signOut"})
+            QVERIFY2(actionFor(powerMenu, id)->isEnabled(), id);
+        QVERIFY(!actionFor(powerMenu, "hibernate")->isEnabled());
+        QVERIFY(!actionFor(powerMenu, "switchUser")->isEnabled());
+        QVERIFY(power->setProperty("hibernateSupported", true));
+        QVERIFY(actionFor(powerMenu, "hibernate")->isEnabled());
+        QVERIFY(power->setProperty("multipleUsers", true));
+        QVERIFY(actionFor(powerMenu, "switchUser")->isEnabled());
+        QVERIFY(power->setProperty("sleepSupported", false));
+        QVERIFY(!actionFor(powerMenu, "sleep")->isEnabled());
+        QVERIFY(power->setProperty("uefiSupported", false));
+        QVERIFY(!actionFor(powerMenu, "restartUefi")->isEnabled());
+        // A running power action disables the whole submenu, as in the panel.
+        QVERIFY(power->setProperty("busy", true));
+        QVERIFY(!powerAction->isEnabled());
+        QVERIFY(power->setProperty("busy", false));
+        QVERIFY(powerAction->isEnabled());
+        QVERIFY(settings->setProperty("enablePowerMenu", false));
+        QVERIFY(!powerAction->isVisible());
+        QVERIFY(settings->setProperty("enablePowerMenu", true));
+        QVERIFY(powerAction->isVisible());
+    }
+
+    void powerSubmenuAction_data()
+    {
+        QTest::addColumn<QString>("id");
+        QTest::addColumn<QString>("bridgeCall");
+        QTest::addColumn<int>("confirmAction");
+        // Confirmed actions use the ConfirmPowerActionDialog indexes; -1 runs immediately.
+        QTest::newRow("sleep") << QString("sleep") << QString("sleep") << -1;
+        QTest::newRow("hibernate") << QString("hibernate") << QString("hibernate") << 0;
+        QTest::newRow("restart") << QString("restart") << QString("restart") << 1;
+        QTest::newRow("shutdown") << QString("shutdown") << QString("shutdown") << 2;
+        QTest::newRow("signOut") << QString("signOut") << QString("signOut") << 3;
+        QTest::newRow("restartUefi") << QString("restartUefi") << QString("uefi") << 4;
+        QTest::newRow("lock") << QString("lock") << QString("lock") << -1;
+        QTest::newRow("switchUser") << QString("switchUser") << QString("switchAccount") << -1;
+    }
+
+    void powerSubmenuAction()
+    {
+        QFETCH(QString, id); QFETCH(QString, bridgeCall); QFETCH(int, confirmAction);
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* tray = qobject_cast<TrayMenu*>(systemTray->property("contextMenu").value<QObject*>());
+        QVERIFY(tray);
+        auto* power = engine.singletonInstance<QObject*>(m_powerType);
+        auto* settings = engine.singletonInstance<QObject*>(m_settingsType);
+        QVERIFY(power->setProperty("hibernateSupported", true));
+        QVERIFY(power->setProperty("multipleUsers", true));
+        tray->popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        auto* powerAction = actionFor(menu, "power");
+        QVERIFY(powerAction && powerAction->menu());
+        auto* action = actionFor(powerAction->menu(), id);
+        QVERIFY(action && action->isEnabled());
+        QSignalSpy confirmation(systemTray.get(), SIGNAL(powerConfirmationRequested(int)));
+        action->trigger();
+        QCOMPARE(power->property("lastPowerAction").toString(), bridgeCall);
+        QCOMPARE(confirmation.size(), 0);
+
+        // With confirmation enabled, the tray hands these actions to the countdown window.
+        QVERIFY(power->setProperty("lastPowerAction", QString()));
+        QVERIFY(settings->setProperty("showPowerDialogConfirmation", true));
+        action->trigger();
+        if (confirmAction < 0) {
+            QCOMPARE(power->property("lastPowerAction").toString(), bridgeCall);
+            QCOMPARE(confirmation.size(), 0);
+        } else {
+            QVERIFY(power->property("lastPowerAction").toString().isEmpty());
+            QCOMPARE(confirmation.size(), 1);
+            QCOMPARE(confirmation.at(0).at(0).toInt(), confirmAction);
+        }
     }
 
     void microphoneTooltipShowsLastReading_data()

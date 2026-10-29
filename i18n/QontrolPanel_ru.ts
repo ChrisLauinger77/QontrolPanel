@@ -369,10 +369,6 @@
         <translation>Включить меню питания</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Показывать кнопку питания в нижней части панели</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>Включить управление яркостью</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Показывать текущие медиа из известных Windows источников</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Показывать действия питания в нижней части панели и в меню системного трея</translation>
     </message>
 </context>
 <context>
@@ -1762,6 +1762,42 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>Настройки QontrolPanel</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Питание</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Сон</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Гибернация</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Перезагрузка</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Перезагрузка в UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Выключение</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Заблокировать</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Выйти</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Сменить пользователя</translation>
     </message>
 </context>
 <context>

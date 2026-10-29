@@ -421,16 +421,16 @@
         <translation>Włącz menedżera sesji multimedialnych</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Pokaż przycisk zasilania w stopce panelu</translation>
-    </message>
-    <message>
         <source>Enable power menu</source>
         <translation>Włącz menu zasilania</translation>
     </message>
     <message>
         <source>Display audio device manager in panel</source>
         <translation>Wyświetl menedżera urządzeń audio w panelu</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Pokaż działania zasilania w stopce panelu i w menu zasobnika systemowego</translation>
     </message>
 </context>
 <context>
@@ -1762,6 +1762,42 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>Ustawienia QontrolPanel</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Zasilanie</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Uśpij</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Hibernuj</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Restartuj</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Restartuj UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Wyłącz</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Blokuj</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Wyloguj się</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Zmień użytkownika</translation>
     </message>
 </context>
 <context>
