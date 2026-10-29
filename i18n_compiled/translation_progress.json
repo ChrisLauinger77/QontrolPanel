@@ -1,27 +1,32 @@
 {
-  "pt_BR": {
+  "zh_CN": {
     "percentage": 100,
-    "last_updated": "2026-04-13 16:21:29",
-    "contributor": "Felipe Ribeiro"
+    "last_updated": "2025-10-05 23:26:29",
+    "contributor": "rampageX"
+  },
+  "fr": {
+    "percentage": 100,
+    "last_updated": "2026-09-07 14:52:39",
+    "contributor": "Odizinne"
   },
   "de": {
     "percentage": 100,
     "last_updated": "2026-08-23 10:51:11",
     "contributor": "Christian Lauinger"
   },
-  "zh_CN": {
-    "percentage": 100,
-    "last_updated": "2025-10-05 23:26:29",
-    "contributor": "rampageX"
-  },
   "en": {
     "percentage": 100,
-    "last_updated": "2026-10-25 14:39:06",
+    "last_updated": "2026-10-29 13:53:22",
     "contributor": "ChrisLauinger77"
   },
-  "es": {
+  "it": {
+    "percentage": 82,
+    "last_updated": "2026-08-20 16:34:46",
+    "contributor": "bovirus"
+  },
+  "pl": {
     "percentage": 100,
-    "last_updated": "2026-04-14 16:11:20",
+    "last_updated": "2026-05-21 16:09:48",
     "contributor": "Christian Lauinger"
   },
   "ja": {
@@ -29,13 +34,13 @@
     "last_updated": "2026-09-19 14:50:25",
     "contributor": "Re*Index. (ot_inc)"
   },
-  "pl": {
+  "ko": {
     "percentage": 100,
-    "last_updated": "2026-05-21 16:09:48",
-    "contributor": "Christian Lauinger"
+    "last_updated": "2026-10-25 13:44:13",
+    "contributor": "VenusGirl❤"
   },
   "sl": {
-    "percentage": 81,
+    "percentage": 82,
     "last_updated": "2026-08-22 21:34:15",
     "contributor": "Andrew Poženel - SloDevTeam"
   },
@@ -44,19 +49,14 @@
     "last_updated": "2025-05-11 09:46:00",
     "contributor": "Steve"
   },
-  "fr": {
+  "es": {
     "percentage": 100,
-    "last_updated": "2026-09-07 14:52:39",
-    "contributor": "Odizinne"
+    "last_updated": "2026-04-14 16:11:20",
+    "contributor": "Christian Lauinger"
   },
-  "it": {
-    "percentage": 81,
-    "last_updated": "2026-08-20 16:34:46",
-    "contributor": "bovirus"
-  },
-  "ko": {
+  "pt_BR": {
     "percentage": 100,
-    "last_updated": "2026-10-25 13:44:13",
-    "contributor": "VenusGirl❤"
+    "last_updated": "2026-04-13 16:21:29",
+    "contributor": "Felipe Ribeiro"
   }
 }
