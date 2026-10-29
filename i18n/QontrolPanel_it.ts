@@ -369,10 +369,6 @@
         <translation>Abilita  menu alimentazione</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Visualizza pulsante alimentazione nel pannello inferiore</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>Abilita controllo luminosità</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Visualizza media in riproduzione da fonti Windows conosciute</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Visualizza azioni di alimentazione nel pannello inferiore e nel menu della barra applicazioni</translation>
     </message>
 </context>
 <context>
@@ -1762,6 +1762,42 @@ Puoi abilitarlo nella scheda Componenti.</translation>
     <message>
         <source>QontrolPanel settings</source>
         <translation>Impostazioni QontrolPanel</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Alimentazione</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Sleep</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Iberna</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Riavvia</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Riavvia in UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Spegni</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Blocca</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Logoff</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Cambia utente</translation>
     </message>
 </context>
 <context>

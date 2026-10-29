@@ -369,10 +369,6 @@
         <translation>Enable power menu</translation>
     </message>
     <message>
-        <source>Show power button in the panel footer</source>
-        <translation>Show power button in the panel footer</translation>
-    </message>
-    <message>
         <source>Enable brightness control</source>
         <translation>Enable brightness control</translation>
     </message>
@@ -431,6 +427,10 @@
     <message>
         <source>Display currently playing media from Windows known sources</source>
         <translation>Display currently playing media from Windows known sources</translation>
+    </message>
+    <message>
+        <source>Show power actions in the panel footer and system tray menu</source>
+        <translation>Show power actions in the panel footer and system tray menu</translation>
     </message>
 </context>
 <context>
@@ -1761,6 +1761,42 @@ You can enable it in the Components tab.</source>
     <message>
         <source>QontrolPanel settings</source>
         <translation>QontrolPanel settings</translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation>Power</translation>
+    </message>
+    <message>
+        <source>Sleep</source>
+        <translation>Sleep</translation>
+    </message>
+    <message>
+        <source>Hibernate</source>
+        <translation>Hibernate</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation>Restart</translation>
+    </message>
+    <message>
+        <source>Restart UEFI</source>
+        <translation>Restart UEFI</translation>
+    </message>
+    <message>
+        <source>Shutdown</source>
+        <translation>Shutdown</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Lock</translation>
+    </message>
+    <message>
+        <source>Sign Out</source>
+        <translation>Sign Out</translation>
+    </message>
+    <message>
+        <source>Switch User</source>
+        <translation>Switch User</translation>
     </message>
 </context>
 <context>

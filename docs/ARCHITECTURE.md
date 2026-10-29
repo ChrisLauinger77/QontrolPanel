@@ -92,7 +92,7 @@ Display work should stay off the UI thread. New display operations should follow
 
 ### Power Actions
 
-`PowerBridge` exposes shutdown, restart, sleep, hibernate, lock, sign out, switch account, and restart-to-UEFI actions. It also checks support state for sleep, hibernate, UEFI, and multiple-user switching. `PowerWorker` performs capability queries and actions off the GUI thread. Capability properties are cached and notify QML when ready. Failed operations are reported through the bridge and tray. Shutdown and restart allow Windows to negotiate application shutdown rather than forcing applications closed; existing confirmation preferences still apply.
+`PowerBridge` exposes shutdown, restart, sleep, hibernate, lock, sign out, switch account, and restart-to-UEFI actions. It also checks support state for sleep, hibernate, UEFI, and multiple-user switching. `PowerWorker` performs capability queries and actions off the GUI thread. Capability properties are cached and notify QML when ready. Failed operations are reported through the bridge and tray. When the power menu component is enabled, the panel footer's `PowerMenu` and the tray menu's Power submenu expose the same actions, capability states, and busy state; both route confirmed actions through the shared `PowerConfirmationWindow` countdown. Shutdown and restart allow Windows to negotiate application shutdown rather than forcing applications closed; existing confirmation preferences still apply.
 
 ### Global Shortcuts
 
