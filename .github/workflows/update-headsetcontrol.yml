@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
@@ -79,7 +79,7 @@ jobs:
       - name: Check whether version is already released or tagged
         if: steps.submodule.outputs.needs_update == 'true'
         id: release_state
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -231,7 +231,7 @@ jobs:
 
       - name: Create pull request
         if: steps.submodule.outputs.needs_update == 'true'
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: ${{ steps.pr.outputs.commit_message }}
@@ -247,7 +247,7 @@ jobs:
             dependencies/headsetcontrol
       - name: Validate dependency update branch
         if: steps.submodule.outputs.needs_update == 'true'
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
