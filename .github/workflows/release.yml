@@ -27,7 +27,7 @@ jobs:
               throw "Start a new manual workflow run instead of rerunning a candidate"
           }
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           submodules: recursive
           persist-credentials: false
@@ -175,7 +175,7 @@ jobs:
           }
       - name: Upload test reports
         if: ${{ always() }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: QontrolPanel_Test_Reports
           path: |
@@ -202,7 +202,7 @@ jobs:
           $folder = "build/QontrolPanel"
           Compress-Archive -Path $folder -DestinationPath $zipFile
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: QontrolPanel_win64_msvc2022
           path: build/QontrolPanel_win64_msvc2022.zip
@@ -222,7 +222,7 @@ jobs:
           iscc.exe tools/installer.iss
           if ($LASTEXITCODE -ne 0) { throw "Installer build failed" }
       - name: Upload Installer
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: QontrolPanel_Installer
           path: tools/Output/QontrolPanel_Installer.exe
@@ -233,7 +233,7 @@ jobs:
           python tools/release_provenance.py create --output build/provenance.json --run "$env:GITHUB_RUN_ID" --qt "$env:QT_VERSION" --artifact build/QontrolPanel_win64_msvc2022.zip --artifact tools/Output/QontrolPanel_Installer.exe
           if ($LASTEXITCODE -ne 0) { throw "Provenance generation failed" }
       - name: Upload provenance
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: QontrolPanel_Provenance
           path: build/provenance.json
@@ -247,7 +247,7 @@ jobs:
       sha: ${{ github.sha }}
     steps:
       - name: Checkout the candidate source
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # Use the workflow commit directly; build outputs must not select executable code.
           ref: ${{ github.sha }}
@@ -256,15 +256,15 @@ jobs:
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.15"
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: QontrolPanel_win64_msvc2022
           path: dist
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: QontrolPanel_Installer
           path: dist
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: QontrolPanel_Provenance
           path: dist
@@ -278,7 +278,7 @@ jobs:
           version=$(python tools/release_provenance.py verify --manifest dist/provenance.json --source "$SOURCE_SHA" --run "$BUILD_RUN_ID" --directory dist)
           echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: Upload the complete candidate for testing and publication
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: release-assets
           path: |
@@ -326,7 +326,7 @@ jobs:
       tag: ${{ needs.aggregate.outputs.version }}
     steps:
       - name: Checkout the candidate source with tags
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ needs.aggregate.outputs.sha }}
           fetch-depth: 0
@@ -379,7 +379,7 @@ jobs:
       tag: ${{ needs.approve-and-tag.outputs.tag }}
     steps:
       - name: Checkout the source that produced the candidate
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ needs.aggregate.outputs.sha }}
           persist-credentials: false
@@ -388,7 +388,7 @@ jobs:
         with:
           python-version: "3.15"
       - name: Download the tested candidate from this run
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: release-assets
           path: dist
@@ -411,7 +411,7 @@ jobs:
           if os.environ["RELEASE_TAG"] != version:
               raise ValueError("Release tag must match the candidate CMake version")
       - name: Refuse a tag moved away from the tested candidate
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           RELEASE_TAG: ${{ needs.approve-and-tag.outputs.tag }}
           SOURCE_SHA: ${{ needs.aggregate.outputs.sha }}
@@ -433,7 +433,7 @@ jobs:
               throw new Error('Release tag does not identify this candidate run');
             }
       - name: Publish the verified candidate without rebuilding
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           tag_name: ${{ needs.approve-and-tag.outputs.tag }}
           target_commitish: ${{ needs.aggregate.outputs.sha }}
@@ -452,7 +452,7 @@ jobs:
     runs-on: ubuntu-26.04
     steps:
       - name: Publish to WinGet
-        uses: vedantmgoyal9/winget-releaser@v2
+        uses: vedantmgoyal9/winget-releaser@b7370d4d152efdce803a26cc6ca9eee58cb2ad54 # v2
         with:
           identifier: ChrisLauinger77.QontrolPanel
           release-tag: ${{ needs.publish.outputs.tag }}
