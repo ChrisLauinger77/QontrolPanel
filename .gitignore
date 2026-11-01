@@ -3,3 +3,4 @@ CMakeLists.txt.user
 .qmlls.ini
 .cache/*
 .vs/*
+.DS_Store
