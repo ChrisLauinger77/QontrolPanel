@@ -194,7 +194,7 @@ Platform.SystemTrayIcon {
         var batteryText = "\n" + "🎧" + HeadsetControlBridge.displayName + "\n";
         batteryText += HeadsetControlBridge.batteryIcon;
         if (HeadsetControlBridge.batteryStatus !== "BATTERY_UNAVAILABLE") {
-            batteryText += HeadsetControlBridge.batteryLevel + "%";
+            batteryText += HeadsetBattery.formatLevel(HeadsetControlBridge.batteryStatus, HeadsetControlBridge.batteryLevel);
             const estimate = HeadsetBattery.formatTime(HeadsetControlBridge.batteryStatus,
                 HeadsetControlBridge.timeToFullMinutes, HeadsetControlBridge.timeToEmptyMinutes);
             if (estimate.length > 0)

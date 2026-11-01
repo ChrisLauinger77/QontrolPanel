@@ -654,6 +654,13 @@ private slots:
         QVERIFY(headset->setProperty("timeToEmptyMinutes", -1));
         QTRY_VERIFY(!systemTray->property("tooltip").toString().contains("about "));
         QVERIFY(headset->setProperty("timeToFullMinutes", -1));
+        // Charging headsets may report no level yet; never show it as -1%.
+        QVERIFY(headset->setProperty("batteryLevel", -1));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_CHARGING"));
+        QTRY_VERIFY(systemTray->property("tooltip").toString().contains("\nCharging"));
+        QVERIFY(!systemTray->property("tooltip").toString().contains("-1%"));
+        QVERIFY(headset->setProperty("batteryLevel", 50));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_AVAILABLE"));
         // A newly paired headset changes the display name without changing the driver name.
         headset->setProperty("displayName", QStringLiteral("Jabra Evolve2 85"));
         QTRY_VERIFY(systemTray->property("tooltip").toString().contains(QStringLiteral("Jabra Evolve2 85")));

@@ -259,18 +259,21 @@ private slots:
         QVERIFY(selector);
         auto* headset = m_engine->singletonInstance<QObject*>(m_headsetType);
         QVERIFY(headset->setProperty("testProfile", 3));
-        QCOMPARE(selector->property("count").toInt(), 8);
+        QCOMPARE(selector->property("count").toInt(), 9);
         QCOMPARE(selector->property("currentIndex").toInt(), 2);
         QCOMPARE(selector->property("currentValue").toInt(), 3);
-        QVERIFY(edit(selector, "currentIndex", 7, "activated"));
+        QVERIFY(edit(selector, "currentIndex", 8, "activated"));
         QCOMPARE(headset->property("testProfile").toInt(), 10);
         QCOMPARE(selector->property("currentValue").toInt(), 10);
         QCOMPARE(selector->property("currentText").toString(), QString("10 - Limited capabilities"));
+        QVERIFY(edit(selector, "currentIndex", 7, "activated"));
+        QCOMPARE(headset->property("testProfile").toInt(), 8);
+        QCOMPARE(selector->property("currentText").toString(), QString("8 - Charging, level unknown"));
         // External bridge updates keep the non-consecutive selection in sync.
         QVERIFY(headset->setProperty("testProfile", 7));
         QCOMPARE(selector->property("currentIndex").toInt(), 6);
         QVERIFY(headset->setProperty("testProfile", 10));
-        QCOMPARE(selector->property("currentIndex").toInt(), 7);
+        QCOMPARE(selector->property("currentIndex").toInt(), 8);
         QVERIFY(edit(selector, "currentIndex", 0, "activated"));
         QCOMPARE(headset->property("testProfile").toInt(), 1);
     }
@@ -332,6 +335,15 @@ private slots:
         QTRY_VERIFY(findObject(card, "text", "50%")); // Do not display a charging estimate while discharging.
         QVERIFY(headset->setProperty("timeToEmptyMinutes", 720));
         QTRY_VERIFY(findObject(card, "text", "50% (about 12 h left)"));
+        QVERIFY(headset->setProperty("timeToEmptyMinutes", -1));
+        // Never show an unknown level as -1%.
+        QVERIFY(headset->setProperty("timeToFullMinutes", -1));
+        QVERIFY(headset->setProperty("batteryLevel", -1));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_CHARGING"));
+        QTRY_VERIFY(findObject(card, "text", "Charging"));
+        QVERIFY(headset->setProperty("batteryStatus", "BATTERY_TIMEOUT"));
+        QTRY_VERIFY(findObject(card, "text", "Battery level unknown"));
+        QVERIFY(headset->setProperty("batteryLevel", 50));
         QVERIFY(headset->setProperty("batteryStatus", "BATTERY_UNAVAILABLE"));
         QTRY_VERIFY(!card->property("visible").toBool());
         QVERIFY(headset->setProperty("anyDeviceFound", false));

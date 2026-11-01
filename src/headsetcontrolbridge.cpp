@@ -568,16 +568,20 @@ QString HeadsetControlBridge::batteryIcon() const
     const QString status = batteryStatus();
     const int lowBatteryThreshold = UserSettings::instance()->headsetcontrolLowBatteryThreshold();
 
-    if (status == "BATTERY_UNAVAILABLE" || level < 0) {
+    const bool charging = status == "BATTERY_CHARGING";
+    if (status == "BATTERY_UNAVAILABLE" || (level < 0 && !charging)) {
         return QString::fromUtf8("❌");
     }
 
     QString icon;
-    if (status == "BATTERY_CHARGING") {
+    if (charging) {
         icon += QString::fromUtf8("⚡︎");
     }
 
-    icon += level <= lowBatteryThreshold ? QString::fromUtf8("🪫") : QString::fromUtf8("🔋");
+    // Charging headsets may not report a level yet.
+    if (level >= 0) {
+        icon += level <= lowBatteryThreshold ? QString::fromUtf8("🪫") : QString::fromUtf8("🔋");
+    }
     return icon;
 }
 

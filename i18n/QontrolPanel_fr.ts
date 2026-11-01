@@ -831,6 +831,14 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
 <context>
     <name>HeadsetBattery</name>
     <message>
+        <source>Charging</source>
+        <translation>En charge</translation>
+    </message>
+    <message>
+        <source>Battery level unknown</source>
+        <translation>Niveau de batterie inconnu</translation>
+    </message>
+    <message>
         <source>about %1 min to full</source>
         <translation>charge complète dans environ %1 min</translation>
     </message>
@@ -892,6 +900,10 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     <message>
         <source>7 - Low battery</source>
         <translation>7 - Batterie faible</translation>
+    </message>
+    <message>
+        <source>8 - Charging, level unknown</source>
+        <translation>8 - En charge, niveau inconnu</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>

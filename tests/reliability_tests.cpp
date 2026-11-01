@@ -597,6 +597,39 @@ private slots:
         QCOMPARE(empty.size(), 2);
     }
 
+    void batteryIconHandlesChargingWithoutLevel()
+    {
+        auto* bridge = HeadsetControlBridge::instance();
+        const auto cleanup = qScopeGuard([&] {
+            bridge->shutdown();
+            delete bridge;
+            drainRetiredWorkerThreads();
+        });
+        HeadsetControlState state;
+        auto publish = [&](const QString& status, int level) {
+            state.batteryStatus = status;
+            state.batteryLevel = level;
+            return QMetaObject::invokeMethod(bridge, "applyState", Qt::DirectConnection,
+                                             Q_ARG(HeadsetControlState, state));
+        };
+        const auto charging = QStringLiteral("⚡︎");
+        const auto battery = QStringLiteral("\U0001F50B");
+        const auto unknown = QStringLiteral("❌");
+        // The upper threshold limit is 30%, so 50% never shows the low-battery icon.
+        QVERIFY(publish("BATTERY_CHARGING", 50));
+        QCOMPARE(bridge->batteryIcon(), charging + battery);
+        QVERIFY(publish("BATTERY_CHARGING", -1));
+        QCOMPARE(bridge->batteryIcon(), charging);
+        QVERIFY(publish("BATTERY_AVAILABLE", 50));
+        QCOMPARE(bridge->batteryIcon(), battery);
+        QVERIFY(publish("BATTERY_AVAILABLE", -1));
+        QCOMPARE(bridge->batteryIcon(), unknown);
+        QVERIFY(publish("BATTERY_TIMEOUT", -1));
+        QCOMPARE(bridge->batteryIcon(), unknown);
+        QVERIFY(publish("BATTERY_UNAVAILABLE", 50));
+        QCOMPARE(bridge->batteryIcon(), unknown);
+    }
+
     void lightColorWritesFollowLightsAndReplayOnReconnect()
     {
         const bool wasEnabled = headsetcontrol::isTestDeviceEnabled();
@@ -795,9 +828,11 @@ private slots:
         QCOMPARE(monitor.snapshot().equalizerLayout.count, 10);
         QCOMPARE(profileChanged.size(), 2);
         monitor.stopMonitoring();
-        for (int unsupported : {8, 9, 11}) {
+        monitor.setTestProfile(8);
+        QCOMPARE(monitor.snapshot().testProfile, 8);
+        for (int unsupported : {9, 11}) {
             monitor.setTestProfile(unsupported);
-            QCOMPARE(monitor.snapshot().testProfile, 7);
+            QCOMPARE(monitor.snapshot().testProfile, 8);
         }
         monitor.setTestProfile(0);
         QCOMPARE(monitor.snapshot().testProfile, 1);
@@ -852,6 +887,13 @@ private slots:
         QVERIFY(check(-1, 72));
         monitor.setTestProfile(1); // Synthetic error profile remains selectable, with unknown estimates.
         QVERIFY(check(-1, -1));
+        monitor.setTestProfile(2);
+        QVERIFY(check(60, -1));
+        monitor.setTestProfile(8); // Charging before the headset reports a level.
+        QVERIFY(check(-1, -1));
+        QCOMPARE(monitor.snapshot().batteryLevel, -1);
+        QCOMPARE(monitor.snapshot().batteryStatus, QString("BATTERY_CHARGING"));
+        QCOMPARE(monitor.getCachedDevices().first().batteryLevel, -1);
         monitor.setTestProfile(2);
         QVERIFY(check(60, -1));
         connected = false;

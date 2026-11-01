@@ -29,6 +29,7 @@ ColumnLayout {
         { text: qsTr("5 - Timeout"), value: 5 },
         { text: qsTr("6 - Full battery"), value: 6 },
         { text: qsTr("7 - Low battery"), value: 7 },
+        { text: qsTr("8 - Charging, level unknown"), value: 8 },
         { text: qsTr("10 - Limited capabilities"), value: 10 }
     ]
 
@@ -121,7 +122,8 @@ ColumnLayout {
                     additionalControl: Label {
                         readonly property string estimate: HeadsetBattery.formatTime(HeadsetControlBridge.batteryStatus,
                             HeadsetControlBridge.timeToFullMinutes, HeadsetControlBridge.timeToEmptyMinutes)
-                        text: HeadsetControlBridge.batteryIcon + HeadsetControlBridge.batteryLevel + "%"
+                        text: HeadsetControlBridge.batteryIcon
+                            + HeadsetBattery.formatLevel(HeadsetControlBridge.batteryStatus, HeadsetControlBridge.batteryLevel)
                             + (estimate.length > 0 ? " (" + estimate + ")" : "")
                     }
                 }
