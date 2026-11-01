@@ -830,11 +830,11 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     <name>HeadsetBattery</name>
     <message>
         <source>Charging</source>
-        <translation type="unfinished"></translation>
+        <translation>Wird geladen</translation>
     </message>
     <message>
         <source>Battery level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Akkustand unbekannt</translation>
     </message>
     <message>
         <source>about %1 min to full</source>
@@ -893,7 +893,7 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
     </message>
     <message>
         <source>8 - Charging, level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>8 – Wird geladen, Akkustand unbekannt</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>

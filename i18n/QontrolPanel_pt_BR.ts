@@ -831,11 +831,11 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     <name>HeadsetBattery</name>
     <message>
         <source>Charging</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregando</translation>
     </message>
     <message>
         <source>Battery level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Nível de bateria desconhecido</translation>
     </message>
     <message>
         <source>about %1 min to full</source>
@@ -894,7 +894,7 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     </message>
     <message>
         <source>8 - Charging, level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>8 - Carregando, nível desconhecido</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>

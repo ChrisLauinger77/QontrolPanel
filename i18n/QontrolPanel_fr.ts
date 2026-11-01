@@ -832,11 +832,11 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     <name>HeadsetBattery</name>
     <message>
         <source>Charging</source>
-        <translation type="unfinished"></translation>
+        <translation>En charge</translation>
     </message>
     <message>
         <source>Battery level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveau de batterie inconnu</translation>
     </message>
     <message>
         <source>about %1 min to full</source>
@@ -903,7 +903,7 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>8 - Charging, level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>8 - En charge, niveau inconnu</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>
