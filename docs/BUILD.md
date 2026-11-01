@@ -83,6 +83,8 @@ cmake --build build --target update_translations
 
 Extraction uses `-no-obsolete` to remove obsolete and vanished messages. Review additions, changes, and removals in `i18n/*.ts` before committing; Git history retains removed translations. Compiled `.qm` files are generated outputs.
 
+The translation workflow compares freshly compiled English catalogs with the committed files in `i18n_compiled`. It preserves the English update date when the `.qm` content is unchanged, avoiding date-only pull requests after squash merges. Progress generation reads saved dates from `i18n_compiled/translation_progress.json`; other languages retain the existing single-catalog commit policy for date updates. Run its regression tests with `python3 tests/test_translation_progress.py`.
+
 ### Extract translation messages on Linux
 
 Qt's `lupdate` can scan the C++ and QML sources without compiling the Windows application. The root CMake `update_translations` target requires the full app configuration; `QONTROLPANEL_CORE_TESTS_ONLY` does not create it. On Linux, run `lupdate` directly instead.

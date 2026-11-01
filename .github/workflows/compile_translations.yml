@@ -37,6 +37,9 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Test translation progress generation
+        run: python3 tests/test_translation_progress.py
+
       - name: Clean up obsolete translations
         run: |
           echo "Cleaning up obsolete translations from changed .ts files..."
@@ -72,9 +75,7 @@ jobs:
         run: |
           echo "Generating translation progress data..."
           mkdir -p /tmp/qm_files
-          python3 tools/analyze_translations.py
-          # Move the generated JSON to the temp directory
-          mv i18n/compiled/translation_progress.json /tmp/qm_files/ 2>/dev/null || true
+          python3 tools/analyze_translations.py --compiled-dir /tmp/qm_files
 
       - name: Prepare compiled files
         run: |
