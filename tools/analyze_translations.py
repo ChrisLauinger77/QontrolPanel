@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -243,26 +244,35 @@ def find_last_single_file_commit(file_path, i18n_dir):
 def main():
     script_dir = Path(__file__).parent
     i18n_dir = script_dir.parent / 'i18n'
-    compiled_dir = i18n_dir / 'compiled'
+    existing_dir = script_dir.parent / 'i18n_compiled'
+    parser = argparse.ArgumentParser(description='Generate translation progress metadata.')
+    parser.add_argument('--compiled-dir', type=Path, default=i18n_dir / 'compiled',
+                        help='Directory containing freshly compiled .qm files; also receives the JSON output.')
+    args = parser.parse_args()
+    compiled_dir = args.compiled_dir
 
-    compiled_dir.mkdir(exist_ok=True)
+    compiled_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = compiled_dir / 'translation_progress.json'
+    existing_file = existing_dir / 'translation_progress.json'
 
     # Load existing data to preserve dates when multiple files are updated
     existing_progress = {}
-    if output_file.exists():
+    if existing_file.exists():
         try:
-            with open(output_file, 'r', encoding='utf-8') as f:
+            with open(existing_file, 'r', encoding='utf-8') as f:
                 existing_progress = json.load(f)
-            print(f"Loaded existing translation progress from {output_file}")
+            print(f"Loaded existing translation progress from {existing_file}")
         except Exception as e:
             print(f"Warning: Could not load existing progress: {e}")
 
     print("Analyzing translation files...")
     print(f"Looking for .ts files in: {i18n_dir}")
 
-    ts_files = list(i18n_dir.glob('*.ts'))
+    # Preserve committed JSON order across different filesystem enumeration orders.
+    language_order = {code: index for index, code in enumerate(existing_progress)}
+    ts_files = sorted(i18n_dir.glob('*.ts'), key=lambda path: (
+        language_order.get(extract_language_code(path.name), len(language_order)), path.name))
 
     if not ts_files:
         print("No .ts files found in i18n directory!")
@@ -308,9 +318,16 @@ def main():
 
         # Special case for English - always 100%
         if language_code.lower() in ['en', 'english', 'en_us', 'en_gb']:
-            # English is the source language. Use its commit date so rerunning
-            # the generator without source changes produces identical output.
+            # Squash merges change source commit dates even when the compiled
+            # catalog was already updated on the feature branch. Keep its date
+            # until the downloadable English catalog actually changes.
             source_date = commit_date or last_updated
+            previous_date = existing_progress.get(language_code, {}).get('last_updated')
+            previous_qm = existing_dir / f'{ts_file.stem}.qm'
+            compiled_qm = compiled_dir / previous_qm.name
+            if (previous_date and previous_qm.is_file() and compiled_qm.is_file()
+                    and previous_qm.read_bytes() == compiled_qm.read_bytes()):
+                source_date = previous_date
             translation_progress[language_code] = {
                 'percentage': 100,
                 'last_updated': source_date,
