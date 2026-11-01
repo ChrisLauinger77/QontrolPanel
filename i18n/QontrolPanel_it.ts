@@ -829,6 +829,14 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
 <context>
     <name>HeadsetBattery</name>
     <message>
+        <source>Charging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Battery level unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>about %1 min to full</source>
         <translation type="unfinished"></translation>
     </message>
@@ -882,6 +890,10 @@ Se vuoi supportare il mio lavoro, qualsiasi contributo sarebbe molto apprezzato!
     <message>
         <source>7 - Low battery</source>
         <translation>7 - Batteria scarica</translation>
+    </message>
+    <message>
+        <source>8 - Charging, level unknown</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>

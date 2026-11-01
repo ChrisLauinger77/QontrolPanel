@@ -1037,7 +1037,7 @@ void HeadsetControlMonitor::setTestModeEnabled(bool enabled)
 
 void HeadsetControlMonitor::setTestProfile(int profile)
 {
-    const int sanitizedProfile = profile == 10 ? 10 : qBound(1, profile, 7);
+    const int sanitizedProfile = profile == 10 ? 10 : qBound(1, profile, 8);
     if (m_testProfile == sanitizedProfile)
     {
         return;

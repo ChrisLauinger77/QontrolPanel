@@ -829,6 +829,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
 <context>
     <name>HeadsetBattery</name>
     <message>
+        <source>Charging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Battery level unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>about %1 min to full</source>
         <translation>до полной зарядки: около %1 мин</translation>
     </message>
@@ -882,6 +890,10 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <message>
         <source>7 - Low battery</source>
         <translation>7 - Низкий заряд батареи</translation>
+    </message>
+    <message>
+        <source>8 - Charging, level unknown</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>
