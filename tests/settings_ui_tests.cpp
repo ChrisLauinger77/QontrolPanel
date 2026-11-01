@@ -337,6 +337,7 @@ private slots:
         QTRY_VERIFY(findObject(card, "text", "50% (about 12 h left)"));
         QVERIFY(headset->setProperty("timeToEmptyMinutes", -1));
         // Never show an unknown level as -1%.
+        QVERIFY(headset->setProperty("timeToFullMinutes", -1));
         QVERIFY(headset->setProperty("batteryLevel", -1));
         QVERIFY(headset->setProperty("batteryStatus", "BATTERY_CHARGING"));
         QTRY_VERIFY(findObject(card, "text", "Charging"));
