@@ -247,6 +247,50 @@ private slots:
         QStandardPaths::setTestModeEnabled(m_originalTestMode);
     }
 #ifdef QONTROLPANEL_AUDIO_POLICY_TESTS
+    void deviceSwitchByIdRejectsStaleOrWrongKind_data()
+    {
+        QTest::addColumn<bool>("isInput");
+        QTest::newRow("outputs") << false;
+        QTest::newRow("inputs") << true;
+    }
+    void deviceSwitchByIdRejectsStaleOrWrongKind()
+    {
+        QFETCH(bool, isInput);
+        m_shortcuts.reset(KeyboardShortcutManager::instance());
+        m_audio.reset(AudioBridge::instance());
+        QVERIFY(!m_audio->isReady()); // Audio workers remain disabled; no real devices are touched.
+        AudioDevice output;
+        output.id = "test:output";
+        AudioDevice input;
+        input.id = "test:input";
+        input.isInput = true;
+        m_audio->outputDevices()->setDevices({output, input});
+        m_audio->inputDevices()->setDevices({output, input});
+        const auto select = [&](const QString& id) {
+            if (isInput)
+                m_audio->setInputDeviceById(id);
+            else
+                m_audio->setOutputDeviceById(id);
+        };
+        auto* logger = LogManager::instance();
+        logger->clearLogs();
+        const auto before = logger->snapshot();
+        select({});
+        select("unknown");
+        select(isInput ? output.id : input.id);
+        QCOMPARE(logger->snapshot(), before); // Rejected IDs never reach the switch request path.
+        select(isInput ? input.id : output.id);
+        QCOMPARE(logger->snapshot().size(), before.size() + 2); // Both roles are requested.
+        const auto after = logger->snapshot();
+        for (int role = 0; role < 2; ++role) {
+            const auto message = after[role].toMap().value("message").toString();
+            QVERIFY(message.contains(isInput ? "input device switch id=test:input" : "output device switch id=test:output"));
+            QVERIFY(message.endsWith(role == 0 ? "communicationsRole=false" : "communicationsRole=true"));
+        }
+        (isInput ? m_audio->inputDevices() : m_audio->outputDevices())->setDevices({});
+        select(isInput ? input.id : output.id);
+        QCOMPARE(logger->snapshot(), after); // A removed device cannot be selected by a stale action.
+    }
     void equalizerSettingsPersistPerDeviceAndKeepCustomCurve()
     {
         auto* settings = UserSettings::instance();
@@ -1967,6 +2011,70 @@ private slots:
         QCOMPARE(indices.index("player", "two"), 1);
         indices.update({});
         QCOMPARE(indices.index("player", "two"), -1);
+    }
+    void deviceSnapshotsNotifyAndFilter_data()
+    {
+        QTest::addColumn<bool>("isInput");
+        QTest::newRow("outputs") << false;
+        QTest::newRow("inputs") << true;
+    }
+    void deviceSnapshotsNotifyAndFilter()
+    {
+        QFETCH(bool, isInput);
+        FilteredDeviceModel model(isInput);
+        QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+        QSignalSpy changed(&model, &FilteredDeviceModel::devicesChanged);
+        QSignalSpy resets(&model, &QAbstractItemModel::modelReset);
+        QVERIFY(model.devices().isEmpty());
+        AudioDevice first;
+        first.id = "endpoint:first";
+        first.name = "First";
+        first.isInput = isInput;
+        first.isDefault = true;
+        AudioDevice other = first;
+        other.id = "other-kind";
+        other.isInput = !isInput;
+        AudioDevice second = first;
+        second.id = "endpoint:second";
+        second.name = "Second";
+        second.isDefault = false;
+        model.setDevices({other, first, second});
+        QCOMPARE(resets.size(), 1);
+        QCOMPARE(changed.size(), 1);
+        const QVariantList expected{
+            QVariantMap{{"deviceId", first.id}, {"name", first.name}, {"isDefault", true}},
+            QVariantMap{{"deviceId", second.id}, {"name", second.name}, {"isDefault", false}}};
+        QCOMPARE(model.devices(), expected);
+        QCOMPARE(model.property("devices").toList(), expected);
+        QPersistentModelIndex persistent(model.index(0, 0));
+
+        first.isDefault = false;
+        second.isDefault = true;
+        model.setDevices({first, other, second});
+        QCOMPARE(changed.size(), 2);
+        QCOMPARE(resets.size(), 1);
+        QVERIFY(persistent.isValid());
+        QVERIFY(!model.devices()[0].toMap().value("isDefault").toBool());
+        QVERIFY(model.devices()[1].toMap().value("isDefault").toBool());
+
+        second.name = "New name";
+        model.setDevices({first, second});
+        QCOMPARE(changed.size(), 3);
+        QCOMPARE(model.devices()[1].toMap().value("name").toString(), second.name);
+        // Custom display names live in AudioBridge; its refresh emits only dataChanged.
+        model.dataChanged(model.index(1, 0), model.index(1, 0), {FilteredDeviceModel::NameRole});
+        QCOMPARE(changed.size(), 4);
+        QCOMPARE(resets.size(), 1);
+        QVERIFY(persistent.isValid());
+
+        model.setDevices({second});
+        QCOMPARE(changed.size(), 5);
+        QCOMPARE(resets.size(), 2);
+        QCOMPARE(model.devices().size(), 1);
+        QVERIFY(!persistent.isValid());
+        model.setDevices({});
+        QCOMPARE(changed.size(), 6);
+        QVERIFY(model.devices().isEmpty());
     }
     void modelUpdatesKeepIdentity()
     {

@@ -19,6 +19,23 @@ QtObject {
     property bool outputMuted: false
     property string outputDeviceDisplayName: "Test speakers"
     property string inputDeviceDisplayName: "Test microphone"
+    property QtObject outputDevices: QtObject {
+        property var devices: []
+        readonly property int count: devices.length
+    }
+    property QtObject inputDevices: QtObject {
+        property var devices: []
+        readonly property int count: devices.length
+    }
+    property var deviceRenames: ({})
+    function getDisplayNameForDevice(name) { return deviceRenames[name] || name }
+    function getDisplayIconForDevice(name, isInput) {
+        return isInput ? "qrc:/icons/mic.svg" : "qrc:/icons/headset.svg";
+    }
+    property string lastOutputDeviceId: ""
+    property string lastInputDeviceId: ""
+    function setOutputDeviceById(deviceId) { lastOutputDeviceId = deviceId }
+    function setInputDeviceById(deviceId) { lastInputDeviceId = deviceId }
     function getTrayIcon(volume, muted) { return "qrc:/icons/icon.png" }
 
     property int sourceCount: 1

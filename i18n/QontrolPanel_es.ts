@@ -1811,6 +1811,14 @@ Puedes activarla en la pestaña Componentes.</translation>
         <source>Switch User</source>
         <translation>Cambiar de usuario</translation>
     </message>
+    <message>
+        <source>Input devices</source>
+        <translation>Dispositivos de entrada</translation>
+    </message>
+    <message>
+        <source>Output devices</source>
+        <translation>Dispositivos de salida</translation>
+    </message>
 </context>
 <context>
     <name>UpdatePane</name>

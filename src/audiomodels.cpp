@@ -146,6 +146,23 @@ int ApplicationModel::findApplicationIndex(const QString& appId) const
 FilteredDeviceModel::FilteredDeviceModel(bool isInputFilter, QObject *parent)
     : QAbstractListModel(parent), m_isInputFilter(isInputFilter), m_currentDefaultIndex(-1)
 {
+    // QML bindings need a notification for value changes as well as new rows.
+    // This includes AudioBridge's dataChanged after a custom name/icon edit.
+    connect(this, &QAbstractItemModel::modelReset, this, &FilteredDeviceModel::devicesChanged);
+    connect(this, &QAbstractItemModel::rowsInserted, this, &FilteredDeviceModel::devicesChanged);
+    connect(this, &QAbstractItemModel::rowsRemoved, this, &FilteredDeviceModel::devicesChanged);
+    connect(this, &QAbstractItemModel::dataChanged, this, &FilteredDeviceModel::devicesChanged);
+}
+
+QVariantList FilteredDeviceModel::devices() const
+{
+    QVariantList result;
+    result.reserve(m_devices.size());
+    for (const auto& device : m_devices) {
+        result.append(QVariantMap{{"deviceId", device.id}, {"name", device.name},
+                                  {"isDefault", device.isDefault}});
+    }
+    return result;
 }
 
 int FilteredDeviceModel::rowCount(const QModelIndex &parent) const

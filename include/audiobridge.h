@@ -74,6 +74,8 @@ public:
     Q_INVOKABLE void setDefaultDevice(const QString& deviceId, bool isInput, bool forCommunications = false);
     Q_INVOKABLE void setOutputDevice(int deviceIndex);
     Q_INVOKABLE void setInputDevice(int deviceIndex);
+    Q_INVOKABLE void setOutputDeviceById(const QString& deviceId);
+    Q_INVOKABLE void setInputDeviceById(const QString& deviceId);
 
     // Grouped application methods
     Q_INVOKABLE ExecutableSessionModel* getSessionsForExecutable(const QString& executableName);
@@ -284,6 +286,7 @@ private:
     QString getDeviceRenamesFilePath() const;
     void updateDeviceDisplayNames();
     void refreshDeviceModelData(const QString& originalName);
+    void setDeviceById(const QString& deviceId, bool isInput);
 
     struct DeviceIcon {
         QString originalName;

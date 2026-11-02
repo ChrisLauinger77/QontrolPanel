@@ -1810,6 +1810,14 @@ Omogočite ga lahko na zavihku Komponente.</translation>
         <source>Switch User</source>
         <translation>Preklopi uporabnika</translation>
     </message>
+    <message>
+        <source>Input devices</source>
+        <translation>Vhodne naprave</translation>
+    </message>
+    <message>
+        <source>Output devices</source>
+        <translation>Izhodne naprave</translation>
+    </message>
 </context>
 <context>
     <name>UpdatePane</name>

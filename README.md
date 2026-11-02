@@ -28,6 +28,8 @@ Click anywhere or left again on the tray icon to close the panel.<br>
 Double click on tray icon will open the settings pane.<br>
 Default section of settings pane is configurable in General section.
 
+Right-click the tray icon to open the tray menu, where you can switch the output and input device.
+
 ## Highlights
 
 - **Tray-first controls:** Open the compact panel instantly from the Windows system tray.

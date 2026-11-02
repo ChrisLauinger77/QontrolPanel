@@ -1811,6 +1811,14 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
         <source>Switch User</source>
         <translation>Benutzer wechseln</translation>
     </message>
+    <message>
+        <source>Input devices</source>
+        <translation>Eingabegeräte</translation>
+    </message>
+    <message>
+        <source>Output devices</source>
+        <translation>Ausgabegeräte</translation>
+    </message>
 </context>
 <context>
     <name>UpdatePane</name>

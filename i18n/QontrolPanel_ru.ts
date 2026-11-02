@@ -1811,6 +1811,14 @@ You can enable it in the Components tab.</source>
         <source>Switch User</source>
         <translation>Сменить пользователя</translation>
     </message>
+    <message>
+        <source>Input devices</source>
+        <translation>Устройства ввода</translation>
+    </message>
+    <message>
+        <source>Output devices</source>
+        <translation>Устройства вывода</translation>
+    </message>
 </context>
 <context>
     <name>UpdatePane</name>

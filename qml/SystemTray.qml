@@ -38,11 +38,9 @@ Platform.SystemTrayIcon {
     // icon native and render its menu independently of the hidden panel window.
     property TrayMenu contextMenu: TrayMenu {
         colorScheme: Qt.application.styleHints.colorScheme
-        entries: [
-            { text: systemTray.truncateText(qsTr("Output: ") + (AudioBridge.isReady ? systemTray.getOutputDeviceInfo() : qsTr("Loading...")), 50),
-              icon: "qrc:/icons/panel_volume_100.svg", enabled: false },
-            { text: systemTray.truncateText(qsTr("Input: ") + (AudioBridge.isReady ? systemTray.getInputDeviceInfo() : qsTr("Loading...")), 50),
-              icon: "qrc:/icons/mic.svg", enabled: false },
+        entries: systemTray.deviceEntries(AudioBridge.outputDevices, false, "outputDevice:")
+            .concat(systemTray.deviceEntries(AudioBridge.inputDevices, true, "inputDevice:"))
+            .concat([
             { separator: true, visible: UserSettings.enableMediaSessionManager },
             { id: "previous", text: qsTr("Previous"), icon: "qrc:/icons/prev.png",
               visible: UserSettings.enableMediaSessionManager,
@@ -102,7 +100,7 @@ Platform.SystemTrayIcon {
                   { id: "switchUser", text: qsTr("Switch User"), icon: "qrc:/icons/switch.svg", enabled: PowerBridge.multipleUsers }
               ] },
             { id: "exit", text: qsTr("Exit"), icon: "qrc:/icons/signout.svg" }
-        ]
+        ])
 
         onTriggered: function(actionId) {
             switch (actionId) {
@@ -133,9 +131,35 @@ Platform.SystemTrayIcon {
             default:
                 if (actionId.startsWith("equalizer:"))
                     HeadsetControlBridge.setEqualizerPreset(Number(actionId.substring(10)));
+                else if (actionId.startsWith("outputDevice:"))
+                    AudioBridge.setOutputDeviceById(actionId.substring(actionId.indexOf(":") + 1));
+                else if (actionId.startsWith("inputDevice:"))
+                    AudioBridge.setInputDeviceById(actionId.substring(actionId.indexOf(":") + 1));
                 break;
             }
         }
+    }
+
+    function deviceEntries(model, isInput, idPrefix) {
+        const icon = isInput ? "qrc:/icons/mic.svg" : "qrc:/icons/panel_volume_100.svg";
+        const devices = model.devices;
+        if (!AudioBridge.isReady || devices.length < 2) {
+            const name = AudioBridge.isReady
+                ? (isInput ? getInputDeviceInfo() : getOutputDeviceInfo()) : qsTr("Loading...");
+            return [{ text: truncateText((isInput ? qsTr("Input: ") : qsTr("Output: ")) + name, 50),
+                      icon: icon, enabled: false }];
+        }
+        const entries = [{ text: isInput ? qsTr("Input devices") : qsTr("Output devices"),
+                           icon: icon, enabled: false }];
+        for (const device of devices) {
+            entries.push({ id: idPrefix + device.deviceId,
+                           text: truncateText(AudioBridge.getDisplayNameForDevice(device.name), 50),
+                           icon: AudioBridge.getDisplayIconForDevice(device.name, isInput),
+                           checked: device.isDefault, emphasizeChecked: true });
+        }
+        if (!isInput)
+            entries.push({ separator: true });
+        return entries;
     }
 
     // Uses the PowerMenu and ConfirmPowerActionDialog action indexes, so the tray
