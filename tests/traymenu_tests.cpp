@@ -3,12 +3,14 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QMenu>
+#include <QPainter>
 #include <QPointer>
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQmlExpression>
 #include <QSignalSpy>
 #include <QScopeGuard>
+#include <QStyleOptionMenuItem>
 #include <cmath>
 #include "traymenu.h"
 
@@ -170,6 +172,74 @@ private slots:
         QCOMPARE(iconColor(play->icon(), QIcon::Normal), menu->palette().color(QPalette::WindowText));
         QCOMPARE(headset->menu()->palette(), menu->palette());
         QCOMPARE(iconColor(headset->icon(), QIcon::Normal), menu->palette().color(QPalette::WindowText));
+    }
+
+    void checkedIconsHaveIndependentIndicators_data()
+    {
+        QTest::addColumn<bool>("dark");
+        QTest::addColumn<bool>("selected");
+        QTest::addColumn<bool>("rtl");
+        QTest::addColumn<int>("dpr");
+        for (bool dark : {false, true})
+            for (bool selected : {false, true})
+                for (bool rtl : {false, true})
+                    for (int dpr : {1, 2})
+                        QTest::newRow(qPrintable(QString("dark-%1-hover-%2-rtl-%3-dpr-%4")
+                            .arg(dark).arg(selected).arg(rtl).arg(dpr))) << dark << selected << rtl << dpr;
+    }
+
+    void checkedIconsHaveIndependentIndicators()
+    {
+        QFETCH(bool, dark); QFETCH(bool, selected); QFETCH(bool, rtl); QFETCH(int, dpr);
+        TrayMenu tray;
+        tray.setEntries({QVariantMap{{"id", "device"}, {"text", "Device"},
+            {"checked", true}, {"icon", "qrc:/icons/headset.svg"}}});
+        tray.setColorScheme(dark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
+        tray.popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        QStyleOptionMenuItem option;
+        option.initFrom(menu);
+        option.rect = QRect(0, 0, 280, 32);
+        option.direction = rtl ? Qt::RightToLeft : Qt::LeftToRight;
+        option.state = QStyle::State_Enabled | (selected ? QStyle::State_Selected : QStyle::State_None);
+        option.menuHasCheckableItems = true;
+        option.checkType = QStyleOptionMenuItem::NonExclusive;
+        option.maxIconWidth = 16;
+        option.icon = menu->actions().first()->icon();
+        option.text = "Device";
+        option.font = menu->font();
+        option.fontMetrics = QFontMetrics(option.font);
+        const auto render = [&](bool checked) {
+            QImage image(option.rect.size() * dpr, QImage::Format_ARGB32_Premultiplied);
+            image.setDevicePixelRatio(dpr);
+            image.fill(Qt::transparent);
+            QPainter painter(&image);
+            option.checked = checked;
+            menu->style()->drawControl(QStyle::CE_MenuItem, &option, &painter, menu);
+            return image;
+        };
+        const auto unchecked = render(false);
+        const auto checked = render(true);
+        const auto foreground = option.palette.color(selected ? QPalette::HighlightedText : QPalette::WindowText);
+        QRect indicatorInk, ordinaryInk;
+        for (int y = 0; y < checked.height(); ++y) {
+            for (int x = 0; x < checked.width(); ++x) {
+                const QRect pixel(x, y, 1, 1);
+                if (checked.pixel(x, y) != unchecked.pixel(x, y))
+                    indicatorInk |= pixel;
+                if (unchecked.pixelColor(x, y) == foreground)
+                    ordinaryInk |= pixel;
+            }
+        }
+        QVERIFY(!indicatorInk.isEmpty());
+        QVERIFY(!ordinaryInk.isEmpty()); // Keep the device icon and label visible.
+        // Checking a device adds a mark entirely beside its icon, including on
+        // hover, in either reading direction, and at both display scales.
+        if (rtl)
+            QVERIFY(indicatorInk.left() > ordinaryInk.right());
+        else
+            QVERIFY(indicatorInk.right() < ordinaryInk.left());
     }
 
     void updatesPreserveActionsAndRebuildsRetireSubmenus()
@@ -406,6 +476,8 @@ private slots:
             QVERIFY(first->isEnabled() && second->isEnabled());
             QVERIFY(first->isCheckable() && second->isCheckable());
             QVERIFY(first->isChecked() && !second->isChecked());
+            QCOMPARE(first->font().weight(), QFont::DemiBold);
+            QCOMPARE(second->font().weight(), menu->font().weight());
             QCOMPARE(first->text(), renamed.left(47) + "...");
             const auto icon = prefix.startsWith("input") ? "qrc:/icons/mic.svg" : "qrc:/icons/headset.svg";
             QCOMPARE(first->data().toMap().value("icon").toString(), QString(icon));
@@ -421,12 +493,16 @@ private slots:
                  isInput ? QString("input:two") : QString("output:two"));
         QVERIFY(audio->property(isInput ? "lastOutputDeviceId" : "lastInputDeviceId").toString().isEmpty());
         QVERIFY(first->isChecked() && !second->isChecked()); // Await the actual device update.
+        QCOMPARE(first->font().weight(), QFont::DemiBold);
+        QCOMPARE(second->font().weight(), menu->font().weight());
 
         auto* model = isInput ? inputs : outputs;
         auto devices = snapshot(isInput ? "input" : "output", true);
         QVERIFY(model->setProperty("devices", devices));
         QTRY_VERIFY(second->isChecked());
         QVERIFY(!first->isChecked());
+        QCOMPARE(first->font().weight(), menu->font().weight());
+        QCOMPARE(second->font().weight(), QFont::DemiBold);
         QVERIFY(menu->isVisible());
         QCOMPARE(menu->actions(), actions);
         QCOMPARE(menu->activeAction(), second);

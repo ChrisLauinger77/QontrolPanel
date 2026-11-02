@@ -155,7 +155,7 @@ Platform.SystemTrayIcon {
             entries.push({ id: idPrefix + device.deviceId,
                            text: truncateText(AudioBridge.getDisplayNameForDevice(device.name), 50),
                            icon: AudioBridge.getDisplayIconForDevice(device.name, isInput),
-                           checked: device.isDefault });
+                           checked: device.isDefault, emphasizeChecked: true });
         }
         if (!isInput)
             entries.push({ separator: true });

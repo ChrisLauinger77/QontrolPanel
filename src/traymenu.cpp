@@ -9,11 +9,79 @@
 #include <QMenu>
 #include <QPainter>
 #include <QPointer>
+#include <QProxyStyle>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QStyleOptionMenuItem>
 #include <QUrl>
 
 namespace {
+class TrayMenuStyle final : public QProxyStyle
+{
+public:
+    TrayMenuStyle() : QProxyStyle(QStyleFactory::create("Fusion")) {}
+
+    QSize sizeFromContents(ContentsType type, const QStyleOption* option,
+                           const QSize& contentsSize, const QWidget* widget) const override
+    {
+        auto size = QProxyStyle::sizeFromContents(type, option, contentsSize, widget);
+        if (type == CT_MenuItem && separateCheckmark(option))
+            size.rwidth() += checkmarkWidth(option, widget);
+        return size;
+    }
+
+    void drawControl(ControlElement element, const QStyleOption* option,
+                     QPainter* painter, const QWidget* widget) const override
+    {
+        if (element != CE_MenuItem || !separateCheckmark(option)) {
+            QProxyStyle::drawControl(element, option, painter, widget);
+            return;
+        }
+        const auto* item = qstyleoption_cast<const QStyleOptionMenuItem*>(option);
+        const int width = checkmarkWidth(option, widget);
+        const auto indicator = visualRect(item->direction, item->rect,
+            QRect(item->rect.left(), item->rect.top(), width, item->rect.height()));
+        auto body = *item;
+        body.rect = visualRect(item->direction, item->rect,
+            item->rect.adjusted(width, 0, 0, 0));
+        // Fusion shares one column for icons and checks. Draw the ordinary row
+        // without its recessed checked-icon box, then add an independent tick.
+        body.checkType = QStyleOptionMenuItem::NotCheckable;
+        body.checked = false;
+        body.menuHasCheckableItems = false;
+        const bool selected = item->state.testFlag(State_Selected);
+        painter->save();
+        painter->fillRect(item->rect, item->palette.brush(selected ? QPalette::Highlight : QPalette::Window));
+        QProxyStyle::drawControl(element, &body, painter, widget);
+        if (item->checked && item->checkType != QStyleOptionMenuItem::NotCheckable) {
+            const auto group = item->state.testFlag(State_Enabled) ? QPalette::Active : QPalette::Disabled;
+            const auto color = item->palette.color(group, selected ? QPalette::HighlightedText : QPalette::WindowText);
+            const qreal scale = pixelMetric(PM_SmallIconSize, option, widget) / 16.0;
+            const auto center = QRectF(indicator).center();
+            const QPointF tick[] = {center + QPointF(-4, 0) * scale,
+                                   center + QPointF(-1, 3) * scale,
+                                   center + QPointF(5, -4) * scale};
+            painter->setRenderHint(QPainter::Antialiasing);
+            painter->setPen(QPen(color, 2 * scale, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter->drawPolyline(tick, 3);
+        }
+        painter->restore();
+    }
+
+private:
+    static bool separateCheckmark(const QStyleOption* option)
+    {
+        const auto* item = qstyleoption_cast<const QStyleOptionMenuItem*>(option);
+        return item && item->menuHasCheckableItems && item->maxIconWidth > 0
+            && item->menuItemType != QStyleOptionMenuItem::Separator;
+    }
+
+    int checkmarkWidth(const QStyleOption* option, const QWidget* widget) const
+    {
+        return pixelMetric(PM_SmallIconSize, option, widget) + 4;
+    }
+};
+
 QIcon menuIcon(const QString& source, const QPalette& palette, int size, qreal dpr)
 {
     const QUrl url(source);
@@ -44,7 +112,7 @@ QIcon menuIcon(const QString& source, const QPalette& palette, int size, qreal d
 
 TrayMenu::TrayMenu(QObject* parent)
     : QObject(parent)
-    , m_style(QStyleFactory::create("Fusion"))
+    , m_style(std::make_unique<TrayMenuStyle>())
     , m_menu(std::make_unique<QMenu>())
 {
     m_menu->setObjectName("trayContextMenu");
@@ -154,6 +222,10 @@ bool TrayMenu::syncMenu(QMenu* menu, const QVariantList& entries)
         action->setEnabled(entry.value("enabled", true).toBool());
         action->setCheckable(entry.contains("checked"));
         action->setChecked(entry.value("checked", false).toBool());
+        auto font = menu->font();
+        if (entry.value("emphasizeChecked", false).toBool() && action->isChecked())
+            font.setWeight(QFont::DemiBold);
+        action->setFont(font);
         if (action->menu() && !syncMenu(action->menu(), entry.value("children").toList()))
             return false;
     }
