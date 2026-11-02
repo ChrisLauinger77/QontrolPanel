@@ -397,7 +397,7 @@ void AudioBridge::setApplicationMute(const QString& appId, bool mute)
     AudioManager::instance()->setApplicationMuteAsync(appId, mute);
 }
 
-// Device management methods (unchanged)
+// Device management methods
 void AudioBridge::setDefaultDevice(const QString& deviceId, bool isInput, bool forCommunications)
 {
     LOG_INFO("AudioBridge",
@@ -410,23 +410,37 @@ void AudioBridge::setDefaultDevice(const QString& deviceId, bool isInput, bool f
 
 void AudioBridge::setOutputDevice(int deviceIndex)
 {
-    if (deviceIndex >= 0 && deviceIndex < m_outputDeviceModel->rowCount()) {
-        QModelIndex modelIndex = m_outputDeviceModel->index(deviceIndex);
-        QString deviceId = m_outputDeviceModel->data(modelIndex, FilteredDeviceModel::IdRole).toString();
-
-        setDefaultDevice(deviceId, false, false);
-        setDefaultDevice(deviceId, false, true);
-    }
+    setOutputDeviceById(m_outputDeviceModel->data(m_outputDeviceModel->index(deviceIndex),
+                                                FilteredDeviceModel::IdRole).toString());
 }
 
 void AudioBridge::setInputDevice(int deviceIndex)
 {
-    if (deviceIndex >= 0 && deviceIndex < m_inputDeviceModel->rowCount()) {
-        QModelIndex modelIndex = m_inputDeviceModel->index(deviceIndex);
-        QString deviceId = m_inputDeviceModel->data(modelIndex, FilteredDeviceModel::IdRole).toString();
+    setInputDeviceById(m_inputDeviceModel->data(m_inputDeviceModel->index(deviceIndex),
+                                              FilteredDeviceModel::IdRole).toString());
+}
 
-        setDefaultDevice(deviceId, true, false);
-        setDefaultDevice(deviceId, true, true);
+void AudioBridge::setOutputDeviceById(const QString& deviceId)
+{
+    setDeviceById(deviceId, false);
+}
+
+void AudioBridge::setInputDeviceById(const QString& deviceId)
+{
+    setDeviceById(deviceId, true);
+}
+
+void AudioBridge::setDeviceById(const QString& deviceId, bool isInput)
+{
+    if (deviceId.isEmpty())
+        return;
+    const auto* model = isInput ? m_inputDeviceModel : m_outputDeviceModel;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        if (model->data(model->index(row), FilteredDeviceModel::IdRole).toString() != deviceId)
+            continue;
+        setDefaultDevice(deviceId, isInput, false);
+        setDefaultDevice(deviceId, isInput, true);
+        return;
     }
 }
 

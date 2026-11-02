@@ -76,6 +76,7 @@ class TrayMenuTests : public QObject
 {
     Q_OBJECT
     int m_mediaType = -1;
+    int m_audioType = -1;
     int m_settingsType = -1;
     int m_headsetType = -1;
     int m_batteryType = -1;
@@ -87,8 +88,9 @@ private slots:
         qApp->setQuitOnLastWindowClosed(false);
         qmlRegisterType<TrayMenu>(Module, 1, 0, "TrayMenu");
         const auto stub = QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/tests/qml/TrayUiStubs.qml");
-        for (const auto* name : {"Constants", "AudioBridge", "Utils"})
+        for (const auto* name : {"Constants", "Utils"})
             qmlRegisterSingletonType(stub, Module, 1, 0, name);
+        m_audioType = qmlRegisterSingletonType(stub, Module, 1, 0, "AudioBridge");
         m_mediaType = qmlRegisterSingletonType(stub, Module, 1, 0, "MediaSessionBridge");
         m_settingsType = qmlRegisterSingletonType(stub, Module, 1, 0, "UserSettings");
         m_headsetType = qmlRegisterSingletonType(stub, Module, 1, 0, "HeadsetControlBridge");
@@ -348,6 +350,172 @@ private slots:
         QVERIFY(headset->setProperty(capability.constData(), false));
         QVERIFY(!toggle->isVisible());
         QVERIFY(!headsetAction->isVisible());
+    }
+
+    void deviceListsFollowSnapshots_data()
+    {
+        QTest::addColumn<bool>("isInput");
+        QTest::newRow("outputs") << false;
+        QTest::newRow("inputs") << true;
+    }
+
+    void deviceListsFollowSnapshots()
+    {
+        QFETCH(bool, isInput);
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* tray = qobject_cast<TrayMenu*>(systemTray->property("contextMenu").value<QObject*>());
+        QVERIFY(tray);
+        auto* audio = engine.singletonInstance<QObject*>(m_audioType);
+        auto* outputs = audio->property("outputDevices").value<QObject*>();
+        auto* inputs = audio->property("inputDevices").value<QObject*>();
+        QVERIFY(outputs && inputs);
+        const auto snapshot = [](const QString& prefix, bool secondDefault = false) -> QVariantList {
+            return {QVariantMap{{"deviceId", prefix + ":one"}, {"name", "First"}, {"isDefault", !secondDefault}},
+                    QVariantMap{{"deviceId", prefix + ":two"}, {"name", "Second"}, {"isDefault", secondDefault}}};
+        };
+        QVERIFY(outputs->setProperty("devices", snapshot("output")));
+        QVERIFY(inputs->setProperty("devices", snapshot("input")));
+        const QString renamed(60, 'R');
+        QVERIFY(audio->setProperty("deviceRenames", QVariantMap{{"First", renamed}}));
+        tray->popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        QTRY_VERIFY(menu->isVisible());
+        const auto actions = menu->actions();
+        QCOMPARE(actions[0]->text(), QString("Output devices"));
+        QVERIFY(!actions[0]->isEnabled());
+        QVERIFY(actions[3]->isSeparator());
+        QCOMPARE(actions[4]->text(), QString("Input devices"));
+        QVERIFY(!actions[4]->isEnabled());
+        QVERIFY(actions[7]->isSeparator());
+        for (const auto& prefix : {QString("outputDevice:output"), QString("inputDevice:input")}) {
+            auto* first = actionFor(menu, prefix + ":one");
+            auto* second = actionFor(menu, prefix + ":two");
+            QVERIFY(first && second);
+            QVERIFY(!first->menu() && !second->menu()); // Two clicks, no submenu.
+            QVERIFY(first->isEnabled() && second->isEnabled());
+            QVERIFY(first->isCheckable() && second->isCheckable());
+            QVERIFY(first->isChecked() && !second->isChecked());
+            QCOMPARE(first->text(), renamed.left(47) + "...");
+            const auto icon = prefix.startsWith("input") ? "qrc:/icons/mic.svg" : "qrc:/icons/headset.svg";
+            QCOMPARE(first->data().toMap().value("icon").toString(), QString(icon));
+            QVERIFY(!first->icon().isNull());
+        }
+
+        const auto prefix = isInput ? QString("inputDevice:input") : QString("outputDevice:output");
+        auto* first = actionFor(menu, prefix + ":one");
+        auto* second = actionFor(menu, prefix + ":two");
+        menu->setActiveAction(second);
+        second->trigger();
+        QCOMPARE(audio->property(isInput ? "lastInputDeviceId" : "lastOutputDeviceId").toString(),
+                 isInput ? QString("input:two") : QString("output:two"));
+        QVERIFY(audio->property(isInput ? "lastOutputDeviceId" : "lastInputDeviceId").toString().isEmpty());
+        QVERIFY(first->isChecked() && !second->isChecked()); // Await the actual device update.
+
+        auto* model = isInput ? inputs : outputs;
+        auto devices = snapshot(isInput ? "input" : "output", true);
+        QVERIFY(model->setProperty("devices", devices));
+        QTRY_VERIFY(second->isChecked());
+        QVERIFY(!first->isChecked());
+        QVERIFY(menu->isVisible());
+        QCOMPARE(menu->actions(), actions);
+        QCOMPARE(menu->activeAction(), second);
+
+        auto changed = devices[1].toMap();
+        changed["name"] = "Renamed device";
+        devices[1] = changed;
+        QVERIFY(model->setProperty("devices", devices));
+        QTRY_COMPARE(second->text(), QString("Renamed device"));
+        QVERIFY(audio->setProperty("deviceRenames", QVariantMap{{"Renamed device", "Custom name"}}));
+        QTRY_COMPARE(second->text(), QString("Custom name"));
+        QVERIFY(menu->isVisible());
+        QCOMPARE(menu->actions(), actions);
+
+        // A disappearing row may close the menu; the action keeps its device ID.
+        devices.removeFirst();
+        QVERIFY(model->setProperty("devices", devices));
+        QTRY_VERIFY(!menu->isVisible());
+        second->trigger();
+        QCOMPARE(audio->property(isInput ? "lastInputDeviceId" : "lastOutputDeviceId").toString(),
+                 isInput ? QString("input:two") : QString("output:two"));
+    }
+
+    void deviceSectionsFallBackIndependently_data()
+    {
+        QTest::addColumn<int>("outputCount");
+        QTest::addColumn<int>("inputCount");
+        QTest::addColumn<bool>("ready");
+        QTest::newRow("two-outputs-one-input") << 2 << 1 << true;
+        QTest::newRow("one-output-two-inputs") << 1 << 2 << true;
+        QTest::newRow("no-devices") << 0 << 0 << true;
+        QTest::newRow("loading") << 2 << 2 << false;
+    }
+
+    void deviceSectionsFallBackIndependently()
+    {
+        QFETCH(int, outputCount); QFETCH(int, inputCount); QFETCH(bool, ready);
+        QQmlEngine engine;
+        auto paths = engine.importPathList();
+        paths.removeIf([](const QString& path) {
+            const auto directory = path.startsWith("qrc:/") ? path.mid(3) : path;
+            return QFileInfo::exists(directory + "/ChrisLauinger77/QontrolPanel/qmldir");
+        });
+        engine.setImportPathList(paths);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(QONTROLPANEL_SOURCE_DIR "/qml/SystemTray.qml"));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        std::unique_ptr<QObject> systemTray(component.createWithInitialProperties({{"visible", false}}));
+        QVERIFY2(systemTray != nullptr, qPrintable(component.errorString()));
+        auto* tray = qobject_cast<TrayMenu*>(systemTray->property("contextMenu").value<QObject*>());
+        QVERIFY(tray);
+        auto* audio = engine.singletonInstance<QObject*>(m_audioType);
+        QVERIFY(audio->setProperty("isReady", ready));
+        for (bool isInput : {false, true}) {
+            auto* model = audio->property(isInput ? "inputDevices" : "outputDevices").value<QObject*>();
+            QVERIFY(model);
+            QVariantList devices;
+            for (int i = 0; i < (isInput ? inputCount : outputCount); ++i)
+                devices.append(QVariantMap{{"deviceId", QString::number(i)}, {"name", "Test device"}, {"isDefault", i == 0}});
+            QVERIFY(model->setProperty("devices", devices));
+        }
+        tray->popup();
+        auto* menu = popupMenu();
+        QVERIFY(menu);
+        const auto actions = menu->actions();
+        int row = 0;
+        for (bool isInput : {false, true}) {
+            const auto prefix = isInput ? QString("inputDevice:") : QString("outputDevice:");
+            const int count = isInput ? inputCount : outputCount;
+            auto* header = actions[row++];
+            QVERIFY(!header->isEnabled());
+            QVERIFY(!header->isCheckable());
+            if (ready && count >= 2) {
+                QCOMPARE(header->text(), isInput ? QString("Input devices") : QString("Output devices"));
+                for (int i = 0; i < count; ++i)
+                    QCOMPARE(actions[row++], actionFor(menu, prefix + QString::number(i)));
+                if (!isInput)
+                    QVERIFY(actions[row++]->isSeparator());
+            } else {
+                const auto name = !ready ? QString("Loading...")
+                    : isInput ? QString("Test microphone") : QString("Test speakers");
+                QCOMPARE(header->text(), (isInput ? "Input: " : "Output: ") + name);
+                QCOMPARE(header->data().toMap().value("icon").toString(),
+                         isInput ? QString("qrc:/icons/mic.svg") : QString("qrc:/icons/panel_volume_100.svg"));
+                for (auto* action : actions)
+                    QVERIFY(!action->data().toMap().value("id").toString().startsWith(prefix));
+            }
+        }
+        QVERIFY(actions[row]->isSeparator());
+        QCOMPARE(actions[row + 1], actionFor(menu, "previous"));
     }
 
     void ancSubmenuShowsSavedChoice()

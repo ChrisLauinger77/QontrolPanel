@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QAbstractListModel>
+#include <QVariantList>
 #include <QtQml/qqmlregistration.h>
 #include "audiotypes.h"
 
@@ -57,6 +58,7 @@ class FilteredDeviceModel : public QAbstractListModel
     QML_UNCREATABLE("FilteredDeviceModel is only available through AudioBridge")
     Q_PROPERTY(int currentDefaultIndex READ getCurrentDefaultIndex NOTIFY currentDefaultIndexChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+    Q_PROPERTY(QVariantList devices READ devices NOTIFY devicesChanged)
 
 public:
     enum DeviceRoles {
@@ -82,12 +84,14 @@ public:
 
     // Model management
     void setDevices(const QList<AudioDevice>& devices);
+    QVariantList devices() const;
     Q_INVOKABLE int getCurrentDefaultIndex() const;
     Q_INVOKABLE QString getDeviceName(int index) const;
 
 signals:
     void currentDefaultIndexChanged();
     void countChanged();
+    void devicesChanged();
 
 private:
     QList<AudioDevice> m_devices;
