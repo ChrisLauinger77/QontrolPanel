@@ -1810,6 +1810,14 @@ You can enable it in the Components tab.</source>
         <source>Switch User</source>
         <translation>切换用户</translation>
     </message>
+    <message>
+        <source>Input devices</source>
+        <translation>输入设备</translation>
+    </message>
+    <message>
+        <source>Output devices</source>
+        <translation>输出设备</translation>
+    </message>
 </context>
 <context>
     <name>UpdatePane</name>

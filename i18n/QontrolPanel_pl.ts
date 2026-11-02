@@ -1811,6 +1811,14 @@ Możesz ją włączyć w zakładce Komponenty.</translation>
         <source>Switch User</source>
         <translation>Zmień użytkownika</translation>
     </message>
+    <message>
+        <source>Input devices</source>
+        <translation>Urządzenia wejściowe</translation>
+    </message>
+    <message>
+        <source>Output devices</source>
+        <translation>Urządzenia wyjściowe</translation>
+    </message>
 </context>
 <context>
     <name>UpdatePane</name>
