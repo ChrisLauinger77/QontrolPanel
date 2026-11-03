@@ -1500,7 +1500,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     <name>PowerMenu</name>
     <message>
         <source>Sleep</source>
-        <translation>Ruhezustand</translation>
+        <translation>Energie sparen</translation>
     </message>
     <message>
         <source>Hibernate</source>
@@ -1781,7 +1781,7 @@ Sie können sie auf der Registerkarte „Komponenten“ aktivieren.</translation
     </message>
     <message>
         <source>Sleep</source>
-        <translation>Ruhezustand</translation>
+        <translation>Energie sparen</translation>
     </message>
     <message>
         <source>Hibernate</source>
