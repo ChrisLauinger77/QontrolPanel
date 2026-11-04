@@ -830,11 +830,11 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     <name>HeadsetBattery</name>
     <message>
         <source>Charging</source>
-        <translation type="unfinished"></translation>
+        <translation>충전 중</translation>
     </message>
     <message>
         <source>Battery level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>배터리 잔량 알 수 없음</translation>
     </message>
     <message>
         <source>about %1 min to full</source>
@@ -981,7 +981,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>8 - Charging, level unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>8 - 충전 중, 잔량 알 수 없음</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>
