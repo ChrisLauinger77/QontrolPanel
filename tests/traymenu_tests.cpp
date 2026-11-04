@@ -852,7 +852,8 @@ private slots:
         // Long titles are shortened so the headset status before them stays within the Windows limit.
         QVERIFY(headset->setProperty("anyDeviceFound", true));
         QVERIFY(headset->setProperty("micMuted", 0));
-        const auto headsetTooltip = QStringLiteral("QontrolPanel\n\U0001F3A7HeadsetControl Test device\n50% "
+        QVERIFY(headset->setProperty("batteryIcon", QStringLiteral("\U0001F50B")));
+        const auto headsetTooltip = QStringLiteral("QontrolPanel\n\U0001F3A7 HeadsetControl Test device\n\U0001F50B 50% "
                                                    "\U0001F3A4ChatMix: 50 Mic unmuted (last reading)");
         QVERIFY(media->setProperty("mediaTitle", QString(200, QChar('x'))));
         QVERIFY2(tooltip().startsWith(headsetTooltip + QStringLiteral("\n♫ x")), qPrintable(tooltip()));
@@ -901,7 +902,8 @@ private slots:
         // Charging headsets may report no level yet; never show it as -1%.
         QVERIFY(headset->setProperty("batteryLevel", -1));
         QVERIFY(headset->setProperty("batteryStatus", "BATTERY_CHARGING"));
-        QTRY_VERIFY(systemTray->property("tooltip").toString().contains("\nCharging"));
+        QVERIFY(headset->setProperty("batteryIcon", QStringLiteral("\u26A1\uFE0E")));
+        QTRY_VERIFY(systemTray->property("tooltip").toString().contains(QStringLiteral("\n\u26A1\uFE0E Charging")));
         QVERIFY(!systemTray->property("tooltip").toString().contains("-1%"));
         QVERIFY(headset->setProperty("batteryLevel", 50));
         QVERIFY(headset->setProperty("batteryStatus", "BATTERY_AVAILABLE"));
