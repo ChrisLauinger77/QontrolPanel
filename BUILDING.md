@@ -4,6 +4,10 @@
 - Git for Windows (for commit extraction at build time)
 - Microsoft Visual Studio Community 2022
 - Latest stable Qt
+- vcpkg with `hidapi` and `getopt-win32`
+- Python 3.11 or newer (for the tests that CMake enables by default)
+
+See [docs/BUILD.md](docs/BUILD.md) for the complete build guide, including vcpkg setup and tests.
 
 ### Git for windows
 
@@ -28,14 +32,17 @@ Wait for installation to complete and close visual studio editor.
 Download [Qt](https://www.qt.io/download-qt-installer-oss?hsLang=en). You will need an account.  
 Fill in yout account information and tick `I'm an individual...`.
 
-Untick Qt 6.9 for development and tick custom installation.  
+Choose custom installation.  
 We need the following:
 - In Qt, expand last stable one (No beta, prerelease etc) and tick MSVC 2022 64 bit.
-- Under Additional libraries, tick Qt Multimedia
 - Under build tools, make sure Cmake and Ninja are checked
 - Under QtCreator, tick QtCreator
 
 You can then start the install
+
+### Sources and dependencies
+
+Clone the repository with submodules and install the vcpkg packages as described in [docs/BUILD.md](docs/BUILD.md#clone).
 
 ### Compiling the project
 

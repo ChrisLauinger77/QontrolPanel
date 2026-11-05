@@ -13,10 +13,13 @@ QontrolPanel is a Windows desktop utility built with Qt 6, C++20, QML, Windows s
 | `resources/` | Qt resource collections for icons, sounds, and Windows resources. |
 | `i18n/` | Qt Linguist `.ts` translation source files. |
 | `i18n_compiled/` | Compiled translation metadata and generated outputs used by release workflows. |
-| `cmake/` | Supporting CMake scripts, currently including language metadata. |
+| `cmake/` | Supporting CMake scripts: language metadata, the recorded vcpkg baseline, and the vcpkg triplet. |
 | `dependencies/headsetcontrol/` | Vendored HeadsetControl source used as a CMake subdirectory. |
-| `tools/` | Release and installer support files. |
-| `.github/workflows/` | CI, translation, release, submodule update, and winget publication workflows. |
+| `tools/` | Installer, release provenance, and translation progress support files. |
+| `tests/` | Portable and Qt reliability, tray menu, and settings UI tests. |
+| `docs/` | Architecture, build, HID, HeadsetControl, reliability, and website documentation. |
+| `site/` | Static project homepage published through GitHub Pages. |
+| `.github/workflows/` | CI, translation, release (including WinGet publication and the Scoop update request), HeadsetControl update, website, and Claude workflows. |
 
 ## Runtime Shape
 

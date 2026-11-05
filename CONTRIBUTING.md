@@ -67,13 +67,13 @@ Before opening a pull request, check:
 
 ## Translations
 
-QontrolPanel uses Qt Linguist `.ts` files under `i18n/`. The CMake build wires translation generation through project helpers in `cmake/languages.cmake`.
+QontrolPanel uses Qt Linguist `.ts` files under `i18n/`. Supported languages are listed in `cmake/languages.cmake`. Normal builds compile the existing catalogs without changing the `.ts` sources.
 
 When changing user-visible text:
 
 1. Add or update strings in QML/C++.
-2. Run a build so translation sources refresh.
-3. Review changed `.ts` files for accidental churn.
+2. Extract messages explicitly with `cmake --build build --target update_translations`, or with `lupdate` on Linux as described in `docs/BUILD.md`.
+3. Review additions, changes, and removals in the `.ts` files for accidental churn. Do not commit `.qm` files; CI generates them.
 4. Do not hand-edit translations unless you are intentionally translating.
 
 Translator-specific notes live in [`TRANSLATIONS.md`](TRANSLATIONS.md).

@@ -59,6 +59,7 @@ Important state includes:
 - `m_hasChatMixCapability`
 - `m_hasVoicePromptsCapability`
 - `m_hasEqualizerPresetsCapability`
+- `m_hasEqualizerCapability`
 - `m_hasInactiveTimeCapability`
 - `m_hasBluetoothCallVolumeCapability`
 - `m_hasBluetoothWhenPoweredOnCapability`
@@ -99,6 +100,8 @@ QML should use the bridge rather than holding a monitor pointer directly.
 - `chatMix`
 - `micMuted`
 - `micAttached`
+- `sidetoneLevel`
+- `headsetVolumeLevel`
 - `capabilities`
 
 It represents app-facing data and should not grow protocol-specific behavior.
@@ -140,7 +143,7 @@ Light color uses the set-only `CAP_LIGHT_COLOR` capability and applies to every 
 
 Sending a color turns the lights on, so the monitor sends it only when the desired lights toggle is on or the headset has no `CAP_LIGHTS` toggle. Writes always apply lights before color. Turning lights off and on invalidates the color acknowledgement so the saved color is restored after plain on; reconnects replay both in the same order. The Lights card supports color-only headsets and disables its swatch while the lights toggle is off. Color is available only in settings, with no tray action.
 
-The pinned HeadsetControl revision `2c6790b` advertises light color only on the synthetic test device, in all supported profiles except 10. Profile 3 shows the color control; profile 10 hides it. Corsair Virtuoso XT/SE support is still pending upstream, so no app-side device list enables this control.
+The pinned HeadsetControl revision `7b760dd` advertises light color only on the synthetic test device, in all supported profiles except 10. Profile 3 shows the color control; profile 10 hides it. Its Corsair Virtuoso XT/SE support includes the lights toggle but not light color, and no app-side device list enables this control.
 
 When adding a headset preference, keep persisted settings, bridge state, monitor behavior, and QML controls in sync.
 
@@ -215,7 +218,7 @@ ChatMix uses `-1` when unavailable and otherwise follows the HeadsetControl valu
 
 The device cache, state snapshot, and bridge expose `micMuted` and `micAttached` as `-1` (unknown), `0` (unmuted/detached), or `1` (muted/attached). `updateDeviceCache()` reads each supported status once per poll on the monitor thread, after the headset passes the battery reachability check. Failed, unsupported, or skipped reads remain unknown; a later poll or disconnect clears an earlier reading. Bridge getters and UI bindings only read copied snapshots and never query HID.
 
-Mute status uses `CAP_MICROPHONE_MUTE_STATUS` and `getMicMuteStatus()`. On the supported Corsair Void and Wireless V2 families, muted means the boom is flipped up; the same API also covers Audeze Maxwell/Maxwell 2 and Sony InZone H9 II. Attachment uses `CAP_MICROPHONE_ATTACHMENT_STATUS` and `getMicAttachmentStatus()`, currently supported by Sony InZone H9 II. Capability detection comes from the pinned library rather than an app-side device list.
+Mute status uses `CAP_MICROPHONE_MUTE_STATUS` and `getMicMuteStatus()`. On the supported Corsair Void and Wireless V2 families, muted means the boom is flipped up; the same API also covers Audeze Maxwell/Maxwell 2, HyperX Cloud Alpha S, and Sony InZone H9 II. Attachment uses `CAP_MICROPHONE_ATTACHMENT_STATUS` and `getMicAttachmentStatus()`, currently supported by Sony InZone H9 II. Capability detection comes from the pinned library rather than an app-side device list.
 
 These queries can issue additional battery requests, wake handshakes, or key reads, including a roughly 3.75-second timeout on an offline Maxwell. They run at the existing fetch rate (at least 60 seconds), without a separate timer or write retry. The tray mute text and both settings status lines say "last reading"; unknown values are hidden. Test mode reports unmuted (`0`) and attached (`1`). The synthetic error profile remains selectable for write-retry testing, but its failed battery query skips microphone reads.
 
@@ -231,7 +234,7 @@ The upstream test device reads back a fixed level of `85`. Slider edits still ca
 
 ## Hardware headset volume
 
-The "Headset volume" slider controls the headset's own hardware level, independently of the Windows endpoint volume. `CAP_HEADSET_VOLUME` gates the control; `canRead(CAP_HEADSET_VOLUME)` separately gates polling and the `canReadHeadsetVolume` bridge property. With the pinned library, Logitech ASTRO A50 Gen 5 supports writes, while the synthetic device supports both reads and writes except in profile 6, which is write-only. Future devices can advertise read support without an app-side model list.
+The "Headset volume" slider controls the headset's own hardware level, independently of the Windows endpoint volume. `CAP_HEADSET_VOLUME` gates the control; `canRead(CAP_HEADSET_VOLUME)` separately gates polling and the `canReadHeadsetVolume` bridge property. With the pinned library, Logitech ASTRO A50 Gen 5 and the synthetic device support both reads and writes; test profile 6 is write-only. Future devices can advertise read support without an app-side model list.
 
 `headsetcontrolHeadsetVolume` defaults to `-1` ("Not set"). The bridge copies the saved level to the worker at startup and observes subsequent changes without requiring the settings pane to be open. Unrelated settings snapshots omit this value, just as they omit sidetone, so they cannot reintroduce a stale level after adoption. Explicit commands are clamped to 0–128 before calling `setHeadsetVolume()`; unset never becomes a hardware write.
 

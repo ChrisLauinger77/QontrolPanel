@@ -10,6 +10,7 @@ QontrolPanel is a Windows desktop application built with Qt 6, CMake, MSVC, vcpk
 - CMake 3.30 or newer.
 - Ninja or the Visual Studio CMake generator.
 - Qt 6.9 or newer for MSVC 2022 64-bit.
+- Python 3.11 or newer while `BUILD_TESTING` is enabled, which is the CMake default.
 - vcpkg installed at `C:\vcpkg` or passed explicitly through `CMAKE_TOOLCHAIN_FILE`.
 - vcpkg packages:
   - `hidapi:x64-windows`
@@ -169,7 +170,7 @@ Run the install step. The project uses Qt deployment helpers during install; run
 
 ## CI Build
 
-`ci.yml` validates pull requests targeting `main` and supports manual validation. It runs build, tests, installation, packaging, and provenance checks, but uploads no artifacts. Test reports remain available in the workflow logs.
+`ci.yml` validates pull requests targeting `main`, runs monthly, and supports manual validation. Pull requests that change only Markdown, `i18n_compiled/`, `.assets/`, the website, or `renovate.json` skip it. It runs build, tests, installation, packaging, and provenance checks, but uploads no artifacts. Test reports remain available in the workflow logs.
 
 The Release workflow builds a candidate only when manually dispatched from `main`; main pushes and pull requests do not trigger release candidate builds. The candidate build:
 
@@ -193,7 +194,7 @@ Approval creates an annotated tag named after the CMake version at the candidate
 Full Windows validation must pass all five suites: `nightlight_data`, `release_provenance`, `tray_menu`, `qt_reliability`, and `settings_ui`. Run them in a signed-in desktop session; the native shortcut checks cannot register hotkeys from a non-interactive SSH session.
 
 ```pwsh
-ctest --test-dir build -C Release --output-on-failure
+ctest --test-dir build -C Release --output-on-failure --no-tests=error
 ```
 
 A hardware-independent subset can also be configured on Linux:
@@ -201,7 +202,7 @@ A hardware-independent subset can also be configured on Linux:
 ```sh
 cmake -S . -B /tmp/qontrol-tests -DQONTROLPANEL_CORE_TESTS_ONLY=ON -DCMAKE_BUILD_TYPE=Release
 cmake --build /tmp/qontrol-tests
-ctest --test-dir /tmp/qontrol-tests --output-on-failure
+ctest --test-dir /tmp/qontrol-tests --output-on-failure --no-tests=error
 ```
 
 Night Light binary-format and release-provenance tests require C++20 and Python 3.11 or newer. Qt Core/Qml/Network/Test development packages enable the logging, storage, model, cancellation, and worker-lifecycle tests as well. Windows release validation requires those Qt tests. These tests do not exercise real power actions or hardware.

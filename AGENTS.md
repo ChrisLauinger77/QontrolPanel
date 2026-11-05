@@ -24,10 +24,12 @@ Read these docs before larger changes:
 - `qml/Singletons/`: QML-only singletons.
 - `resources/`: icons, sounds, resource files.
 - `i18n/`: Qt translation source files.
+- `i18n_compiled/`: CI-generated `.qm` files and translation progress; do not edit.
 - `dependencies/headsetcontrol/`: vendored HeadsetControl dependency.
 - `cmake/`: project CMake helpers.
 - `tools/`: installer and release support.
 - `tests/`: portable and Qt reliability tests.
+- `site/`: static homepage; see `docs/WEBSITE.md`.
 
 ## Coding Guidance
 
