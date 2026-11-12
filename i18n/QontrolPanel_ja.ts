@@ -834,7 +834,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Battery level unknown</source>
-        <translation>バッテリー残量不明</translation>
+        <translation>バッテリー残量が不明</translation>
     </message>
     <message>
         <source>about %1 min to full</source>
@@ -893,7 +893,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>8 - Charging, level unknown</source>
-        <translation>8 - 充電中、バッテリー残量不明</translation>
+        <translation>8 - 充電中、バッテリー残量が不明</translation>
     </message>
     <message>
         <source>10 - Limited capabilities</source>
