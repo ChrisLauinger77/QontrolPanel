@@ -258,14 +258,14 @@ ApplicationWindow {
 
     Timer {
         id: contentOpacityTimer
-        interval: 160
+        interval: 60
         repeat: false
         onTriggered: mainLayout.opacity = 1
     }
 
     Timer {
         id: flyoutOpacityTimer
-        interval: 160
+        interval: 60
         repeat: false
         onTriggered: mediaPanelWindow.contentOpacity = 1
     }
@@ -880,7 +880,7 @@ ApplicationWindow {
                             enabled: UserSettings.panelAnimationsEnabled
                             NumberAnimation {
                                 id: mainOpacityAnimation
-                                duration: 400
+                                duration: 240
                                 easing.type: Easing.OutQuad
                             }
                         }
