@@ -822,6 +822,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>Определяет, как часто команды яркости отправляются на внешние мониторы</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Показывать подтверждение действия питания</translation>
     </message>

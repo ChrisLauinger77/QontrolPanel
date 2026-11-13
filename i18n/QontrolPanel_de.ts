@@ -822,6 +822,14 @@ Wenn Sie meine Arbeit unterstützen möchten, freue ich mich über jeden Beitrag
         <translation>Steuert, wie häufig Helligkeitsbefehle an externe Monitore gesendet werden</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Bestätigung für Energieaktionen anzeigen</translation>
     </message>

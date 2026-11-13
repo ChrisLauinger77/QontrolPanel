@@ -61,6 +61,19 @@ ColumnLayout {
 
             Card {
                 Layout.fillWidth: true
+                title: qsTr("Open settings on tray double-click")
+                description: qsTr("Turn off to open the panel immediately on a single click")
+                additionalControl: LabeledSwitch {
+                    checked: UserSettings.trayDoubleClickOpensSettings
+                    onClicked: {
+                        UserSettings.trayDoubleClickOpensSettings = checked
+                        checked = Qt.binding(function() { return UserSettings.trayDoubleClickOpensSettings })
+                    }
+                }
+            }
+
+            Card {
+                Layout.fillWidth: true
                 title: qsTr("Show power action confirmation")
                 description: qsTr("Show a confirmation dialog when selecting a power action from the system tray menu")
                 additionalControl: LabeledSwitch {

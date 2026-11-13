@@ -820,6 +820,14 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
         <translation>Contrôle la fréquence à laquelle les commandes de luminosité sont envoyées aux moniteurs externes</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Afficher la confirmation de l&apos;action de mise sous tension</translation>
     </message>

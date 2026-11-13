@@ -195,8 +195,12 @@ ApplicationWindow {
             } else if (panel.suppressNextTrayShow) {
                 focusLossTrayGuardTimer.stop()
                 panel.suppressNextTrayShow = false
-            } else {
+            } else if (UserSettings.trayDoubleClickOpensSettings) {
+                // Wait out a possible double-click so the panel does not
+                // flash before the settings window opens.
                 trayToggleTimer.restart()
+            } else {
+                panel.showPanelFromTray()
             }
         }
         onSettingsWindowRequested: {
@@ -215,8 +219,7 @@ ApplicationWindow {
         repeat: false
         onTriggered: {
             if (!panel.visible) {
-                HeadsetControlBridge.refreshNow()
-                panel.showPanel()
+                panel.showPanelFromTray()
             }
         }
     }
@@ -374,6 +377,11 @@ ApplicationWindow {
         } else {
             showPanel()
         }
+    }
+
+    function showPanelFromTray() {
+        HeadsetControlBridge.refreshNow()
+        showPanel()
     }
 
     function showPanel() {

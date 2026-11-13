@@ -822,6 +822,14 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
         <translation>Controla con qué frecuencia se envían comandos de brillo a los monitores externos</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Mostrar confirmación de acciones de energía</translation>
     </message>

@@ -821,6 +821,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>控制亮度信号发送到外置显示器的频率</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>显示电源动作确认</translation>
     </message>
