@@ -821,11 +821,11 @@ Si vous souhaitez soutenir mon travail, toute contribution serait grandement app
     </message>
     <message>
         <source>Open settings on tray double-click</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir les paramètres en double-cliquant sur l&apos;icône de la zone de notification</translation>
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactivez cette option pour ouvrir le panneau immédiatement d&apos;un simple clic</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>

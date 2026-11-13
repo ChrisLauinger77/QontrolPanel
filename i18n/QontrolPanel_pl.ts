@@ -815,11 +815,11 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
     </message>
     <message>
         <source>Open settings on tray double-click</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwieraj ustawienia dwukrotnym kliknięciem ikony na pasku zadań</translation>
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyłącz, aby otwierać panel od razu pojedynczym kliknięciem</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>

@@ -823,11 +823,11 @@ Si quieres apoyar mi trabajo, cualquier contribución será muy apreciada.</tran
     </message>
     <message>
         <source>Open settings on tray double-click</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir la configuración con doble clic en el icono de la bandeja</translation>
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation type="unfinished"></translation>
+        <translation>Desactívalo para abrir el panel al instante con un solo clic</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>

@@ -822,11 +822,11 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Open settings on tray double-click</source>
-        <translation type="unfinished"></translation>
+        <translation>双击任务栏图标打开设置</translation>
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭后，单击即可立即打开面板</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>

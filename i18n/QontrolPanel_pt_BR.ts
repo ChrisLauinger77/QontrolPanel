@@ -824,11 +824,11 @@ Se você quiser apoiar meu trabalho, qualquer contribuição será muito bem-vin
     </message>
     <message>
         <source>Open settings on tray double-click</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir as configurações com clique duplo no ícone da bandeja</translation>
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation type="unfinished"></translation>
+        <translation>Desative para abrir o painel imediatamente com um único clique</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>

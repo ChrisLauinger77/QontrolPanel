@@ -823,11 +823,11 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Open settings on tray double-click</source>
-        <translation type="unfinished"></translation>
+        <translation>Открывать настройки двойным щелчком по значку в трее</translation>
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключите, чтобы открывать панель сразу одним щелчком</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>
