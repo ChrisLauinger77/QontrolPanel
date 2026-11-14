@@ -822,6 +822,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>Controls how frequently brightness commands are sent to external monitors</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Show power action confirmation</translation>
     </message>

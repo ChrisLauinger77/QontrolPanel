@@ -13,6 +13,7 @@ QtObject {
     property int headsetcontrolAnc: -1
     property bool enablePowerMenu: true
     property bool showPowerDialogConfirmation: false
+    property bool trayDoubleClickOpensSettings: true
 
     property bool isReady: true
     property int outputVolume: 50

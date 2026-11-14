@@ -959,6 +959,18 @@ private slots:
         QSignalSpy showSettings(systemTray.get(), SIGNAL(settingsWindowRequested()));
         actionFor(menu, "settings")->trigger();
         QCOMPARE(showSettings.size(), 1);
+
+        // Double-clicking the tray icon opens settings only while enabled.
+        QQmlExpression doubleClick(qmlContext(systemTray.get()), systemTray.get(),
+                                   "activated(Platform.SystemTrayIcon.DoubleClick)");
+        doubleClick.evaluate();
+        QVERIFY2(!doubleClick.hasError(), qPrintable(doubleClick.error().toString()));
+        QCOMPARE(showSettings.size(), 2);
+        QVERIFY(settings->setProperty("trayDoubleClickOpensSettings", false));
+        doubleClick.evaluate();
+        QVERIFY2(!doubleClick.hasError(), qPrintable(doubleClick.error().toString()));
+        QCOMPARE(showSettings.size(), 2);
+        QVERIFY(settings->setProperty("trayDoubleClickOpensSettings", true));
     }
 };
 
