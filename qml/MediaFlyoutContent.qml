@@ -170,7 +170,7 @@ ColumnLayout {
         enabled: UserSettings.panelAnimationsEnabled
         NumberAnimation {
             id: opacityAnimation
-            duration: 300
+            duration: 240
             easing.type: Easing.OutQuad
         }
     }

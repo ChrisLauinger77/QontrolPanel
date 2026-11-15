@@ -814,6 +814,14 @@ Jeśli chcesz wesprzeć moją pracę, każda wpłata będzie bardzo mile widzian
         <translation>Ogólne</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation>Otwieraj ustawienia dwukrotnym kliknięciem ikony na pasku zadań</translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation>Wyłącz, aby otwierać panel od razu pojedynczym kliknięciem</translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Pokaż potwierdzenie akcji zasilania</translation>
     </message>

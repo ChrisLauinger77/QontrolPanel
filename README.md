@@ -25,7 +25,7 @@ If you like my work, please consider supporting me ! <br><br>
 
 Left click on the tray icon to reveal the panel.<br>
 Click anywhere or left again on the tray icon to close the panel.<br>
-Double click on tray icon will open the settings pane.<br>
+Double click on tray icon will open the settings pane. Turn this off in the General section to open the panel without the double-click delay.<br>
 Default section of settings pane is configurable in General section.
 
 Right-click the tray icon to open the tray menu, where you can switch the output and input device.

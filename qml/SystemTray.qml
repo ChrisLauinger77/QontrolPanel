@@ -25,7 +25,8 @@ Platform.SystemTrayIcon {
         }
 
         if (reason === Platform.SystemTrayIcon.DoubleClick) {
-            systemTray.settingsWindowRequested();
+            if (UserSettings.trayDoubleClickOpensSettings)
+                systemTray.settingsWindowRequested();
             return;
         }
 

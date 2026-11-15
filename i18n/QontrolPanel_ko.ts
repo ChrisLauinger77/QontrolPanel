@@ -822,6 +822,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>밝기 명령이 외부 모니터로 전송되는 빈도 제어</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>전원 동작 확인 표시</translation>
     </message>

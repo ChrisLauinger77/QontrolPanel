@@ -179,10 +179,12 @@ private slots:
         settings.sync();
         QCOMPARE(settings.status(), QSettings::NoError);
         QVERIFY(!settings.contains("panelAnimationsEnabled"));
+        QVERIFY(!settings.contains("trayDoubleClickOpensSettings"));
         m_preferencesPath = settings.fileName();
         QCOMPARE(UserSettings::instance()->mediaOverlayPosition(), 7);
         QCOMPARE(UserSettings::instance()->iconStyle(), 3);
         QVERIFY(UserSettings::instance()->panelAnimationsEnabled());
+        QVERIFY(UserSettings::instance()->trayDoubleClickOpensSettings());
         QCOMPARE(UserSettings::instance()->headsetcontrolBluetoothCallVolume(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolBluetoothWhenPoweredOn(), -1);
         QCOMPARE(UserSettings::instance()->headsetcontrolMicMuteLedBrightness(), -1);
@@ -1070,6 +1072,7 @@ private slots:
         row("AppearancePane", "Panel animations", "panelAnimationsEnabled", "checked", "clicked", true, false);
         row("AppearancePane", "Settings page animations", "settingsAnimationsEnabled", "checked", "clicked", true, false);
         row("GeneralPane", "Settings startup page", "settingsStartupPage", "currentIndex", "activated", 0, 2);
+        row("GeneralPane", "Open settings on tray double-click", "trayDoubleClickOpensSettings", "checked", "clicked", true, false);
         row("GeneralPane", "Show power action confirmation", "showPowerDialogConfirmation", "checked", "clicked", true, false);
         row("GeneralPane", "Power action confirmation timeout (seconds)", "powerDialogTimeout", "value", "valueModified", 30, 40);
         row("GeneralPane", "Slider wheel sensivity", "sliderWheelSensivity", "value", "valueModified", 2, 3);

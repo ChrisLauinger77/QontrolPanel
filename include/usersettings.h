@@ -41,6 +41,7 @@ class UserSettings : public QObject
     Q_PROPERTY(int settingsStartupPage READ settingsStartupPage WRITE setSettingsStartupPage NOTIFY settingsStartupPageChanged)
     Q_PROPERTY(bool panelAnimationsEnabled READ panelAnimationsEnabled WRITE setPanelAnimationsEnabled NOTIFY panelAnimationsEnabledChanged)
     Q_PROPERTY(bool settingsAnimationsEnabled READ settingsAnimationsEnabled WRITE setSettingsAnimationsEnabled NOTIFY settingsAnimationsEnabledChanged)
+    Q_PROPERTY(bool trayDoubleClickOpensSettings READ trayDoubleClickOpensSettings WRITE setTrayDoubleClickOpensSettings NOTIFY trayDoubleClickOpensSettingsChanged)
 
     Q_PROPERTY(int trayIconTheme READ trayIconTheme WRITE setTrayIconTheme NOTIFY trayIconThemeChanged)
     Q_PROPERTY(int iconStyle READ iconStyle WRITE setIconStyle NOTIFY iconStyleChanged)
@@ -121,6 +122,7 @@ public:
     int settingsStartupPage() const { return m_settingsStartupPage; }
     bool panelAnimationsEnabled() const { return m_panelAnimationsEnabled; }
     bool settingsAnimationsEnabled() const { return m_settingsAnimationsEnabled; }
+    bool trayDoubleClickOpensSettings() const { return m_trayDoubleClickOpensSettings; }
 
     int trayIconTheme() const { return m_trayIconTheme; }
     int iconStyle() const { return m_iconStyle; }
@@ -196,6 +198,7 @@ public:
     void setSettingsStartupPage(int value);
     void setPanelAnimationsEnabled(bool value);
     void setSettingsAnimationsEnabled(bool value);
+    void setTrayDoubleClickOpensSettings(bool value);
 
     void setTrayIconTheme(int value);
     void setIconStyle(int value);
@@ -273,6 +276,7 @@ signals:
     void settingsStartupPageChanged();
     void panelAnimationsEnabledChanged();
     void settingsAnimationsEnabledChanged();
+    void trayDoubleClickOpensSettingsChanged();
 
     void trayIconThemeChanged();
     void iconStyleChanged();
@@ -355,6 +359,7 @@ private:
     int m_settingsStartupPage;
     bool m_panelAnimationsEnabled;
     bool m_settingsAnimationsEnabled;
+    bool m_trayDoubleClickOpensSettings;
 
     int m_trayIconTheme;
     int m_iconStyle;

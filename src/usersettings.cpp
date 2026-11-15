@@ -99,6 +99,7 @@ void UserSettings::initProperties()
     m_settingsStartupPage = qBound(0, settings.value("settingsStartupPage", 0).toInt(), kMaxSettingsStartupPage);
     m_panelAnimationsEnabled = settings.value("panelAnimationsEnabled", true).toBool();
     m_settingsAnimationsEnabled = settings.value("settingsAnimationsEnabled", true).toBool();
+    m_trayDoubleClickOpensSettings = settings.value("trayDoubleClickOpensSettings", true).toBool();
 
     m_trayIconTheme = qBound(0, settings.value("trayIconTheme", 0).toInt(), 2);
     m_iconStyle = qBound(0, settings.value("iconStyle", kDefaultIconStyle).toInt(), kMaxIconStyle);
@@ -432,6 +433,16 @@ void UserSettings::setSettingsAnimationsEnabled(bool value)
             return;
         m_settingsAnimationsEnabled = value;
         emit settingsAnimationsEnabledChanged();
+    }
+}
+
+void UserSettings::setTrayDoubleClickOpensSettings(bool value)
+{
+    if (m_trayDoubleClickOpensSettings != value) {
+        if (!saveValue("trayDoubleClickOpensSettings", value))
+            return;
+        m_trayDoubleClickOpensSettings = value;
+        emit trayDoubleClickOpensSettingsChanged();
     }
 }
 

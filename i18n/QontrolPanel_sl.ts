@@ -821,6 +821,14 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
         <translation>Nadzira, kako pogosto se ukazi za svetlost pošiljajo zunanjim monitorjem</translation>
     </message>
     <message>
+        <source>Open settings on tray double-click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turn off to open the panel immediately on a single click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show power action confirmation</source>
         <translation>Prikaži potrditev dejanja napajanja</translation>
     </message>

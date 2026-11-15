@@ -195,8 +195,12 @@ ApplicationWindow {
             } else if (panel.suppressNextTrayShow) {
                 focusLossTrayGuardTimer.stop()
                 panel.suppressNextTrayShow = false
-            } else {
+            } else if (UserSettings.trayDoubleClickOpensSettings) {
+                // Wait out a possible double-click so the panel does not
+                // flash before the settings window opens.
                 trayToggleTimer.restart()
+            } else {
+                panel.showPanelFromTray()
             }
         }
         onSettingsWindowRequested: {
@@ -215,8 +219,7 @@ ApplicationWindow {
         repeat: false
         onTriggered: {
             if (!panel.visible) {
-                HeadsetControlBridge.refreshNow()
-                panel.showPanel()
+                panel.showPanelFromTray()
             }
         }
     }
@@ -258,14 +261,14 @@ ApplicationWindow {
 
     Timer {
         id: contentOpacityTimer
-        interval: 160
+        interval: 60
         repeat: false
         onTriggered: mainLayout.opacity = 1
     }
 
     Timer {
         id: flyoutOpacityTimer
-        interval: 160
+        interval: 60
         repeat: false
         onTriggered: mediaPanelWindow.contentOpacity = 1
     }
@@ -374,6 +377,11 @@ ApplicationWindow {
         } else {
             showPanel()
         }
+    }
+
+    function showPanelFromTray() {
+        HeadsetControlBridge.refreshNow()
+        showPanel()
     }
 
     function showPanel() {
@@ -880,7 +888,7 @@ ApplicationWindow {
                             enabled: UserSettings.panelAnimationsEnabled
                             NumberAnimation {
                                 id: mainOpacityAnimation
-                                duration: 400
+                                duration: 240
                                 easing.type: Easing.OutQuad
                             }
                         }
