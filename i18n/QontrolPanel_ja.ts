@@ -827,7 +827,7 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation>オフにすると 1 回のクリックですぐにパネルを開きます。</translation>
+        <translation>オフにするとシングルクリックですぐにパネルを開きます。</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>
