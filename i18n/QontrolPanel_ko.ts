@@ -823,11 +823,12 @@ If you&apos;d like to support my work, any contribution would be greatly appreci
     </message>
     <message>
         <source>Open settings on tray double-click</source>
-        <translation type="unfinished"></translation>
+        <translation>트레이에서 설정을 열려면 더블 클릭하세요</translation>
     </message>
     <message>
         <source>Turn off to open the panel immediately on a single click</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>이 기능을 끄면 한 번 클릭만으로 즉시 패널이 열립니다</translatorcomment>
+        <translation>트레이 아이콘을 더블 클릭하여 설정 열기</translation>
     </message>
     <message>
         <source>Show power action confirmation</source>
