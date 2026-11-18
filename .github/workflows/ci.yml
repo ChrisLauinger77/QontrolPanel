@@ -9,6 +9,7 @@ on:
       - "i18n_compiled/**"
       - ".assets/**"
       - "site/**"
+      - ".github/workflows/claude.yml"
       - ".github/workflows/pages.yml"
       - "renovate.json"
 
