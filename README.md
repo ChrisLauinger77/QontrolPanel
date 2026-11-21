@@ -20,6 +20,7 @@ If you like my work, please consider supporting me ! <br><br>
 <a href="https://ko-fi.com/ChrisLauinger77" target="_blank">
 <img src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01cf2da94a032117b9_support_me_on_kofi_red-p-500.png" alt="Support me on Ko-fi" width="30%">
 </a>
+<a href="https://www.buymeacoffee.com/christianlz" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## Usage
 
