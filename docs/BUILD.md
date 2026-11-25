@@ -16,7 +16,7 @@ QontrolPanel is a Windows desktop application built with Qt 6, CMake, MSVC, vcpk
   - `hidapi:x64-windows`
   - `getopt-win32:x64-windows` for the vendored HeadsetControl build.
 
-The CI workflow uses Qt `6.12.0` on the `windows-2025-vs2026` runner. Visual Studio 2026 hosts the build, while its MSVC 2022-compatible `v143` toolset matches the supported Qt binary kit.
+The CI workflow uses Qt `6.12.1` on the `windows-2025-vs2026` runner. Visual Studio 2026 hosts the build, while its MSVC 2022-compatible `v143` toolset matches the supported Qt binary kit.
 
 ## Clone
 
@@ -65,7 +65,7 @@ Useful optional arguments:
 
 ```pwsh
 -DCMAKE_BUILD_TYPE=Release
--DCMAKE_PREFIX_PATH=C:/Qt/6.12.0/msvc2022_64
+-DCMAKE_PREFIX_PATH=C:/Qt/6.12.1/msvc2022_64
 ```
 
 When using a multi-config generator such as Visual Studio, pass the build configuration during build and install instead of relying on `CMAKE_BUILD_TYPE`.
@@ -157,7 +157,7 @@ Set `CMAKE_PREFIX_PATH` to the Qt MSVC kit, or configure from Qt Creator:
 ```pwsh
 cmake -S . -B build `
   -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
-  -DCMAKE_PREFIX_PATH=C:/Qt/6.12.0/msvc2022_64
+  -DCMAKE_PREFIX_PATH=C:/Qt/6.12.1/msvc2022_64
 ```
 
 ### The app starts but immediately exits
